@@ -44,6 +44,7 @@ async def main(inputs: Inputs, params: Params):
 name = "Subtract"
 description = "Subtract two numbers together"
 version = "1.0"
+category = "Math"
 
 ##############################################
 
@@ -66,6 +67,7 @@ class MetaData(BaseModel):
     name: str
     description: str
     version: str
+    category: str
     inputs: list[str]
     outputs: list[str]
     params: list[str]
@@ -80,6 +82,7 @@ async def metadata():
         name=name,
         description=description, 
         version=version,
+        category=category,
         inputs=inputs, 
         outputs=outputs, 
         params=params
