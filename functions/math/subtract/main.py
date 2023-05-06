@@ -58,7 +58,7 @@ def pmodel_to_json(pmodel: BaseModel):
     d = pmodel.__fields__
     arr = []
     for _,v in d.items():
-        arr.append(str(v.type_))
+        arr.append(str(v.type_.__name__))
 
     return arr
 
