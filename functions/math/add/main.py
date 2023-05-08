@@ -90,6 +90,6 @@ async def metadata():
         inputs=inputs,
         inputs_descr=inputs_descr,
         outputs=outputs,
-        outputs_descr=outputs_descr
+        outputs_descr=outputs_descr,
         params=params,
     )
