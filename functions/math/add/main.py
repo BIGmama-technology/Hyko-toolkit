@@ -70,9 +70,9 @@ class MetaData(BaseModel):
     version: str
     category: str
     inputs: List[str]
-    input_description : str
+    inputs_descr: str
     outputs: List[str]
-    output_description : str
+    outputs_descr: str
     params: List[str]
 
 
@@ -88,6 +88,8 @@ async def metadata():
         version=version,
         category=category,
         inputs=inputs,
+        inputs_descr=inputs_descr,
         outputs=outputs,
+        outputs_descr=outputs_descr
         params=params,
     )

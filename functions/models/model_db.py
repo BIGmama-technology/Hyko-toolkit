@@ -1,4 +1,4 @@
-import json 
+import json
 
 
 # Initilaize Model Database

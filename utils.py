@@ -5,7 +5,7 @@ Utility functions for model-selection using semantic + beam search
 from sentence_transformers import SentenceTransformer
 import torch.nn as nn
 from torch.types import _TensorOrTensors
-from typing import Dict, List
+from typing import Dict, List, Union
 import numpy as np
 from functions.math.add.main import MetaData
 
@@ -22,9 +22,13 @@ class Embdder(nn.Module):
         if not model_name:
             raise ValueError("model_name must be specified")
 
-    def embed_model_db(model_metadata_db : List[MetaData] = None) -> List[np.ndarray]:
+    def embed_model_metadata(self, metadata_db : List[MetaData], 
+                             target_attr : List[str],
+                             output_tensor : bool = True,
+                             output_ndarray : bool = False,
+                             ) -> Union[List[np.ndarray], List[_TensorOrTensors]]:
         r"""
-        embed_model_db: Takes a model database, embeds relavent values from model_md_dicts
+        embed_model_db: Takes a model_metadata database, embeds relevant dict_values
         argmuents:
             model_name : str holding  the name of the embedding module used
         output:
@@ -34,21 +38,20 @@ class Embdder(nn.Module):
 
         # Iterate over the dict_list
 
-        '''
-        [{"id": task_id, "task": task_name(str),
-        "task_description":task_description(str), 
-        "dep": dependency_task_id(List[int]), 
-        "args": [{"input_type":type(str), "input_description":desc(str),
-                                 "input_name":id},{..}]
-        }, {..} ...]
-        '''
-
-        for i, MetaData_ in enumerate(model_metadata_db):
-
+        for i, MetaData_ in enumerate(metadata_db):
             
+            description = MetaData_.description
+            input_descr = MetaData_.inputs_descr
+            output_descr = MetaData_.outputs_descr
+
+
+    def embed_tasks(self, metadata_db : List[Dict],
+                    target_attr : List[str] = None) -> Union[List[np.ndarray], List[_TensorOrTensors]]:
         
-
-
+        r"""
+        embed_tasks:  
+        """
+        pass
 
     def forward(
         self,
