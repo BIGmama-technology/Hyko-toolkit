@@ -1,2 +1,4 @@
-venv
+# env
+*venv
+# cache
 __pycache__
