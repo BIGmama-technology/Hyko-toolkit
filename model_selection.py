@@ -164,7 +164,7 @@ class SemanticSearchEngine(nn.Module):
         node_wise_cand_ids = []
 
         for idx_list in node_wise_cand_idx:
-            cand_ids = np.array(node_wise_cand_idx)[idx_list]
+            cand_ids = np.array(model_id_list)[idx_list]
             node_wise_cand_ids.append(cand_ids.tolist())
 
         return node_wise_cand_ids
