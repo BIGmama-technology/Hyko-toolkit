@@ -9,7 +9,6 @@ from typing import Dict, List, Union
 import numpy as np
 from functions.math.add.main import MetaData
 
-
 class Embdder(nn.Module):
     r"""
     Embdder class: Holistic embbeding module for both model and tasks metadata databases.
@@ -74,14 +73,13 @@ class Embdder(nn.Module):
         r"""
         Docstring ...
         """
-        # Iterate over the task metadata list
-
+        # iterate over the task metadata database
         task_db_embeds = []
         for MetaData_ in metadata_db:
             task_embed = {
                 "description_embed": self.encode_(MetaData_["task_description"]),
-                "input_descr": self.encode_(MetaData_["args"]["input_description"]),
-                "output_descr": self.encode_(MetaData_["output_description"]),
+                "input_descr": self.encode_(MetaData_["inputs"]["input_description"]),
+                "output_descr": self.encode_(MetaData_["outputs"]["output_description"]),
             }
             task_db_embeds.append(task_embed)
 
@@ -114,12 +112,11 @@ class Embdder(nn.Module):
 
         return model_db_embeds, task_db_embeds
 
-
 class SemanticSearchEngine(nn.Module):
     def __init__(self):
         pass
 
-    def similarity_measure():
+    def similarity_measure(self):
         r"""
         similarity_measure : measures Cross Semantic Textual Similarity between model_db_embeds
                              and task_db_embeds.
@@ -130,8 +127,5 @@ class SemanticSearchEngine(nn.Module):
         
         NOTE : Can use Semantic-Search or Elastic-Search from sentence-transformers
         """
-
-        pass
-
-
         
+        pass
