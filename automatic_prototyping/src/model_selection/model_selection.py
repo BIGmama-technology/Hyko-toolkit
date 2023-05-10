@@ -11,7 +11,7 @@ from sentence_transformers import SentenceTransformer, util
 from src.utils.utils import MetaData
 from typing import Dict, List, Union, Tuple, Optional
 
-DEBUG = True
+DEBUG = False
 
 class Embedder(nn.Module):
     r"""
@@ -43,7 +43,7 @@ class Embedder(nn.Module):
     def embed_model_metadata(
         self,
         metadata_db: List[MetaData],
-        target_attr: List[str],
+        target_attr: List[str]=[],
         output_tensor: bool = True,
         output_ndarray: bool = False,
     ) -> Union[List[np.ndarray], List[_TensorOrTensors]]:
@@ -61,9 +61,9 @@ class Embedder(nn.Module):
 
         for MetaData_ in metadata_db:
             model_embed = {
-                "description_embed": self.encode_(MetaData_.description),
-                "input_descr": self.encode_(MetaData_.inputs_descr),
-                "outputs_descr": self.encode_(MetaData_.outputs_descr),
+                "description_embed": self.encode_(MetaData_["description"]),
+                "inputs_embed": self.encode_(MetaData_["input_desc"]),
+                "outputs_embed": self.encode_(MetaData_["output_desc"]),
             }
 
             model_db_embeds.append(model_embed)
@@ -71,7 +71,7 @@ class Embedder(nn.Module):
         return model_db_embeds
 
     def embed_task_metadata(
-        self, metadata_db: List[Dict], target_attr: List[str] = None
+        self, metadata_db: List[Dict], target_attr: List[str] = []
     ) -> Union[List[np.ndarray], List[_TensorOrTensors]]:
         r"""
         Docstring ...
@@ -81,8 +81,8 @@ class Embedder(nn.Module):
         for MetaData_ in metadata_db:
             task_embed = {
                 "description_embed": self.encode_(MetaData_["task_description"]),
-                "input_descr": self.encode_(MetaData_["inputs"]["input_description"]),
-                "output_descr": self.encode_(MetaData_["outputs"]["output_description"]),
+                "inputs_embed": self.encode_(MetaData_["inputs"][0]["input_description"]),
+                "outputs_embed": self.encode_(MetaData_["outputs"][0]["output_description"]),
             }
             task_db_embeds.append(task_embed)
 
@@ -141,10 +141,9 @@ class SemanticSearchEngine(nn.Module):
 
         node_wise_cand_idx = [] # list for model candidates at each sequential task
         for task_embed in task_db_embeds:
-
-            description_sim_scores = util.cos_sim(task_embed['description_embed'], [model_embed["description_embed"] for model_embed in model_db_embeds])[0]
-            input_descr_sim_scores = util.cos_sim(task_embed["input_descr"], [model_embed["input_descr"] for model_embed in model_db_embeds])[0]
-            output_descr_sim_scores = util.cos_sim(task_embed["output_descr"], [model_embed["output_input"] for model_embed in model_db_embeds])[0]
+            description_sim_scores = torch.tensor([util.cos_sim(task_embed['description_embed'], model_embed["description_embed"])[0] for model_embed in model_db_embeds])
+            input_descr_sim_scores =torch.tensor([util.cos_sim(task_embed['inputs_embed'], model_embed["inputs_embed"])[0] for model_embed in model_db_embeds])
+            output_descr_sim_scores = torch.tensor([util.cos_sim(task_embed['outputs_embed'], model_embed["outputs_embed"])[0] for model_embed in model_db_embeds])
             
             # score weighted average
             avg_tens = (6*description_sim_scores) + (2*input_descr_sim_scores) + (2*output_descr_sim_scores)
@@ -159,7 +158,7 @@ class SemanticSearchEngine(nn.Module):
     
     def forward(self, model_db : List[MetaData], task_db : List[Dict]) -> List[int]:
         
-        model_id_list : List[Optional[int]] = [MetaData_.id for MetaData_ in model_db]
+        model_id_list : List[Optional[int]] = [MetaData_["id"] for MetaData_ in model_db]
 
         node_wise_cand_idx = self.similarity_measure(model_db, task_db)
 
