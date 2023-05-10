@@ -1,4 +1,5 @@
 # env
 *venv
+.auto_prototype
 # cache
 __pycache__
