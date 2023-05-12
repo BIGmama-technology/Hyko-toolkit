@@ -1,4 +1,4 @@
-# Popp.ai
+# The HYKO SDK.
 
 An AI-based automatic-prototyping framework developed by
 BIGmama. It enables the dynamic and user-specific construction of AI-based applications across various industries.
