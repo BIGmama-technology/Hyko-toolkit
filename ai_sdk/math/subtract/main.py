@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 import fastapi
-
-
+from enum import Enum
 app = fastapi.FastAPI()
 
 
@@ -37,7 +36,7 @@ class Outputs(BaseModel):
 # should always return Outputs.
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-    return Outputs(result=inputs.a - inputs.b)
+    return Outputs(result=inputs.a / inputs.b)
 
 
 ##############################################################################################################
@@ -53,13 +52,19 @@ category = "Math"
 
 
 # Keep the same
+class IOType(str, Enum):
+    FLOAT = "FLOAT"
+    STRING = "STR"
 
+class IOPort(BaseModel):
+    name: str
+    type: IOType
 
-def pmodel_to_json(pmodel: BaseModel):
+def pmodel_to_json(pmodel: BaseModel) -> list[IOPort]:
     d = pmodel.__fields__
     arr = []
-    for _, v in d.items():
-        arr.append(str(v.type_.__name__))
+    for k, v in d.items():
+        arr.append(IOPort(name=k, type=v.type_.__name__.upper()))
 
     return arr
 
@@ -69,9 +74,9 @@ class MetaData(BaseModel):
     description: str
     version: str
     category: str
-    inputs: list[str]
-    outputs: list[str]
-    params: list[str]
+    inputs: list[IOPort]
+    outputs: list[IOPort]
+    params: list[IOPort]
 
 
 @app.get("/metadata", response_model=MetaData)
