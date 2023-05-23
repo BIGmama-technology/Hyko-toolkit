@@ -43,22 +43,25 @@ print(f"categoris: {os.listdir('./sdk')}")
 
 for category in os.listdir("./sdk"):
 
-    if category == "common":
+    if category == "common" or category == "__pycache__":
         continue
 
     if os.path.isdir("./sdk/" + category):
 
         for fn in os.listdir("./sdk/" + category):
 
+            if fn == "__pycache__":
+                continue
+
             if os.path.isdir("./sdk/" + category + "/" + fn):
-                
+
                 print()
                 print(f"Processing function {category}/{fn}")
 
                 print("Building metadata...")
-                subprocess.run(f"docker build --build-arg CATEGORY={category} --build-arg FUNCTION_NAME={fn} --target metadata -t {registry_host}/sdk/{category}/{fn}:metadata .".split(' '))
+                subprocess.run(f"docker build --build-arg CATEGORY={category} --build-arg FUNCTION_NAME={fn} --target metadata -t {registry_host}/sdk/{category.lower()}/{fn.lower()}:metadata .".split(' '))
 
-                metadata_process = subprocess.run(f"docker run -it {registry_host}/sdk/{category}/{fn}:metadata".split(' '), capture_output=True)
+                metadata_process = subprocess.run(f"docker run -it {registry_host}/sdk/{category.lower()}/{fn.lower()}:metadata".split(' '), capture_output=True)
                 meta_data = metadata_process.stdout.decode()
                 labels = metadata_to_labels(MetaData(**json.loads(meta_data)))
                 
@@ -70,7 +73,7 @@ for category in os.listdir("./sdk"):
                 build_cmd += f"--build-arg CATEGORY={category} "
                 build_cmd += f"--build-arg FUNCTION_NAME={fn} "
                 build_cmd += f"--target main "
-                build_cmd += f"-t {registry_host}/sdk/{category}/{fn}:latest "
+                build_cmd += f"-t {registry_host}/sdk/{category.lower()}/{fn.lower()}:latest "
                 for label_name, label_val in labels.items():
                     build_cmd += f'--label {label_name}="{label_val}" '
                 build_cmd += f"."
@@ -83,5 +86,5 @@ for category in os.listdir("./sdk"):
                 print()
                 print("Pushing...")
 
-                subprocess.run(f"docker push {registry_host}/sdk/{category}/{fn}:latest".split(' '))
+                subprocess.run(f"docker push {registry_host}/sdk/{category.lower()}/{fn.lower()}:latest".split(' '))
 
