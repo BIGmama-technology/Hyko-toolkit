@@ -3,3 +3,5 @@
 .auto_prototype
 # cache
 __pycache__
+# dev config
+.vscode/
