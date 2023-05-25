@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from sdk.common.metadata import MetaData, pmodel_to_json
+from sdk.common.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
 
@@ -39,9 +39,9 @@ __meta_data__ = MetaData(
     description=description,
     version=version,
     category=category,
-    inputs=pmodel_to_json(Inputs),
-    params=pmodel_to_json(Params),
-    outputs=pmodel_to_json(Outputs),
+    inputs=pmodel_to_ports(Inputs), # type: ignore
+    params=pmodel_to_ports(Params), # type: ignore
+    outputs=pmodel_to_ports(Outputs), # type: ignore
 )
 
 
