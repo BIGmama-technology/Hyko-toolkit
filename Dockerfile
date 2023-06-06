@@ -1,9 +1,12 @@
 FROM python:3.10 AS main
 
+RUN pip install fastapi pydantic uvicorn
+
+COPY ./sdk/common /sdk/common
+
 ARG CATEGORY
 ARG FUNCTION_NAME
 
-COPY ./sdk/common /sdk/common
 COPY ./sdk/${CATEGORY}/${FUNCTION_NAME} /sdk/function
 RUN pip install -r /sdk/function/requirements.txt
 

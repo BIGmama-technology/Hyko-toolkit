@@ -3,10 +3,10 @@ from sdk.common.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
 
-name = "Add"
-description = "Add two numbers together (a+b)"
+name = "text-davinci-003"
+description = "OpenAi (text-davinci-003)"
 version = "1.0"
-category = "Math"
+category = "OpenAi"
 
 ##############################################
 
@@ -15,8 +15,11 @@ category = "Math"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    a: float
-    b: float
+    prompt: str
+    api_key: str
+    max_tokens: int = 100
+    temperature: float = 0.8
+    top_p: float = 0.8
 
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
@@ -29,7 +32,7 @@ class Params(BaseModel):
 
 # outputs of the function.
 class Outputs(BaseModel):
-    result: float
+    generated_text: str
 
 
 # Function metadata, should always be here
@@ -46,4 +49,4 @@ __meta_data__ = MetaData(
 
 
 if __name__ == "__main__":
-    print(__meta_data__.json(indent=2))
+    print(__meta_data__.json())
