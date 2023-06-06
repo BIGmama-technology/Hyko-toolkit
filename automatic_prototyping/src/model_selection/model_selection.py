@@ -7,7 +7,7 @@ import torch.nn as nn
 from torch.types import _TensorOrTensors
 import numpy as np
 from sentence_transformers import SentenceTransformer, util
-
+from const_task_planning.task_planning import TaskPlan
 from src.utils.utils import MetaData
 from typing import Dict, List, Union, Tuple, Optional
 
@@ -60,30 +60,28 @@ class Embedder(nn.Module):
         model_db_embeds = []
 
         for MetaData_ in metadata_db:
-            model_embed = {
+            model_embed = self.encode_(MetaData_)
+            
+            '''{
                 "description_embed": self.encode_(MetaData_["description"]),
                 "inputs_embed": self.encode_(MetaData_["input_desc"]),
                 "outputs_embed": self.encode_(MetaData_["output_desc"]),
-            }
+            }'''
 
             model_db_embeds.append(model_embed)
 
         return model_db_embeds
 
-    def embed_task_metadata(
-        self, metadata_db: List[Dict], target_attr: List[str] = []
+    def embed_task(
+        self, task_plan : TaskPlan = None, target_attr: List[str] = []
     ) -> Union[List[np.ndarray], List[_TensorOrTensors]]:
         r"""
         Docstring ...
         """
         # iterate over the task metadata database
         task_db_embeds = []
-        for MetaData_ in metadata_db:
-            task_embed = {
-                "description_embed": self.encode_(MetaData_["task_description"]),
-                "inputs_embed": self.encode_(MetaData_["inputs"][0]["input_description"]),
-                "outputs_embed": self.encode_(MetaData_["outputs"][0]["output_description"]),
-            }
+        for MetaData_ in task_plan.task_plan_:
+            task_embed =  self.encode_(MetaData_)
             task_db_embeds.append(task_embed)
 
         return task_db_embeds
@@ -110,7 +108,7 @@ class Embedder(nn.Module):
             raise ValueError("Tasks DataBase must be specified")
 
         model_db_embeds = self.embed_model_metadata(model_db)
-        task_db_embeds = self.embed_task_metadata(task_db)
+        task_db_embeds = self.embed_task(task_db)
 
         return model_db_embeds, task_db_embeds
 
@@ -141,14 +139,13 @@ class SemanticSearchEngine(nn.Module):
 
         node_wise_cand_idx = [] # list for model candidates at each sequential task
         for task_embed in task_db_embeds:
-            description_sim_scores = torch.tensor([util.cos_sim(task_embed['description_embed'], model_embed["description_embed"])[0] for model_embed in model_db_embeds])
-            input_descr_sim_scores =torch.tensor([util.cos_sim(task_embed['inputs_embed'], model_embed["inputs_embed"])[0] for model_embed in model_db_embeds])
-            output_descr_sim_scores = torch.tensor([util.cos_sim(task_embed['outputs_embed'], model_embed["outputs_embed"])[0] for model_embed in model_db_embeds])
+            description_sim_scores = torch.tensor([util.cos_sim(task_embed, model_embed["description_embed"])[0] for model_embed in model_db_embeds])
+            # input_descr_sim_scores =torch.tensor([util.cos_sim(task_embed['inputs_embed'], model_embed["inputs_embed"])[0] for model_embed in model_db_embeds])
+            # output_descr_sim_scores = torch.tensor([util.cos_sim(task_embed['outputs_embed'], model_embed["outputs_embed"])[0] for model_embed in model_db_embeds])
             
             # score weighted average
-            avg_tens = (6*description_sim_scores) + (2*input_descr_sim_scores) + (2*output_descr_sim_scores)
-            avg_tens /= 3
-            
+            avg_tens = description_sim_scores
+
             candidates = torch.topk(avg_tens, k = top_k)[1] # [1] for idx
             node_wise_cand_idx.append(candidates)
             if DEBUG:
