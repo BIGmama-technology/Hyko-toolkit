@@ -1,0 +1,4 @@
+*env
+*venv
+.auto_prototype
+*__pycache__
