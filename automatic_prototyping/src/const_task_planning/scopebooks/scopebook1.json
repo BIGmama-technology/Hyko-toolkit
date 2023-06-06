@@ -1,0 +1,281 @@
+{
+    "liveblocksType": "LiveObject",
+    "data": {
+        "blocks": {
+            "liveblocksType": "LiveList",
+            "data": [
+                {
+                    "id": "TCmIep2P3WCf5zxGyhFc2",
+                    "type": "title",
+                    "children": [
+                        {
+                            "text": "Connected Vehicles Scopebook"
+                        }
+                    ]
+                },
+                {
+                    "id": "HB-UT-bPEsTTyfuNGpYZ0",
+                    "type": "description",
+                    "children": [
+                        {
+                            "text": "This document is designed to formulate a well-defined data science project for the BIGmama Technology & NTT DATA collaboration."
+                        }
+                    ]
+                },
+                {
+                    "id": "I9_m4t_q0VXM-I76jXlMG",
+                    "type": "section-title",
+                    "children": [
+                        {
+                            "text": "The context:"
+                        }
+                    ]
+                },
+                {
+                    "id": "MbBgpc9e5nPQQ2ZkuMIk-",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Name of the project:"
+                        }
+                    ]
+                },
+                {
+                    "id": "fjw0N45-TwT7yi9VAgPEY",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "NTT"
+                        }
+                    ]
+                },
+                {
+                    "id": "JeKbhXlJl0nJM4TIbVplc",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Background:"
+                        }
+                    ]
+                },
+                {
+                    "id": "9cuLAc1m1V2QU4q2JUAOF",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "NTT DATA – a part of NTT Group – is a trusted global innovator of IT and business services headquartered in Tokyo. We help clients transform through consulting, industry solutions, business process services, IT modernization and managed services. NTT DATA enables clients, as well as society, to move confidently into the digital future. We are committed to our clients' long-term success and combine global reach with local client attention to serve them in over 50 countries."
+                        }
+                    ]
+                },
+                {
+                    "id": "ldi6TdKsrMZP2Xpvk-IGT",
+                    "type": "section-title",
+                    "children": [
+                        {
+                            "text": "Problem Statement"
+                        }
+                    ]
+                },
+                {
+                    "id": "9C2Oe3P6LdSJDe04sBv42",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Can you describe your topic in a few words?"
+                        }
+                    ]
+                },
+                {
+                    "id": "76o9-DY8R8fxxvCoAyBUK",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "Take advantage of artificial intelligence to improve the driving experience."
+                        }
+                    ]
+                },
+                {
+                    "id": "Pn5C87jBzAUTU2jQHgfuf",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Can you formulate the operational problems you are facing?"
+                        }
+                    ]
+                },
+                {
+                    "id": "WB4YyeG9_7lhisilhBkcH",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "How can we make our vehicles more secure?"
+                        }
+                    ]
+                },
+                {
+                    "id": "9bPvzCXX95PaBLaM13FHw",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "How to improve the driving experience?"
+                        }
+                    ]
+                },
+                {
+                    "id": "lbKl44qPBiRJyP4wYeAZ5",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "How to reduce fuel consumption?"
+                        }
+                    ]
+                },
+                {
+                    "id": "5tklU5LVJx2_D1xR44ISJ",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Who has an interest in solving the problem?"
+                        }
+                    ]
+                },
+                {
+                    "id": "kAH4GT_adOFi3zw1uFfNV",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "Our customers and the company."
+                        }
+                    ]
+                },
+                {
+                    "id": "DYop3T--BpjlqQUl-owc_",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Are there people who have an interest in the problem not being solved?"
+                        }
+                    ]
+                },
+                {
+                    "id": "XMQQUUHkYgCOsCNtLOQ1D",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "Yes, some people in our design office."
+                        }
+                    ]
+                },
+                {
+                    "id": "D5n1Z7N0hg3-Vz-oRbC4H",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "How many people/organizations/places/etc. And how are they affected? (people with certain organizational profiles, environment, etc.)"
+                        }
+                    ]
+                },
+                {
+                    "id": "qllrY5PhaoPIe3Zh4YMT6",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "The answer is Confidential."
+                        }
+                    ]
+                },
+                {
+                    "id": "Bet5r4OQgjG4IR2plUh1l",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Why is fixing this issue a priority for your organization?"
+                        }
+                    ]
+                },
+                {
+                    "id": "RThsnGeTosrqcjo6SYOef",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "Our development strategy requires a precise and effective response to these questions."
+                        }
+                    ]
+                },
+                {
+                    "id": "-CyWQ-O2zSzcp4bIMHDob",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "How long do you have to answer these questions?"
+                        }
+                    ]
+                },
+                {
+                    "id": "92jQCX8ACA4KGZXY7hkN7",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "Between 12 and 18 months."
+                        }
+                    ]
+                },
+                {
+                    "id": "98eOKWTcjQR-BMrdNbxpC",
+                    "type": "section-title",
+                    "children": [
+                        {
+                            "text": "Goals"
+                        }
+                    ]
+                },
+                {
+                    "id": "FoJs7Mw0rD4BBQtsxGUel",
+                    "type": "description",
+                    "children": [
+                        {
+                            "text": "This is the most critical step in the scoping process. Most projects start with a very vague and abstract objective (for example, to improve education or health care), the objectives must be more concrete (to increase the percentage of students who will graduate on time or to decrease the number Saturnian children)."
+                        }
+                    ]
+                },
+                {
+                    "id": "NeaF41v6ko63aOk4z4M2n",
+                    "type": "description",
+                    "children": [
+                        {
+                            "text": "The goal here is to take the result we're trying to achieve and turn it into a measurable goal that can be optimized (under certain given constraints)."
+                        }
+                    ]
+                },
+                {
+                    "id": "eh8DvpDW-Bt5JXPv9FxN1",
+                    "type": "description",
+                    "children": [
+                        {
+                            "text": "A few things to keep in mind when setting goals:"
+                        }
+                    ]
+                },
+                {
+                    "id": "3gk8tUaIEjdxlCx__tkjc",
+                    "type": "description",
+                    "children": [
+                        {
+                            "text": "- The technical solution that will be built (e.g. predictive model or dashboard or map..) is not the business/policy goal - it is the tool that will achieve the goal;"
+                        }
+                    ]
+                },
+                {
+                    "id": "BV_yHj9izhwR155egV8Zf",
+                    "type": "description",
+                    "children": [
+                        {
+                            "text": "- The objective must be specific and measurab..."
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
+
