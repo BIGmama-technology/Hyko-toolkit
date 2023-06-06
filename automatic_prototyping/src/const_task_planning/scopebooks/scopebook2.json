@@ -1,0 +1,591 @@
+{
+    "liveblocksType": "LiveObject",
+    "data": {
+        "blocks": {
+            "liveblocksType": "LiveList",
+            "data": [
+                {
+                    "id": "r1rwE1gBV26Nfx_1gp1Qk",
+                    "type": "title",
+                    "children": [
+                        {
+                            "text": "in-document conflict detection "
+                        }
+                    ]
+                },
+                {
+                    "id": "SQ34Jw7D_jeKDEMK7NmCf",
+                    "type": "section-title",
+                    "children": [
+                        {
+                            "text": "Administration and responsibility"
+                        }
+                    ]
+                },
+                {
+                    "id": "xcVyJBDGFZ0gpVBZ7qNiO",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Background"
+                        }
+                    ]
+                },
+                {
+                    "id": "j6rNpyxsAvNeyklWBaxtw",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "The General Civil Aviation Authority",
+                            "bold": true
+                        },
+                        {
+                            "text": " (GCAA) was created in 1996 by Federal Cabinet Decree (Law 4) to regulate Civil Aviation and provide designated aviation services with observance to the safety and security to strengthen the aviation industry within the UAE and its upper space. Since 1996 the Authority has made considerable progress and embarked on bold new initiatives to provide a better service to its civil aviation clients and stakeholders. Since 1996 many new projects and innovations have been initiated with generally excellent result, such as modernization of the air traffic control center program, Radar equipments and establishing of new facilities to serve the growth of the civil aviation within the UAE."
+                        }
+                    ]
+                },
+                {
+                    "id": "5YIy3ru5WBKi7CxfA9OlP",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Goals"
+                        }
+                    ]
+                },
+                {
+                    "id": "WI3hDLtFNN4WHbQ2dJUgl",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Streamlining the process of adding and editing regulations: The current process of adding and editing regulations is lengthy and time-consuming. The project could aim to create a more efficient and user-friendly process that would save time and reduce errors."
+                        }
+                    ]
+                },
+                {
+                    "id": "e4bZb_DU1E8ewsy9",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Improving compliance : The process of checking for conflicting regulations, loopholes, and blind spots is critical to ensuring compliance with the regulations. The project could aim to make this process more thorough and effective, leading to better compliance with the regulations."
+                        }
+                    ]
+                },
+                {
+                    "id": "ealf1NOrxs95NDWf",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Enhancing collaboration: The project could aim to enhance collaboration between employees involved in the regulation process, enabling them to work together more effectively and efficiently."
+                        }
+                    ]
+                },
+                {
+                    "id": "nPYWgaX_BV8NLEIh",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Ensuring accuracy: Accuracy is critical in the regulation process, and errors can have serious consequences. The project could aim to implement measures to ensure accuracy and reduce the risk of errors."
+                        }
+                    ]
+                },
+                {
+                    "id": "5_YpRcPpBua0ZiFPv1IuZ",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Increasing transparency: The regulation process can often be opaque and difficult for outsiders to understand. The project could aim to increase transparency by making the process more visible and accessible to all stakeholders."
+                        }
+                    ]
+                },
+                {
+                    "id": "OwKKDznFxvWilO9CMn8fJ",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Constraints:"
+                        }
+                    ]
+                },
+                {
+                    "id": "cn_TykwZxAw6RWvE7k1GD",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "huge amount of regulations desperssed across documents"
+                        }
+                    ]
+                },
+                {
+                    "id": "619pSn16NMKUH7QV6lppF",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Managing the complexity of the existing regulations : regulations are expressed in complex language requiring layers of cognitive understanding"
+                        }
+                    ]
+                },
+                {
+                    "id": "7aQOod5AHUnzf1iUZ8782",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Maintaining accuracy and completeness : our bussiness allow for a miniscule marge of error"
+                        }
+                    ]
+                },
+                {
+                    "id": "uc6SDja0pLdc7fuLF_joI",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "difficulty of collaboration and communication"
+                        }
+                    ]
+                },
+                {
+                    "id": "Lmi7TpClsTuALG3MABBLH",
+                    "type": "section-title",
+                    "children": [
+                        {
+                            "text": "Success Conditions"
+                        }
+                    ]
+                },
+                {
+                    "id": "lV4RKsL1mYG6ev9-Q1vMY",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "How would you evaluate the success of the models ? "
+                        }
+                    ]
+                },
+                {
+                    "id": "V2lAKKkrCKoS3Q9QU_Vr0",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Accuracy : must be rated accurate above 90% of the time, rating is done by our employees."
+                        }
+                    ]
+                },
+                {
+                    "id": "FsiM5sVRSGYh2u3LatFdR",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Sovereignty : must be hosted and secured in own infrastructure."
+                        }
+                    ]
+                },
+                {
+                    "id": "0j99l08767Z0lxe4Tlq2n",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Speed : must take less then 2 minutes to give a correct response. "
+                        }
+                    ]
+                },
+                {
+                    "id": "M3Li4SQa-7SifLv3eodS3",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Could you describe the situation that for you would be a success"
+                        }
+                    ]
+                },
+                {
+                    "id": "hTrFCd5plTD69mbbr9_eu",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "1- we have a new regulation that we want to add"
+                        }
+                    ]
+                },
+                {
+                    "id": "kYp7F4p9QPRjoS3uj85xA",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "2- we prompt it to the model"
+                        }
+                    ]
+                },
+                {
+                    "id": "5T0FC8KtVUWxGw1WZpHMy",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "3- model returns with top 5 relevant chapters"
+                        }
+                    ]
+                },
+                {
+                    "id": "KxKpzsQqG1vSWGtDr51JN",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "4- says its conflicting and expalin the conflict"
+                        }
+                    ]
+                },
+                {
+                    "id": "AET-rUSVfqFwMdATcAjBA",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "5- employee modify the added regulation to conform"
+                        }
+                    ]
+                },
+                {
+                    "id": "TWQrB2vFCntSplaB_ADBa",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "6- check again with model"
+                        }
+                    ]
+                },
+                {
+                    "id": "5AUDKXuoHibw6MTsYYBh2",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "7- this time no conflict occurs regulation can be added successfully"
+                        }
+                    ]
+                },
+                {
+                    "id": "_Ffbm4hPDZ2pETotMLlSy",
+                    "type": "section-title",
+                    "children": [
+                        {
+                            "text": "Preliminary inventory of problems"
+                        }
+                    ]
+                },
+                {
+                    "id": "bFkRNND6tiggJNWz9q0hM",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Describe your subject problem, your situation.  What is your business problem ?"
+                        }
+                    ]
+                },
+                {
+                    "id": "Ixeaa77pip7e3rkegbMP3",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "we need to make it easy for our employees to add and edit regulations. Adding a new regulation requires mutiple checks across thousands of pages of already existing regulations. During these checks (which takes months) emplyees look for conflicting regulations made earlier, loop holes and blind spots."
+                        }
+                    ]
+                },
+                {
+                    "id": "EE_81Khnie2mdmoqkvUta",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "If it was up to you how would you divide the subject into sub-problems ?",
+                            "underline": true
+                        }
+                    ]
+                },
+                {
+                    "id": "SM2bvINGRaxRy9EGGWhO8",
+                    "type": "description",
+                    "children": [
+                        {
+                            "text": "(a general description: You can describe a situation by giving examples. Do not hesitate to give anecdotes with as much context as possible. Any details  could be useful. when it's not easy to formulate a clear and concise problem in a few words, try to illustrate  )"
+                        }
+                    ]
+                },
+                {
+                    "id": "gpLe8p-0A4yDcZFzsPe-q",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "find the relevent regulations, paragraphs and articles to the request"
+                        }
+                    ]
+                },
+                {
+                    "id": "hJI7nQCozBo2lx2t",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": " check if a conflict occurs"
+                        }
+                    ]
+                },
+                {
+                    "id": "29OKZYTmvVYifsBb",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "explain the conflict occuring"
+                        }
+                    ]
+                },
+                {
+                    "id": "74pRG-eGX1T-C3Xjruc5J",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Who has an interest in solving the problem?"
+                        }
+                    ]
+                },
+                {
+                    "id": "L75uDQ-sefYZGITQNDHFg",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "The organization"
+                        }
+                    ]
+                },
+                {
+                    "id": "HQFNfKZ8lGHkrArSaeMAj",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Employees involved in the regulation process while working on other tasks"
+                        }
+                    ]
+                },
+                {
+                    "id": "Frwf8NMv9UhVI0osh_loG",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "Customers and stakeholders looking for fast audits"
+                        }
+                    ]
+                },
+                {
+                    "id": "Uk3rBW_dbhI3sBp2uC8R0",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Are there people who have an interest in the problem not being solved?"
+                        }
+                    ]
+                },
+                {
+                    "id": "5KueBYZxX_jnRBIKQ2IE0",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "some empolyess may fear a layoffs risks."
+                        }
+                    ]
+                },
+                {
+                    "id": "NZM5FSw0tnUm0QeYgH3kB",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "What are your bottleneck tasks ? Why ?"
+                        }
+                    ]
+                },
+                {
+                    "id": "HUdRDV7gQGbliU2QvQW0B",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "reading the documentation, its a boring repetitive task that can take up to 1 month to perform"
+                        }
+                    ]
+                },
+                {
+                    "id": "sUggfPKR29_3bal3PH1AK",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "What are the tasks that you don't want to automize ? What the machine shouldn't do in your place ?"
+                        }
+                    ]
+                },
+                {
+                    "id": "Cy3sLWxvN88sKA0DqQ2CO",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "we want the model to be just an aid to the regulator give arguments and proof for relevent conflict, the employee is responsible of judging the coherence of the answer "
+                        }
+                    ]
+                },
+                {
+                    "id": "Fj8VHLOzqT5hzpF6j3aj_",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Who decides/assess that the problem is solved ?"
+                        }
+                    ]
+                },
+                {
+                    "id": "dMqEkT2_L2Yti72J-acPH",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "2 of our pilotes and 3 of our regulators can judge that"
+                        }
+                    ]
+                },
+                {
+                    "id": "NVN381dsFOtDclp_b02Tr",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Do you think that there are some rules which define interactions between these problems ?"
+                        }
+                    ]
+                },
+                {
+                    "id": "XTvAEbtzR4fL7ZsTZYeny",
+                    "type": "description",
+                    "children": [
+                        {
+                            "text": "Solving problem 1 (dashboard) allows us to analyse attributes associated to problem 2."
+                        }
+                    ]
+                },
+                {
+                    "id": "rQZJ2BanNfmf-qVWUS-Hf",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "yes, there are predfined relations across document that can guide the model where to look depending on the request. "
+                        }
+                    ]
+                },
+                {
+                    "id": "iRlnmLYRZHMLBb0gfwI69",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Is it possible to describe a set of logic rules that connect various indicators ?"
+                        }
+                    ]
+                },
+                {
+                    "id": "rufDLFCey1XT02AJeW_CA",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "Yes, can be modeled as a rule based system, for example we often find conflict when working on new engine regulations in the CARX document."
+                        }
+                    ]
+                },
+                {
+                    "id": "uNH9RTuTu1Onh8mfNwOR9",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "What are the assumptions that govern your work ?"
+                        }
+                    ]
+                },
+                {
+                    "id": "NWQOpNzREg5MkT5SrXNEB",
+                    "type": "description",
+                    "children": [
+                        {
+                            "text": "How your model happen to be a simplifications of the real world ? eg. The number of retweets may matter, all visitors come during weekends."
+                        }
+                    ]
+                },
+                {
+                    "id": "XPaumRcTyn-zZMzgRi12w",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "most of new regulations are guilty until proven otherwise."
+                        }
+                    ]
+                },
+                {
+                    "id": "Or2pwH0bQ7YXevXGt-8nD",
+                    "type": "bulleted-list",
+                    "children": [
+                        {
+                            "text": "we assume there are no already existing conflict in the documents"
+                        }
+                    ]
+                },
+                {
+                    "id": "z25ZtYGGnJRkUKvveybGP",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "How are these assumptions falling short to describe reality ?"
+                        }
+                    ]
+                },
+                {
+                    "id": "ZidgAnvxeHdWwmf1j77qf",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "there could be an existing conflict."
+                        }
+                    ]
+                },
+                {
+                    "id": "PtWD3_raNQOb1FoQ8RRbr",
+                    "type": "section-title",
+                    "children": [
+                        {
+                            "text": "Explainability"
+                        }
+                    ]
+                },
+                {
+                    "id": "VpVfho73RswFoJkFDh3c2",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "How much transparency do you require ?"
+                        }
+                    ]
+                },
+                {
+                    "id": "6NOphYgj2fXfGn1kMemwD",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "The level of transparency required in the regulation process will depend on several factors, including legal requirements, organizational culture, and stakeholder expectations."
+                        }
+                    ]
+                },
+                {
+                    "id": "9BjAmUg2o7yDtBIFCdzbo",
+                    "type": "question",
+                    "children": [
+                        {
+                            "text": "Are non-deterministic outcomes acceptable given your legal or ethical obligations around transparency and explainability?"
+                        }
+                    ]
+                },
+                {
+                    "id": "pwfO7oWpTX2CapPcreMU4",
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "text": "yes, since there is still a human in the loop to judge the regulationf"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
