@@ -1,12 +1,17 @@
 from enum import Enum
+from typing import Optional
 from pydantic import BaseModel
 
 
 # Keep the same
-class IOType(str, Enum):
-    FLOAT = "FLOAT"
-    STRING = "STR"
+class IOPortType(str, Enum):
+    NUMBER = "number"
+    INTEGER = "integer"
+    STRING = "string"
 
 class IOPort(BaseModel):
     name: str
-    type: IOType
+    description: Optional[str]
+    type: IOPortType
+    required: bool
+    default: Optional[float | int | str]
