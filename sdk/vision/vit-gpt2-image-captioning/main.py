@@ -31,7 +31,6 @@ gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-    print()
     i_image = base64.urlsafe_b64decode(inputs.img)
     npimg = np.frombuffer(i_image, np.uint8)
     cvimg = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
