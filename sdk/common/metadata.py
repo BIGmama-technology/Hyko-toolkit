@@ -57,6 +57,7 @@ class MetaData(BaseModel):
     description: str
     version: str
     category: str
+    task : str
     inputs: list[IOPort]
     outputs: list[IOPort]
     params: list[IOPort]

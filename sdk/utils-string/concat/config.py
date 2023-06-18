@@ -7,7 +7,7 @@ name = "Concat"
 description = "Concatenate two strings together"
 version = "1.0"
 category = "Utils-Strings"
-
+task = "Str Concat"
 ##############################################
 
 
