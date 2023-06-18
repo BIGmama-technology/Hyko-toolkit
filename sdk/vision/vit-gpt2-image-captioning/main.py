@@ -3,6 +3,7 @@ from .config import Inputs, Params, Outputs
 from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
 import torch
 from PIL import Image
+from io import BytesIO
 import base64
 import cv2
 import numpy as np
@@ -30,17 +31,13 @@ gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-    
-    i_image = inputs.img.encode("ascii")
-    decoded = base64.b64decode(i_image)
-    npimg = np.frombuffer(decoded, np.uint8)
+    print()
+    i_image = base64.urlsafe_b64decode(inputs.img)
+    npimg = np.frombuffer(i_image, np.uint8)
     cvimg = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-    
-    if cvimg.mode != "RGB":
-      cvimg = cvimg.convert(mode="RGB")
-    pixel_values = feature_extractor(images=cvimg, return_tensors="pt").pixel_values
+    pixel_values = feature_extractor(images=cv2.cvtColor(cvimg, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values
     pixel_values = pixel_values.to(device)
     output_ids = model.generate(pixel_values, **gen_kwargs)
     preds = tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
     
-    return Outputs(preds)
+    return Outputs(text=preds)
