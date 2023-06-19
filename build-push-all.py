@@ -54,52 +54,73 @@ def metadata_to_labels(meta: MetaData) -> dict[str, float | int | str | bool]:
 registry_host = "registry.localhost"
 
 
-print(f"categoris: {os.listdir('./sdk')}")
-
-for category in os.listdir("./sdk"):
-
-    if category == "common" or category == "__pycache__":
-        continue
-
-    if os.path.isdir("./sdk/" + category):
-
-        for fn in os.listdir("./sdk/" + category):
-
-            if fn == "__pycache__":
-                continue
-
-            if os.path.isdir("./sdk/" + category + "/" + fn):
-
-                print()
-                print(f"Processing function {category}/{fn}")
-
-                print("Building metadata...")
-                subprocess.run(f"docker build --build-arg CATEGORY={category} --build-arg FUNCTION_NAME={fn} --target metadata -t {registry_host}/sdk/{category.lower()}/{fn.lower()}:metadata .".split(' '))
-
-                metadata_process = subprocess.run(f"docker run -it {registry_host}/sdk/{category.lower()}/{fn.lower()}:metadata".split(' '), capture_output=True)
-                meta_data = metadata_process.stdout.decode()
-                labels = metadata_to_labels(MetaData(**json.loads(meta_data)))
-                
-
-                print()
-                print("Building...")
-
-                build_cmd = f"docker build "
-                build_cmd += f"--build-arg CATEGORY={category} "
-                build_cmd += f"--build-arg FUNCTION_NAME={fn} "
-                build_cmd += f"--target main "
-                build_cmd += f"-t {registry_host}/sdk/{category.lower()}/{fn.lower()}:latest "
-                for label_name, label_val in labels.items():
-                    build_cmd += f'--label {label_name}="{label_val}" '
-                build_cmd += f"."
-
-                print(build_cmd.split(' '))
-
-                subprocess.run(["/bin/sh", "-c", build_cmd])
+def process_function_dir(root_path: str, pre_categories: list[str]):
+    
+    if len(pre_categories) < 2:
+        return
+    
+    categories_prefix = '/'.join(pre_categories[:-1])
+    function_name = pre_categories[-1]
+    
+    print()
+    print(f"Processing function: {root_path=}, {categories_prefix=} {function_name=}")
 
 
-                print()
-                print("Pushing...")
+    print("Building metadata...")
+    subprocess.run(f"docker build --build-arg CATEGORY={categories_prefix} --build-arg FUNCTION_NAME={function_name} --target metadata -t {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata .".split(' '))
 
-                subprocess.run(f"docker push {registry_host}/sdk/{category.lower()}/{fn.lower()}:latest".split(' '))
+    metadata_process = subprocess.run(f"docker run -it {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '), capture_output=True)
+    meta_data = metadata_process.stdout.decode()
+    labels = metadata_to_labels(MetaData(**json.loads(meta_data)))
 
+
+    print()
+    print("Building...")
+
+    build_cmd = f"docker build "
+    build_cmd += f"--build-arg CATEGORY={categories_prefix} "
+    build_cmd += f"--build-arg FUNCTION_NAME={function_name} "
+    build_cmd += f"--target main "
+    build_cmd += f"-t {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:latest "
+    for label_name, label_val in labels.items():
+        build_cmd += f'--label {label_name}="{label_val}" '
+    build_cmd += f"."
+
+    print(build_cmd.split(' '))
+
+    subprocess.run(["/bin/sh", "-c", build_cmd])
+
+
+    print()
+    print("Pushing...")
+
+    subprocess.run(f"docker push {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:latest".split(' '))
+
+
+
+skip_folders = ["common", "__pycache__", "venv"]
+
+
+def walk_directory(root_path: str, pre_categories: list[str]):
+
+    print(f"Walking {root_path}/{'/'.join(pre_categories)}")
+
+    ls = os.listdir(root_path + '/' + '/'.join(pre_categories))
+
+    if "main.py" in ls and "config.py" in ls:
+        process_function_dir(root_path=root_path, pre_categories=pre_categories)
+
+    for sub_folder in ls:
+
+        if sub_folder in skip_folders:
+            continue
+        
+        if not os.path.isdir(root_path + '/' + '/'.join(pre_categories) + '/' + sub_folder):
+            continue
+        
+        walk_directory(root_path=root_path, pre_categories=pre_categories + [sub_folder])
+
+
+
+if __name__ == "__main__":
+    walk_directory("./sdk", [])
