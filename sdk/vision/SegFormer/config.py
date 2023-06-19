@@ -1,13 +1,12 @@
 from pydantic import BaseModel
-from sdk.common.metadata import MetaData, pmodel_to_ports
 from sdk.common.io import Image
+from sdk.common.metadata import MetaData, pmodel_to_ports
 # Metadata
 
 name = "SegFormer"
 description = "Image Segmentation Model"
 version = "1.0"
 category = "Vision"
-task = "Image Segmentation"
 
 class Inputs(BaseModel):
     img : Image
@@ -26,8 +25,11 @@ __meta_data__ = MetaData(
     description=description,
     version=version,
     category=category,
-    task=task,
     inputs=pmodel_to_ports(Inputs), # type: ignore
     params=pmodel_to_ports(Params), # type: ignore
     outputs=pmodel_to_ports(Outputs), # type: ignore
 )
+
+
+if __name__ == "__main__":
+    print(__meta_data__.json(indent=2))
