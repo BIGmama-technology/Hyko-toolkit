@@ -3,11 +3,11 @@ from sdk.common.metadata import MetaData, pmodel_to_ports
 from sdk.common.io import Image
 # Metadata
 
-name = "vit-gpt2-image-captioning"
-description = "This is an image captioning model "
+name = "SegFormer"
+description = "Image Segmentation Model"
 version = "1.0"
 category = "Vision"
-task = "Image Captioning"
+task = "Image Segmentation"
 
 class Inputs(BaseModel):
     img : Image
@@ -17,7 +17,7 @@ class Params(BaseModel):
     pass
 
 class Outputs(BaseModel):
-    text : str
+    img : Image
 
 # Function metadata, should always be here
 
