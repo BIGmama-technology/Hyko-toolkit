@@ -4,10 +4,9 @@ from sdk.common.io import Image
 # Metadata
 
 name = "vit-gpt2-image-captioning"
-description = "This is an image captioning model "
+description = "This is an image captioning model"
 version = "1.0"
 category = "Vision"
-task = "Image Captioning"
 
 class Inputs(BaseModel):
     img : Image
@@ -26,8 +25,11 @@ __meta_data__ = MetaData(
     description=description,
     version=version,
     category=category,
-    task=task,
     inputs=pmodel_to_ports(Inputs), # type: ignore
     params=pmodel_to_ports(Params), # type: ignore
     outputs=pmodel_to_ports(Outputs), # type: ignore
 )
+
+
+if __name__ == "__main__":
+    print(__meta_data__.json(indent=2))
