@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from sdk.common.io import Number
 from sdk.common.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
@@ -15,8 +16,8 @@ category = "Math"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    a: float
-    b: float
+    a: Number
+    b: Number
 
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
@@ -29,7 +30,7 @@ class Params(BaseModel):
 
 # outputs of the function.
 class Outputs(BaseModel):
-    result: float
+    result: Number
 
 
 # Function metadata, should always be here
