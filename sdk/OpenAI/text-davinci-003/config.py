@@ -1,4 +1,6 @@
+from typing import Optional
 from pydantic import BaseModel
+from sdk.common.io import Number, Integer, String
 from sdk.common.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
@@ -15,11 +17,11 @@ category = "OpenAi"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    prompt: str
-    api_key: str
-    max_tokens: int = 100
-    temperature: float = 0.8
-    top_p: float = 0.8
+    prompt: String
+    api_key: String
+    max_tokens: Optional[Integer]
+    temperature: Optional[Number]
+    top_p: Optional[Number]
 
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
@@ -32,7 +34,7 @@ class Params(BaseModel):
 
 # outputs of the function.
 class Outputs(BaseModel):
-    generated_text: str
+    generated_text: String
 
 
 # Function metadata, should always be here
@@ -49,4 +51,4 @@ __meta_data__ = MetaData(
 
 
 if __name__ == "__main__":
-    print(__meta_data__.json())
+    print(__meta_data__.json(indent=2))
