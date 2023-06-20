@@ -10,7 +10,7 @@ def metadata_to_labels(meta: MetaData) -> dict[str, float | int | str | bool]:
     labels["HYKO_SDK_NAME"] = meta.name
     labels["HYKO_SDK_DESCRIPTION"] = meta.description
     labels["HYKO_SDK_VERSION"] = meta.version
-    labels["HYKO_SDK_CATEGORY"] = meta.category
+    # labels["HYKO_SDK_CATEGORY"] = meta.category
 
     i = 0
 
@@ -72,7 +72,7 @@ def process_function_dir(root_path: str, pre_categories: list[str]):
     metadata_process = subprocess.run(f"docker run -it {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '), capture_output=True)
     meta_data = metadata_process.stdout.decode()
     labels = metadata_to_labels(MetaData(**json.loads(meta_data)))
-
+    labels["HYKO_SDK_CATEGORY"] = categories_prefix
 
     print()
     print("Building...")
@@ -98,7 +98,7 @@ def process_function_dir(root_path: str, pre_categories: list[str]):
 
 
 
-skip_folders = ["common", "__pycache__", "venv"]
+skip_folders = ["common", "__pycache__", "venv", "image-captioning", "image-segmentation", "math"]
 
 
 def walk_directory(root_path: str, pre_categories: list[str]):

@@ -1,6 +1,8 @@
 import fastapi
 from .config import Inputs, Params, Outputs
 import openai
+import base64
+import io
 
 app = fastapi.FastAPI()
 
@@ -15,17 +17,21 @@ app = fastapi.FastAPI()
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
 
-    res = await openai.Image.acreate(
-        prompt=inputs.prompt,
-        api_key=inputs.api_key,
-        response_format="b64_json",
-        n=1,
-        size="256x256",
+    meta, data = inputs.audio.split(',', 1)
+
+    file = io.BytesIO(base64.urlsafe_b64decode(data))
+    file.name = "audio.webm"
+
+    res = await openai.Audio.atranscribe(
+        model="whisper-1",
+        file=file,
+        api_key=params.api_key,
+        prompt= inputs.prompt,
+        language=inputs.language,
+        temperature=params.temperature,
     )
 
-    img_encoded = "data:image/png;base64," + res.get("data")[0]["b64_json"] # type: ignore
-
-    return Outputs(generated_image=img_encoded)
+    return Outputs(transcript=res.get("text")) # type: ignore
 
 
 

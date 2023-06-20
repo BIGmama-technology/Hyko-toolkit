@@ -18,10 +18,10 @@ async def main(inputs: Inputs, params: Params):
     res = await openai.Completion.acreate(
         model="text-davinci-003",
         prompt=inputs.prompt,
-        api_key=inputs.api_key,
-        max_tokens=inputs.max_tokens,
-        temperature=inputs.temperature,
-        top_p=inputs.top_p,
+        api_key=params.api_key,
+        max_tokens=params.max_tokens,
+        temperature=params.temperature,
+        top_p=params.top_p,
     )
 
     return Outputs(generated_text=res.get("choices")[0]["text"]) # type: ignore
