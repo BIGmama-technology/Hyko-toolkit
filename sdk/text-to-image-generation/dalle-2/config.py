@@ -1,12 +1,11 @@
-from typing import Optional
-from pydantic import BaseModel
-from sdk.common.io import Number, Integer, String
+from pydantic import BaseModel, Field
+from sdk.common.io import String, Image
 from sdk.common.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
 
-name = "text-davinci-003"
-description = "OpenAi (text-davinci-003)"
+name = "dalle-2"
+description = "OpenAI's Image generation from text prompt"
 version = "1.0"
 category = "OpenAi"
 
@@ -17,11 +16,7 @@ category = "OpenAi"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    prompt: String
-    api_key: String
-    max_tokens: Optional[Integer]
-    temperature: Optional[Number]
-    top_p: Optional[Number]
+    prompt: String = Field(..., description="User text prompt")
 
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
@@ -29,12 +24,12 @@ class Inputs(BaseModel):
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    pass
+    api_key: String = Field(..., description="OpenAI's API KEY")
 
 
 # outputs of the function.
 class Outputs(BaseModel):
-    generated_text: String
+    generated_image: Image = Field(..., description="AI Generated image described by user text prompt")
 
 
 # Function metadata, should always be here

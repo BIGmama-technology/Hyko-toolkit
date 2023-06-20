@@ -1,22 +1,22 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sdk.common.metadata import MetaData, pmodel_to_ports
 from sdk.common.io import Image
 # Metadata
 
 name = "vit-gpt2-image-captioning"
-description = "This is an image captioning model"
+description = "An image captioning model"
 version = "1.0"
 category = "Vision"
 
 class Inputs(BaseModel):
-    img : Image
+    img : Image = Field(..., description="User inputted image to be captionned")
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
     pass
 
 class Outputs(BaseModel):
-    text : str
+    text : str = Field(..., description="Caption of the image inputted by the user")
 
 # Function metadata, should always be here
 
