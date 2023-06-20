@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sdk.common.io import Image
 from sdk.common.metadata import MetaData, pmodel_to_ports
 # Metadata
@@ -9,14 +9,14 @@ version = "1.0"
 category = "Vision"
 
 class Inputs(BaseModel):
-    img : Image
+    img : Image = Field(..., description="User inputted image to be segmented")
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
     pass
 
 class Outputs(BaseModel):
-    img : Image
+    img : Image = Field(..., description="Segmented image")
 
 # Function metadata, should always be here
 
