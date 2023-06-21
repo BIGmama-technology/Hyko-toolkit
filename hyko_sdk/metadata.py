@@ -20,8 +20,10 @@ def pmodel_to_ports(pmodel: BaseModel) -> list[IOPort]:
 
         if field_type == "number":
             port_type = IOPortType.NUMBER
+        
         elif field_type == "integer":
             port_type = IOPortType.INTEGER
+        
         elif field_type == "string":
             string_format = field_props.get("format")
 
@@ -34,6 +36,34 @@ def pmodel_to_ports(pmodel: BaseModel) -> list[IOPort]:
                     port_type = IOPortType.STRING
             else:
                 port_type = IOPortType.STRING
+        
+        elif field_type == "array":
+            try:
+                nested_type = field_props["items"]["type"]
+
+                if nested_type == "number":
+                    port_type = IOPortType.ARRAY_NUMBER
+                elif nested_type == "integer":
+                    port_type = IOPortType.ARRAY_INTEGER
+                elif nested_type == "string":
+                    try:
+                        string_format = field_props["items"]["format"]
+                        
+                        if string_format == "image":
+                            port_type = IOPortType.ARRAY_IMAGE
+                        elif string_format == "audio":
+                            port_type = IOPortType.ARRAY_AUDIO
+                        else:
+                            continue
+
+                    except:
+                        port_type = IOPortType.ARRAY_STRING
+                else:
+                    continue
+        
+            except:
+                continue
+        
         else:
             continue
 
