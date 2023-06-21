@@ -1,5 +1,5 @@
 import fastapi
-from .config import Inputs, Params, Outputs
+from config import Inputs, Params, Outputs
 import openai
 
 app = fastapi.FastAPI()
