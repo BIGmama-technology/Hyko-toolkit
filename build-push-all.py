@@ -1,6 +1,6 @@
 import os
 import subprocess
-from sdk.common.metadata import MetaData
+from hyko_sdk.metadata import MetaData
 import json
 
 
@@ -67,10 +67,11 @@ def process_function_dir(root_path: str, pre_categories: list[str]):
 
 
     print("Building metadata...")
-    subprocess.run(f"docker build --build-arg CATEGORY={categories_prefix} --build-arg FUNCTION_NAME={function_name} --target metadata -t {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata .".split(' '))
+    subprocess.run(f"docker build --target metadata -t {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata ./sdk/{categories_prefix}/{function_name}".split(' '))
 
     metadata_process = subprocess.run(f"docker run -it {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '), capture_output=True)
     meta_data = metadata_process.stdout.decode()
+    print(meta_data)
     labels = metadata_to_labels(MetaData(**json.loads(meta_data)))
     labels["HYKO_SDK_CATEGORY"] = categories_prefix
 
@@ -84,7 +85,7 @@ def process_function_dir(root_path: str, pre_categories: list[str]):
     build_cmd += f"-t {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:latest "
     for label_name, label_val in labels.items():
         build_cmd += f'--label {label_name}="{label_val}" '
-    build_cmd += f"."
+    build_cmd += f"./sdk/{categories_prefix}/{function_name}"
 
     print(build_cmd.split(' '))
 
