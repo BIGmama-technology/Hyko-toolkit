@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
-from sdk.common.io import String, Image
-from sdk.common.metadata import MetaData, pmodel_to_ports
+from hyko_sdk.io import String, Image
+from hyko_sdk.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
 
