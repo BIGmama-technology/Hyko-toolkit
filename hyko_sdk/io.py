@@ -85,6 +85,7 @@ class Image(str):
         field: Optional[ModelField],
     ):
         if field:
+            field_schema["type"] = "string"
             field_schema["format"] = "image"
 
 
@@ -105,6 +106,7 @@ class Audio(str):
         field: Optional[ModelField],
     ):
         if field:
+            field_schema["type"] = "string"
             field_schema["format"] = "audio"
 
 
@@ -115,6 +117,11 @@ class IOPortType(str, Enum):
     STRING = "string"
     IMAGE = "image"
     AUDIO = "audio"
+    ARRAY_NUMBER = "array[number]"
+    ARRAY_INTEGER = "array[integer]"
+    ARRAY_STRING = "array[string]"
+    ARRAY_IMAGE = "array[image]"
+    ARRAY_AUDIO = "array[audio]"
 
 class IOPort(BaseModel):
     name: str
