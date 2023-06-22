@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
-from sdk.common.metadata import MetaData, pmodel_to_ports
-from sdk.common.io import Image
+from hyko_sdk.metadata import MetaData, pmodel_to_ports
+from hyko_sdk.io import Image
 # Metadata
 
 name = "vit-gpt2-image-captioning"
