@@ -1,13 +1,11 @@
 import fastapi
+from fastapi.exceptions import HTTPException
 from config import Inputs, Params, Outputs
 from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
 import torch
-from PIL import Image
-from io import BytesIO
 import base64
 import cv2
 import numpy as np
-
 app = fastapi.FastAPI()
 
 #################################################################
@@ -17,8 +15,8 @@ app = fastapi.FastAPI()
 model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
 feature_extractor = ViTImageProcessor.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
 tokenizer = AutoTokenizer.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cpu")
 model.to(device)
 
 max_length = 16
@@ -31,7 +29,15 @@ gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-    i_image = base64.urlsafe_b64decode(inputs.img)
+    if len(f"{inputs.img}") > 100:
+        print(f"{inputs.img}"[:100])
+    else:
+        print(f"{[inputs.img]}")
+    if len(inputs.img.split(",")) != 2:
+        raise HTTPException(422, "Invalid base64 image. make sure there is both header and data in the base64 string")
+    header, data = inputs.img.split(",")
+    print(header)
+    i_image = base64.urlsafe_b64decode(data)
     npimg = np.frombuffer(i_image, np.uint8)
     cvimg = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     pixel_values = feature_extractor(images=cv2.cvtColor(cvimg, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values
