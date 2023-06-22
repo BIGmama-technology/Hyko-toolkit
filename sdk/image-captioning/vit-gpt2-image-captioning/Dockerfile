@@ -1,4 +1,4 @@
-FROM torch-cuda AS main
+FROM torch-cuda:latest AS main
 
 WORKDIR /app
 COPY requirements.txt .

@@ -1,4 +1,4 @@
-FROM python:3.10 AS main
+FROM hyko-sdk:latest  AS main
 
 WORKDIR /app
 RUN pip install fastapi pydantic uvicorn hyko_sdk

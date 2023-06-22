@@ -1,4 +1,4 @@
-FROM hyko_sdk AS main
+FROM hyko-sdk:latest  AS main
 
 WORKDIR /app
 COPY requirements.txt .
