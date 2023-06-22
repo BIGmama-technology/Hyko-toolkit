@@ -1,4 +1,4 @@
-from .config import Inputs, Outputs, Params
+from config import Inputs, Outputs, Params
 from transformers import AutoImageProcessor, SegformerModel
 import torch
 import base64
