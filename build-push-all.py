@@ -17,7 +17,7 @@ def metadata_to_labels(meta: MetaData) -> dict[str, float | int | str | bool]:
     for inp in meta.inputs:
         labels[f"HYKO_SDK_INPUT_{i}_NAME"] = inp.name
         if inp.description is not None:
-            labels[f"HYKO_SDK_INPUT_{i}_DESC"] = inp.description
+            labels[f"HYKO_SDK_INPUT_{i}_DESCRIPTION"] = inp.description
         labels[f"HYKO_SDK_INPUT_{i}_TYPE"] = inp.type
         labels[f"HYKO_SDK_INPUT_{i}_REQUIRED"] = inp.required
         if inp.default is not None:
@@ -29,7 +29,7 @@ def metadata_to_labels(meta: MetaData) -> dict[str, float | int | str | bool]:
     for param in meta.params:
         labels[f"HYKO_SDK_PARAM_{i}_NAME"] = param.name
         if param.description is not None:
-            labels[f"HYKO_SDK_PARAM_{i}_DESC"] = param.description
+            labels[f"HYKO_SDK_PARAM_{i}_DESCRIPTION"] = param.description
         labels[f"HYKO_SDK_PARAM_{i}_TYPE"] = param.type
         labels[f"HYKO_SDK_PARAM_{i}_REQUIRED"] = param.required
         if param.default is not None:
@@ -41,7 +41,7 @@ def metadata_to_labels(meta: MetaData) -> dict[str, float | int | str | bool]:
     for out in meta.outputs:
         labels[f"HYKO_SDK_OUTPUT_{i}_NAME"] = out.name
         if out.description is not None:
-            labels[f"HYKO_SDK_OUTPUT_{i}_DESC"] = out.description
+            labels[f"HYKO_SDK_OUTPUT_{i}_DESCRIPTION"] = out.description
         labels[f"HYKO_SDK_OUTPUT_{i}_TYPE"] = out.type
         labels[f"HYKO_SDK_OUTPUT_{i}_REQUIRED"] = out.required
         if out.default is not None:
@@ -99,7 +99,7 @@ def process_function_dir(root_path: str, pre_categories: list[str]):
 
 
 
-skip_folders = ["common", "__pycache__", "venv", "math"]
+skip_folders = ["common", "__pycache__", "venv", "math", "image-captioning", "image-segmentation"]
 
 
 def walk_directory(root_path: str, pre_categories: list[str]):
@@ -125,7 +125,7 @@ def walk_directory(root_path: str, pre_categories: list[str]):
 
 if __name__ == "__main__":
 
-    subprocess.run(f"docker build -t hyko-sdk -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
-    subprocess.run(f"docker build -t torch-cuda -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
+    subprocess.run(f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
+    # subprocess.run(f"docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
 
     walk_directory("./sdk", [])

@@ -1,5 +1,5 @@
 import fastapi
-from .config import Inputs, Params, Outputs
+from config import Inputs, Params, Outputs
 from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
 import torch
 from PIL import Image
