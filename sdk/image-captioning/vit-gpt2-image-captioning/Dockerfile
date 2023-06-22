@@ -1,4 +1,4 @@
-FROM hyko_sdk AS main
+FROM torch-cuda AS main
 
 WORKDIR /app
 COPY requirements.txt .

@@ -99,7 +99,7 @@ def process_function_dir(root_path: str, pre_categories: list[str]):
 
 
 
-skip_folders = ["common", "__pycache__", "venv", "image-captioning", "image-segmentation", "math"]
+skip_folders = ["common", "__pycache__", "venv", "math"]
 
 
 def walk_directory(root_path: str, pre_categories: list[str]):
@@ -124,4 +124,8 @@ def walk_directory(root_path: str, pre_categories: list[str]):
 
 
 if __name__ == "__main__":
+
+    subprocess.run(f"docker build -t hyko-sdk -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
+    subprocess.run(f"docker build -t torch-cuda -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
+
     walk_directory("./sdk", [])
