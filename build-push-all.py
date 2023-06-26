@@ -1,10 +1,11 @@
+from typing import Union, Dict, List
 import os
 import subprocess
 from hyko_sdk.metadata import MetaData
 import json
 
 
-def metadata_to_labels(meta: MetaData) -> dict[str, float | int | str | bool]:
+def metadata_to_labels(meta: MetaData) -> Dict[str, Union[float, int, str, bool]]:
     labels = {}
 
     labels["HYKO_SDK_NAME"] = meta.name
@@ -54,7 +55,7 @@ def metadata_to_labels(meta: MetaData) -> dict[str, float | int | str | bool]:
 registry_host = "registry.localhost"
 
 
-def process_function_dir(root_path: str, pre_categories: list[str]):
+def process_function_dir(root_path: str, pre_categories: List[str]):
     
     if len(pre_categories) < 2:
         return
@@ -69,11 +70,15 @@ def process_function_dir(root_path: str, pre_categories: list[str]):
     print("Building metadata...")
     subprocess.run(f"docker build --target metadata -t {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata ./sdk/{categories_prefix}/{function_name}".split(' '))
 
-    metadata_process = subprocess.run(f"docker run -it {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '), capture_output=True)
+    metadata_process = subprocess.run(f"docker run -it --rm {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '), capture_output=True)
     meta_data = metadata_process.stdout.decode()
     print(meta_data)
     labels = metadata_to_labels(MetaData(**json.loads(meta_data)))
     labels["HYKO_SDK_CATEGORY"] = categories_prefix
+
+    print()
+    print("Removing metadata image")
+    subprocess.run(f"docker rmi -f {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '))
 
     print()
     print("Building...")
@@ -102,13 +107,13 @@ def process_function_dir(root_path: str, pre_categories: list[str]):
 skip_folders = ["common", "__pycache__", "venv", "math"]
 
 
-def walk_directory(root_path: str, pre_categories: list[str]):
+def walk_directory(root_path: str, pre_categories: List[str]):
 
     print(f"Walking {root_path}/{'/'.join(pre_categories)}")
 
     ls = os.listdir(root_path + '/' + '/'.join(pre_categories))
 
-    if "main.py" in ls and "config.py" in ls:
+    if "main.py" in ls and "config.py" in ls and "Dockerfile" in ls:
         process_function_dir(root_path=root_path, pre_categories=pre_categories)
 
     for sub_folder in ls:
