@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 import enum
+
 class HykoErrorEnum(str, enum.Enum):
     INVALID_BASE_64 = "INVALID_BASE_64",
     NOT_AN_IMAGE = "NOT_AN_IMAGE"
     NOT_AN_AUDIO = "NOT_AN_AUDIO"
-
 
 class BaseError(BaseModel):
     status: HykoErrorEnum

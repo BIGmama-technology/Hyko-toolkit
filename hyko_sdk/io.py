@@ -1,14 +1,10 @@
 from .error import BaseError, Errors
 from enum import Enum
-from typing import Optional
-from pydantic import BaseModel
-
-from typing import Any, Callable, Dict, Generator, Optional
+from typing import Any, Union, Optional, Tuple, Callable, Dict, Generator
 
 from pydantic import BaseModel
 from pydantic.fields import ModelField
 
-from pydantic import BaseModel
 import numpy as np
 import cv2
 import base64
@@ -92,7 +88,7 @@ class Image(str):
             field_schema["type"] = "string"
             field_schema["format"] = "image"
 
-    def decode(self) -> tuple[np.ndarray | None, BaseError | None]:
+    def decode(self) -> Tuple[Optional[np.ndarray], Optional[BaseError]]:
         if len(self.split(",")) != 2:
             return None, Errors.InvalidBase64
         
@@ -134,7 +130,7 @@ class Audio(str):
             field_schema["type"] = "string"
             field_schema["format"] = "audio"
 
-    def decode(self) -> tuple[np.ndarray | None, AudioMetadata | None, BaseError | None]:
+    def decode(self) -> Tuple[Optional[np.ndarray], Optional[AudioMetadata], Optional[BaseError]]:
         if len(self.split(",")) != 2:
             return None, None ,Errors.InvalidBase64
         
@@ -168,10 +164,10 @@ class IOPort(BaseModel):
     description: Optional[str]
     type: IOPortType
     required: bool
-    default: Optional[float | int | str]
+    default: Optional[Union[float, int, str]]
 
 
-def image_to_base64(image: np.ndarray) -> tuple[Image, BaseError | None]:
+def image_to_base64(image: np.ndarray) -> Tuple[Image, Optional[BaseError]]:
     """
     Takes an RGB pixel data as a numpy array and compress it to png and encode it as base64
     """
