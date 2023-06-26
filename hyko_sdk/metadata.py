@@ -1,14 +1,14 @@
 from pydantic import BaseModel
-from typing import Any
+from typing import Any, List, Optional
 from .io import IOPortType, IOPort
 
 
-def pmodel_to_ports(pmodel: BaseModel) -> list[IOPort]:
+def pmodel_to_ports(pmodel: BaseModel) -> List[IOPort]:
     
     schema = pmodel.schema()
 
     fields_properties: dict[str, dict[str, Any]] = schema["properties"]
-    required_fields: list[str] | None = schema.get("required")
+    required_fields: Optional[List[str]] = schema.get("required")
 
     ports = []
     
@@ -87,6 +87,6 @@ class MetaData(BaseModel):
     description: str
     version: str
     category: str
-    inputs: list[IOPort]
-    outputs: list[IOPort]
-    params: list[IOPort]
+    inputs: List[IOPort]
+    outputs: List[IOPort]
+    params: List[IOPort]
