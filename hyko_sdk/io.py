@@ -9,6 +9,7 @@ import numpy as np
 import cv2
 import base64
 import ffmpeg
+import os
 
 
 class Number(float):
@@ -140,9 +141,11 @@ class Audio(str):
         base64_bytes = base64.b64decode(data)
         with open("audio.webm", "wb") as f:
             f.write(base64_bytes)
+        if os.path.exists("audio.wav"):
+            os.remove("audio.wav")
         ffmpeg.input("audio.webm").output("audio.wav").run()
-
-        meta_data: dict = ffmpeg.probe("audio.wav")
+        
+        meta_data: dict = ffmpeg.probe("audio.wav")["streams"]
         with open("audio.wav", "rb") as f:
             audio = f.read()
         return np.frombuffer(audio, dtype=np.uint8), AudioMetadata(**meta_data), None
