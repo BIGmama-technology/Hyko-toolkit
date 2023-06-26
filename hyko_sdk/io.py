@@ -145,7 +145,7 @@ class Audio(str):
         meta_data: dict = ffmpeg.probe("audio.wav")
         with open("audio.wav", "rb") as f:
             audio = f.read()
-        return np.frombuffer(audio, dtype=np.float64), AudioMetadata(**meta_data), None
+        return np.frombuffer(audio), AudioMetadata(**meta_data), None
 # Keep the same
 class IOPortType(str, Enum):
     NUMBER = "number"
