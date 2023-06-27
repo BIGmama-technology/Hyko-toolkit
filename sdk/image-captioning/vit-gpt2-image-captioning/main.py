@@ -29,18 +29,13 @@ gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-    if len(f"{inputs.img}") > 100:
-        print(f"{inputs.img}"[:100])
-    else:
-        print(f"{[inputs.img]}")
-    if len(inputs.img.split(",")) != 2:
-        raise HTTPException(422, "Invalid base64 image. make sure there is both header and data in the base64 string")
-    header, data = inputs.img.split(",")
-    print(header)
-    i_image = base64.urlsafe_b64decode(data)
-    npimg = np.frombuffer(i_image, np.uint8)
-    cvimg = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-    pixel_values = feature_extractor(images=cv2.cvtColor(cvimg, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values
+    
+    img, err = inputs.img.decode()
+    if err:
+        raise HTTPException(status_code=500, detail=err.json())
+    
+    
+    pixel_values = feature_extractor(images=cv2.cvtColor(img, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values
     pixel_values = pixel_values.to(device)
     output_ids = model.generate(pixel_values, **gen_kwargs)
     preds = tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0].strip()

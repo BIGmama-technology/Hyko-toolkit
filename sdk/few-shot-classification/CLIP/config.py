@@ -1,7 +1,7 @@
 from pydantic import BaseModel
-from sdk.common.metadata import MetaData, pmodel_to_ports
-from sdk.common.io import Image, String
-from typing import Union, List
+from hyko_sdk.metadata import MetaData, pmodel_to_ports
+from hyko_sdk.io import Image, String
+from typing import List
 
 # Metadata
 
@@ -32,8 +32,10 @@ __meta_data__ = MetaData(
     description=description,
     version=version,
     category=category,
-    task=task,
     inputs=pmodel_to_ports(Inputs),  # type: ignore
     params=pmodel_to_ports(Params),  # type: ignore
     outputs=pmodel_to_ports(Outputs),  # type: ignore
 )
+
+if __name__ == "__main__":
+    print(__meta_data__.json(indent=2))
