@@ -1,14 +1,13 @@
-from typing import Optional
-from pydantic import BaseModel, Field
-from hyko_sdk.io import Number, String, Audio
+from pydantic import BaseModel
+from hyko_sdk.io import String
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
 
-name = "whisper-1"
-description = "OpenAI's Audio transcription"
+name = "Split"
+description = "Split a string to a list of strings based on delimiter"
 version = "1.0"
-category = "OpenAi"
+category = "utils/string"
 
 ##############################################
 
@@ -17,10 +16,7 @@ category = "OpenAi"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    audio: Audio = Field(..., description="User audio input to be transcribed")
-    prompt: Optional[String] = Field(..., description="User additional text prompt")
-    language: Optional[String] = Field(..., description="User specified language")
-
+    text: String
 
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
@@ -28,13 +24,12 @@ class Inputs(BaseModel):
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    api_key: String = Field(..., description="OpenAI's API KEY")
-    temperature: Optional[Number] = Field(..., description="Whisper's temperature")
+    delimeter: String
 
 
 # outputs of the function.
 class Outputs(BaseModel):
-    transcript: String = Field(..., description="Transcript of the audio inputted by the user")
+    splitted: list[String]
 
 
 # Function metadata, should always be here

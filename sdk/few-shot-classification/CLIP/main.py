@@ -1,10 +1,8 @@
-from .config import Inputs, Outputs, Params
+from config import Inputs, Outputs, Params
 import fastapi
-from PIL import Image
+from fastapi.exceptions import HTTPException
 from transformers import CLIPProcessor, CLIPModel
 import cv2
-import base64
-import numpy as np
 import torch
 
 app = fastapi.FastAPI()
@@ -14,13 +12,15 @@ processor = CLIPProcessor.from_pretrained("openai/clip-vit-large-patch14")
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
     prompt = inputs.classes
-    i_image = base64.urlsafe_b64decode(inputs.img)
-    npimg = np.frombuffer(i_image, np.uint8)
-    cvimg = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-    cv2.imwrite("Example_image.png", cvimg)
+    img, err = inputs.img.decode()
+    if err:
+        raise HTTPException(status_code = 500, detail = err.json())
+    if img is None:
+        raise HTTPException(status_code = 500, detail = "Unexpected Error")
+    
     inputs_ = processor(
         text=prompt,
-        images=cv2.cvtColor(cvimg, cv2.COLOR_BGR2RGB),
+        images=cv2.cvtColor(img, cv2.COLOR_BGR2RGB),
         return_tensors="pt",
         padding=True,
     )
