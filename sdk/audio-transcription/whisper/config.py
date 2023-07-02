@@ -6,7 +6,7 @@ from typing import List
 # Metadata
 
 name = "Whisper"
-description = "OpenAI's Whisper"
+description = "OpenAI's Audio Transcription (Non API)"
 version = "1.0"
 category = "Speech recognition"
 task = "Speech to text translation"
@@ -32,7 +32,6 @@ __meta_data__ = MetaData(
     description=description,
     version=version,
     category=category,
-    task=task,
     inputs=pmodel_to_ports(Inputs),  # type: ignore
     params=pmodel_to_ports(Params),  # type: ignore
     outputs=pmodel_to_ports(Outputs),  # type: ignore

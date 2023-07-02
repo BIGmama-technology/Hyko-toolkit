@@ -1,6 +1,6 @@
 from .error import BaseError, Errors
 from enum import Enum
-from typing import Any, Union, Optional, Tuple, Callable, Dict, Generator
+from typing import Any, Union, Optional, Tuple, Callable, Dict, Generator, List
 
 from pydantic import BaseModel
 from pydantic.fields import ModelField
@@ -8,9 +8,27 @@ from pydantic.fields import ModelField
 import numpy as np
 import cv2
 import base64
-import ffmpeg
+import torchaudio
 import os
+import subprocess
 
+class Boolean(int):
+    @classmethod    
+    def __get_validators__(cls) -> Generator[Callable, None, None]:
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, value: str, values, config, field):
+        return cls(value)
+
+    @classmethod
+    def __modify_schema__(
+        cls,
+        field_schema: Dict[str, Any],
+        field: Optional[ModelField],
+    ):
+        if field:
+            field_schema["type"] = "boolean"
 
 class Number(float):
 
@@ -77,7 +95,7 @@ class Image(str):
 
     @classmethod
     def validate(cls, value: str, values, config, field):
-        return value
+        return cls(value)
 
     @classmethod
     def __modify_schema__(
@@ -102,15 +120,6 @@ class Image(str):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         return img, None
     
-
-class AudioMetadata(BaseModel):
-    sample_rate: int
-    duration: float
-    bit_rate: int
-    channels: int
-    bits_per_sample: int
-    bit_rate: int
-
 class Audio(str):
 
     @classmethod
@@ -119,7 +128,7 @@ class Audio(str):
 
     @classmethod
     def validate(cls, value: str, values, config, field):
-        return value
+        return cls(value)
 
     @classmethod
     def __modify_schema__(
@@ -131,26 +140,31 @@ class Audio(str):
             field_schema["type"] = "string"
             field_schema["format"] = "audio"
 
-    def decode(self) -> Tuple[Optional[np.ndarray], Optional[AudioMetadata], Optional[BaseError]]:
+    def decode(self, sampling_rate: Optional[int]  = None) -> Tuple[Optional[np.ndarray], Optional[int], Optional[BaseError]]:
         if len(self.split(",")) != 2:
             return None, None ,Errors.InvalidBase64
         
         header, data = self.split(",")
-        if not ("audio" in header):
+        if not ("audio" in header) or not ("webm" in header):
             return None, None, Errors.Base64NotAnAudio
         base64_bytes = base64.b64decode(data)
         with open("audio.webm", "wb") as f:
             f.write(base64_bytes)
         if os.path.exists("audio.wav"):
             os.remove("audio.wav")
-        ffmpeg.input("audio.webm").output("audio.wav").run()
+        if sampling_rate:
+            subprocess.run(f"ffmpeg -i audio.webm -ac 1 -ar {sampling_rate} -c:a libmp3lame -q:a 9 audio.wav".split(" "))
+        else:
+            subprocess.run(f"ffmpeg -i audio.webm -o audio.wav".split(" "))
         
-        meta_data: dict = ffmpeg.probe("audio.wav")["streams"]
-        with open("audio.wav", "rb") as f:
-            audio = f.read()
-        return np.frombuffer(audio, dtype=np.uint8), AudioMetadata(**meta_data), None
+
+        waveform, sample_rate = torchaudio.load("audio.wav")
+        return waveform.numpy()[0], sample_rate, None
+    
+    
 # Keep the same
 class IOPortType(str, Enum):
+    BOOLEAN = "boolean"
     NUMBER = "number"
     INTEGER = "integer"
     STRING = "string"
@@ -179,3 +193,4 @@ def image_to_base64(image: np.ndarray) -> Tuple[Image, Optional[BaseError]]:
     data = base64.b64encode(image.tobytes())
     img = Image("data:image/png;base64," + data.decode())
     return img, None
+

@@ -1,8 +1,7 @@
 from config import Inputs, Outputs, Params, Audio
 import fastapi
-from transformers import WhisperProcessor, WhisperForConditionalGeneration, audio_utils
+from transformers import WhisperProcessor, WhisperForConditionalGeneration
 import torch
-import torchaudio
 
 app = fastapi.FastAPI()
 
@@ -13,13 +12,10 @@ model.config.forced_decoder_ids = None
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-    _, metadata, err_ = Audio(inputs.input_audio).decode(sampling_rate = 16_000)
+    waveform, sample_rate, err_ = Audio(inputs.input_audio).decode(sampling_rate = 16_000)
     if err_:
         raise fastapi.HTTPException(status_code=500, detail=err_.json())
     
-    waveform, sample_rate = torchaudio.load("audio.wav")
-    waveform = waveform.numpy()[0]
-
     input_features = processor.feature_extractor(
         waveform, sampling_rate=16_000, return_tensors="pt"
     ).input_features 
