@@ -27,5 +27,5 @@ async def main(inputs: Inputs, params: Params):
     prompt = inputs.input_prompt
     images = model_pipeline(prompt).images
     output_image_arr = np.asarray(images[0])
-    images[0].save("StableDiff-Test.png")
+    # images[0].save("StableDiff-Test.png")
     return Outputs(generated_image = image_to_base64(output_image_arr))
