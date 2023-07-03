@@ -3,8 +3,8 @@ from hyko_sdk.metadata import MetaData, pmodel_to_ports
 from hyko_sdk.io import Image
 # Metadata
 
-name = "vit-gpt2-image-captioning"
-description = "An image captioning model"
+name = "Stable Diffusion 1.5"
+description = "Text to image generation model"
 version = "1.0"
 category = "Vision"
 
