@@ -12,7 +12,6 @@ import soundfile
 import os
 import subprocess
 import io
-
 class Boolean(int):
     @classmethod    
     def __get_validators__(cls) -> Generator[Callable, None, None]:
@@ -115,10 +114,12 @@ class Image(str):
         header, data = self.split(",")
         if not ("image" in header):
             return None, Errors.Base64NotAnImage
+        
         base64_bytes = base64.b64decode(data)
         img_bytes_io = io.BytesIO(base64_bytes)
         img = PIL_Image.open(img_bytes_io)
-        return np.asarray(img), None
+        img = np.asarray(img)
+        return img, None
     
 
 
@@ -163,6 +164,9 @@ class Audio(str):
         if not ("audio" in header) and not ("webm" in header):
             return None, None, Errors.Base64NotAnAudio
         base64_bytes = base64.b64decode(data)
+
+        if os.path.exists("audio.webm"):
+            os.remove("audio.webm")
         with open("audio.webm", "wb") as f:
             f.write(base64_bytes)
         if os.path.exists("audio.wav"):
@@ -170,7 +174,7 @@ class Audio(str):
         if sampling_rate:
             subprocess.run(f"ffmpeg -i audio.webm -ac 1 -ar {sampling_rate} -c:a libmp3lame -q:a 9 audio.wav".split(" "))
         else:
-            subprocess.run(f"ffmpeg -i audio.webm -o audio.wav".split(" "))
+            subprocess.run(f"ffmpeg -i audio.webm audio.wav".split(" "))
         
         with soundfile.SoundFile("audio.wav", "r") as file_:
             if file_.format != "WAV" or normalize:
@@ -208,13 +212,28 @@ class IOPort(BaseModel):
     default: Optional[Union[float, int, str]]
 
 
-def image_to_base64(image: np.ndarray) -> Tuple[Image, Optional[BaseError]]:
+def image_to_base64(image: np.ndarray) -> Image:
     """
     Takes an RGB pixel data as a numpy array and compress it to png and encode it as base64
     """
-    ret, image = cv2.imencode(".png", image)
-    
-    data = base64.b64encode(image.tobytes())
+    img = PIL_Image.fromarray(image) 
+    img.save("image.png")
+    with open("image.png", "rb") as f:
+        data = f.read()
+    data = base64.b64encode(data)
     img = Image("data:image/png;base64," + data.decode())
-    return img, None
+    return img
 
+def audio_to_base64(audio: np.ndarray, sample_rate: int) -> Audio:
+    if os.path.exists("audio.wav"):
+        os.remove("audio.wav")
+    soundfile.write("audio.wav", audio, sample_rate)
+
+    if os.path.exists("audio.webm"):
+        os.remove("audio.webm")
+    subprocess.run(f"ffmpeg -i audio.wav audio.webm".split(" "))
+    with open("audio.webm", "rb") as f:
+        data = f.read()
+    data = base64.b64encode(data)
+    audio = Image("data:video/webm;base64," + data.decode())
+    return audio
