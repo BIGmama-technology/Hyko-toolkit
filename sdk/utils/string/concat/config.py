@@ -19,7 +19,6 @@ class Inputs(BaseModel):
     first: String
     second: String
 
-
 # runtime means when the prototype is generated and deployed for the user (ui and all)
 
 
