@@ -1,11 +1,10 @@
-FROM torch-cuda:latest AS main
+FROM hyko-sdk:latest  AS main
 
 WORKDIR /app
+RUN pip install fastapi pydantic uvicorn hyko_sdk
 COPY requirements.txt .
 
 RUN pip install -r /app/requirements.txt
-
-RUN python -c "from transformers import AutoImageProcessor, SegformerModel;image_processor = AutoImageProcessor.from_pretrained("nvidia/mit-b0");model = SegformerModel.from_pretrained("nvidia/mit-b0")"
 
 COPY main.py .
 COPY config.py .
