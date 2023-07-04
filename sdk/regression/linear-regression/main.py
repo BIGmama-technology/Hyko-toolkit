@@ -1,6 +1,5 @@
-from config import Inputs, Outputs, Params, Audio
+from config import Inputs, Outputs, Params
 import fastapi
-from typing import Union
 from sklearn.linear_model import LinearRegression
 import numpy as np
 

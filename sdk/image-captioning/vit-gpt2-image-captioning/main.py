@@ -30,11 +30,7 @@ gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
     
-    img, err = inputs.img.decode()
-    if err:
-        raise HTTPException(status_code=500, detail=err.json())
-    
-    
+    img = inputs.img.decode()
     pixel_values = feature_extractor(images=cv2.cvtColor(img, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values
     pixel_values = pixel_values.to(device)
     output_ids = model.generate(pixel_values, **gen_kwargs)
