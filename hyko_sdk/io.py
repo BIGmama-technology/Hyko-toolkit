@@ -12,6 +12,8 @@ import soundfile
 import os
 import subprocess
 import io
+from fastapi import HTTPException
+
 class Boolean(int):
     @classmethod    
     def __get_validators__(cls) -> Generator[Callable, None, None]:
@@ -107,19 +109,19 @@ class Image(str):
             field_schema["type"] = "string"
             field_schema["format"] = "image"
 
-    def decode(self) -> Tuple[Optional[np.ndarray], Optional[BaseError]]:
+    def decode(self) -> np.ndarray:
         if len(self.split(",")) != 2:
-            return None, Errors.InvalidBase64
+            raise HTTPException(status_code=500, detail=Errors.InvalidBase64.json())
         
         header, data = self.split(",")
         if not ("image" in header):
-            return None, Errors.Base64NotAnImage
+            raise HTTPException(status_code=500, detail=Errors.Base64NotAnImage.json())
         
         base64_bytes = base64.b64decode(data)
         img_bytes_io = io.BytesIO(base64_bytes)
         img = PIL_Image.open(img_bytes_io)
         img = np.asarray(img)
-        return img, None
+        return img
     
 
 
@@ -155,14 +157,14 @@ class Audio(str):
     def decode(self, sampling_rate: Optional[int] = None, 
             normalize: bool = True,     
             frame_offset: int = 0,
-            num_frames: int = -1,) -> Tuple[Optional[np.ndarray], Optional[int], Optional[BaseError]]:
+            num_frames: int = -1,) -> Tuple[np.ndarray, int]:
         
         if len(self.split(",")) != 2:
-            return None, None ,Errors.InvalidBase64
+            raise HTTPException(status_code=500, detail=Errors.InvalidBase64.json())
         
         header, data = self.split(",")
         if not ("audio" in header) and not ("webm" in header):
-            return None, None, Errors.Base64NotAnAudio
+            raise HTTPException(status_code=500, detail=Errors.Base64NotAnAudio.json())
         base64_bytes = base64.b64decode(data)
 
         if os.path.exists("audio.webm"):
@@ -187,8 +189,27 @@ class Audio(str):
             frames = file_._prepare_read(frame_offset, None, num_frames)
             waveform: np.ndarray = file_.read(frames, dtype, always_2d=True)
             sample_rate: int = file_.samplerate
-            return waveform, sample_rate, None
-    
+            return waveform, sample_rate
+        
+class Video(str):
+
+    @classmethod
+    def __get_validators__(cls) -> Generator[Callable, None, None]:
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, value: str, values, config, field):
+        return cls(value)
+
+    @classmethod
+    def __modify_schema__(
+        cls,
+        field_schema: Dict[str, Any],
+        field: Optional[ModelField],
+    ):
+        if field:
+            field_schema["type"] = "string"
+            field_schema["format"] = "video"
     
 # Keep the same
 class IOPortType(str, Enum):
@@ -198,6 +219,7 @@ class IOPortType(str, Enum):
     STRING = "string"
     IMAGE = "image"
     AUDIO = "audio"
+    VIDEO = "video"
     ARRAY_NUMBER = "array[number]"
     ARRAY_INTEGER = "array[integer]"
     ARRAY_STRING = "array[string]"
@@ -235,5 +257,5 @@ def audio_to_base64(audio: np.ndarray, sample_rate: int) -> Audio:
     with open("audio.webm", "rb") as f:
         data = f.read()
     data = base64.b64encode(data)
-    audio = Image("data:video/webm;base64," + data.decode())
-    return audio
+    audio_ = Audio("data:video/webm;base64," + data.decode())
+    return audio_

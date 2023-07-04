@@ -40,12 +40,8 @@ model.config.forced_decoder_ids = None
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-    waveform, sample_rate, err_ = Audio(inputs.input_audio).decode(sampling_rate=16_000)
-    if err_:
-        raise fastapi.HTTPException(status_code=500, detail=err_.json())
-
-    waveform, sample_rate = torchaudio.load("audio.wav")
-    waveform = waveform.numpy()[0]
+    waveform, sample_rate = Audio(inputs.input_audio).decode(sampling_rate=16_000)
+    waveform = waveform[0]
 
     input_features = processor.feature_extractor(
         waveform, sampling_rate=16_000, return_tensors="pt"

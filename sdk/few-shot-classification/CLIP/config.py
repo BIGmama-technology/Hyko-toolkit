@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
 from hyko_sdk.io import Image, String
 from typing import List
@@ -13,8 +13,8 @@ task = "Classifies Image content to one of items in List[classes : list[str]]"
 
 
 class Inputs(BaseModel):
-    img: Image
-    classes: List[String]
+    img: Image = Field(..., description="Image input by user to be classified")
+    classes: List[String] = Field(..., description="List of classes to classify the input image on")
 
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
@@ -23,8 +23,7 @@ class Params(BaseModel):
 
 
 class Outputs(BaseModel):
-    probs: List[float]
-
+    output_class: String = Field(..., description="The class of the image")
 # Function metadata, should always be here
 
 __meta_data__ = MetaData(

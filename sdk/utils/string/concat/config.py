@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from hyko_sdk.io import String
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
 
@@ -16,8 +16,8 @@ category = "utils/string"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    first: String
-    second: String
+    first: String = Field(..., description="First string to concat")
+    second: String = Field(..., description="Second string to concat")
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
 
@@ -29,7 +29,7 @@ class Params(BaseModel):
 
 # outputs of the function.
 class Outputs(BaseModel):
-    output: String
+    output: String = Field(..., description="First + Second concatenated")
 
 
 # Function metadata, should always be here
