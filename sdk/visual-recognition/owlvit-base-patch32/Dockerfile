@@ -5,7 +5,7 @@ COPY requirements.txt .
 
 RUN pip install -r /app/requirements.txt
 
-RUN python -c "from transformers import AutoImageProcessor, SegformerModel;image_processor = AutoImageProcessor.from_pretrained('nvidia/mit-b0');model = SegformerModel.from_pretrained('nvidia/mit-b0')"
+RUN python -c "from transformers import OwlViTProcessor, OwlViTForObjectDetection;OwlViTProcessor.from_pretrained('google/owlvit-base-patch32');OwlViTForObjectDetection.from_pretrained('google/owlvit-base-patch32');"
 
 COPY main.py .
 COPY config.py .
