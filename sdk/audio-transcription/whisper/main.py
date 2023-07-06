@@ -14,7 +14,7 @@ device : torch.device = torch.device("cpu")
 def set_device():
     global device
     if torch.cuda.is_available():
-        device = torch.device("cuda")
+        device = torch.device("cuda:1")
     else:
         device = torch.device("cpu")
 
@@ -41,7 +41,6 @@ model.config.forced_decoder_ids = None
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
     waveform, sample_rate = Audio(inputs.input_audio).decode(sampling_rate=16_000)
-    waveform = waveform[0]
 
     input_features = processor.feature_extractor(
         waveform, sampling_rate=16_000, return_tensors="pt"
