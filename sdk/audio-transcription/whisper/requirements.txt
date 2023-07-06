@@ -19,7 +19,6 @@ httpcore==0.17.2
 httptools==0.5.0
 httpx==0.24.1
 huggingface-hub==0.15.1
-hyko-sdk==0.1.8
 idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
