@@ -174,9 +174,9 @@ class Audio(str):
         if os.path.exists("audio.wav"):
             os.remove("audio.wav")
         if sampling_rate:
-            subprocess.run(f"ffmpeg -i audio.webm -ac 1 -ar {sampling_rate} -c:a libmp3lame -q:a 9 audio.wav".split(" "))
+            subprocess.run(f"ffmpeg -i audio.webm -ac 1 -ar {sampling_rate} audio.wav -y".split(" "))
         else:
-            subprocess.run(f"ffmpeg -i audio.webm audio.wav".split(" "))
+            subprocess.run(f"ffmpeg -i audio.webm audio.wav -y".split(" "))
         
         with soundfile.SoundFile("audio.wav", "r") as file_:
             if file_.format != "WAV" or normalize:
@@ -189,7 +189,7 @@ class Audio(str):
             frames = file_._prepare_read(frame_offset, None, num_frames)
             waveform: np.ndarray = file_.read(frames, dtype, always_2d=True)
             sample_rate: int = file_.samplerate
-            return waveform, sample_rate
+            return waveform.reshape((waveform.shape[0])), sample_rate
         
 class Video(str):
 
@@ -253,7 +253,7 @@ def audio_to_base64(audio: np.ndarray, sample_rate: int) -> Audio:
 
     if os.path.exists("audio.webm"):
         os.remove("audio.webm")
-    subprocess.run(f"ffmpeg -i audio.wav audio.webm".split(" "))
+    subprocess.run(f"ffmpeg -i audio.wav audio.webm -y".split(" "))
     with open("audio.webm", "rb") as f:
         data = f.read()
     data = base64.b64encode(data)
