@@ -19,7 +19,7 @@ class Params(BaseModel):
     pass
 
 class Outputs(BaseModel):
-    bbox_tag_dict: None = Field(..., description="Caption of the image inputted by the user")
+    output_image: Image = Field(..., description="Input image + detection bounding Boxes")
 
 # Function metadata, should always be here
 
