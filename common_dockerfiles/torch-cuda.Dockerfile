@@ -1,4 +1,4 @@
-FROM hyko-sdk:latest
+FROM python:3.10-slim
 RUN apt update && apt install build-essential -y && rm -rf /var/lib/apt/lists/* && pip install transformers[all] torch --no-cache-dir
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-glx \

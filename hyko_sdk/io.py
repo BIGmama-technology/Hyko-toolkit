@@ -109,7 +109,7 @@ class Image(str):
             field_schema["type"] = "string"
             field_schema["format"] = "image"
 
-    def decode(self) -> np.ndarray:
+    def decode(self, keep_alpha_if_png = False) -> np.ndarray:
         if len(self.split(",")) != 2:
             raise HTTPException(status_code=500, detail=Errors.InvalidBase64.json())
         
@@ -121,7 +121,9 @@ class Image(str):
         img_bytes_io = io.BytesIO(base64_bytes)
         img = PIL_Image.open(img_bytes_io)
         img = np.asarray(img)
-        return img
+        if keep_alpha_if_png:
+            return img
+        return img[...,:3]
     
 
 
