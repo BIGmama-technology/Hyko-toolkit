@@ -21,26 +21,31 @@ async def main(inputs: Inputs, params: Params):
     if len(inputs.video.split(",")) != 2:
         raise HTTPException(status_code=500, detail=error.Errors.InvalidBase64)    
     header, data = inputs.video.split(",")
-    if not ("video" in header) and not ("webm" in header):
+    # data:image/png;base64
+    try:
+        file_format = header.split("/")[1].split(";")[0]
+        print(file_format)
+    except:
         raise HTTPException(status_code=500, detail=error.Errors.InvalidBase64)  
+
+    # if not ("video" in header) and not ("webm" in header):
+    #     raise HTTPException(status_code=500, detail=error.Errors.InvalidBase64)  
+
+
+
+
     base64_bytes = base64.b64decode(data)
 
-    if os.path.exists("video.webm"):
-        os.remove("video.webm")
-    with open("video.webm", "wb") as f:
+    with open(f"/app/video.{file_format}", "wb") as f:
         f.write(base64_bytes)
-    if os.path.exists("audio.webm"):
-        os.remove("audio.webm")
 
-    if os.path.exists("audio.wav"):
-        os.remove("audio.wav")
-    subprocess.run("ffmpeg -i video.webm audio.wav")
-    subprocess.run("ffmpeg -i audio.wav audio.webm")
+    subprocess.run(f"ffmpeg -i /app/video.{file_format} /app/audio.mp3 -y".split(" "))
+    subprocess.run("ffmpeg -i /app/audio.mp3 /app/audio.webm -y".split(" "))
 
     with open("audio.webm", "rb") as f:
         data = f.read()
-
-    audio = "data:video/webm;base64" + data.decode()
+    data = base64.b64encode(data)
+    audio = "data:video/webm;base64," + data.decode()
     return Outputs(audio=io.Audio(audio))
 
 
