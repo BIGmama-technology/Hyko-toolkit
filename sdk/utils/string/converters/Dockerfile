@@ -1,8 +1,7 @@
 FROM hyko-sdk:latest  AS main
 
 WORKDIR /app
-RUN pip install fastapi pydantic uvicorn
-RUN pip install hyko_sdk==0.1.24
+
 COPY requirements.txt .
 
 RUN pip install -r /app/requirements.txt

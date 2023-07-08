@@ -55,6 +55,8 @@ def pmodel_to_ports(pmodel: BaseModel) -> List[IOPort]:
                             port_type = IOPortType.ARRAY_IMAGE
                         elif string_format == "audio":
                             port_type = IOPortType.ARRAY_AUDIO
+                        elif string_format == "video":
+                            port_type = IOPortType.VIDEO
                         else:
                             continue
 
