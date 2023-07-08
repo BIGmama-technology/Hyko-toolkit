@@ -1,4 +1,4 @@
-FROM torch-cuda:latest AS build
+FROM hyko-sdk-gpu:latest AS build
 
 WORKDIR /app
 COPY requirements.txt .

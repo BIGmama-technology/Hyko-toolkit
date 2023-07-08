@@ -1,4 +1,4 @@
-FROM torch-cuda:latest AS main
+FROM hyko-sdk-gpu:latest AS build
 
 WORKDIR /app
 COPY requirements.txt .
@@ -7,6 +7,7 @@ RUN pip install -r /app/requirements.txt
 
 RUN python -c "from transformers import CLIPModel, CLIPProcessor;CLIPModel.from_pretrained('openai/clip-vit-large-patch14');processor = CLIPProcessor.from_pretrained('openai/clip-vit-large-patch14')"
 
+FROM build as main 
 
 COPY main.py .
 COPY config.py .

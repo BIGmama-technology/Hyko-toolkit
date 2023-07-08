@@ -1,4 +1,4 @@
-from config import Inputs, Outputs, Params
+from config import Inputs, Outputs, Params, Number
 import fastapi
 from sklearn.linear_model import LinearRegression
 import numpy as np
@@ -17,4 +17,4 @@ async def main(inputs: Inputs, params: Params):
     linear_regression.fit(X, Y)
     output = linear_regression.predict([[inputs.input_sample]])
 
-    return Outputs(prediction=output)
+    return Outputs(prediction=Number(output))

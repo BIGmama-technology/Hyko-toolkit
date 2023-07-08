@@ -130,7 +130,8 @@ def walk_directory(root_path: str, pre_categories: List[str]):
 
 if __name__ == "__main__":
 
-    subprocess.run(f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
     subprocess.run(f"docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
+    subprocess.run(f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
+    subprocess.run(f"docker build -t hyko-sdk-gpu:latest -f common_dockerfiles/hyko-sdk-gpu.Dockerfile .".split(" "))
 
     walk_directory("./sdk", [])
