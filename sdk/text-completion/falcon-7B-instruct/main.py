@@ -1,11 +1,7 @@
 import fastapi
-from fastapi.exceptions import HTTPException
 from config import Inputs, Params, Outputs
 import torch
-import base64
-import numpy as np
-import PIL
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer
 import transformers
 
 device : torch.device 
