@@ -35,10 +35,6 @@ async def main(inputs: Inputs, params: Params):
         outputs = model(**inputs)
     
     target_sizes = torch.Tensor([torch.from_numpy(np.asarray(img)).size()[::-1]]).to(torch.int32).squeeze()[1:].to("cuda")
-    
-    # print("Target Sizes: ", target_sizes)
-    # print("Logits", outputs.logits.shape)
-    # print("boxes", outputs.pred_boxes.shape)
 
     results = processor.post_process(outputs=outputs, target_sizes=torch.stack([target_sizes]))
     # text = inputs.tags
@@ -60,5 +56,4 @@ async def main(inputs: Inputs, params: Params):
         xmin, ymin, xmax, ymax = detection["location"]
         draw.rectangle((xmin+80, ymin, xmax+80, ymax), outline="red", width=1)
         draw.text(detection["location"][:2], f"{detection['label']}: {detection['confidence']}", fill="red")
-
     return Outputs(output_image=image_to_base64(np.asarray(img)))
