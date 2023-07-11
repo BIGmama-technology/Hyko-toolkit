@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from hyko_sdk.io import String
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-
+from typing import List
 # Change Meta data here:#####################
 
 name = "Split"
@@ -29,7 +29,7 @@ class Params(BaseModel):
 
 # outputs of the function.
 class Outputs(BaseModel):
-    splitted: list[String]
+    splitted: List[String]
 
 
 # Function metadata, should always be here
