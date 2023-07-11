@@ -22,7 +22,7 @@ pipeline = transformers.pipeline(
     tokenizer=tokenizer,
     torch_dtype=torch.bfloat16,
     trust_remote_code=True,
-    device_map="auto",
+    device_map='auto'
 )
 
 @app.post("/", response_model=Outputs)
