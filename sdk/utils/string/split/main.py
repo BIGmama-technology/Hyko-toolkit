@@ -1,5 +1,5 @@
 import fastapi
-from config import Inputs, Params, Outputs
+from config import Inputs, Params, Outputs, String
 
 app = fastapi.FastAPI()
 
@@ -13,7 +13,10 @@ app = fastapi.FastAPI()
 # should always return Outputs.
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-    return Outputs(splitted=inputs.text.split(params.delimeter))
+    res = []
+    for s in inputs.text.split(params.delimeter):
+        res.append(String(s))
+    return Outputs(splitted=res)
 
 
 ##############################################################################################################
