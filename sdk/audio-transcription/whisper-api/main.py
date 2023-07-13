@@ -27,7 +27,7 @@ async def main(inputs: Inputs, params: Params):
         file=file,
         api_key=params.api_key,
         prompt= inputs.prompt,
-        language=inputs.language,
+        language=params.language,
         temperature=params.temperature,
     )
 

@@ -27,7 +27,7 @@ class Inputs(BaseModel):
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    language: Optional[String] = Field(default='english', description="User specified language")
+    language: Optional[String] = Field(default='en', description="ISO-639-1 transcribtion language")
     api_key: String = Field(..., description="OpenAI's API KEY")
     temperature: Optional[Number] = Field(0.6, description="Whisper's temperature")
 
