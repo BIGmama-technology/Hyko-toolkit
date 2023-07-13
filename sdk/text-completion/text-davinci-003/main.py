@@ -14,7 +14,10 @@ app = fastapi.FastAPI()
 # should always return Outputs.
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-
+    if params.system_prompt:
+        prompt = params.system_prompt + "\n" + inputs.prompt
+    else:    
+        prompt = inputs.prompt
     res = await openai.Completion.acreate(
         model="text-davinci-003",
         prompt=inputs.prompt,
