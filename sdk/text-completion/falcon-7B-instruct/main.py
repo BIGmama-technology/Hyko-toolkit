@@ -27,16 +27,16 @@ pipeline = transformers.pipeline(
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-    if params.pre_prompt:
-        prompt = params.pre_prompt + "\n" + inputs.input_prompt
+    if params.system_prompt:
+        prompt = params.system_prompt + "\n" + inputs.prompt
     else:    
-        prompt = inputs.input_prompt
+        prompt = inputs.prompt
     
     sequences = pipeline(prompt,
-            max_length=200,
+            max_length=params.max_length,
             do_sample=True,
-            top_k=10,
-            num_return_sequences=1,
+            top_k=params.top_k,
+            num_return_sequences=params.num_return_sequences,
             eos_token_id=tokenizer.eos_token_id,
         )
     output_text = sequences[0]['generated_text']
