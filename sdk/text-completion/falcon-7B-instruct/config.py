@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import Image
+from hyko_sdk.io import Image, String, Integer
 # Metadata
 
 name = "falcon-7B"
@@ -9,15 +9,15 @@ version = "1.0"
 category = "text-LLM"
 
 class Inputs(BaseModel):
-    input_prompt : str = Field(..., description="User prompt to falcon-instruct")
+    prompt : String = Field(..., description="User prompt to falcon-instruct")
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    pre_prompt : str = Field(default=None, describtion = "Pre-prompt or pre-instruction to falcon-instruct")
-    max_length : int = Field(default = 200, description= "Max tokens to generate")
-    do_sample : bool = Field(default=True,description= "Sample instrad of greedy decoding")
-    top_k : int = Field(default=10,description="top_k candidates for each token generation")
-    num_return_sequences : int = Field(defualt=1, description="Number of sequences to return")
+    system_prompt : String = Field(default=None, describtion = "system-prompt or system-instruction to falcon-instruct")
+    max_length : Integer = Field(default = 200, description= "Max tokens to generate")
+    # do_sample : bool = Field(default=True,description= "Sample instead of greedy decoding")
+    top_k : Integer = Field(default=10,description="top_k candidates for each token generation")
+    num_return_sequences : Integer = Field(default=1, description="Number of sequences to return")
 
 class Outputs(BaseModel):
     generated_text : str = Field(..., description="Generated Text from falcon-instruct")

@@ -18,8 +18,7 @@ category = "OpenAi"
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
     audio: Audio = Field(..., description="User audio input to be transcribed")
-    prompt: Optional[String] = Field(..., description="User additional text prompt")
-    language: Optional[String] = Field(..., description="User specified language")
+    prompt: Optional[String] = Field(default=None, description="User additional text prompt")
 
 
 
@@ -28,8 +27,9 @@ class Inputs(BaseModel):
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
+    language: Optional[String] = Field(default='english', description="User specified language")
     api_key: String = Field(..., description="OpenAI's API KEY")
-    temperature: Optional[Number] = Field(..., description="Whisper's temperature")
+    temperature: Optional[Number] = Field(0.6, description="Whisper's temperature")
 
 
 # outputs of the function.
