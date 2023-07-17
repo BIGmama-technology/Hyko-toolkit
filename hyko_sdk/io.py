@@ -1,4 +1,4 @@
-from .error import BaseError, Errors
+from .error import Errors
 from enum import Enum
 from typing import Any, Union, Optional, Tuple, Callable, Dict, Generator, List
 
@@ -13,6 +13,10 @@ import os
 import subprocess
 import io
 from fastapi import HTTPException
+
+from .utils import download_file, upload_file
+import uuid
+import asyncio
 
 class Boolean(int):
     @classmethod    
@@ -193,14 +197,56 @@ class Audio(str):
             sample_rate: int = file_.samplerate
             return waveform.reshape((waveform.shape[0])), sample_rate
         
-class Video(str):
+class Video:
+
+    def __init__(self, val: Union["Video", str, bytearray]) -> None:
+        self.data: Optional[bytearray] = None
+        self._task: Optional[asyncio.Task[None]] = None
+
+        if isinstance(val, str):
+            self._uuid = uuid.UUID(val).__str__()
+            self._url = f"https://bpresources.api.localhost/test/{self._uuid}"
+            self._task = asyncio.get_running_loop().create_task(self.download_data())
+            return
+
+        elif isinstance(val, bytearray):
+            self._uuid = uuid.uuid4().__str__()
+            self._url = f"https://bpresources.api.localhost/test/{self._uuid}"
+            self.data = val
+            self._task = asyncio.get_running_loop().create_task(self.upload_data())
+            return
+        
+        elif isinstance(val, Video):
+            if val.data:
+                self._uuid = val._uuid
+                self._url = val._url
+                self.data = val.data
+                self._task = val._task
+            else:
+                raise ValueError("Cannot copy non-synced Video object")
+
+        else:
+            raise ValueError(f"Got invalid value type, {type(val)}")
+
+    async def download_data(self):
+        self.data = await download_file(self._url)
+
+    async def upload_data(self):
+        if self.data is None:
+            raise RuntimeError("Cannot upload None data")
+        await upload_file(self._url, self.data)
+
+    async def wait_data(self):
+        if self._task is None:
+            raise RuntimeError("Data syncing task is None")
+        await self._task
 
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
         yield cls.validate
 
     @classmethod
-    def validate(cls, value: str, values, config, field):
+    def validate(cls, value: Union[str, bytearray], values, config, field):
         return cls(value)
 
     @classmethod
