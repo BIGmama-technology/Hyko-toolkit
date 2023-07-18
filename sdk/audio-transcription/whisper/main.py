@@ -70,4 +70,4 @@ async def main(inputs: Inputs, params: Params):
             print(transcription_segment)
             transcription += transcription_segment
 
-    return Outputs(transcribed_text=hyko_sdk.io.String(transcription))
+    return Outputs(transcribed_text=transcription)

@@ -20,5 +20,5 @@ async def main(inputs: Inputs, params: Params):
     if pipe is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
     
-    translated = pipe(inputs.french_text, max_length=len(inputs.french_text) * 2)[0]["translation_text"]
-    return Outputs(english_translated_text=translated)
+    translated = pipe(inputs.french_text, max_length=len(inputs.french_text) * 2)[0]["translation_text"] # type: ignore
+    return Outputs(english_translated_text=str(translated))

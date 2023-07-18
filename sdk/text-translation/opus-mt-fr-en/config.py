@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import  Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import String
+from hyko_sdk.io import BaseModel
 # Metadata
 
 name = "opush-mt-fr-en"
@@ -11,8 +11,7 @@ category = "Translation"
 
 
 class Inputs(BaseModel):
-    french_text: String = Field(..., description="French text")
-
+    french_text: str = Field(..., description="French text")
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
@@ -20,7 +19,7 @@ class Params(BaseModel):
 
 
 class Outputs(BaseModel):
-    english_translated_text: String = Field(..., description="English translated text")
+    english_translated_text: str = Field(..., description="English translated text")
 
 
 
