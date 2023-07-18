@@ -47,7 +47,7 @@ async def main(inputs: Inputs, params: Params):
     # image text similarity score:
     logits_per_image = outputs.logits_per_image
     probs = logits_per_image.softmax(dim=-1)
-    probs = probs.squeeze().numpy().tolist()
+    probs = probs.squeeze().cpu().numpy().tolist()
     max_index = 0
     for i in range(len(probs)):
         if probs[max_index] <= probs[i]:
