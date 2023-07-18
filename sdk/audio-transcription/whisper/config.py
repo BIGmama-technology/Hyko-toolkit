@@ -1,7 +1,6 @@
-from pydantic import BaseModel, Field
-from pydantic import BaseModel, Field
+from pydantic import Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import String, Audio
+from hyko_sdk.io import String, Audio, BaseModel
 
 
 # Metadata
@@ -16,7 +15,7 @@ class Inputs(BaseModel):
     audio: Audio = Field(..., description="Input audio that will be transcribed")
 
 
-# Parameters to the function like temperature for gpt3. These values are constant  n runtime
+# Parameters to the function like temperature for gpt3. These values are constant in runtime
 class Params(BaseModel):
     pass
 

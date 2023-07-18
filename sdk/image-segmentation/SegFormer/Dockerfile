@@ -1,8 +1,15 @@
-FROM hyko-sdk-gpu:latest AS build
+FROM torch-cuda:latest as main
 
 WORKDIR /app
 
 RUN python -c "from transformers import AutoImageProcessor, SegformerModel;image_processor = AutoImageProcessor.from_pretrained('nvidia/mit-b0');model = SegformerModel.from_pretrained('nvidia/mit-b0')"
+
+RUN apt update && \
+    apt install ffmpeg -y && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install uvicorn hyko_sdk==0.1.36
 
 COPY main.py .
 COPY config.py .

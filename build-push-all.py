@@ -52,7 +52,7 @@ def metadata_to_labels(meta: MetaData) -> Dict[str, Union[float, int, str, bool]
     return labels
 
 
-registry_host = "registry.localhost"
+registry_host = "registry.wbox.hyko.ai"
 
 
 def process_function_dir(root_path: str, pre_categories: List[str]):
@@ -112,9 +112,10 @@ def walk_directory(root_path: str, pre_categories: List[str]):
     print(f"Walking {root_path}/{'/'.join(pre_categories)}")
 
     ls = os.listdir(root_path + '/' + '/'.join(pre_categories))
-
     if "main.py" in ls and "config.py" in ls and "Dockerfile" in ls:
         process_function_dir(root_path=root_path, pre_categories=pre_categories)
+        # import threading
+        # threading.Thread(target=process_function_dir, args=[root_path, pre_categories]).start()
 
     for sub_folder in ls:
 
@@ -132,6 +133,6 @@ if __name__ == "__main__":
 
     subprocess.run(f"docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
     subprocess.run(f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
-    subprocess.run(f"docker build -t hyko-sdk-gpu:latest -f common_dockerfiles/hyko-sdk-gpu.Dockerfile .".split(" "))
 
     walk_directory("./sdk", [])
+    # process_function_dir("./sdk", ["utils", "converters", "video-to-audio"])

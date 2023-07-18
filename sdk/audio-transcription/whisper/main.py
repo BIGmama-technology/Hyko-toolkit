@@ -13,6 +13,7 @@ app = FastAPI()
 model = None
 processor = None
 device = torch.device("cuda:1") if torch.cuda.is_available() else torch.device('cpu')
+
 @app.post("/load", response_model=None)
 def load():
     global model
@@ -22,18 +23,8 @@ def load():
         return
     
     processor = WhisperProcessor.from_pretrained("openai/whisper-large-v2")
-    model = WhisperForConditionalGeneration.from_pretrained(
-        "openai/whisper-large-v2"
-    ).to(device)
+    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v2").to(device) # type: ignore
     model.config.forced_decoder_is = None
-
-
-
-def split_waveform(waveform: np.ndarray, sample_rate: int, seconds:int) -> List[np.ndarray]:
-    segment_size = seconds * sample_rate 
-    segments_count = math.ceil(len(waveform) / segment_size)
-    return [waveform[segment_size * i: min(segment_size * (i + 1), len(waveform))] for i in range(segments_count)]
-    
 
 @app.post(
     "/",
@@ -51,19 +42,25 @@ async def main(inputs: Inputs, params: Params):
             detail="Received empty audio object",
         )
     
-    waveform, sample_rate = inputs.audio.decode(sampling_rate=16_000)
+    waveform, sample_rate = inputs.audio.to_ndarray(sampling_rate=16_000)
 
     transcription = ""
+    
+    seconds = 30
+    segment_size = seconds * sample_rate 
+    segments_count = math.ceil(len(waveform) / segment_size)
+    waveform_segments = [waveform[segment_size * i: min(segment_size * (i + 1), len(waveform))] for i in range(segments_count)]
+    
 
-    for w in split_waveform(waveform, sample_rate, 30):
+    for segment in waveform_segments:
         
-        input_features = processor.feature_extractor(
-            w, sampling_rate=16_000, return_tensors="pt"
+        input_features = processor.feature_extractor( # type: ignore
+            segment, sampling_rate=16_000, return_tensors="pt"
         ).input_features
 
         with torch.no_grad():
             output_toks = model.generate(input_features.to(device = device))
-            print("Device: ", output_toks.device)
+            print("Device: ", output_toks.device) # type: ignore
             transcription_segment = str(processor.batch_decode(
                 output_toks, max_new_tokens=10000, skip_special_tokens=True
             )[0])
