@@ -8,7 +8,7 @@ from typing import List
 name = "clip-vit-large-patch14"
 description = "CLIP Model, few shot image classification"
 version = "1.0"
-category = "Image Classificatoin"
+category = "Image Classification"
 task = "Classifies Image content to one of items in List[classes : list[str]]"
 
 
@@ -34,6 +34,7 @@ __meta_data__ = MetaData(
     inputs=pmodel_to_ports(Inputs),  # type: ignore
     params=pmodel_to_ports(Params),  # type: ignore
     outputs=pmodel_to_ports(Outputs),  # type: ignore
+    requires_gpu=True,
 )
 
 if __name__ == "__main__":
