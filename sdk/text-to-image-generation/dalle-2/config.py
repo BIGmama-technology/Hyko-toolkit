@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field
-from hyko_sdk.io import String, Image
+from pydantic import Field
+from hyko_sdk.io import Image, BaseModel
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
@@ -16,7 +16,7 @@ category = "OpenAi"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    prompt: String = Field(..., description="User text prompt")
+    prompt: str = Field(..., description="User text prompt")
 
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
@@ -24,7 +24,7 @@ class Inputs(BaseModel):
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    api_key: String = Field(..., description="OpenAI's API KEY")
+    api_key: str = Field(..., description="OpenAI's API KEY")
 
 
 # outputs of the function.

@@ -1,6 +1,6 @@
 from pydantic import Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import String, Audio, BaseModel
+from hyko_sdk.io import Audio, BaseModel
 
 
 # Metadata
@@ -21,7 +21,7 @@ class Params(BaseModel):
 
 
 class Outputs(BaseModel):
-    transcribed_text: String = Field(..., description="Generated transcription text")
+    transcribed_text: str = Field(..., description="Generated transcription text")
 
 
 # Function metadata, should always be here

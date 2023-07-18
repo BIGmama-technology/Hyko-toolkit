@@ -1,22 +1,22 @@
-from pydantic import BaseModel, Field
-from hyko_sdk.io import Image
+from pydantic import Field
+from hyko_sdk.io import Image, BaseModel
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
 # Metadata
 
 name = "SegFormer"
-description = "Image Segmentation Model"
+description = "Image Segmentation Model, this models takes an image and partition it to locate objects and their contours in the image"
 version = "1.0"
 category = "Vision"
 
 class Inputs(BaseModel):
-    img : Image = Field(..., description="User inputted image to be segmented")
+    image : Image = Field(..., description="User inputted image to be segmented")
 
 # Parameters to the function like temperature for gpt3. These values are constant in runtime
 class Params(BaseModel):
     pass
 
 class Outputs(BaseModel):
-    img : Image = Field(..., description="Segmented image")
+    segmented_image : Image = Field(..., description="Segmented image")
 
 # Function metadata, should always be here
 

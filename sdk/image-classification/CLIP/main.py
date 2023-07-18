@@ -2,7 +2,6 @@ from config import Inputs, Outputs, Params
 import fastapi
 from fastapi import HTTPException
 from transformers import CLIPProcessor, CLIPModel
-import cv2
 import torch
 
 app = fastapi.FastAPI()

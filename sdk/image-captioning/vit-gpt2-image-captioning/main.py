@@ -3,13 +3,7 @@ from fastapi.exceptions import HTTPException
 from config import Inputs, Params, Outputs
 from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
 import torch
-import base64
 import cv2
-import numpy as np
-app = fastapi.FastAPI()
-
-
-
 
 app = fastapi.FastAPI()
 
@@ -46,9 +40,10 @@ async def main(inputs: Inputs, params: Params):
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
     await inputs.image.wait_data()
     img = inputs.image.to_ndarray()
+    
     pixel_values = feature_extractor(images=cv2.cvtColor(img, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values # type: ignore
     pixel_values = pixel_values.to(device)
     output_ids = model.generate(pixel_values, **gen_kwargs)
     preds = tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
     
-    return Outputs(text=preds)
+    return Outputs(image_description=preds)

@@ -171,7 +171,7 @@ class Audio:
     def from_ndarray(arr: np.ndarray, sampling_rate: int) -> "Audio":
         file = io.BytesIO()
         soundfile.write(file, arr, samplerate=sampling_rate, format="MP3")
-        return Audio(bytearray(file.read()), filename="audio.mp3", mime_type="audio/mp3")
+        return Audio(bytearray(file.getbuffer().tobytes()), filename="audio.mp3", mime_type="audio/mp3")
     
     def __init__(self, val: Union["Audio", str, uuid.UUID, bytearray], filename: Optional[str] = None, mime_type: Optional[str] = None) -> None:
         self.data: Optional[bytearray] = None
