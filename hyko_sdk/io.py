@@ -24,8 +24,9 @@ class Image:
     @staticmethod
     def from_ndarray(arr: np.ndarray) -> "Image":
         file = io.BytesIO()
-        PIL_Image.fromarray(arr).save(file, format="PNG")
-        return Image(bytearray(file.read()), filename="image.png", mime_type="image/png")
+        img = PIL_Image.fromarray(arr)
+        img.save(file, format="PNG")
+        return Image(bytearray(file.getbuffer().tobytes()), filename="image.png", mime_type="image/png")
 
     def __init__(self, val: Union["Image", str, uuid.UUID, bytearray], filename: Optional[str] = None, mime_type: Optional[str] = None) -> None:
         self.data: Optional[bytearray] = None
