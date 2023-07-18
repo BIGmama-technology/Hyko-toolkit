@@ -22,7 +22,7 @@ def load():
     response_model=Outputs,
 )
 async def main(inputs: Inputs, params: Params):
-    return Outputs(output=inputs.first + inputs.second)
+    return Outputs(output=params.first + params.second)
 
 
 ##############################################################################################################
