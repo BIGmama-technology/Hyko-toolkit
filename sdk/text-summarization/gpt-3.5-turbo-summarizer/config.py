@@ -5,11 +5,11 @@ from hyko_sdk.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
 
-name = "text-davinci-003-summarizer"
-description = "OpenAI's text-davici-003 Summarization model (API)"
+name = "gpt-3.5-turbo-summarizer"
+description = "OpenAI's GPT 3.5 Turbo Summarization model (API)"
 version = "1.0"
-category = "summarization"
-task = "Summarization"
+category = "OpenAi"
+task = "Text Summarization"
 
 ##############################################
 
@@ -18,7 +18,7 @@ task = "Summarization"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    text: str = Field(..., description="Input text")
+    text: str = Field(..., description="Input text (4k tokens max context size)")
 
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
