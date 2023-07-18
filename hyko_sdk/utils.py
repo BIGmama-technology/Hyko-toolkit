@@ -1,41 +1,34 @@
 from typing import AsyncIterator
+from fastapi import HTTPException, status
 import httpx
-import asyncio
 import tqdm
-import math
-
 
 async def download_file(url: str) -> bytearray:
     async with httpx.AsyncClient(verify=False, http2=True) as client:
+
+        # Get file size
         head_res = await client.head(url=url)
         if not head_res.is_success:
-            raise Exception("Could not read HEAD")
+            if head_res.status_code == status.HTTP_404_NOT_FOUND:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Object not found, url: '{url}'",
+                )
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Could not read HEAD Object info, status: {head_res.status_code}, res: {head_res.text}",
+                )
+        
         file_size = int(head_res.headers["Content-Length"])
-        with tqdm.tqdm(total=file_size, unit_scale=True, unit_divisor=1024, unit="B", desc=f"Downloading {url}") as progress:
-            step = math.ceil(file_size / 16)
-            ranges = []
-            for s in range(0, file_size, step):
-                e = s + step
-                if e > file_size:
-                    e = file_size
-                ranges.append((s, e, bytearray()))
-            def update_progress(delta_n: int):
-                progress.update(delta_n)
-            tasks = [download_range(url=url, client=client, start=start, end=end, data=data, update_progress=update_progress) for start, end, data in ranges]
-            await asyncio.wait(tasks)
-            out = bytearray()
-            total_downloaded = 0
-            for _, _, data in ranges:
-                total_downloaded += len(data)
-                out += data
-            return out
 
-async def download_range(url: str, client: httpx.AsyncClient, start: int, end: int, data: bytearray, update_progress) -> bytearray:
-    async with client.stream("GET", url, headers={"Range": f"bytes={start}-{end-1}"}) as response:
-        async for chunk in response.aiter_bytes():
-            data += chunk
-            update_progress(len(chunk))
-    return data
+        async with client.stream("GET", url) as response:
+            with tqdm.tqdm(total=file_size, unit_scale=True, unit_divisor=1024, unit="B", desc=f"Downloading {url}") as progress:
+                data = bytearray()
+                async for chunk in response.aiter_bytes():
+                    data += chunk
+                    progress.update(len(chunk))
+                return data
 
 async def bytearray_aiter(data: bytearray, update_progress) -> AsyncIterator[bytearray]:
     step_size = int(len(data) / 100)
