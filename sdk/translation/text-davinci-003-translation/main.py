@@ -3,6 +3,9 @@ from config import Inputs, Params, Outputs
 import openai
 
 app = fastapi.FastAPI()
+@app.post("/load", response_model=None)
+def load():
+    pass
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):

@@ -4,16 +4,26 @@ import torch
 import numpy as np
 import math
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
+from fastapi import HTTPException
 
 app = fastapi.FastAPI()
 
+model = None
+processor = None
 device = torch.device("cuda:1") if torch.cuda.is_available() else torch.device('cpu')
-
-processor = WhisperProcessor.from_pretrained("openai/whisper-large-v2")
-model = WhisperForConditionalGeneration.from_pretrained(
-    "openai/whisper-large-v2"
-).to(device)
-model.config.forced_decoder_is = None
+@app.post("/load", response_model=None)
+def load():
+    global model
+    global processor
+    if model is not None and processor is not None:
+        print("Model loaded already")
+        return
+    
+    processor = WhisperProcessor.from_pretrained("openai/whisper-large-v2")
+    model = WhisperForConditionalGeneration.from_pretrained(
+        "openai/whisper-large-v2"
+    ).to(device)
+    model.config.forced_decoder_is = None
 
 
 
@@ -23,8 +33,10 @@ def split_waveform(waveform: np.ndarray, sample_rate: int, seconds:int) -> list[
     return [waveform[segment_size * i: min(segment_size * (i + 1), len(waveform))] for i in range(segments_count)]
     
 
-@app.post("/", response_model=None)
+@app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
+    if model is None or processor is None:
+        raise HTTPException(status_code=500, detail="Model is not loaded yet")
     waveform, sample_rate = Audio(inputs.input_audio).decode(sampling_rate=16_000)
 
     transcription = ""

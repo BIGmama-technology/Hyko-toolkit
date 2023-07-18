@@ -33,6 +33,7 @@ __meta_data__ = MetaData(
     inputs=pmodel_to_ports(Inputs),  # type: ignore
     params=pmodel_to_ports(Params),  # type: ignore
     outputs=pmodel_to_ports(Outputs),  # type: ignore
+    requires_gpu=False
 )
 
 if __name__ == "__main__":

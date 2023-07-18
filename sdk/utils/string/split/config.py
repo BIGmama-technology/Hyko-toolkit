@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from hyko_sdk.io import String
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
 from typing import List
@@ -16,7 +16,7 @@ category = "utils/string"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    text: String
+    text: String = Field(..., description="Text to be splitted")
 
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
@@ -24,12 +24,12 @@ class Inputs(BaseModel):
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    delimeter: String
+    delimeter: String = Field(default=',', description="the string used to split the text by")
 
 
 # outputs of the function.
 class Outputs(BaseModel):
-    splitted: List[String]
+    splitted: List[String]  = Field(..., description="List of strings that resulted from splitting by the delimeter")
 
 
 # Function metadata, should always be here
@@ -42,6 +42,7 @@ __meta_data__ = MetaData(
     inputs=pmodel_to_ports(Inputs), # type: ignore
     params=pmodel_to_ports(Params), # type: ignore
     outputs=pmodel_to_ports(Outputs), # type: ignore
+    requires_gpu=False,
 )
 
 
