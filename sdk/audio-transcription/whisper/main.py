@@ -1,12 +1,14 @@
-from config import Inputs, Outputs, Params, Audio
-import fastapi
+from typing import List
+from config import Inputs, Params, Outputs
+from fastapi import FastAPI, HTTPException, status
+import hyko_sdk.io
 import torch
 import numpy as np
 import math
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 from fastapi import HTTPException
 
-app = fastapi.FastAPI()
+app = FastAPI()
 
 model = None
 processor = None
@@ -27,19 +29,32 @@ def load():
 
 
 
-def split_waveform(waveform: np.ndarray, sample_rate: int, seconds:int) -> list[np.ndarray]:
+def split_waveform(waveform: np.ndarray, sample_rate: int, seconds:int) -> List[np.ndarray]:
     segment_size = seconds * sample_rate 
     segments_count = math.ceil(len(waveform) / segment_size)
     return [waveform[segment_size * i: min(segment_size * (i + 1), len(waveform))] for i in range(segments_count)]
     
 
-@app.post("/", response_model=Outputs)
+@app.post(
+    "/",
+    response_model=Outputs,
+)
 async def main(inputs: Inputs, params: Params):
     if model is None or processor is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
-    waveform, sample_rate = Audio(inputs.input_audio).decode(sampling_rate=16_000)
+
+    await inputs.audio.wait_data()
+
+    if inputs.audio.data is None:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Received empty audio object",
+        )
+    
+    waveform, sample_rate = inputs.audio.decode(sampling_rate=16_000)
 
     transcription = ""
+
     for w in split_waveform(waveform, sample_rate, 30):
         
         input_features = processor.feature_extractor(
@@ -54,4 +69,5 @@ async def main(inputs: Inputs, params: Params):
             )[0])
             print(transcription_segment)
             transcription += transcription_segment
-    return Outputs(output_text=transcription)
+
+    return Outputs(transcribed_text=hyko_sdk.io.String(transcription))

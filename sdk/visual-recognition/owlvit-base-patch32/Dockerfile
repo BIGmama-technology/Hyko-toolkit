@@ -1,13 +1,8 @@
 FROM hyko-sdk-gpu:latest AS build
 
 WORKDIR /app
-COPY requirements.txt .
-
-RUN pip install -r /app/requirements.txt
 
 RUN python -c "from transformers import OwlViTProcessor, OwlViTForObjectDetection;OwlViTProcessor.from_pretrained('google/owlvit-base-patch32');OwlViTForObjectDetection.from_pretrained('google/owlvit-base-patch32');"
-
-FROM build as main
 
 COPY main.py .
 COPY config.py .
