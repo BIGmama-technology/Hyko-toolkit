@@ -345,7 +345,7 @@ class Image:
             field_schema["type"] = "string"
             field_schema["format"] = "image"
 
-    def decode(self, keep_alpha_if_png = False) -> np.ndarray:
+    def to_ndarray(self, keep_alpha_if_png = False) -> np.ndarray:
         if self.data:
             img_bytes_io = io.BytesIO(self.data)
             img = PIL_Image.open(img_bytes_io)
