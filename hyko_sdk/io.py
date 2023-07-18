@@ -498,8 +498,36 @@ class Audio:
         "FLOAT": "float32",
         "DOUBLE": "float64",
     }
-
-    def decode(
+    
+    def resample(self, sampling_rate: int):
+        if self.data and self.filename:
+            with open(self.filename, "wb") as f:
+                f.write(self.data)
+            out = "audio_resampled.mp3"
+            if self.filename == out:
+                out = "audio_resampled_2.mp3"
+                
+            subprocess.run(f"ffmpeg -i {self.filename} -ac 1 -ar {sampling_rate} {out} -y".split(" "))
+            with open(out, "rb") as f:
+                self.data = bytearray(f.read())
+                
+            os.remove(out)
+            
+    def convert_to(self, ext: str):
+        if self.data and self.filename:
+            with open(self.filename, "wb") as f:
+                f.write(self.data)
+            out = "audio_converted." + ext 
+            if self.filename == out:
+                out = "audio_converted_2." + ext
+                
+            subprocess.run(f"ffmpeg -i {self.filename} {out} -y".split(" "))
+            with open(out, "rb") as f:
+                self.data = bytearray(f.read())
+                
+            os.remove(out)
+            
+    def to_ndarray(
         self,
         sampling_rate: Optional[int] = None,
         normalize: bool = True,
@@ -507,20 +535,15 @@ class Audio:
         num_frames: int = -1,
     ) -> Tuple[np.ndarray, int]:
         
-        if self.data:
-
-            if os.path.exists("audio.webm"):
-                os.remove("audio.webm")
-            with open("audio.webm", "wb") as f:
-                f.write(self.data)
-            if os.path.exists("audio.wav"):
-                os.remove("audio.wav")
+        if self.data and self.mime_type:
+            if "webm" in self.mime_type:
+                self.convert_to("mp3")
+                
             if sampling_rate:
-                subprocess.run(f"ffmpeg -i audio.webm -ac 1 -ar {sampling_rate} audio.wav -y".split(" "))
-            else:
-                subprocess.run(f"ffmpeg -i audio.webm audio.wav -y".split(" "))
+                self.resample(sampling_rate)
             
-            with soundfile.SoundFile("audio.wav", "r") as file_:
+            audio_readable = io.BytesIO(self.data)
+            with soundfile.SoundFile(audio_readable, "r") as file_:
                 if file_.format != "WAV" or normalize:
                     dtype = "float32"
                 elif file_.subtype not in Audio._SUBTYPE2DTYPE:
