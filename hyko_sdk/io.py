@@ -269,7 +269,7 @@ class Image:
         return f"{self._uuid}"
 
     async def download(self):
-        metadata_bytes = await download_file(url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/metadata.json")
+        metadata_bytes = await download_file(url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/metadata.json")
         metadata = json.loads(metadata_bytes.decode())
         self.filename = metadata["filename"]
         self.mime_type = metadata["type"]
@@ -283,7 +283,7 @@ class Image:
             chunks.append((idx, bytearray()))
 
         async def download_chunk(idx: int, data: bytearray):
-            data += await download_file(url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/{idx}")
+            data += await download_file(url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/{idx}")
 
         await asyncio.wait([download_chunk(idx, data) for idx, data in chunks])
 
@@ -302,7 +302,7 @@ class Image:
             raise RuntimeError("Can not upload, mime_type should not be None")
         
         await upload_file(
-            url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/metadata.json",
+            url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/metadata.json",
             data=bytearray(json.dumps({"filename": self.filename, "type": self.mime_type}).encode()),
         )
 
@@ -320,7 +320,7 @@ class Image:
             chunks.append((idx, self.data[cursor_lower : cursor_upper]))
             cursor_lower = cursor_upper
 
-        await asyncio.wait([upload_file(url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/{idx}", data=data) for idx, data in chunks])
+        await asyncio.wait([upload_file(url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/{idx}", data=data) for idx, data in chunks])
 
     async def wait_data(self):
         if self._task is None:
@@ -414,7 +414,7 @@ class Audio:
         return f"{self._uuid}"
 
     async def download(self):
-        metadata_bytes = await download_file(url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/metadata.json")
+        metadata_bytes = await download_file(url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/metadata.json")
         metadata = json.loads(metadata_bytes.decode())
         self.filename = metadata["filename"]
         self.mime_type = metadata["type"]
@@ -428,7 +428,7 @@ class Audio:
             chunks.append((idx, bytearray()))
 
         async def download_chunk(idx: int, data: bytearray):
-            data += await download_file(url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/{idx}")
+            data += await download_file(url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/{idx}")
 
         await asyncio.wait([download_chunk(idx, data) for idx, data in chunks])
 
@@ -447,7 +447,7 @@ class Audio:
             raise RuntimeError("Can not upload, mime_type should not be None")
         
         await upload_file(
-            url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/metadata.json",
+            url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/metadata.json",
             data=bytearray(json.dumps({"filename": self.filename, "type": self.mime_type}).encode()),
         )
 
@@ -465,7 +465,7 @@ class Audio:
             chunks.append((idx, self.data[cursor_lower : cursor_upper]))
             cursor_lower = cursor_upper
 
-        await asyncio.wait([upload_file(url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/{idx}", data=data) for idx, data in chunks])
+        await asyncio.wait([upload_file(url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/{idx}", data=data) for idx, data in chunks])
 
     async def wait_data(self):
         if self._task is None:
@@ -584,7 +584,7 @@ class Video:
         return f"{self._uuid}"
 
     async def download(self):
-        metadata_bytes = await download_file(url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/metadata.json")
+        metadata_bytes = await download_file(url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/metadata.json")
         metadata = json.loads(metadata_bytes.decode())
         self.filename = metadata["filename"]
         self.mime_type = metadata["type"]
@@ -598,7 +598,7 @@ class Video:
             chunks.append((idx, bytearray()))
 
         async def download_chunk(idx: int, data: bytearray):
-            data += await download_file(url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/{idx}")
+            data += await download_file(url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/{idx}")
 
         await asyncio.wait([download_chunk(idx, data) for idx, data in chunks])
 
@@ -617,7 +617,7 @@ class Video:
             raise RuntimeError("Can not upload, mime_type should not be None")
         
         await upload_file(
-            url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/metadata.json",
+            url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/metadata.json",
             data=bytearray(json.dumps({"filename": self.filename, "type": self.mime_type}).encode()),
         )
 
@@ -635,7 +635,7 @@ class Video:
             chunks.append((idx, self.data[cursor_lower : cursor_upper]))
             cursor_lower = cursor_upper
 
-        await asyncio.wait([upload_file(url=f"https://bpresources.api.wbox.hopto.org/hyko/{self._uuid}/{idx}", data=data) for idx, data in chunks])
+        await asyncio.wait([upload_file(url=f"https://bpresources.api.wbox.hyko.ai/hyko/{self._uuid}/{idx}", data=data) for idx, data in chunks])
 
     async def wait_data(self):
         if self._task is None:
