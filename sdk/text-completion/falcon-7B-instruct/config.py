@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import Image, String, Integer, Number
+from hyko_sdk.io import String, Integer, Number
 # Metadata
 
 name = "falcon-7B"
@@ -16,7 +16,6 @@ class Params(BaseModel):
     system_prompt : String = Field(default=None, describtion = "system-prompt or system-instruction to falcon-instruct")
     max_length : Integer = Field(default = 200, description= "Max tokens to generate")
     top_k : Integer = Field(default=10,description="top_k candidates for each token generation")
-    num_return_sequences : Integer = Field(default=1, description="Number of sequences to return")
     temperature: Number = Field(default=0.6, description="Temperature of falcon")
     top_p: Number = Field(default=0.6, description="Top P of falcon")
 
@@ -33,6 +32,7 @@ __meta_data__ = MetaData(
     inputs=pmodel_to_ports(Inputs), # type: ignore
     params=pmodel_to_ports(Params), # type: ignore
     outputs=pmodel_to_ports(Outputs), # type: ignore
+    requires_gpu=True,
 )
 
 if __name__ == "__main__":

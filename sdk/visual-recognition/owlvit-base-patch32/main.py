@@ -7,34 +7,39 @@ import torch
 from PIL import Image, ImageDraw
 import numpy as np
 
-processor = OwlViTProcessor.from_pretrained("google/owlvit-base-patch32")
-model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32").cuda()
 
 app = fastapi.FastAPI()
 
-#################################################################
+processor = None
+model = None
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
+@app.post("/load", response_model=None)
+def load():
+    global model
+    global processor
+    if model is not None and processor is not None:
+        print("Model loaded already")
+        return
 
-# Insert the main code of the function here #################################################################
+    processor = OwlViTProcessor.from_pretrained("google/owlvit-base-patch32")
+    model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32").to(device)
 
-
-# keep the decorator, function declaration and return type the same.
-# the main function should always take Inputs as the first argument and Params as the second argument.
-# should always return Outputs.
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
-
+    if model is None or processor is None:
+        raise HTTPException(status_code=500, detail="Model is not loaded yet")
     img = Image.fromarray(inputs.img.decode()[0][..., :3]).convert("RGB")
     # img.save("TEST.jpg")
     draw = ImageDraw.Draw(img)
     texts = inputs.tags
 
-    inputs = processor(text=[texts], images = torch.from_numpy(np.array(img)).cuda(), return_tensors='pt').to("cuda")
+    inputs = processor(text=[texts], images = torch.from_numpy(np.array(img)).to(device), return_tensors='pt').to(device)
 
     with torch.no_grad():
         outputs = model(**inputs)
     
-    target_sizes = torch.Tensor([torch.from_numpy(np.asarray(img)).size()[::-1]]).to(torch.int32).squeeze()[1:].to("cuda")
+    target_sizes = torch.Tensor([torch.from_numpy(np.asarray(img)).size()[::-1]]).to(torch.int32).squeeze()[1:].to(device)
 
     results = processor.post_process(outputs=outputs, target_sizes=torch.stack([target_sizes]))
     # text = inputs.tags

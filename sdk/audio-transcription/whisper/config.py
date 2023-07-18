@@ -1,7 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import String, Audio
-from typing import List
+from hyko_sdk.io import Audio
 
 # Metadata
 
@@ -13,7 +12,7 @@ task = "Speech to text translation"
 
 
 class Inputs(BaseModel):
-    input_audio: Audio
+    input_audio: Audio = Field(..., description="Audio to be transcribed")
 
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
@@ -22,7 +21,7 @@ class Params(BaseModel):
 
 
 class Outputs(BaseModel):
-    output_text: str
+    transcript: str = Field(..., description="Transcription")
 
 
 # Function metadata, should always be here
@@ -35,6 +34,7 @@ __meta_data__ = MetaData(
     inputs=pmodel_to_ports(Inputs),  # type: ignore
     params=pmodel_to_ports(Params),  # type: ignore
     outputs=pmodel_to_ports(Outputs),  # type: ignore
+    requires_gpu=True,
 )
 
 if __name__ == "__main__":

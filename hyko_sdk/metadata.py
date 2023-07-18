@@ -94,3 +94,4 @@ class MetaData(BaseModel):
     inputs: List[IOPort]
     outputs: List[IOPort]
     params: List[IOPort]
+    requires_gpu: bool

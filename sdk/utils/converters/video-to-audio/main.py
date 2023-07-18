@@ -8,14 +8,10 @@ import os
 import subprocess
 app = fastapi.FastAPI()
 
-#################################################################
+@app.post("/load", response_model=None)
+def load():
+    pass
 
-# Insert the main code of the function here #################################################################
-
-
-# keep the decorator, function declaration and return type the same.
-# the main function should always take Inputs as the first argument and Params as the second argument.
-# should always return Outputs.
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
     if len(inputs.video.split(",")) != 2:

@@ -11,7 +11,7 @@ category = "Vision"
 class Inputs(BaseModel):
     img : Image = Field(..., description="User inputted image to be segmented")
 
-# Parameters to the function like temperature for gpt3. These values are constant  n runtime
+# Parameters to the function like temperature for gpt3. These values are constant in runtime
 class Params(BaseModel):
     pass
 
@@ -28,6 +28,7 @@ __meta_data__ = MetaData(
     inputs=pmodel_to_ports(Inputs), # type: ignore
     params=pmodel_to_ports(Params), # type: ignore
     outputs=pmodel_to_ports(Outputs), # type: ignore
+    requires_gpu=True,
 )
 
 

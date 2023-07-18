@@ -3,9 +3,11 @@ import fastapi
 from sklearn.linear_model import LinearRegression
 import numpy as np
 
-linear_regression = LinearRegression()
-
 app = fastapi.FastAPI()
+@app.post("/load", response_model=None)
+def load():
+    pass
+linear_regression = LinearRegression()
 
 @app.post("/", response_model=Outputs)
 async def main(inputs: Inputs, params: Params):
