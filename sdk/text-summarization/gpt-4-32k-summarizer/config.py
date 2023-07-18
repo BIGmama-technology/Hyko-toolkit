@@ -5,7 +5,7 @@ from hyko_sdk.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
 
-name = "gpt-4-summarizer"
+name = "gpt-4-32k-summarizer"
 description = "OpenAI's GPT 4 Large Summarization model (API)"
 version = "1.0"
 category = "OpenAi"
