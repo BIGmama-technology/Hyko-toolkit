@@ -1,30 +1,55 @@
-import fastapi
 from config import Inputs, Params, Outputs
+from fastapi import FastAPI, HTTPException, status
 import openai
-import base64
 import io
 
-app = fastapi.FastAPI()
+app = FastAPI()
 
 @app.post("/load", response_model=None)
 def load():
    pass
 
-@app.post("/", response_model=Outputs)
+# keep the decorator, function declaration and return type the same.
+# the main function should always take Inputs as the first argument and Params as the second argument.
+# should always return Outputs.
+@app.post(
+    "/",
+    response_model=Outputs,
+)
 async def main(inputs: Inputs, params: Params):
 
-    meta, data = inputs.audio.split(',', 1)
+    print(f"key: {params.api_key}")
 
-    file = io.BytesIO(base64.urlsafe_b64decode(data))
-    file.name = "audio.webm"
+    await inputs.audio.wait_data()
+
+    if inputs.audio.data is None:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Received empty audio object",
+        )
+    
+    file = io.BytesIO(inputs.audio.data)
+    file.name = inputs.audio.filename
 
     res = await openai.Audio.atranscribe(
         model="whisper-1",
         file=file,
         api_key=params.api_key,
-        prompt= inputs.prompt,
+        prompt=params.prompt,
         language=params.language,
         temperature=params.temperature,
     )
 
-    return Outputs(transcript=res.get("text")) # type: ignore
+    transcription = res.get("text") # type: ignore
+
+    if transcription is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Unknown error occured {res}",
+        )
+    
+    return Outputs(transcribed_text=transcription)
+
+
+##############################################################################################################
+

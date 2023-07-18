@@ -1,18 +1,19 @@
 from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import Audio
+from hyko_sdk.io import String, Audio
+
 
 # Metadata
-
 name = "Whisper"
-description = "OpenAI's Audio Transcription (Non API)"
+description = "OpenAI's Audio Transcription model (Non API)"
 version = "1.0"
-category = "Speech recognition"
-task = "Speech to text translation"
+category = "Audio Transcription"
+task = "Speech to text transcription"
 
 
 class Inputs(BaseModel):
-    input_audio: Audio = Field(..., description="Audio to be transcribed")
+    audio: Audio = Field(..., description="Input audio that will be transcribed")
 
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
@@ -21,7 +22,7 @@ class Params(BaseModel):
 
 
 class Outputs(BaseModel):
-    transcript: str = Field(..., description="Transcription")
+    transcribed_text: String = Field(..., description="Generated transcription text")
 
 
 # Function metadata, should always be here

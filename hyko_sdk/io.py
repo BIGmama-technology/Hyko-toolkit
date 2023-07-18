@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Union, Optional, Tuple, Callable, Dict, Generator
 
-from pydantic import BaseModel
+from pydantic import BaseModel as PBaseModel
 from pydantic.fields import ModelField
 
 import numpy as np
@@ -46,6 +46,9 @@ class Boolean:
 
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self.is_set}"
         
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
@@ -91,7 +94,10 @@ class Number:
 
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
-        
+
+    def __str__(self) -> str:
+        return f"{self.val}"
+
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
         yield cls.validate
@@ -136,6 +142,9 @@ class Integer:
 
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self.val}"
 
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
@@ -186,6 +195,9 @@ class String:
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
 
+    def __str__(self) -> str:
+        return f"{self.data}"
+
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
         yield cls.validate
@@ -205,6 +217,12 @@ class String:
 
 
 class Image:
+
+    @staticmethod
+    def from_ndarray(arr: np.ndarray) -> "Image":
+        file = io.BytesIO()
+        PIL_Image.fromarray(arr).save(file, format="PNG")
+        return Image(bytearray(file.read()), filename="image.png", mime_type="image/png")
 
     def __init__(self, val: Union["Image", str, uuid.UUID, bytearray], filename: Optional[str] = None, mime_type: Optional[str] = None) -> None:
         self.data: Optional[bytearray] = None
@@ -246,6 +264,9 @@ class Image:
         
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self._uuid}"
 
     async def download(self):
         metadata_bytes = await download_file(url=f"https://bpresources.api.localhost/hyko/{self._uuid}/metadata.json")
@@ -341,7 +362,13 @@ class Image:
 
 
 class Audio:
-        
+
+    @staticmethod
+    def from_ndarray(arr: np.ndarray, sampling_rate: int) -> "Audio":
+        file = io.BytesIO()
+        soundfile.write(file, arr, samplerate=sampling_rate, format="MP3")
+        return Audio(bytearray(file.read()), filename="audio.mp3", mime_type="audio/mp3")
+    
     def __init__(self, val: Union["Audio", str, uuid.UUID, bytearray], filename: Optional[str] = None, mime_type: Optional[str] = None) -> None:
         self.data: Optional[bytearray] = None
         self.filename: Optional[str] = None
@@ -382,6 +409,9 @@ class Audio:
         
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self._uuid}"
 
     async def download(self):
         metadata_bytes = await download_file(url=f"https://bpresources.api.localhost/hyko/{self._uuid}/metadata.json")
@@ -550,6 +580,9 @@ class Video:
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
 
+    def __str__(self) -> str:
+        return f"{self._uuid}"
+
     async def download(self):
         metadata_bytes = await download_file(url=f"https://bpresources.api.localhost/hyko/{self._uuid}/metadata.json")
         metadata = json.loads(metadata_bytes.decode())
@@ -627,7 +660,7 @@ class Video:
             field_schema["type"] = "string"
             field_schema["format"] = "video"
 
-class BaseModel(BaseModel):
+class BaseModel(PBaseModel):
     class Config:
         json_encoders = {
             Boolean: lambda v: v.is_set if v else None,
