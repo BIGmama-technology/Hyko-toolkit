@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field
-from hyko_sdk.io import Video, Audio
+from pydantic import Field
+from hyko_sdk.io import Video, Audio, BaseModel
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
