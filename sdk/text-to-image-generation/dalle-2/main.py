@@ -1,6 +1,7 @@
 import fastapi
-from config import Inputs, Params, Outputs
+from config import Inputs, Params, Outputs, Image
 import openai
+import base64
 
 app = fastapi.FastAPI()
 
@@ -19,9 +20,10 @@ async def main(inputs: Inputs, params: Params):
         size="256x256",
     )
 
-    img_encoded = "data:image/png;base64," + res.get("data")[0]["b64_json"] # type: ignore
-
-    return Outputs(generated_image=img_encoded)
+    img = base64.b64decode(res.get("data")[0]["b64_json"])
+    img = Image(bytearray(img), filename="iamge.png", mime_type="image/png")
+    await img.wait_data()
+    return Outputs(generated_image=img)
 
 
 

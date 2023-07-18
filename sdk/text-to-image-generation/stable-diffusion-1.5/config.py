@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import Image
+from hyko_sdk.io import Image, BaseModel
 # Metadata
 
 name = "Stable Diffusion 1.5"
@@ -9,14 +9,14 @@ version = "1.0"
 category = "Vision"
 
 class Inputs(BaseModel):
-    input_prompt : str = Field(..., description="User prompt to stable diffusion")
+    input_prompt : str = Field(..., description="User prompt to generate an from")
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
     pass
 
 class Outputs(BaseModel):
-    generated_image : Image = Field(..., description="Stable Diffusion Generated Image based on user prompt")
+    generated_image : Image = Field(..., description="Generated Image based on user input prompt")
 
 # Function metadata, should always be here
 

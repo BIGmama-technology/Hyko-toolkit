@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import Image, String
+from hyko_sdk.io import Image, BaseModel
 # Metadata
 
 name = "vit-gpt2-image-captioning"
@@ -16,7 +16,7 @@ class Params(BaseModel):
     pass
 
 class Outputs(BaseModel):
-    image_description : String = Field(..., description="description/caption of the image")
+    image_description : str = Field(..., description="description/caption of the image")
 
 # Function metadata, should always be here
 

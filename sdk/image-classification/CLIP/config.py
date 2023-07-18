@@ -1,14 +1,14 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import Image, String
+from hyko_sdk.io import Image, BaseModel
 from typing import List
 
 # Metadata
 
 name = "clip-vit-large-patch14"
 description = """
-Classify an image to one class out of the user-inputted list of classes. 
-Example: if the classes are ['cat', 'dog'] then the model will have to choose if the image is a cat or dog
+Classify an image to one class out of the list of classes. 
+Example: if the classes are ['cat', 'dog'] then the model will have to choose if the image is either a cat or dog
 """
 
 version = "1.0"
@@ -21,11 +21,11 @@ class Inputs(BaseModel):
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    classes: List[String] = Field(..., description="List of classes to classify the input image on")
+    classes: List[str] = Field(..., description="List of classes to classify the input image on")
 
 
 class Outputs(BaseModel):
-    output_class: String = Field(..., description="The class of the image")
+    output_class: str = Field(..., description="The class of the image")
 # Function metadata, should always be here
 
 __meta_data__ = MetaData(

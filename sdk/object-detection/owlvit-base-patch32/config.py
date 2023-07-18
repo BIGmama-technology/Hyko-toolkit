@@ -1,22 +1,21 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import Image, String
+from hyko_sdk.io import Image, BaseModel
 from typing import List
 # Metadata
 
 name = "owlvit-base-patch32"
-description = "Zero-shot object detection/recogntion model by Google"
+description = "Object detection/recogntion model, draws bounding boxes over the image if the object is in the list of tags."
 version = "1.0"
 category = "Visual-Recognition/Detection"
 
 class Inputs(BaseModel):
     # tags : List[String] = Field(..., description="List of object(s) names to be detected")
     img : Image = Field(..., description="Input Image")
-    tags : List[String] = Field(..., description="List of object(s) names to be detected")
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    pass
+    tags : List[str] = Field(..., description="List of object(s) names to be detected")
 
 class Outputs(BaseModel):
     output_image: Image = Field(..., description="Input image + detection bounding Boxes")
