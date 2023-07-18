@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Union, Optional, Tuple, Callable, Dict, Generator
 
-from pydantic import BaseModel
+from pydantic import BaseModel as PBaseModel
 from pydantic.fields import ModelField
 
 import numpy as np
@@ -218,6 +218,12 @@ class String:
 
 class Image:
 
+    @staticmethod
+    def from_ndarray(arr: np.ndarray) -> "Image":
+        file = io.BytesIO()
+        PIL_Image.fromarray(arr).save(file, format="PNG")
+        return Image(bytearray(file.read()), filename="image.png", mime_type="image/png")
+
     def __init__(self, val: Union["Image", str, uuid.UUID, bytearray], filename: Optional[str] = None, mime_type: Optional[str] = None) -> None:
         self.data: Optional[bytearray] = None
         self.filename: Optional[str] = None
@@ -356,7 +362,13 @@ class Image:
 
 
 class Audio:
-        
+
+    @staticmethod
+    def from_ndarray(arr: np.ndarray, sampling_rate: int) -> "Audio":
+        file = io.BytesIO()
+        soundfile.write(file, arr, samplerate=sampling_rate, format="MP3")
+        return Audio(bytearray(file.read()), filename="audio.mp3", mime_type="audio/mp3")
+    
     def __init__(self, val: Union["Audio", str, uuid.UUID, bytearray], filename: Optional[str] = None, mime_type: Optional[str] = None) -> None:
         self.data: Optional[bytearray] = None
         self.filename: Optional[str] = None
@@ -648,7 +660,7 @@ class Video:
             field_schema["type"] = "string"
             field_schema["format"] = "video"
 
-class BaseModel(BaseModel):
+class BaseModel(PBaseModel):
     class Config:
         json_encoders = {
             Boolean: lambda v: v.is_set if v else None,
