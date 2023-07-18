@@ -3,7 +3,7 @@ from hyko_sdk.metadata import MetaData, pmodel_to_ports
 from hyko_sdk.io import Image, String, Integer, Number
 # Metadata
 
-name = "falcon-7B"
+name = "falcon-40B"
 description = "instruct generation model"
 version = "1.0"
 category = "text-LLM"
