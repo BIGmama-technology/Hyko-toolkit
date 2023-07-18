@@ -6,20 +6,22 @@ from typing import List
 # Metadata
 
 name = "clip-vit-large-patch14"
-description = "CLIP Model, few shot image classification"
+description = """
+Classify an image to one class out of the user-inputted list of classes. 
+Example: if the classes are ['cat', 'dog'] then the model will have to choose if the image is a cat or dog
+"""
+
 version = "1.0"
 category = "Image Classification"
-task = "Classifies Image content to one of items in List[classes : list[str]]"
 
 
 class Inputs(BaseModel):
     img: Image = Field(..., description="Image input by user to be classified")
-    classes: List[String] = Field(..., description="List of classes to classify the input image on")
 
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    pass
+    classes: List[String] = Field(..., description="List of classes to classify the input image on")
 
 
 class Outputs(BaseModel):

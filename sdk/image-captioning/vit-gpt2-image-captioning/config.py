@@ -9,14 +9,14 @@ version = "1.0"
 category = "Vision"
 
 class Inputs(BaseModel):
-    img : Image = Field(..., description="User inputted image to be captionned")
+    image : Image = Field(..., description="User inputted image to be captionned")
 
 # Parameters to the function like temperature for gpt3. These values are constant in runtime
 class Params(BaseModel):
     pass
 
 class Outputs(BaseModel):
-    text : String = Field(..., description="Caption of the image")
+    image_description : String = Field(..., description="description/caption of the image")
 
 # Function metadata, should always be here
 

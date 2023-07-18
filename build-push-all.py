@@ -52,7 +52,7 @@ def metadata_to_labels(meta: MetaData) -> Dict[str, Union[float, int, str, bool]
     return labels
 
 
-registry_host = "registry.localhost"
+registry_host = "registry.wbox.hyko.a"
 
 
 def process_function_dir(root_path: str, pre_categories: List[str]):
@@ -70,37 +70,37 @@ def process_function_dir(root_path: str, pre_categories: List[str]):
     print("Building metadata...")
     subprocess.run(f"docker build --target metadata -t {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata ./sdk/{categories_prefix}/{function_name}".split(' '))
 
-    metadata_process = subprocess.run(f"docker run -it --rm {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '), capture_output=True)
-    meta_data = metadata_process.stdout.decode()
-    print(meta_data)
-    labels = metadata_to_labels(MetaData(**json.loads(meta_data)))
-    labels["HYKO_SDK_CATEGORY"] = categories_prefix
+    # metadata_process = subprocess.run(f"docker run -it --rm {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '), capture_output=True)
+    # meta_data = metadata_process.stdout.decode()
+    # print(meta_data)
+    # labels = metadata_to_labels(MetaData(**json.loads(meta_data)))
+    # labels["HYKO_SDK_CATEGORY"] = categories_prefix
 
-    print()
-    print("Removing metadata image")
-    subprocess.run(f"docker rmi -f {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '))
+    # print()
+    # print("Removing metadata image")
+    # subprocess.run(f"docker rmi -f {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:metadata".split(' '))
 
-    print()
-    print("Building...")
+    # print()
+    # print("Building...")
 
-    build_cmd = f"docker build "
-    build_cmd += f"--build-arg CATEGORY={categories_prefix} "
-    build_cmd += f"--build-arg FUNCTION_NAME={function_name} "
-    build_cmd += f"--target main "
-    build_cmd += f"-t {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:latest "
-    for label_name, label_val in labels.items():
-        build_cmd += f'--label {label_name}="{label_val}" '
-    build_cmd += f"./sdk/{categories_prefix}/{function_name}"
+    # build_cmd = f"docker build "
+    # build_cmd += f"--build-arg CATEGORY={categories_prefix} "
+    # build_cmd += f"--build-arg FUNCTION_NAME={function_name} "
+    # build_cmd += f"--target main "
+    # build_cmd += f"-t {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:latest "
+    # for label_name, label_val in labels.items():
+    #     build_cmd += f'--label {label_name}="{label_val}" '
+    # build_cmd += f"./sdk/{categories_prefix}/{function_name}"
 
-    print(build_cmd.split(' '))
+    # print(build_cmd.split(' '))
 
-    subprocess.run(["/bin/sh", "-c", build_cmd])
+    # subprocess.run(["/bin/sh", "-c", build_cmd])
 
 
-    print()
-    print("Pushing...")
+    # print()
+    # print("Pushing...")
 
-    subprocess.run(f"docker push {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:latest".split(' '))
+    # subprocess.run(f"docker push {registry_host}/sdk/{categories_prefix.lower()}/{function_name.lower()}:latest".split(' '))
 
 
 
@@ -135,4 +135,3 @@ if __name__ == "__main__":
     subprocess.run(f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
 
     walk_directory("./sdk", [])
-    # process_function_dir("./sdk", ["utils", "converters", "video-to-audio"])

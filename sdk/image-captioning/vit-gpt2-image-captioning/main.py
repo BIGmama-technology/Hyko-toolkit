@@ -11,21 +11,23 @@ app = fastapi.FastAPI()
 
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# device = torch.device("cpu")
-model.to(device)
+app = fastapi.FastAPI()
+
+model = None
+feature_extractor = None
+tokenizer = None
 
 max_length = 16
 num_beams = 4
 gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
 
 
-app = fastapi.FastAPI()
-model = None
-feature_extractor = None
-tokenizer = None
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
-@app.post("/load", response_model=None)
+
+@app.post(
+    "/load",
+    response_model=None,
+)
 def load():
     global model
     global feature_extractor
@@ -34,7 +36,7 @@ def load():
         print("Model loaded already")
         return
 
-    model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning").to(device)
+    model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning").to(device) # type: ignore
     feature_extractor = ViTImageProcessor.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
     tokenizer = AutoTokenizer.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
 
@@ -42,9 +44,9 @@ def load():
 async def main(inputs: Inputs, params: Params):
     if model is None or feature_extractor is None or tokenizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
-    
-    img = inputs.img.decode()
-    pixel_values = feature_extractor(images=cv2.cvtColor(img, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values
+    await inputs.image.wait_data()
+    img = inputs.image.to_ndarray()
+    pixel_values = feature_extractor(images=cv2.cvtColor(img, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values # type: ignore
     pixel_values = pixel_values.to(device)
     output_ids = model.generate(pixel_values, **gen_kwargs)
     preds = tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
