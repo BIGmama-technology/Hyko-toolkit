@@ -52,7 +52,7 @@ def metadata_to_labels(meta: MetaData) -> Dict[str, Union[float, int, str, bool]
     return labels
 
 
-registry_host = "registry.wbox.hyko.ai"
+registry_host = "registry.localhost"
 
 
 def process_function_dir(root_path: str, pre_categories: List[str]):
