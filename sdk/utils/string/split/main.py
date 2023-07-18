@@ -1,20 +1,21 @@
-import fastapi
-from config import Inputs, Params, Outputs, String
+from fastapi import FastAPI
+from config import Inputs, Params, Outputs
 
-app = fastapi.FastAPI()
+app = FastAPI()
 
-app = fastapi.FastAPI()
-
-@app.post("/load", response_model=None)
+@app.post(
+    "/load",
+    response_model=None,
+)
 def load():
     pass
 
-@app.post("/", response_model=Outputs)
+@app.post(
+    "/",
+    response_model=Outputs,
+)
 async def main(inputs: Inputs, params: Params):
-    res = []
-    for s in inputs.text.split(params.delimeter):
-        res.append(String(s))
-    return Outputs(splitted=res)
+    return Outputs(splitted=inputs.text.split(params.delimeter))
 
 
 ##############################################################################################################
