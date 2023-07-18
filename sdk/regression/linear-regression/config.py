@@ -1,27 +1,26 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
+from hyko_sdk.io import BaseModel
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
-from hyko_sdk.io import Number
-from typing import List, Union
-import numpy as np
+from typing import List
 
 # Metadata
 
 name = "Linear Regression"
-description = "Linear Regression: Predicts future values of unseen samples on the X axis"
+description = "Predicts a future value based on historical data"
 version = "1.0"
 category = "Regression"
 task = "Predict future value based on correleated data"
 
 class Inputs(BaseModel):
-    input_sample : Number = Field(..., description="Input sample of X axis to get a prediction on for Y axis")
+    predict_x : float = Field(..., description="X axis value for which to predict Y axis value")
 
 # Parameters to the function like temperature for gpt3. These values are constant in runtime
 class Params(BaseModel):
-    input_x : List[Number] = Field(..., description="Data of X axis")
-    input_y : List[Number] = Field(..., description="Data of Y axis")
+    historical_x : List[float] = Field(..., description="Historical data of X axis")
+    historical_y : List[float] = Field(..., description="Historical data of Y axis")
 
 class Outputs(BaseModel):
-    prediction: Number = Field(..., description="Predicted value of Y axis")
+    predict_y: float = Field(..., description="Predicted Y axis value")
 
 # Function metadata, should always be here
 

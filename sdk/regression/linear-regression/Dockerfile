@@ -2,6 +2,8 @@ FROM hyko-sdk:latest  AS main
 
 WORKDIR /app
 
+RUN pip install scikit_learn
+
 COPY main.py .
 COPY config.py .
 
