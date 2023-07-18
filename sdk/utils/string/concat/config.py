@@ -16,15 +16,15 @@ category = "utils/string"
 
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
-    first: str = Field(..., description="First string")
-    second: str = Field(..., description="Second string")
+    pass
 
 # runtime means when the prototype is generated and deployed for the user (ui and all)
 
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    pass
+    first: str = Field(..., description="First string")
+    second: str = Field(..., description="Second string")
 
 
 # outputs of the function.
