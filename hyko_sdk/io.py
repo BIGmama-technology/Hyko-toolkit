@@ -46,6 +46,9 @@ class Boolean:
 
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self.is_set}"
         
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
@@ -91,7 +94,10 @@ class Number:
 
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
-        
+
+    def __str__(self) -> str:
+        return f"{self.val}"
+
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
         yield cls.validate
@@ -136,6 +142,9 @@ class Integer:
 
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self.val}"
 
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
@@ -185,6 +194,9 @@ class String:
 
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self.data}"
 
     @classmethod
     def __get_validators__(cls) -> Generator[Callable, None, None]:
@@ -246,6 +258,9 @@ class Image:
         
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self._uuid}"
 
     async def download(self):
         metadata_bytes = await download_file(url=f"https://bpresources.api.localhost/hyko/{self._uuid}/metadata.json")
@@ -382,6 +397,9 @@ class Audio:
         
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self._uuid}"
 
     async def download(self):
         metadata_bytes = await download_file(url=f"https://bpresources.api.localhost/hyko/{self._uuid}/metadata.json")
@@ -549,6 +567,9 @@ class Video:
         
         else:
             raise ValueError(f"Got invalid value type, {type(val)}")
+
+    def __str__(self) -> str:
+        return f"{self._uuid}"
 
     async def download(self):
         metadata_bytes = await download_file(url=f"https://bpresources.api.localhost/hyko/{self._uuid}/metadata.json")
