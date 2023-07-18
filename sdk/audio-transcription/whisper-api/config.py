@@ -5,10 +5,11 @@ from hyko_sdk.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
 
-name = "whisper-api"
-description = "OpenAI's Audio transcription (API)"
+name = "Whisper (API)"
+description = "OpenAI's Audio Transcription model (API)"
 version = "1.0"
-category = "OpenAi"
+category = "Audio Transcription"
+task = "Speech to text transcription"
 
 ##############################################
 
@@ -18,23 +19,19 @@ category = "OpenAi"
 # main inputs to the function like a prompt for gpt3. These values are dynamic in runtime.
 class Inputs(BaseModel):
     audio: Audio = Field(..., description="User audio input to be transcribed")
-    prompt: Optional[String] = Field(default=None, description="User additional text prompt")
-
-
-
-# runtime means when the prototype is generated and deployed for the user (ui and all)
 
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    language: Optional[String] = Field(default='en', description="ISO-639-1 transcribtion language")
+    prompt: Optional[String] = Field(default=None, description="User additional text prompt for the model")
+    language: Optional[String] = Field(default='en', description="ISO-639-1 transcription language")
     api_key: String = Field(..., description="OpenAI's API KEY")
-    temperature: Optional[Number] = Field(0.6, description="Whisper's temperature")
+    temperature: Optional[Number] = Field(default=None, description="Whisper model temperature")
 
 
 # outputs of the function.
 class Outputs(BaseModel):
-    transcript: String = Field(..., description="Transcript of the audio inputted by the user")
+    transcribed_text: String = Field(..., description="Generated transcription text")
 
 
 # Function metadata, should always be here
