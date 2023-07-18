@@ -1,8 +1,15 @@
-FROM hyko-sdk-gpu:latest AS build
+FROM torch-cuda:latest AS main
 
 WORKDIR /app
 
 RUN python -c "import torch;from transformers import AutoTokenizer;import transformers;model = 'tiiuae/falcon-7b-instruct';tokenizer = AutoTokenizer.from_pretrained(model);pipeline = transformers.pipeline('text-generation',model=model,tokenizer=tokenizer,torch_dtype=torch.bfloat16,trust_remote_code=True,device_map='auto')"
+
+RUN apt update && \
+    apt install ffmpeg -y && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install uvicorn hyko_sdk==0.1.36
 
 COPY main.py .
 COPY config.py .

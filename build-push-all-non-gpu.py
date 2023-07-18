@@ -116,7 +116,7 @@ def walk_directory(root_path: str, pre_categories: List[str]):
     if "main.py" in ls and "config.py" in ls and "Dockerfile" in ls:
         with open(root_path + '/' + '/'.join(pre_categories) + '/Dockerfile') as f:
             dockerfile = f.read()
-            if 'gpu' in dockerfile:
+            if 'cuda' in dockerfile:
                 return
             
         import threading
