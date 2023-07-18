@@ -1,6 +1,6 @@
 from typing import Optional
-from pydantic import BaseModel, Field
-from hyko_sdk.io import Number, String, Audio
+from pydantic import Field
+from hyko_sdk.io import BaseModel, Audio
 from hyko_sdk.metadata import MetaData, pmodel_to_ports
 
 # Change Meta data here:#####################
@@ -23,15 +23,15 @@ class Inputs(BaseModel):
 
 # Parameters to the function like temperature for gpt3. These values are constant  n runtime
 class Params(BaseModel):
-    prompt: Optional[String] = Field(default=None, description="User additional text prompt for the model")
-    language: Optional[String] = Field(default='en', description="ISO-639-1 transcription language")
-    api_key: String = Field(..., description="OpenAI's API KEY")
-    temperature: Optional[Number] = Field(default=None, description="Whisper model temperature")
+    prompt: Optional[str] = Field(default=None, description="User additional text prompt for the model")
+    language: Optional[str] = Field(default='en', description="ISO-639-1 transcription language")
+    api_key: str = Field(..., description="OpenAI's API KEY")
+    temperature: Optional[float] = Field(default=None, description="Whisper model temperature")
 
 
 # outputs of the function.
 class Outputs(BaseModel):
-    transcribed_text: String = Field(..., description="Generated transcription text")
+    transcribed_text: str = Field(..., description="Generated transcription text")
 
 
 # Function metadata, should always be here
