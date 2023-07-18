@@ -1,9 +1,6 @@
 FROM hyko-sdk:latest AS main
 
 WORKDIR /app
-COPY requirements.txt .
-
-RUN pip install -r /app/requirements.txt
 
 COPY main.py .
 COPY config.py .

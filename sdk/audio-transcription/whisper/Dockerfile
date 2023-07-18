@@ -1,13 +1,8 @@
 FROM hyko-sdk-gpu:latest AS build
 
 WORKDIR /app
-COPY requirements.txt .
-
-RUN pip install -r /app/requirements.txt
 
 RUN python -c "from transformers import WhisperProcessor, WhisperForConditionalGeneration; WhisperProcessor.from_pretrained('openai/whisper-large-v2');  WhisperForConditionalGeneration.from_pretrained('openai/whisper-large-v2')"
-
-FROM build as main
 
 COPY main.py .
 COPY config.py .
