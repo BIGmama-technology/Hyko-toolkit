@@ -14,7 +14,10 @@ model = None
 processor = None
 device = torch.device("cuda:1") if torch.cuda.is_available() else torch.device('cpu')
 
-@app.post("/load", response_model=None)
+@app.post(
+    "/load",
+    response_model=None,
+)
 def load():
     global model
     global processor
