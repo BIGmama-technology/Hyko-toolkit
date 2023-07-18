@@ -18,8 +18,6 @@ def load():
 )
 async def main(inputs: Inputs, params: Params):
 
-    print(f"key: {params.api_key}")
-
     await inputs.audio.wait_data()
 
     if inputs.audio.data is None:

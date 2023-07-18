@@ -119,9 +119,9 @@ def walk_directory(root_path: str, pre_categories: List[str]):
             if 'cuda' in dockerfile:
                 return
             
-        import threading
-        threading.Thread(target=process_function_dir, args=[root_path, pre_categories]).start()
-        # process_function_dir(root_path=root_path, pre_categories=pre_categories)
+        # import threading
+        # threading.Thread(target=process_function_dir, args=[root_path, pre_categories]).start()
+        process_function_dir(root_path=root_path, pre_categories=pre_categories)
 
     for sub_folder in ls:
 
