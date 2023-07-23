@@ -17,7 +17,7 @@ class Inputs(BaseModel):
 
 # Parameters to the function like temperature for gpt3. These values are constant in runtime
 class Params(BaseModel):
-    pass
+    language: str = Field(default="en", description="the language of the audio")
 
 
 class Outputs(BaseModel):
