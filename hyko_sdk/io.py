@@ -317,15 +317,19 @@ class Audio:
                 
             os.remove(out)
             
-    def convert_to(self, ext: str):
+    def convert_to(self, new_ext: str):
         if self.data and self.filename:
-            with open(self.filename, "wb") as f:
+            
+            # user video.{ext} instead of filename directly to avoid errors with names that has space in it
+            file, ext = os.path.splitext(self.filename)
+            with open(f"/app/video.{ext}", "wb") as f:
                 f.write(self.data)
-            out = "audio_converted." + ext 
-            if self.filename == out:
-                out = "audio_converted_2." + ext
                 
-            subprocess.run(f"ffmpeg -i {self.filename} {out} -y".split(" "))
+            out = "media_converted." + new_ext 
+            if self.filename == out:
+                out = "media_converted_2." + new_ext
+                
+            subprocess.run(f"ffmpeg -i video.{ext} {out} -y".split(" "))
             with open(out, "rb") as f:
                 self.data = bytearray(f.read())
                 
