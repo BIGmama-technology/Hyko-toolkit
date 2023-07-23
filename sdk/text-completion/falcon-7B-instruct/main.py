@@ -91,7 +91,7 @@ async def main(inputs: Inputs, params: Params):
             return_full_text=False,
             temperature=params.temperature,
             top_p=params.top_p,
-            repetition_penalty=0.5
+            repetition_penalty=params.repetition_penalty
         )
     output_text = sequences[0]['generated_text']
     return Outputs(generated_text=output_text)
