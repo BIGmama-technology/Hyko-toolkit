@@ -53,7 +53,8 @@ async def main(inputs: Inputs, params: Params):
     segment_size = seconds * sample_rate 
     segments_count = math.ceil(len(waveform) / segment_size)
     waveform_segments = [waveform[segment_size * i: min(segment_size * (i + 1), len(waveform))] for i in range(segments_count)]
-    
+    forced_decoder_ids = processor.get_decoder_prompt_ids(language=params.language, task="transcribe")
+
 
     for segment in waveform_segments:
         
@@ -62,7 +63,7 @@ async def main(inputs: Inputs, params: Params):
         ).input_features
 
         with torch.no_grad():
-            output_toks = model.generate(input_features.to(device = device))
+            output_toks = model.generate(input_features.to(device = device), forced_decoder_ids=forced_decoder_ids)
             print("Device: ", output_toks.device) # type: ignore
             transcription_segment = str(processor.batch_decode(
                 output_toks, max_new_tokens=10000, skip_special_tokens=True

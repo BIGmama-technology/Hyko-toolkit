@@ -17,6 +17,7 @@ class Params(BaseModel):
     top_k : int = Field(default=10,description="top_k candidates for each token generation")
     temperature: float = Field(default=0.6, description="Temperature of falcon")
     top_p: float = Field(default=0.6, description="Top P of falcon")
+    repetition_penalty: float = Field(default=10.0, description="Repetition penalty of falcon")
 
 class Outputs(BaseModel):
     generated_text : str = Field(..., description="Generated Text from falcon-instruct")
