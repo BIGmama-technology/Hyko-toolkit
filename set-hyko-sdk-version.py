@@ -33,4 +33,25 @@ def walk_directory(root_path: str, pre_categories: List[str]):
 if __name__ == "__main__":
 
     walk_directory("./sdk", [])
+    output = ""
+    with open("common_dockerfiles/hyko-sdk.Dockerfile") as f:
+        text = f.readlines()
+        for line in text:
+            if "RUN pip install uvicorn hyko_sdk==" in line:
+                line = "RUN pip install uvicorn hyko_sdk==" + sys.argv[1] + '\n'
+            output += line
+    if output != "":
+        with open("common_dockerfiles/hyko-sdk.Dockerfile", 'w') as f:
+            f.write(output)
+            
+    output = ""
+    with open("setup.cfg") as f:
+        text = f.readlines()
+        for line in text:
+            if "version" in line:
+                line = "version = " + sys.argv[1] + '\n'
+            output += line
+    if output != "":
+        with open("setup.cfg", 'w') as f:
+            f.write(output)
     # process_function_dir("./sdk", ["utils", "converters", "video-to-audio"])
