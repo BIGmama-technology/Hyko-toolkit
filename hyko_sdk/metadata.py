@@ -1,7 +1,7 @@
 from typing import Any, List, Optional, Union, Dict
 from .io import BaseModel
-from pprint import pprint
 from enum import Enum
+import json
 
 class IOPortType(str, Enum):
     BOOLEAN = "boolean"
@@ -21,7 +21,7 @@ class Property(BaseModel):
     type: Optional[IOPortType] = None
     subtype: Optional[HykoExtraTypes] = None
     anyOf: Optional [List['Property']] = None
-    items: Optional['Property' | List['Property']] = None
+    items: Optional[Union['Property', List['Property']]] = None
     prefixItems: Optional[List['Property']] = None
     minItems: Optional[int] = None
     maxItems: Optional[int] = None
@@ -43,3 +43,10 @@ class MetaData(MetaDataBase):
     version: str
     name: str
     category: str
+
+
+def metadata_to_docker_label(metadata: MetaData) -> str:
+    return metadata.model_dump_json(exclude_unset=True).replace('"', "'")
+    
+def docker_label_to_metadata(label: str) -> MetaData:
+    return MetaData(**json.loads(label.replace("'", '"')))
