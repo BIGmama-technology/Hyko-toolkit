@@ -169,7 +169,7 @@ class Image(HykoBaseType):
         handler: GetJsonSchemaHandler
     ):
         schema = handler(_core_schema)
-        schema["subtype"] = "image"
+        schema["type"] = "image"
         return schema
         
         
@@ -261,7 +261,7 @@ class Audio(HykoBaseType):
         handler: GetJsonSchemaHandler
     ):
         schema = handler(_core_schema)
-        schema["subtype"] = "audio"
+        schema["type"] = "audio"
         return schema
         
         
@@ -420,7 +420,7 @@ class Video(HykoBaseType):
         handler: GetJsonSchemaHandler
     ):
         schema = handler(_core_schema)
-        schema["subtype"] = "video"
+        schema["type"] = "video"
         return schema
     
 class CoreModel(BaseModel):

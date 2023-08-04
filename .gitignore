@@ -167,3 +167,5 @@ cython_debug/
 *.wav
 *.mp3
 *.webm
+
+sdk_test

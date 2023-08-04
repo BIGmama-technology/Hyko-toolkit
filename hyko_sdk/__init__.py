@@ -1,3 +1,3 @@
-from . import error
-from . import io
-from . import metadata
+from .metadata import *
+from .io import *
+from .error import *
