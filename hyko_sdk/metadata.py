@@ -18,8 +18,7 @@ class HykoExtraTypes(str, Enum):
     VIDEO = "video"
     
 class Property(BaseModel):
-    type: Optional[IOPortType] = None
-    subtype: Optional[HykoExtraTypes] = None
+    type: IOPortType | HykoExtraTypes
     anyOf: Optional [List['Property']] = None
     items: Optional[Union['Property', List['Property']]] = None
     prefixItems: Optional[List['Property']] = None
@@ -51,5 +50,3 @@ def metadata_to_docker_label(metadata: MetaData) -> str:
     
 def docker_label_to_metadata(label: str) -> MetaData:
     return MetaData(**json.loads(label.replace("'", '"')))
-
-
