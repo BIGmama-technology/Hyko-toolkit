@@ -31,7 +31,7 @@ def walk_directory(path: str):
 
 if __name__ == "__main__":
 
-    subprocess.run(f"docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
+    # subprocess.run(f"docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
     subprocess.run(f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
     if len(sys.argv) >= 2:
         walk_directory(sys.argv[1])
