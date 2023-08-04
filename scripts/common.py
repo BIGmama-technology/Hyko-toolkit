@@ -2,7 +2,7 @@ import subprocess
 from hyko_sdk.metadata import MetaData, MetaDataBase, metadata_to_docker_label
 import json
 
-registry_host = "registry.localhost"
+registry_host = "registry.traefik.me"
 
 def process_function_dir(path: str):
     """Path has to be a valid path with no spaces in it """
@@ -35,7 +35,7 @@ def process_function_dir(path: str):
    
     meta_data = metadata_process.stdout.decode()
     meta_data = MetaDataBase(**json.loads(meta_data))
-    meta_data = MetaData(**meta_data.model_dump(), name=function_name, version=version, category=category)
+    meta_data = MetaData(**meta_data.model_dump(exclude_unset=True, exclude_none=True), name=function_name, version=version, category=category)
     subprocess.run(f"docker rmi -f metadata:latest".split(' '))
 
     print()

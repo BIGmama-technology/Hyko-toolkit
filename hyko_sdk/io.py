@@ -4,7 +4,7 @@ from typing import Any, Union, Optional, Tuple
 from typing import Any, Type
 
 from pydantic_core import core_schema
-from pydantic import BaseModel as PBaseModel, GetCoreSchemaHandler, GetJsonSchemaHandler
+from pydantic import BaseModel, GetCoreSchemaHandler, GetJsonSchemaHandler
 import numpy as np
 from PIL import Image as PIL_Image
 import soundfile
@@ -422,10 +422,6 @@ class Video(HykoBaseType):
         schema = handler(_core_schema)
         schema["subtype"] = "video"
         return schema
-        
-        
-
     
-class BaseModel(PBaseModel):
+class CoreModel(BaseModel):
     pass
-

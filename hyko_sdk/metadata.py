@@ -46,7 +46,10 @@ class MetaData(MetaDataBase):
 
 
 def metadata_to_docker_label(metadata: MetaData) -> str:
-    return metadata.model_dump_json(exclude_unset=True).replace('"', "'")
+    return metadata.model_dump_json(exclude_unset=True, exclude_none=True).replace('"', "'")
+
     
 def docker_label_to_metadata(label: str) -> MetaData:
     return MetaData(**json.loads(label.replace("'", '"')))
+
+
