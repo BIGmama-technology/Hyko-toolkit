@@ -54,4 +54,3 @@ if __name__ == "__main__":
     if output != "":
         with open("setup.cfg", 'w') as f:
             f.write(output)
-    # process_function_dir("./sdk", ["utils", "converters", "video-to-audio"])
