@@ -18,7 +18,7 @@ class HykoExtraTypes(str, Enum):
     VIDEO = "video"
     
 class Property(BaseModel):
-    type: IOPortType | HykoExtraTypes
+    type: Optional[IOPortType | HykoExtraTypes] = None
     anyOf: Optional [List['Property']] = None
     items: Optional[Union['Property', List['Property']]] = None
     prefixItems: Optional[List['Property']] = None
