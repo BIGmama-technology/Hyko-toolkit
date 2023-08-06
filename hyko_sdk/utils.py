@@ -1,6 +1,8 @@
-from typing import AsyncIterator
+import json
+from typing import AsyncIterator, Callable
 from fastapi import HTTPException, status
 import httpx
+from .metadata import MetaData, CoreModel
 import tqdm
 
 async def download_file(url: str) -> bytearray:
@@ -30,7 +32,7 @@ async def download_file(url: str) -> bytearray:
                     progress.update(len(chunk))
                 return data
 
-async def bytearray_aiter(data: bytearray, update_progress) -> AsyncIterator[bytearray]:
+async def bytearray_aiter(data: bytearray, update_progress: Callable[[float | None], bool | None]) -> AsyncIterator[bytearray]:
     step_size = int(len(data) / 100)
     if not step_size: step_size = 1
     for start in range(0, len(data), step_size):
@@ -51,3 +53,25 @@ async def upload_file(url: str, data: bytearray) -> None:
             )
             if not res.is_success:
                 raise Exception(f"Error while uploading, {res.text}")
+
+def metadata_to_docker_label(metadata: MetaData) -> str:
+    return metadata.model_dump_json(exclude_unset=True, exclude_none=True).replace('"', "'")
+
+    
+def docker_label_to_metadata(label: str) -> MetaData:
+    return MetaData(**json.loads(label.replace("'", '"')))
+
+
+def model_to_friendly_property_types(pydantic_model: CoreModel):
+    out: dict[str, str] = {}
+    for field_name, field in pydantic_model.model_fields.items():
+        annotation = str(field.annotation).lower()
+        if "<class" in annotation:
+            annotation = annotation[8:-2]
+        
+        annotation = annotation.replace("hyko_sdk.io.", "")
+        annotation = annotation.replace("typing.", "")
+        out[field_name] = annotation
+        print(annotation)
+    print(out)
+    return out
