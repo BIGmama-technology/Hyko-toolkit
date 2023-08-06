@@ -101,11 +101,7 @@ def process_function_dir(path: str, registry_host: str):
                 
             if field.type == IOPortType.ARRAY:
                 if field.items is not None:
-                    if isinstance(field.items, Property):
-                        check_property(field.items, field_name, field_type, allow_union)
-                    else:
-                        for item in field.items:
-                            check_property(item, field_name, field_type, allow_union)
+                    check_property(field.items, field_name, field_type, allow_union)
                             
                 elif field.prefixItems is not None:
                     for item in field.prefixItems:

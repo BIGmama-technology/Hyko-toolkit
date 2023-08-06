@@ -68,10 +68,12 @@ def model_to_friendly_property_types(pydantic_model: CoreModel):
         annotation = str(field.annotation).lower()
         if "<class" in annotation:
             annotation = annotation[8:-2]
-        
+
         annotation = annotation.replace("hyko_sdk.io.", "")
         annotation = annotation.replace("typing.", "")
+        annotation = annotation.replace('str', 'string')
+        annotation = annotation.replace('int', 'integer')
+        annotation = annotation.replace('float', 'number')
+        
         out[field_name] = annotation
-        print(annotation)
-    print(out)
     return out
