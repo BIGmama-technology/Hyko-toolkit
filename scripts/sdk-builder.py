@@ -7,7 +7,7 @@ from hyko_sdk import Property
 import pydantic
 import threading
 
-from hyko_sdk.metadata import MetaData, MetaDataBase, metadata_to_docker_label, IOPortType
+from hyko_sdk import MetaData, MetaDataBase, metadata_to_docker_label, IOPortType
 
 
 skip_folders = ["__pycache__", "venv"]
@@ -70,12 +70,13 @@ def process_function_dir(path: str, registry_host: str):
         print("Building metadata...")
         try:
             subprocess.run(f"docker build --target metadata -t metadata:latest ./{path}".split(' '), check=True)
-        except ChildProcessError:
+        except subprocess.CalledProcessError:
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
 
         try:
             metadata_process = subprocess.run(f"docker run -it --rm metadata:latest".split(' '), capture_output=True, check=True)
-        except ChildProcessError:
+        except subprocess.CalledProcessError as e:
+            print(e.stdout.decode())
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
         
         metadata = metadata_process.stdout.decode()
@@ -147,23 +148,23 @@ def process_function_dir(path: str, registry_host: str):
         print("Executing cmd: ", build_cmd.split(' '))
         try:
             subprocess.run(["/bin/sh", "-c", build_cmd], check=True)
-        except ChildProcessError:
+        except subprocess.CalledProcessError:
             raise FunctionBuildError(function_name, version, "Failed to build function main docker image")
 
         print()
         print("Pushing...")
         try:
             subprocess.run(f"docker push {function_tag}".split(' '), check=True)
-        except ChildProcessError:
+        except subprocess.CalledProcessError:
             raise FunctionBuildError(function_name, version, f"Failed to push to docker registry {registry_host}")
     except FunctionBuildError as e:
         failed_functions_lock.acquire()
         failed_functions.append(e)
         failed_functions_lock.release()
-    except Exception as e:
-        failed_functions_lock.acquire()
-        failed_functions.append(FunctionBuildError(path, "unknown", "Unexpected: " + str(e)))
-        failed_functions_lock.release()
+    # except Exception as e:
+    #     failed_functions_lock.acquire()
+    #     failed_functions.append(FunctionBuildError(path, "unknown", "Unexpected: " + str(e)))
+    #     failed_functions_lock.release()
     
 
 def walk_directory(path: str, no_gpu: bool, threaded: bool, registry_host: str):
