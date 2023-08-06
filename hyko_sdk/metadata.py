@@ -31,7 +31,7 @@ class HykoJsonSchema(BaseModel):
     required: List[str] = []
     
 class HykoJsonSchemaExt(HykoJsonSchema):
-    friendly_property_names: Dict[str, str] = {}
+    friendly_property_types: Dict[str, str] = {}
     
 class MetaDataBase(BaseModel):
     description: str
