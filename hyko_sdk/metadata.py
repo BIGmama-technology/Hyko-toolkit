@@ -1,7 +1,6 @@
 from typing import Any, List, Optional, Union, Dict
-from .io import BaseModel
+from pydantic import BaseModel
 from enum import Enum
-import json
 
 class IOPortType(str, Enum):
     BOOLEAN = "boolean"
@@ -31,11 +30,14 @@ class HykoJsonSchema(BaseModel):
     properties: Dict[str, Property] = {}
     required: List[str] = []
     
+class HykoJsonSchemaExt(HykoJsonSchema):
+    friendly_property_names: Dict[str, str] = {}
+    
 class MetaDataBase(BaseModel):
     description: str
-    inputs: HykoJsonSchema
-    outputs: HykoJsonSchema
-    params: HykoJsonSchema
+    inputs: HykoJsonSchemaExt
+    outputs: HykoJsonSchemaExt
+    params: HykoJsonSchemaExt
     requires_gpu: bool
 
 class MetaData(MetaDataBase):
@@ -43,10 +45,5 @@ class MetaData(MetaDataBase):
     name: str
     category: str
 
-
-def metadata_to_docker_label(metadata: MetaData) -> str:
-    return metadata.model_dump_json(exclude_unset=True, exclude_none=True).replace('"', "'")
-
-    
-def docker_label_to_metadata(label: str) -> MetaData:
-    return MetaData(**json.loads(label.replace("'", '"')))
+class CoreModel(BaseModel):
+    pass

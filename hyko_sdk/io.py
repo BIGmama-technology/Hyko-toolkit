@@ -422,6 +422,3 @@ class Video(HykoBaseType):
         schema = handler(_core_schema)
         schema["type"] = "video"
         return schema
-    
-class CoreModel(BaseModel):
-    pass
