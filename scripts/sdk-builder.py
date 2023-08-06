@@ -245,6 +245,9 @@ if __name__ == "__main__":
         
     subprocess.run(f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
     
+    
+    if directory[-1] == '/':
+        directory = directory[:-1]
     walk_directory(directory, no_gpu, threaded, registry_host)
     successful_count = len(all_built_functions) - len(failed_functions)
     print(f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function")
