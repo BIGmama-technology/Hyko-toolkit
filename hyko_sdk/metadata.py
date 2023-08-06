@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Union, Dict
+from typing import Any, List, Optional, Dict
 from pydantic import BaseModel
 from enum import Enum
 
@@ -19,7 +19,7 @@ class HykoExtraTypes(str, Enum):
 class Property(BaseModel):
     type: Optional[IOPortType | HykoExtraTypes] = None
     anyOf: Optional [List['Property']] = None
-    items: Optional[Union['Property', List['Property']]] = None
+    items: Optional['Property'] = None
     prefixItems: Optional[List['Property']] = None
     minItems: Optional[int] = None
     maxItems: Optional[int] = None
