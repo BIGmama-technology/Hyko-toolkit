@@ -2,7 +2,7 @@ import json
 from typing import AsyncIterator, Callable
 from fastapi import HTTPException, status
 import httpx
-from .metadata import MetaData, CoreModel
+from .metadata import HykoJsonSchemaExt, MetaData, CoreModel, MetaDataBase
 import tqdm
 
 async def download_file(url: str) -> bytearray:
@@ -77,3 +77,35 @@ def model_to_friendly_property_types(pydantic_model: CoreModel):
         
         out[field_name] = annotation
     return out
+
+def extract_metadata(
+    Inputs: CoreModel,
+    Params: CoreModel,
+    Outputs: CoreModel,
+    description: str,
+    requires_gpu: bool,
+):
+    __meta_data__ = MetaDataBase(
+        description=description,
+        inputs=HykoJsonSchemaExt(
+            **Inputs.model_json_schema(),
+            friendly_property_types=
+                    model_to_friendly_property_types(Inputs) # type: ignore
+        ), 
+        
+        params=HykoJsonSchemaExt(
+            **Params.model_json_schema(),
+            friendly_property_types=
+                    model_to_friendly_property_types(Params) # type: ignore
+        ), 
+        
+        outputs=HykoJsonSchemaExt(
+            **Outputs.model_json_schema(),
+            friendly_property_types=
+                    model_to_friendly_property_types(Outputs) # type: ignore
+        ), 
+        requires_gpu=requires_gpu,
+    )
+    
+    print(__meta_data__.model_dump_json(indent=2, exclude_unset=True))
+
