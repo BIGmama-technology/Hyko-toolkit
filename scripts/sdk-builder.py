@@ -247,9 +247,9 @@ if __name__ == "__main__":
     print(build_info)
     
     if not no_gpu:
-        subprocess.run(f"docker build -t hyko-sdk/torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
+        subprocess.run(f"docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
         
-    subprocess.run(f"docker build -t hyko-sdk/hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
+    subprocess.run(f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
     
     
     if directory[-1] == '/':
