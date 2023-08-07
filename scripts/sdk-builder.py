@@ -43,7 +43,7 @@ failed_functions_lock = threading.Lock()
 
 
 
-def process_function_dir(path: str, registry_host: str):
+def process_function_dir(path: str, registry_host: str, push_image: bool):
     """Path has to be a valid path with no spaces in it """
     if path[:2] == './':
         path = path[2:]
@@ -146,13 +146,15 @@ def process_function_dir(path: str, registry_host: str):
             subprocess.run(["/bin/sh", "-c", build_cmd], check=True)
         except subprocess.CalledProcessError:
             raise FunctionBuildError(function_name, version, "Failed to build function main docker image")
-
-        print()
-        print("Pushing...")
-        try:
-            subprocess.run(f"docker push {function_tag}".split(' '), check=True)
-        except subprocess.CalledProcessError:
-            raise FunctionBuildError(function_name, version, f"Failed to push to docker registry {registry_host}")
+        
+        if push_image:
+            print()
+            print("Pushing...")
+            try:
+                subprocess.run(f"docker push {function_tag}".split(' '), check=True)
+            except subprocess.CalledProcessError:
+                raise FunctionBuildError(function_name, version, f"Failed to push to docker registry {registry_host}")
+            
     except FunctionBuildError as e:
         failed_functions_lock.acquire()
         failed_functions.append(e)
@@ -163,7 +165,7 @@ def process_function_dir(path: str, registry_host: str):
     #     failed_functions_lock.release()
     
 
-def walk_directory(path: str, no_gpu: bool, threaded: bool, registry_host: str):
+def walk_directory(path: str, no_gpu: bool, threaded: bool, registry_host: str, push_image: bool):
 
     print("Walking:", path)
     
@@ -179,9 +181,9 @@ def walk_directory(path: str, no_gpu: bool, threaded: bool, registry_host: str):
         all_built_functions.append(path)
                 
         if threaded:
-            threading.Thread(target=process_function_dir, args=[path, registry_host]).start()
+            threading.Thread(target=process_function_dir, args=[path, registry_host, push_image]).start()
         else:
-            process_function_dir(path, registry_host)
+            process_function_dir(path, registry_host, push_image)
             
     else:
         for sub_folder in ls:
@@ -192,7 +194,7 @@ def walk_directory(path: str, no_gpu: bool, threaded: bool, registry_host: str):
             if not os.path.isdir(path + '/' + sub_folder):
                 continue
             
-            walk_directory(path + '/' + sub_folder, no_gpu, threaded, registry_host)
+            walk_directory(path + '/' + sub_folder, no_gpu, threaded, registry_host, push_image)
 
 
 if __name__ == "__main__":
@@ -201,6 +203,7 @@ if __name__ == "__main__":
     no_gpu = True
     registry_host = "registry.traefik.me"
     skip_next_arg = False
+    push_image = True
     for i, arg in enumerate(sys.argv):
         if i == 0:
             continue
@@ -226,6 +229,8 @@ if __name__ == "__main__":
                     print("No registry host was provided after --registry")
                     exit(1)
                 registry_host = sys.argv[i + 1]
+            elif arg == '--no-push':
+                push_image = False
             else:
                 print(f"Ignoring unknown argument: {arg}")
         else:
@@ -236,19 +241,20 @@ if __name__ == "__main__":
         build_info += " with multithreading"
     if no_gpu:
         build_info += ". Skipping Dockerfiles with torch-cuda as base image"
+    if push_image: 
+        build_info += f". Pushing to {registry_host}"
         
-    build_info += f". Pushing to {registry_host}"
     print(build_info)
     
     if not no_gpu:
-        subprocess.run(f"docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
+        subprocess.run(f"docker build -t hyko-sdk/torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(" "))
         
-    subprocess.run(f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
+    subprocess.run(f"docker build -t hyko-sdk/hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(" "))
     
     
     if directory[-1] == '/':
         directory = directory[:-1]
-    walk_directory(directory, no_gpu, threaded, registry_host)
+    walk_directory(directory, no_gpu, threaded, registry_host, push_image)
     successful_count = len(all_built_functions) - len(failed_functions)
     print(f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function")
     for fn in failed_functions:

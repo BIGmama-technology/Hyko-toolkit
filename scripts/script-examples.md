@@ -16,3 +16,5 @@
 ### override registry:
     python scripts/sdk-builder.py --registry wbox.hyko.ai
     
+### skip pushing:
+    python scripts/sdk-builder.py --no-push
