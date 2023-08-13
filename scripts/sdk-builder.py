@@ -68,13 +68,15 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
 
 
         print("Building metadata...")
+        metadata_tag = f"{registry_host}/{category.lower()}/{function_name.lower()}:metadata-{version}"
         try:
-            subprocess.run(f"docker build --target metadata -t metadata:latest ./{path}".split(' '), check=True)
+            subprocess.run(f"docker build --target metadata -t {metadata_tag} ./{path}".split(' '), check=True)
         except subprocess.CalledProcessError:
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
 
+        
         try:
-            metadata_process = subprocess.run(f"docker run -it --rm metadata:latest".split(' '), capture_output=True, check=True)
+            metadata_process = subprocess.run(f"docker run -it --rm {metadata_tag}".split(' '), capture_output=True, check=True)
         except subprocess.CalledProcessError as e:
             print(e.stdout.decode())
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
@@ -85,7 +87,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
             metadata = MetaData(**metadata.model_dump(exclude_unset=True, exclude_none=True), name=function_name, version=version, category=category)
         except pydantic.ValidationError:
             raise FunctionBuildError(function_name, version, "Invalid Function MetaData")
-        subprocess.run(f"docker rmi -f metadata:latest".split(' '))
+        subprocess.run(f"docker rmi -f {metadata_tag}:latest".split(' '))
         
         print("Type checking and validating schema...")
         
@@ -232,9 +234,11 @@ if __name__ == "__main__":
             elif arg == '--no-push':
                 push_image = False
             else:
-                print(f"Ignoring unknown argument: {arg}")
+                print(f"unknown argument: {arg}")
+                exit(1)
         else:
-            print(f"Ignoring unknown argument: {arg}")
+            print(f"unknown argument: {arg}")
+            exit(1)
                 
     build_info = f"Building {directory}"  
     if threaded:
