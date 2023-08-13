@@ -1,3 +1,4 @@
+import base64
 import json
 from typing import AsyncIterator, Callable
 from fastapi import HTTPException, status
@@ -55,11 +56,11 @@ async def upload_file(url: str, data: bytearray) -> None:
                 raise Exception(f"Error while uploading, {res.text}")
 
 def metadata_to_docker_label(metadata: MetaData) -> str:
-    return metadata.model_dump_json(exclude_unset=True, exclude_none=True).replace('"', "'")
+    return base64.b64encode(metadata.model_dump_json(exclude_unset=True, exclude_none=True).encode()).decode()
 
     
 def docker_label_to_metadata(label: str) -> MetaData:
-    return MetaData(**json.loads(label.replace("'", '"')))
+    return MetaData(**json.loads(base64.b64decode(label.encode()).decode()))
 
 
 def model_to_friendly_property_types(pydantic_model: CoreModel):
