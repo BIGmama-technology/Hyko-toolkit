@@ -33,6 +33,10 @@ class UnionNotAllowed(FunctionBuildError):
     def __init__(self, function_name: str, version: str, field_name: str, field_type: Literal["input"] | Literal["output"] | Literal["param"]) -> None:
         super().__init__(function_name, version, f"Union is not allowed in {field_type} ports: {field_type} name: {field_name}")
 
+class EnumNotAllowed(FunctionBuildError):
+    def __init__(self, function_name: str, version: str, field_name: str, field_type: Literal["input"] | Literal["output"] | Literal["param"]) -> None:
+        super().__init__(function_name, version, f"Union is not allowed in {field_type} ports: {field_type} name: {field_name}")
+
 class UnknownArrayItemsType(FunctionBuildError):
     def __init__(self, function_name: str, version: str, field_name: str, field_type: Literal["input"] | Literal["output"] | Literal["param"]) -> None:
         super().__init__(function_name, version, f"list[Unknown] is not allowed. {field_type} name: {field_name}")
@@ -84,7 +88,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         metadata = metadata_process.stdout.decode()
         try:
             metadata = MetaDataBase(**json.loads(metadata))
-            metadata = MetaData(**metadata.model_dump(exclude_unset=True, exclude_none=True), name=function_name, version=version, category=category)
+            metadata = MetaData(**metadata.model_dump(exclude_unset=True, exclude_none=True, by_alias=True), name=function_name, version=version, category=category)
         except pydantic.ValidationError:
             raise FunctionBuildError(function_name, version, "Invalid Function MetaData")
         subprocess.run(f"docker rmi -f {metadata_tag}:latest".split(' '))
@@ -93,39 +97,47 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         
         fields: list[str] = []
         
-        def check_property(field: Property, field_name: str, field_type: Literal["input"] | Literal["output"] | Literal["param"], allow_union: bool = True):
+        def check_property(field: Property, 
+                           field_name: str, 
+                           field_type: Literal["input", "output", "param"], 
+                           allow_union: bool, 
+                           allow_enum: bool):
             if field.type == IOPortType.OBJECT or field.type == IOPortType.NULL:
                 raise NotAllowedTypes(function_name, version, field_name, field_type) 
 
             if not allow_union:
                 if field.anyOf is not None:
                     raise UnionNotAllowed(function_name, version, field_name, field_type)
+            print(field.ref)
+            if not allow_enum:
+                if field.ref is not None:
+                    raise EnumNotAllowed(function_name, version, field_name, field_type)
                 
             if field.type == IOPortType.ARRAY:
                 if field.items is not None:
-                    check_property(field.items, field_name, field_type, allow_union)
+                    check_property(field.items, field_name, field_type, allow_union, allow_enum)
                             
                 elif field.prefixItems is not None:
                     for item in field.prefixItems:
-                        check_property(item, field_name, field_type, allow_union)
+                        check_property(item, field_name, field_type, allow_union, allow_enum)
                 else:
                     raise UnknownArrayItemsType(function_name, version, field_name, field_type)
                 
         # INPUTS
         for field_name, field in metadata.inputs.properties.items():
-            check_property(field, field_name, "input", allow_union=True)
+            check_property(field, field_name, "input", allow_union=True, allow_enum=False)
             fields.append(field_name)
 
         
         # PARAMETERS
         for field_name, field in metadata.params.properties.items():
-            check_property(field, field_name, "param", allow_union=False)
+            check_property(field, field_name, "param", allow_union=False, allow_enum=True)
             fields.append(field_name)
             
             
         # OUTPUTS
         for field_name, field in metadata.outputs.properties.items():
-            check_property(field, field_name, "output", allow_union=False)
+            check_property(field, field_name, "output", allow_union=False, allow_enum=False)
             fields.append(field_name)
         
         unique_fields = set(fields)
