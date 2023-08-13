@@ -65,10 +65,13 @@ def docker_label_to_metadata(label: str) -> MetaData:
 def model_to_friendly_property_types(pydantic_model: CoreModel):
     out: dict[str, str] = {}
     for field_name, field in pydantic_model.model_fields.items():
+        
         annotation = str(field.annotation).lower()
+        if "enum" in annotation:
+            out[field_name] = "enum"
+            continue
         if "<class" in annotation:
             annotation = annotation[8:-2]
-
         annotation = annotation.replace("hyko_sdk.io.", "")
         annotation = annotation.replace("typing.", "")
         annotation = annotation.replace('str', 'string')
