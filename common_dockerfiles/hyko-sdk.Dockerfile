@@ -5,6 +5,6 @@ RUN apt update && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install uvicorn hyko_sdk==0.3.3
+RUN pip install uvicorn hyko_sdk==0.3.6
 
 CMD [ "bash" ]
