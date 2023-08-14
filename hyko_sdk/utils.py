@@ -1,6 +1,9 @@
-from typing import AsyncIterator
+import base64
+import json
+from typing import AsyncIterator, Callable
 from fastapi import HTTPException, status
 import httpx
+from .metadata import HykoJsonSchemaExt, MetaData, CoreModel, MetaDataBase
 import tqdm
 
 async def download_file(url: str) -> bytearray:
@@ -30,7 +33,7 @@ async def download_file(url: str) -> bytearray:
                     progress.update(len(chunk))
                 return data
 
-async def bytearray_aiter(data: bytearray, update_progress) -> AsyncIterator[bytearray]:
+async def bytearray_aiter(data: bytearray, update_progress: Callable[[float | None], bool | None]) -> AsyncIterator[bytearray]:
     step_size = int(len(data) / 100)
     if not step_size: step_size = 1
     for start in range(0, len(data), step_size):
@@ -51,3 +54,62 @@ async def upload_file(url: str, data: bytearray) -> None:
             )
             if not res.is_success:
                 raise Exception(f"Error while uploading, {res.text}")
+
+def metadata_to_docker_label(metadata: MetaData) -> str:
+    return base64.b64encode(metadata.model_dump_json(exclude_unset=True, exclude_none=True).encode()).decode()
+
+    
+def docker_label_to_metadata(label: str) -> MetaData:
+    return MetaData(**json.loads(base64.b64decode(label.encode()).decode()))
+
+
+def model_to_friendly_property_types(pydantic_model: CoreModel):
+    out: dict[str, str] = {}
+    for field_name, field in pydantic_model.model_fields.items():
+        
+        annotation = str(field.annotation).lower()
+        if "enum" in annotation:
+            out[field_name] = "enum"
+            continue
+        if "<class" in annotation:
+            annotation = annotation[8:-2]
+        annotation = annotation.replace("hyko_sdk.io.", "")
+        annotation = annotation.replace("typing.", "")
+        annotation = annotation.replace('str', 'string')
+        annotation = annotation.replace('int', 'integer')
+        annotation = annotation.replace('float', 'number')
+        
+        out[field_name] = annotation
+    return out
+
+def extract_metadata(
+    Inputs: CoreModel,
+    Params: CoreModel,
+    Outputs: CoreModel,
+    description: str,
+    requires_gpu: bool,
+):
+    __meta_data__ = MetaDataBase(
+        description=description,
+        inputs=HykoJsonSchemaExt(
+            **Inputs.model_json_schema(),
+            friendly_property_types=
+                    model_to_friendly_property_types(Inputs) # type: ignore
+        ), 
+        
+        params=HykoJsonSchemaExt(
+            **Params.model_json_schema(),
+            friendly_property_types=
+                    model_to_friendly_property_types(Params) # type: ignore
+        ), 
+        
+        outputs=HykoJsonSchemaExt(
+            **Outputs.model_json_schema(),
+            friendly_property_types=
+                    model_to_friendly_property_types(Outputs) # type: ignore
+        ), 
+        requires_gpu=requires_gpu,
+    )
+    
+    print(__meta_data__.model_dump_json(indent=2, exclude_unset=True))
+
