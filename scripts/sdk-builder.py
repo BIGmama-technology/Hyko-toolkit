@@ -12,7 +12,7 @@ from hyko_sdk import MetaData, MetaDataBase, metadata_to_docker_label, IOPortTyp
 
 skip_folders = ["__pycache__", "venv"]
 all_built_functions: list[str]  = []
-
+threads: list[threading.Thread] = []
 
 class FunctionBuildError(RuntimeError):
     function_name: str
@@ -97,18 +97,29 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         
         fields: list[str] = []
         
-        def check_property(field: Property, 
-                           field_name: str, 
-                           field_type: Literal["input", "output", "param"], 
-                           allow_union: bool, 
-                           allow_enum: bool):
+        def check_property(
+            field: Property, 
+            field_name: str, 
+            field_type: Literal["input", "output", "param"], 
+            allow_union: bool, 
+            allow_enum: bool
+        ):
             if field.type == IOPortType.OBJECT or field.type == IOPortType.NULL:
                 raise NotAllowedTypes(function_name, version, field_name, field_type) 
 
             if not allow_union:
                 if field.anyOf is not None:
-                    raise UnionNotAllowed(function_name, version, field_name, field_type)
-            print(field.ref)
+                    if len(field.anyOf) == 2 and (
+                            field.anyOf[0].type is not None and
+                            field.anyOf[0].type == IOPortType.NULL or
+                            field.anyOf[1].type is not None and
+                            field.anyOf[1].type == IOPortType.NULL
+                        ):
+                        """This is to allow Optional[Type]"""
+                        pass
+                    else:
+                        raise UnionNotAllowed(function_name, version, field_name, field_type)
+
             if not allow_enum:
                 if field.ref is not None:
                     raise EnumNotAllowed(function_name, version, field_name, field_type)
@@ -195,7 +206,9 @@ def walk_directory(path: str, no_gpu: bool, threaded: bool, registry_host: str, 
         all_built_functions.append(path)
                 
         if threaded:
-            threading.Thread(target=process_function_dir, args=[path, registry_host, push_image]).start()
+            thread = threading.Thread(target=process_function_dir, args=[path, registry_host, push_image])
+            thread.start()
+            threads.append(thread)
         else:
             process_function_dir(path, registry_host, push_image)
             
@@ -271,6 +284,12 @@ if __name__ == "__main__":
     if directory[-1] == '/':
         directory = directory[:-1]
     walk_directory(directory, no_gpu, threaded, registry_host, push_image)
+    
+    if (threaded):
+        for thread in threads:
+            thread.join()
+        
+        
     successful_count = len(all_built_functions) - len(failed_functions)
     print(f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function")
     for fn in failed_functions:
