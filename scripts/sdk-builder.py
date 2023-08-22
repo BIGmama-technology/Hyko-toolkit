@@ -35,7 +35,7 @@ class UnionNotAllowed(FunctionBuildError):
 
 class EnumNotAllowed(FunctionBuildError):
     def __init__(self, function_name: str, version: str, field_name: str, field_type: Literal["input"] | Literal["output"] | Literal["param"]) -> None:
-        super().__init__(function_name, version, f"Union is not allowed in {field_type} ports: {field_type} name: {field_name}")
+        super().__init__(function_name, version, f"Enum is not allowed in {field_type} ports: {field_type} name: {field_name}")
 
 class UnknownArrayItemsType(FunctionBuildError):
     def __init__(self, function_name: str, version: str, field_name: str, field_type: Literal["input"] | Literal["output"] | Literal["param"]) -> None:
@@ -136,7 +136,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
                 
         # INPUTS
         for field_name, field in metadata.inputs.properties.items():
-            check_property(field, field_name, "input", allow_union=True, allow_enum=False)
+            check_property(field, field_name, "input", allow_union=True, allow_enum=True)
             fields.append(field_name)
 
         
@@ -155,6 +155,8 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         if len(unique_fields) != len(fields):
             raise FunctionBuildError(function_name, version, "Port name must be unique within a function (across inputs, params and outputs)")
         
+        print("by_alias:", metadata)
+        print("without_alias:", metadata.model_dump_json(exclude_unset=True, exclude_none=True))
         print()
         print("Building...")
         function_tag = f"{registry_host}/{category.lower()}/{function_name.lower()}:{version}"
@@ -165,7 +167,6 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         build_cmd += f"-t {function_tag} "
         build_cmd += f"""--label metadata="{metadata_to_docker_label(metadata)}" """
         build_cmd += f"./{path}"
-
         print("Executing cmd: ", build_cmd.split(' '))
         try:
             subprocess.run(["/bin/sh", "-c", build_cmd], check=True)
