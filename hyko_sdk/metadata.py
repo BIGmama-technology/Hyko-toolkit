@@ -1,5 +1,5 @@
 from typing import Any, List, Optional, Dict
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
 
 class IOPortType(str, Enum):
@@ -31,11 +31,13 @@ class Property(BaseModel):
     description: Optional[str] = None
     default: Optional[Any] = None
     ref: Optional[str] = Field(default=None, alias="$ref") 
+    model_config = ConfigDict(populate_by_name=True)
     
 class HykoJsonSchema(BaseModel):
     properties: Dict[str, Property] = {}
     required: List[str] = []
     defs: Optional[Dict[str, JsonSchemaEnum]] = Field(default=None, alias="$defs")
+    model_config = ConfigDict(populate_by_name=True)
     
 class HykoJsonSchemaExt(HykoJsonSchema):
     friendly_property_types: Dict[str, str] = {}
@@ -46,6 +48,8 @@ class MetaDataBase(BaseModel):
     outputs: HykoJsonSchemaExt
     params: HykoJsonSchemaExt
     requires_gpu: bool
+    model_config = ConfigDict(populate_by_name=True)
+    
 
 class MetaData(MetaDataBase):
     version: str
