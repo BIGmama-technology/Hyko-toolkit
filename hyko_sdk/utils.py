@@ -3,7 +3,7 @@ import json
 from typing import AsyncIterator, Callable
 from fastapi import HTTPException, status
 import httpx
-from .metadata import HykoJsonSchemaExt, MetaData, CoreModel, MetaDataBase
+from .metadata import HykoJsonSchemaExt, IOPortType, MetaData, CoreModel, MetaDataBase
 import tqdm
 
 async def download_file(url: str) -> bytearray:
@@ -66,10 +66,14 @@ def docker_label_to_metadata(label: str) -> MetaData:
 def model_to_friendly_property_types(pydantic_model: CoreModel):
     out: dict[str, str] = {}
     for field_name, field in pydantic_model.model_fields.items():
-        
         annotation = str(field.annotation).lower()
         if "enum" in annotation:
-            out[field_name] = "enum"
+            try:
+                out[field_name] = f"enum[{str(pydantic_model.model_json_schema()['$defs'][str(field.annotation)[7:-2]]['type'])}]"
+                if "numeric" in out[field_name]:
+                    out[field_name] = out[field_name].replace("numeric", "number")
+            except KeyError:
+                raise RuntimeError(f'Could not find {str(pydantic_model.model_json_schema()["$defs"][str(field.annotation)[7:-2]])} the enums defined in the json schema. Usually happens when you use class(Video, Enum) or similar type')
             continue
         if "<class" in annotation:
             annotation = annotation[8:-2]
@@ -89,22 +93,40 @@ def extract_metadata(
     description: str,
     requires_gpu: bool,
 ):
+    inputs_json_schema = Inputs.model_json_schema()
+    if inputs_json_schema.get("$defs"):
+        for k,v in inputs_json_schema["$defs"].items():
+            if v.get("type") and v["type"] == "numeric":
+                inputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
+
+    params_json_schema = Params.model_json_schema()
+    if params_json_schema.get("$defs"):
+        for k,v in params_json_schema["$defs"].items():
+            if v.get("type") and v["type"] == "numeric":
+                params_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
+    
+    outputs_json_schema = Outputs.model_json_schema()
+    if outputs_json_schema.get("$defs"):
+        for k,v in outputs_json_schema["$defs"].items():
+            if v.get("type") and v["type"] == "numeric":
+                outputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
+                            
     __meta_data__ = MetaDataBase(
         description=description,
         inputs=HykoJsonSchemaExt(
-            **Inputs.model_json_schema(),
+            **inputs_json_schema,
             friendly_property_types=
                     model_to_friendly_property_types(Inputs) # type: ignore
         ), 
         
         params=HykoJsonSchemaExt(
-            **Params.model_json_schema(),
+            **params_json_schema,
             friendly_property_types=
                     model_to_friendly_property_types(Params) # type: ignore
         ), 
         
         outputs=HykoJsonSchemaExt(
-            **Outputs.model_json_schema(),
+            **outputs_json_schema,
             friendly_property_types=
                     model_to_friendly_property_types(Outputs) # type: ignore
         ), 
