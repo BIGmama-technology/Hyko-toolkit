@@ -18,8 +18,8 @@ class HykoExtraTypes(str, Enum):
     
     
 class JsonSchemaEnum(BaseModel):
-    enum: list[str]
-    type: str
+    enum: list[Any]
+    type: IOPortType
     
 class Property(BaseModel):
     type: Optional[IOPortType | HykoExtraTypes] = None
