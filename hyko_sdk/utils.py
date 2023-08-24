@@ -1,59 +1,142 @@
+from typing import Type
+from fastapi import HTTPException, status
+from pydantic import BaseModel
+from .types import PyObjectId
+from .metadata import HykoJsonSchemaExt, MetaData, MetaDataBase
+from uuid import UUID
+from io import BytesIO
 import base64
 import json
-from typing import AsyncIterator, Callable
-from fastapi import HTTPException, status
 import httpx
-from .metadata import HykoJsonSchemaExt, IOPortType, MetaData, CoreModel, MetaDataBase
+from .metadata import HykoJsonSchemaExt, IOPortType, MetaData, MetaDataBase
 import tqdm
+import tqdm.utils
 
-async def download_file(url: str) -> bytearray:
-    async with httpx.AsyncClient(verify=False, http2=True) as client:
 
-        # Get file size
-        head_res = await client.head(url=url)
+class ObjectStorageConn:
+
+    class DownloadError(HTTPException):
+        """Raised when an error occurs on file download"""
+        pass
+
+    class UploadError(HTTPException):
+        """Raised when an error occurs on file upload"""
+        pass
+
+
+    def __init__(
+        self,
+        project_id: PyObjectId,
+        blueprint_id: PyObjectId,
+    ) -> None:
+        self.project_id = project_id
+        self.blueprint_id = blueprint_id
+        self._conn = httpx.AsyncClient(
+            base_url=f"https://api.traefik.me/projects/{project_id}/blueprints/{blueprint_id}",
+            http2=True,
+            verify=False,
+        )
+        pass
+
+
+    async def download_object(
+        self,
+        id: UUID,
+        show_progress: bool = False,
+    ):
+        head_res = await self._conn.head(f"/storage/{id}")
+        
         if not head_res.is_success:
             if head_res.status_code == status.HTTP_404_NOT_FOUND:
-                raise HTTPException(
+                raise ObjectStorageConn.DownloadError(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"Object not found, url: '{url}'",
+                    detail=f"Object not found, url: {head_res.url}",
                 )
             else:
-                raise HTTPException(
+                raise ObjectStorageConn.DownloadError(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Could not read HEAD Object info, status: {head_res.status_code}, res: {head_res.text}",
+                    detail=f"Could not read HEAD object info, status: {head_res.status_code}, res: {head_res.text}",
                 )
         
-        file_size = int(head_res.headers["Content-Length"])
+        object_name = head_res.headers.get("X-Hyko-Storage-Name")
 
-        async with client.stream("GET", url) as response:
-            with tqdm.tqdm(total=file_size, unit_scale=True, unit_divisor=1024, unit="B", desc=f"Downloading {url}") as progress:
-                data = bytearray()
-                async for chunk in response.aiter_bytes():
-                    data += chunk
-                    progress.update(len(chunk))
-                return data
+        if object_name is None:
+            raise ObjectStorageConn.DownloadError(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Missing object name header, url: {head_res.url}",
+            )
 
-async def bytearray_aiter(data: bytearray, update_progress: Callable[[float | None], bool | None]) -> AsyncIterator[bytearray]:
-    step_size = int(len(data) / 100)
-    if not step_size: step_size = 1
-    for start in range(0, len(data), step_size):
-        end = start + step_size
-        if end > len(data):
-            end = len(data)
-        yield data[start:end]
-        update_progress(end-start)
+        object_type = head_res.headers.get("X-Hyko-Storage-Type")
 
-async def upload_file(url: str, data: bytearray) -> None:
-    async with httpx.AsyncClient(verify=False, http2=True) as client:
-        file_size = len(data)
-        with tqdm.tqdm(total=file_size, unit_scale=True, unit_divisor=1024, unit="B", desc=f"Uploading {url}") as progress:
-            res = await client.put(
-                url=url,
-                headers={"Content-Length": str(file_size)},
-                content=bytearray_aiter(data=data, update_progress=progress.update),
+        if object_type is None:
+            raise ObjectStorageConn.DownloadError(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Missing object type header, url: {head_res.url}",
+            )
+
+        object_size = head_res.headers.get("Content-Length")
+
+        if object_size is None:
+            raise ObjectStorageConn.DownloadError(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Missing object content length header, url: {head_res.url}",
+            )
+        
+        if show_progress:
+            async with self._conn.stream("GET", f"/storage/{id}") as response_stream:
+                with tqdm.tqdm(total=int(object_size), unit_scale=True, unit_divisor=1024, unit="B", desc=f"Downloading {id}") as progress:
+                    object_data = bytearray()
+                    async for chunk in response_stream.aiter_bytes():
+                        object_data += chunk
+                        progress.update(len(chunk))
+        else:
+            res = await self._conn.get(f"/storage/{id}")
+            if not res.is_success:
+                raise ObjectStorageConn.DownloadError(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Could not get object content, status: {res.status_code}, res: {res.text}",
+                )
+            object_data = bytearray(res.content)
+        
+        return (object_name, object_type, object_data)
+
+
+    async def upload_object(
+        self,
+        filename: str,
+        content_type: str,
+        data: bytearray,
+        show_progress: bool = False,
+    ):
+        if show_progress:
+            file_size = len(data)
+            with tqdm.tqdm(total=file_size, unit_scale=True, unit_divisor=1024, unit="B", desc=f"Uploading object, filename: {filename}, content_type: {content_type}") as progress:
+                
+                res = await self._conn.post(
+                    url="/storage",
+                    headers={"Content-Length": str(file_size)},
+                    files={"file": (filename, tqdm.utils.CallbackIOWrapper(progress.update, BytesIO(data)))}, # type: ignore
+                )
+                if not res.is_success:
+                    raise ObjectStorageConn.UploadError(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail=f"Upload error, status: {res.status_code}, res: {res.text}",
+                    )
+                obj_id = UUID(res.text)
+        else:
+            res = await self._conn.post(
+                url="/storage",
+                files={"file": (filename, BytesIO(data), content_type)},
             )
             if not res.is_success:
-                raise Exception(f"Error while uploading, {res.text}")
+                raise ObjectStorageConn.UploadError(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Upload error, status: {res.status_code}, res: {res.text}",
+                )
+            obj_id = UUID(res.text[1:-1])
+
+        return obj_id
+
 
 def metadata_to_docker_label(metadata: MetaData) -> str:
     return base64.b64encode(metadata.model_dump_json(exclude_unset=True, exclude_none=True).encode()).decode()
@@ -63,7 +146,7 @@ def docker_label_to_metadata(label: str) -> MetaData:
     return MetaData(**json.loads(base64.b64decode(label.encode()).decode()))
 
 
-def model_to_friendly_property_types(pydantic_model: CoreModel):
+def model_to_friendly_property_types(pydantic_model: Type[BaseModel]):
     out: dict[str, str] = {}
     for field_name, field in pydantic_model.model_fields.items():
         annotation = str(field.annotation).lower()
@@ -87,9 +170,9 @@ def model_to_friendly_property_types(pydantic_model: CoreModel):
     return out
 
 def extract_metadata(
-    Inputs: CoreModel,
-    Params: CoreModel,
-    Outputs: CoreModel,
+    Inputs: BaseModel,
+    Params: BaseModel,
+    Outputs: BaseModel,
     description: str,
     requires_gpu: bool,
 ):
