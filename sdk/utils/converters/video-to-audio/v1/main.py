@@ -1,39 +1,35 @@
-
-import fastapi
-from fastapi.exceptions import HTTPException
-from config import Inputs, Params, Outputs, Audio
-import base64
+from pydantic import Field
+from hyko_sdk import CoreModel, Video, Audio, SDKFunction
 import os
 import subprocess
-app = fastapi.FastAPI()
 
-@app.post("/load", response_model=None)
-def load():
+func = SDKFunction(
+    description="Convert a video type to audio type (takes only the audio data)",
+    requires_gpu=False,
+)
+
+class Inputs(CoreModel):
+    video: Video = Field(..., description="User input video to be converted to audio")
+
+class Params(CoreModel):
     pass
 
-@app.post("/", response_model=Outputs)
-async def main(inputs: Inputs, params: Params):
-    
-    await inputs.video.wait_data()
-    if inputs.video.data is None or inputs.video.filename is None:
-        raise HTTPException(
-            status_code=500,
-            detail="No video data in input video"
-        )
-    
-    file, ext = os.path.splitext(inputs.video.filename)
+class Outputs(CoreModel):
+    audio: Audio = Field(..., description="converted audio")
+
+
+@func.on_execute
+async def main(inputs: Inputs, params: Params) -> Outputs:
+    _, ext = os.path.splitext(inputs.video.get_name())
+
     with open(f"/app/video.{ext}", "wb") as f:
-        f.write(inputs.video.data)
+        f.write(inputs.video.get_data())
     # user video.{ext} instead of filename directly to avoid errors with names that has space in it
     subprocess.run(f"ffmpeg -i /app/video.{ext} /app/audio.mp3 -y".split(" "))
 
     with open("audio.mp3", "rb") as f:
         data = f.read()
-    audio = Audio(bytearray(data), filename="audio.mp3", mime_type="audio/mp3")
-    await audio.wait_data()
+
+    audio = Audio(bytearray(data), filename="audio.mp3", mime_type="MPEG")
     os.remove("audio.mp3")
     return Outputs(audio=audio)
-
-
-##############################################################################################################
-
