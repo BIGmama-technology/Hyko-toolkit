@@ -20,6 +20,7 @@ OnExecuteFuncType = Callable[[InputsType, ParamsType], Coroutine[Any, Any, Outpu
 
 
 class ExecStorageParams(BaseModel):
+    host: str
     project_id: PyObjectId
     blueprint_id: PyObjectId
 
@@ -172,7 +173,12 @@ class SDKFunction(FastAPI):
 
         async def wrapper(storage_params: ExecStorageParams, inputs: InputsType, params: ParamsType) -> OutputsType:
             pending_download_tasks: list[asyncio.Task[None]] = []
-            HykoBaseType.set_sync(storage_params.project_id, storage_params.blueprint_id, pending_download_tasks)
+            HykoBaseType.set_sync(
+                storage_params.host,
+                storage_params.project_id,
+                storage_params.blueprint_id,
+                pending_download_tasks,
+            )
             # print("Rebuilding inputs")
             inputs = inputs.model_validate_json(inputs.model_dump_json())
             params = params.model_validate_json(params.model_dump_json())
@@ -188,7 +194,12 @@ class SDKFunction(FastAPI):
             outputs = await f(inputs, params)
 
             pending_upload_tasks: list[asyncio.Task[None]] = []
-            HykoBaseType.set_sync(storage_params.project_id, storage_params.blueprint_id, pending_upload_tasks)
+            HykoBaseType.set_sync(
+                storage_params.host,
+                storage_params.project_id,
+                storage_params.blueprint_id,
+                pending_upload_tasks,
+            )
             # print("Rebuilding outputs")
             outputs = outputs.model_validate(outputs.model_dump())
             HykoBaseType.clear_sync()
