@@ -63,7 +63,21 @@ class HykoBaseType:
             return
 
         raise Exception("Unexpected sync state")
+    
+    def get_name(self):
+        if self._obj is None:
+            raise Exception("Object is not synced")
+        return self._obj.name
+    
+    def get_mime_type(self):
+        if self._obj is None:
+            raise Exception("Object is not synced")
+        return self._obj.type
 
+    def get_data(self):
+        if self._obj is None:
+            raise Exception("Object is not synced")
+        return self._obj.data
 
 class Image(HykoBaseType):
 
@@ -206,7 +220,7 @@ class Image(HykoBaseType):
         _core_schema: core_schema.CoreSchema,
         handler: GetJsonSchemaHandler
     ):
-        schema = handler(_core_schema)
+        schema = handler(core_schema.str_schema())
         schema["type"] = "image"
         return schema
         
@@ -358,7 +372,7 @@ class Audio(HykoBaseType):
         _core_schema: core_schema.CoreSchema,
         handler: GetJsonSchemaHandler
     ):
-        schema = handler(_core_schema)
+        schema = handler(core_schema.str_schema())
         schema["type"] = "audio"
         return schema
         
@@ -572,7 +586,7 @@ class Video(HykoBaseType):
         _core_schema: core_schema.CoreSchema,
         handler: GetJsonSchemaHandler
     ):
-        schema = handler(_core_schema)
+        schema = handler(core_schema.str_schema())
         schema["type"] = "video"
         return schema
 

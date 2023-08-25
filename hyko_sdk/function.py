@@ -6,10 +6,9 @@ import inspect
 import asyncio
 from .types import PyObjectId
 from .io import HykoBaseType
-from .metadata import MetaDataBase, HykoJsonSchemaExt
+from .metadata import MetaDataBase, HykoJsonSchemaExt, IOPortType
 from .utils import model_to_friendly_property_types
 import json
-
 
 InputsType = TypeVar("InputsType", bound="BaseModel")
 ParamsType = TypeVar("ParamsType", bound="BaseModel")
@@ -72,9 +71,13 @@ class SDKFunction(FastAPI):
 
     def __init__(
         self,
+        description: str,
+        requires_gpu: bool,
         **kwargs: Any,
     ):
         self._status = asyncio.Future[bool]()
+        self.description = description
+        self.requires_gpu = requires_gpu
         super().__init__(**kwargs)
 
 
@@ -127,21 +130,44 @@ class SDKFunction(FastAPI):
                 f_ret_type=f_ret_type,
             )
 
+        inputs_json_schema = f_inputs_type.model_json_schema()
+        if inputs_json_schema.get("$defs"):
+            for k,v in inputs_json_schema["$defs"].items():
+                if v.get("type") and v["type"] == "numeric":
+                    inputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
+
+        params_json_schema = f_params_type.model_json_schema()
+        if params_json_schema.get("$defs"):
+            for k,v in params_json_schema["$defs"].items():
+                if v.get("type") and v["type"] == "numeric":
+                    params_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
+        
+        outputs_json_schema = f_ret_type.model_json_schema()
+        if outputs_json_schema.get("$defs"):
+            for k,v in outputs_json_schema["$defs"].items():
+                if v.get("type") and v["type"] == "numeric":
+                    outputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
+                                
         self.__metadata__ = MetaDataBase(
             description=self.description,
             inputs=HykoJsonSchemaExt(
-                **f_inputs_type.model_json_schema(),
-                friendly_property_types=model_to_friendly_property_types(f_inputs_type),
-            ),
+                **inputs_json_schema,
+                friendly_property_types=
+                    model_to_friendly_property_types(f_inputs_type)
+            ), 
+            
             params=HykoJsonSchemaExt(
-                **f_params_type.model_json_schema(),
-                friendly_property_types=model_to_friendly_property_types(f_params_type),
-            ),
+                **params_json_schema,
+                friendly_property_types=
+                    model_to_friendly_property_types(f_params_type)
+            ), 
+            
             outputs=HykoJsonSchemaExt(
-                **f_ret_type.model_json_schema(),
-                friendly_property_types=model_to_friendly_property_types(f_ret_type)
-            ),
-            requires_gpu=False,
+                **outputs_json_schema,
+                friendly_property_types=
+                    model_to_friendly_property_types(f_ret_type)
+            ), 
+            requires_gpu=self.requires_gpu,
         )
 
         async def wrapper(storage_params: ExecStorageParams, inputs: InputsType, params: ParamsType) -> OutputsType:
