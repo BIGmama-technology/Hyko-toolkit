@@ -25,11 +25,12 @@ class HykoBaseType:
     @classmethod
     def set_sync(
         cls,
+        storage_host: str,
         project_id: PyObjectId,
         blueprint_id: PyObjectId,
         pending_tasks: list[asyncio.Task[None]],
     ):
-        cls._sync_conn = ObjectStorageConn(project_id, blueprint_id)
+        cls._sync_conn = ObjectStorageConn(storage_host, project_id, blueprint_id)
         cls._sync_tasks = pending_tasks
 
     @classmethod
