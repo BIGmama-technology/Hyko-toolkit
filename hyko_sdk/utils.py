@@ -32,7 +32,7 @@ class ObjectStorageConn:
         self.project_id = project_id
         self.blueprint_id = blueprint_id
         self._conn = httpx.AsyncClient(
-            base_url=f"https://api.traefik.me/projects/{project_id}/blueprints/{blueprint_id}",
+            base_url=f"https://api.wbox.hyko.ai/projects/{project_id}/blueprints/{blueprint_id}",
             http2=True,
             verify=False,
         )

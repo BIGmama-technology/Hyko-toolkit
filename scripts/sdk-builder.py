@@ -3,12 +3,11 @@ import subprocess
 import sys
 import json
 from typing import Literal
-from hyko_sdk import Property
 import pydantic
 import threading
 
-from hyko_sdk import MetaData, MetaDataBase, metadata_to_docker_label, IOPortType
-
+from hyko_sdk.metadata import MetaData, MetaDataBase, IOPortType, Property
+from hyko_sdk.utils import metadata_to_docker_label
 
 skip_folders = ["__pycache__", "venv"]
 all_built_functions: list[str]  = []
@@ -74,18 +73,19 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         print("Building metadata...")
         metadata_tag = f"{registry_host}/{category.lower()}/{function_name.lower()}:metadata-{version}"
         try:
-            subprocess.run(f"docker build --target metadata -t {metadata_tag} ./{path}".split(' '), check=True)
+            subprocess.run(f"docker build -t {metadata_tag} ./{path}".split(' '), check=True)
         except subprocess.CalledProcessError:
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
 
         
         try:
-            metadata_process = subprocess.run(f"docker run -it --rm {metadata_tag}".split(' '), capture_output=True, check=True)
+            metadata_process = subprocess.run(f'docker run -it --rm {metadata_tag} python -c'.split(' ') + ["from main import func;print(func.dump_metadata())"], capture_output=True, check=True)
         except subprocess.CalledProcessError as e:
             print(e.stdout.decode())
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
         
-        metadata = metadata_process.stdout.decode()
+        metadata = metadata_process.stdout.decode().replace("'", '"')
+        print(metadata)
         try:
             metadata = MetaDataBase(**json.loads(metadata))
             metadata = MetaData(**metadata.model_dump(exclude_unset=True, exclude_none=True, by_alias=True), name=function_name, version=version, category=category)
@@ -163,7 +163,6 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         build_cmd = f"docker build "
         build_cmd += f"--build-arg CATEGORY={category} "
         build_cmd += f"--build-arg FUNCTION_NAME={function_name} "
-        build_cmd += f"--target main "
         build_cmd += f"-t {function_tag} "
         build_cmd += f"""--label metadata="{metadata_to_docker_label(metadata)}" """
         build_cmd += f"./{path}"
@@ -197,7 +196,7 @@ def walk_directory(path: str, no_gpu: bool, threaded: bool, registry_host: str, 
     
     ls = os.listdir(path)
     
-    if "main.py" in ls and "config.py" in ls and "Dockerfile" in ls:
+    if "main.py" in ls and "Dockerfile" in ls:
         if no_gpu:
             with open(path + '/Dockerfile') as f:
                 dockerfile = f.read()
