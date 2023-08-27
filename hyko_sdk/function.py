@@ -136,19 +136,37 @@ class SDKFunction(FastAPI):
             for k,v in inputs_json_schema["$defs"].items():
                 if v.get("type") and v["type"] == "numeric":
                     inputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
+        
+        if inputs_json_schema.get("properties"):
+            for k,v in inputs_json_schema["properties"].items():
+                if v.get("allOf") and len(v["allOf"]) == 1:
+                    allOf = inputs_json_schema["properties"][k].pop("allOf")
+                    inputs_json_schema["properties"][k]["$ref"] = allOf[0]["$ref"]
 
         params_json_schema = f_params_type.model_json_schema()
         if params_json_schema.get("$defs"):
             for k,v in params_json_schema["$defs"].items():
                 if v.get("type") and v["type"] == "numeric":
                     params_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
-        
+
+        if params_json_schema.get("properties"):
+            for k,v in params_json_schema["properties"].items():
+                if v.get("allOf") and len(v["allOf"]) == 1:
+                    allOf = params_json_schema["properties"][k].pop("allOf")
+                    params_json_schema["properties"][k]["$ref"] = allOf[0]["$ref"]
+
         outputs_json_schema = f_ret_type.model_json_schema()
         if outputs_json_schema.get("$defs"):
             for k,v in outputs_json_schema["$defs"].items():
                 if v.get("type") and v["type"] == "numeric":
                     outputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
-                                
+        
+        if outputs_json_schema.get("properties"):
+            for k,v in outputs_json_schema["properties"].items():
+                if v.get("allOf") and len(v["allOf"]) == 1:
+                    allOf = outputs_json_schema["properties"][k].pop("allOf")
+                    outputs_json_schema["properties"][k]["$ref"] = allOf[0]["$ref"]
+         
         self.__metadata__ = MetaDataBase(
             description=self.description,
             inputs=HykoJsonSchemaExt(
