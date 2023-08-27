@@ -85,7 +85,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
         
         metadata = metadata_process.stdout.decode().replace("'", '"')
-        print(metadata)
+        print("METADATA:", metadata)
         try:
             metadata = MetaDataBase(**json.loads(metadata))
             metadata = MetaData(**metadata.model_dump(exclude_unset=True, exclude_none=True, by_alias=True), name=function_name, version=version, category=category)
@@ -155,8 +155,6 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         if len(unique_fields) != len(fields):
             raise FunctionBuildError(function_name, version, "Port name must be unique within a function (across inputs, params and outputs)")
         
-        print("by_alias:", metadata)
-        print()
         print("Building...")
         function_tag = f"{registry_host}/{category.lower()}/{function_name.lower()}:{version}"
         build_cmd = f"docker build "
