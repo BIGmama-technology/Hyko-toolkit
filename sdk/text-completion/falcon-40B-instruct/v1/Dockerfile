@@ -9,13 +9,7 @@ RUN apt update && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install uvicorn hyko_sdk==0.1.40
+RUN pip install uvicorn hyko_sdk==0.4.9
 
-COPY main.py .
-COPY config.py .
-
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:app"]
-
-FROM main AS metadata
-
-CMD ["python", "-m", "config"]
+COPY . . 
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]

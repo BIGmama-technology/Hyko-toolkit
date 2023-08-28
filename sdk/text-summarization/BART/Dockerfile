@@ -2,7 +2,7 @@ FROM torch-cuda:latest AS main
 
 WORKDIR /app
 
-RUN python -c "from transformers import WhisperProcessor, WhisperForConditionalGeneration; WhisperProcessor.from_pretrained('openai/whisper-large-v2');  WhisperForConditionalGeneration.from_pretrained('openai/whisper-large-v2')"
+RUN python -c "from transformers import pipeline; pipeline('summarization', model='facebook/bart-large-cnn', device_map='auto')"
 
 RUN apt update && \
     apt install ffmpeg -y && \
@@ -11,6 +11,7 @@ RUN apt update && \
 
 RUN pip install uvicorn hyko_sdk==0.4.9
 
-COPY . .
+COPY . . 
 
 CMD ["uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
+
