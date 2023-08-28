@@ -1,20 +1,32 @@
-from config import Inputs, Params, Outputs
-from fastapi import FastAPI, HTTPException, status
 import torch
 import math
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
-from fastapi import HTTPException
+from fastapi.exceptions import HTTPException
+from pydantic import Field
+from hyko_sdk import CoreModel, SDKFunction, Audio
 
-app = FastAPI()
+
+func = SDKFunction(
+    description="OpenAI's Audio Transcription model (Non API)",
+    requires_gpu=False,
+)
+
+
+class Inputs(CoreModel):
+    audio: Audio = Field(..., description="Input audio that will be transcribed")
+
+class Params(CoreModel):
+    language: str = Field(default="en", description="the language of the audio")
+
+
+class Outputs(CoreModel):
+    transcribed_text: str = Field(..., description="Generated transcription text")
 
 model = None
 processor = None
 device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device('cpu')
 
-@app.post(
-    "/load",
-    response_model=None,
-)
+@func.on_startup
 def load():
     global model
     global processor
@@ -26,21 +38,11 @@ def load():
     model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v2").to(device) # type: ignore
     model.config.forced_decoder_is = None
 
-@app.post(
-    "/",
-    response_model=Outputs,
-)
-async def main(inputs: Inputs, params: Params):
+@func.on_execute
+async def main(inputs: Inputs , params: Params)-> Outputs:
     if model is None or processor is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
 
-    await inputs.audio.wait_data()
-
-    if inputs.audio.data is None:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Received empty audio object",
-        )
     
     waveform, sample_rate = inputs.audio.to_ndarray(sampling_rate=16_000)
 

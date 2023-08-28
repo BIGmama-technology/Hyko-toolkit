@@ -1,33 +1,33 @@
-from config import Inputs, Params, Outputs
-from fastapi import FastAPI, HTTPException, status
+from fastapi import HTTPException, status
+from hyko_sdk import CoreModel, SDKFunction, Audio
 import openai
 import io
+from typing import Optional
+from pydantic import Field
 
-app = FastAPI()
 
-@app.post("/load", response_model=None)
-def load():
-   pass
-
-# keep the decorator, function declaration and return type the same.
-# the main function should always take Inputs as the first argument and Params as the second argument.
-# should always return Outputs.
-@app.post(
-    "/",
-    response_model=Outputs,
+func = SDKFunction(
+    description="OpenAI's Audio Transcription model (API)",
+    requires_gpu=False,
 )
+
+class Inputs(CoreModel):
+    audio: Audio = Field(..., description="User audio input to be transcribed")
+
+class Params(CoreModel):
+    prompt: Optional[str] = Field(default=None, description="User additional text prompt for the model")
+    language: Optional[str] = Field(default='en', description="ISO-639-1 transcription language")
+    api_key: str = Field(..., description="OpenAI's API KEY")
+    temperature: Optional[float] = Field(default=None, description="Whisper model temperature")
+
+class Outputs(CoreModel):
+    transcribed_text: str = Field(..., description="Generated transcription text")
+
+@func.on_execute
 async def main(inputs: Inputs, params: Params):
-
-    await inputs.audio.wait_data()
-
-    if inputs.audio.data is None:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Received empty audio object",
-        )
     
     file = io.BytesIO(inputs.audio.data)
-    file.name = inputs.audio.filename
+    file.name = inputs.audio.get_name()
 
     res = await openai.Audio.atranscribe(
         model="whisper-1",
@@ -48,6 +48,4 @@ async def main(inputs: Inputs, params: Params):
     
     return Outputs(transcribed_text=transcription)
 
-
-##############################################################################################################
 
