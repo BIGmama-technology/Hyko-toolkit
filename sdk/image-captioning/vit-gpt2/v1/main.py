@@ -7,7 +7,7 @@ from hyko_sdk import CoreModel, SDKFunction, Image
 
 
 func = SDKFunction(
-    description="An image captioning model, gives a short description of the input image",
+    description="An image captioning model gives a short description of the input image",
     requires_gpu=False,
 )
 
@@ -47,10 +47,10 @@ async def load():
     tokenizer = AutoTokenizer.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params):
+async def main(inputs: Inputs, params: Params)->Outputs:
     if model is None or feature_extractor is None or tokenizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
-   
+    
     img = inputs.image.to_ndarray() # type: ignore
     
     pixel_values = feature_extractor(images=cv2.cvtColor(img, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values # type: ignore
