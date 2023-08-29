@@ -224,6 +224,19 @@ class Image(HykoBaseType):
         schema = handler(core_schema.str_schema())
         schema["type"] = "image"
         return schema
+    
+
+    def to_ndarray(self, keep_alpha_if_png = False) -> np.ndarray:
+        if self.get_data():
+            img_bytes_io = io.BytesIO(self.get_data())
+            img = PIL_Image.open(img_bytes_io)
+            img = np.asarray(img)
+            if keep_alpha_if_png:
+                return img
+            return img[...,:3]
+        else:
+           raise RuntimeError("Image decode error (Imagedata not loaded)")
+
         
         
 

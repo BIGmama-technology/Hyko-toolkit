@@ -1,5 +1,8 @@
 .auto_prototype
 
+
+typings/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

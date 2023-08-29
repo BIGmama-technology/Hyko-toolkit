@@ -84,7 +84,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
             print(e.stdout.decode())
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
         
-        metadata = metadata_process.stdout.decode().replace("'", '"')
+        metadata = metadata_process.stdout.decode()
         print("METADATA:", metadata)
         try:
             metadata = MetaDataBase(**json.loads(metadata))
