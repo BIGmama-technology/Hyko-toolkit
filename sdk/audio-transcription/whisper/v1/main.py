@@ -8,7 +8,7 @@ from hyko_sdk import CoreModel, SDKFunction, Audio
 
 func = SDKFunction(
     description="OpenAI's Audio Transcription model (Non API)",
-    requires_gpu=False,
+    requires_gpu=True,
 )
 
 
@@ -16,30 +16,34 @@ class Inputs(CoreModel):
     audio: Audio = Field(..., description="Input audio that will be transcribed")
 
 class Params(CoreModel):
-    language: str = Field(default="en", description="the language of the audio")
-
+    language: str = Field(default="en", description="The language of the audio")
 
 class Outputs(CoreModel):
     transcribed_text: str = Field(..., description="Generated transcription text")
 
 model = None
 processor = None
-device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device('cpu')
 
 @func.on_startup
-def load():
+async def load():
     global model
     global processor
+    
     if model is not None and processor is not None:
         print("Model loaded already")
         return
     
+    if not torch.cuda.is_available():
+        raise Exception("Machine does not have cuda capable devices")
+    
     processor = WhisperProcessor.from_pretrained("openai/whisper-large-v2")
-    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v2").to(device) # type: ignore
+    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v2").to(torch.device("cuda:2")) # type: ignore
     model.config.forced_decoder_is = None
+
 
 @func.on_execute
 async def main(inputs: Inputs , params: Params)-> Outputs:
+
     if model is None or processor is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
 
