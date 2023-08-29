@@ -4,8 +4,7 @@ import torch
 from typing import List
 from pydantic import Field
 from hyko_sdk import CoreModel, SDKFunction, Image
-
-
+import numpy as np
 func = SDKFunction(
     description="""
 Classify an image to one class out of the list of classes. 
@@ -15,7 +14,7 @@ Example: if the classes are ['cat', 'dog'] then the model will have to choose if
 )
 
 class Inputs(CoreModel):
-    img: Image = Field(..., description="Image input by user to be classified")
+    image: Image = Field(..., description="Image input by user to be classified")
 
 class Params(CoreModel):
     classes: List[str] = Field(..., description="List of classes to classify the input image on")
@@ -40,19 +39,20 @@ async def load():
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-large-patch14")
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params):
+async def main(inputs: Inputs, params: Params)-> Outputs:
     if model is None or processor is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
-    
+     
    
-    img = inputs.img.to_ndarray()   
-
+    img = inputs.image.to_ndarray()    # type: ignore
+  
     inputs_ = processor(
         text=params.classes,
         images=img,
         return_tensors="pt",
         padding=True,
     )
+    
 
     with torch.no_grad():
         outputs = model(**inputs_.to(device))
