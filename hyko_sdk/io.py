@@ -403,7 +403,7 @@ class Audio(HykoBaseType):
     def resample(self, sampling_rate: int):
         if self._obj and self._obj.name:
             with open(self._obj.name, "wb") as f:
-                f.write(self.data)
+                f.write(self.get_data())
             out = "audio_resampled.mp3"
             if self._obj.name == out:
                 out = "audio_resampled_2.mp3"
@@ -447,7 +447,7 @@ class Audio(HykoBaseType):
             if sampling_rate:
                 self.resample(sampling_rate)
             
-            audio_readable = io.BytesIO(self.data)
+            audio_readable = io.BytesIO(self.get_data())
             with soundfile.SoundFile(audio_readable, "r") as file_:
                 if file_.format != "WAV" or normalize:
                     dtype = "float32"
