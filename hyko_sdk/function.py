@@ -85,8 +85,9 @@ class SDKFunction(FastAPI):
 
 
     def on_startup(self, f: OnStartupFuncType):
-        self.startup_tasks.append(asyncio.create_task(f()))
-
+        def blocking_exec():
+            asyncio.run(f())
+        self.startup_tasks.append(asyncio.create_task(asyncio.to_thread(blocking_exec)))
 
     async def _wait_startup_tasks(self):
         if not len(self.startup_tasks):
