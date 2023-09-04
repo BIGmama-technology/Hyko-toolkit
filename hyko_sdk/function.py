@@ -87,7 +87,11 @@ class SDKFunction(FastAPI):
     def on_startup(self, f: OnStartupFuncType):
         def blocking_exec():
             asyncio.run(f())
-        self.startup_tasks.append(asyncio.create_task(asyncio.to_thread(blocking_exec)))
+        try:
+            asyncio.get_running_loop()
+            self.startup_tasks.append(asyncio.create_task(asyncio.to_thread(blocking_exec)))
+        except RuntimeError:
+            pass
 
     async def _wait_startup_tasks(self):
         if not len(self.startup_tasks):
@@ -125,8 +129,12 @@ class SDKFunction(FastAPI):
             except:
                 os.kill(os.getpid(), signal.SIGINT)
         
-        self.startup_task = asyncio.create_task(wait_startup_exit_handler())
-
+        try:
+            asyncio.get_running_loop()
+            self.startup_task = asyncio.create_task(wait_startup_exit_handler())
+        except RuntimeError:
+            pass
+        
         f_args = [(param.name, param.annotation) for param in inspect.signature(f).parameters.values()]
         f_ret_type = inspect.signature(f).return_annotation
 
