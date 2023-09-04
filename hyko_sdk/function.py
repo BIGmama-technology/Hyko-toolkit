@@ -78,10 +78,10 @@ class SDKFunction(FastAPI):
         requires_gpu: bool,
         **kwargs: Any,
     ):
+        super().__init__(**kwargs)
         self._status = asyncio.Future[bool]()
         self.description = description
         self.requires_gpu = requires_gpu
-        super().__init__(**kwargs)
 
 
     def on_startup(self, f: OnStartupFuncType):
