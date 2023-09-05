@@ -1,4 +1,7 @@
 import os
+import random
+from re import split
+import string
 import subprocess
 import sys
 import json
@@ -77,14 +80,21 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         except subprocess.CalledProcessError:
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
 
-        
+        __METADATA__START__SPECIAL__TOKEN__ = "__METADATA__START__SPECIAL__TOKEN__" + ''.join(random.choice(string.ascii_letters) for _ in range(16))
         try:
-            metadata_process = subprocess.run(f'docker run -it --rm {metadata_tag} python -c'.split(' ') + ["from main import func;print(func.dump_metadata())"], capture_output=True, check=True)
+            metadata_process = subprocess.run(f'docker run -it --rm {metadata_tag} python -c'.split(' ') + [f"from main import func;print('{__METADATA__START__SPECIAL__TOKEN__}');print(func.dump_metadata())"], capture_output=True, check=True)
         except subprocess.CalledProcessError as e:
             print(e.stdout.decode())
             raise FunctionBuildError(function_name, version, "Error while running metadata docker container")
         
-        metadata = metadata_process.stdout.decode().replace("'", '"')
+        splitted = metadata_process.stdout.decode().split(__METADATA__START__SPECIAL__TOKEN__)
+        if len(splitted) == 2:
+            metadata = splitted[1]
+        elif len(splitted) == 1:
+            metadata = splitted[0]
+        else:
+            print("Probably an error happen in while catching stdout from metadata")
+            return
         print("METADATA:", metadata)
         try:
             metadata = MetaDataBase(**json.loads(metadata))
