@@ -6,7 +6,7 @@ import openai
 
 
 func = SDKFunction(
-    description="OpenAI GPT Completion models (API)",
+    description="OpenAI GPT Completion models (API).Automatically complete and generate text based on provided input.This model predicts and generates the next word or sentence given a partial text input.",
     requires_gpu=False,
 )
 

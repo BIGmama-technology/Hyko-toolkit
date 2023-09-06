@@ -7,7 +7,7 @@ from pydantic import Field
 
 
 func = SDKFunction(
-    description="OpenAI Audio Transcription model (API)",
+    description="OpenAI Audio Transcription model (API).This model converts audio recordings into written text",
     requires_gpu=False,
 )
 
