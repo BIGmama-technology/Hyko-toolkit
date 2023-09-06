@@ -12,7 +12,7 @@ func = SDKFunction(
 )
 
 class Inputs(CoreModel):
-    image : Image = Field(..., description="User inputted image to be captionned")
+    image : Image = Field(..., description="User input image to be captionned")
 
 class Params(CoreModel):
     pass

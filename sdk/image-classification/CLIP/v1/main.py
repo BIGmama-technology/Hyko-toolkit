@@ -4,7 +4,7 @@ import torch
 from typing import List
 from pydantic import Field
 from hyko_sdk import CoreModel, SDKFunction, Image
-import numpy as np
+
 func = SDKFunction(
     description="""
 Classify an image to one class out of the list of classes. 
@@ -43,7 +43,7 @@ async def main(inputs: Inputs, params: Params)-> Outputs:
     if model is None or processor is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
      
-   
+    
     img = inputs.image.to_ndarray()    # type: ignore
   
     inputs_ = processor(
@@ -53,7 +53,7 @@ async def main(inputs: Inputs, params: Params)-> Outputs:
         padding=True,
     )
     
-
+    
     with torch.no_grad():
         outputs = model(**inputs_.to(device))
     # image text similarity score:
