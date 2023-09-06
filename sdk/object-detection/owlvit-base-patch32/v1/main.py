@@ -40,7 +40,7 @@ async def load():
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params):
+async def main(inputs: Inputs, params: Params)-> Outputs:
     if model is None or processor is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
    
@@ -79,5 +79,5 @@ async def main(inputs: Inputs, params: Params):
         draw.text(detection["location"][:2], f"{detection['label']}: {detection['confidence']}", fill="red")
         
     img = Image.from_ndarray(np.asarray(pil_image))
-  
+    
     return Outputs(output_image=img)
