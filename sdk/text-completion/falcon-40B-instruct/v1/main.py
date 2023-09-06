@@ -117,9 +117,8 @@ async def load():
         device_map=device_map,
     )
 
-
 @func.on_execute
-async def main(inputs: Inputs, params: Params):
+async def main(inputs: Inputs, params: Params)-> Outputs:
     if pipeline is None or tokenizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
     
