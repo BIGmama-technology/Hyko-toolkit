@@ -23,6 +23,7 @@ class Outputs(CoreModel):
 
 model = None
 processor = None
+device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device('cpu')
 
 @func.on_startup
 async def load():
@@ -37,7 +38,7 @@ async def load():
         raise Exception("Machine does not have cuda capable devices")
     
     processor = WhisperProcessor.from_pretrained("openai/whisper-large-v2")
-    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v2").to(torch.device("cuda:2")) # type: ignore
+    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v2").to(device) # type: ignore
     model.config.forced_decoder_is = None
 
 
