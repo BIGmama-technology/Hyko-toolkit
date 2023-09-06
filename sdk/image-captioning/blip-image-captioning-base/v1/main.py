@@ -1,9 +1,8 @@
-import numpy as np
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import torch
 from fastapi import HTTPException
 from transformers import BlipProcessor, BlipForConditionalGeneration # type: ignore
-import os
-from PIL import Image as PIL_Image
 from pydantic import Field
 from hyko_sdk import CoreModel, SDKFunction, Image
 
@@ -15,14 +14,14 @@ func = SDKFunction(
 )
 
 class Inputs(CoreModel):
-    image : Image = Field(..., description="User inputted image to be captionned")
+    image : Image = Field(..., description="User input image to be captionned")
 
 
 class Params(CoreModel):
     pass
 
 class Outputs(CoreModel):
-    image_description : str = Field(..., description="description/caption of the image")
+    image_description : str = Field(..., description="description caption of the image")
 
 model = None
 processor = None
@@ -43,19 +42,11 @@ async def load():
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params):
+async def main(inputs: Inputs, params: Params)-> Outputs:
     if model is None or processor is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
     
-
-    file, ext = os.path.splitext(inputs.image.get_name())
-    with open(f"./image{ext}", "wb") as f:
-        f.write(inputs.image.get_data())
-
-    
-    image = PIL_Image.open(f"./image{ext}")
-    img = np.array(image)
-    img = inputs.image.to_ndarray()
+    img = inputs.image.to_ndarray() # type: ignore
     inputs = processor(img, return_tensors="pt")
 
     with torch.no_grad():
