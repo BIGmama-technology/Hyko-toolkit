@@ -7,10 +7,7 @@ from hyko_sdk import CoreModel, SDKFunction, Image
 
 
 func = SDKFunction(
-    description="""
-Classify an image to one class out of the list of classes. 
-Example: if the classes are ['cat', 'dog'] then the model will have to choose if the image is either a cat or dog
-""",
+    description="Image Segmentation Model, this models takes an image and partition it to locate objects and their contours in the image",
     requires_gpu=False,
 )
 
@@ -29,7 +26,6 @@ image_processor = None
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
 
 
-
 @func.on_startup
 async def load():
     global model
@@ -42,7 +38,7 @@ async def load():
     model = SegformerModel.from_pretrained("nvidia/mit-b0").to(device) # type: ignore 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params):
+async def main(inputs: Inputs, params: Params)-> Outputs:
     if model is None or image_processor is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
     

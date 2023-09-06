@@ -7,7 +7,7 @@ from hyko_sdk import CoreModel, SDKFunction
 
 
 func = SDKFunction(
-    description="instruct generation model",
+    description="Automatically complete and generate text based on provided input. This model predicts and generates the next word or sentence given a partial text input.",
     requires_gpu=False,
 )
 
@@ -90,7 +90,7 @@ async def load():
     )
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params):
+async def main(inputs: Inputs, params: Params)-> Outputs:
     if pipeline is None or tokenizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
     
