@@ -9,7 +9,7 @@ def walk_directory(root_path: str, pre_categories: List[str]):
     print(f"Walking {root_path}/{'/'.join(pre_categories)}")
 
     ls = os.listdir(root_path + '/' + '/'.join(pre_categories))
-    if "main.py" in ls and "config.py" in ls and "Dockerfile" in ls:
+    if "main.py" in ls and "Dockerfile" in ls:
         output = ""
         with open(root_path + '/' + '/'.join(pre_categories) + '/Dockerfile') as f:
             text = f.readlines()
