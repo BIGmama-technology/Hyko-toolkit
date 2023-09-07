@@ -8,7 +8,7 @@ RUN python -c "from transformers import pipeline; pipeline('translation', model=
 RUN apt update && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install uvicorn hyko_sdk==0.4.13
+RUN pip install uvicorn hyko_sdk==0.4.14
 
 COPY . .
 
