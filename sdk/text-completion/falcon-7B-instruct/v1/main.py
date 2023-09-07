@@ -1,17 +1,36 @@
-import fastapi
-from config import Inputs, Params, Outputs
 import torch
 from transformers import AutoTokenizer
 import transformers
 from fastapi import HTTPException
+from pydantic import Field
+from hyko_sdk import CoreModel, SDKFunction
 
-app = fastapi.FastAPI()
+
+func = SDKFunction(
+    description="Automatically complete and generate text based on provided input. This model predicts and generates the next word or sentence given a partial text input.",
+    requires_gpu=False,
+)
+
+class Inputs(CoreModel):
+    prompt : str = Field(..., description="User prompt to falcon-instruct")
+
+class Params(CoreModel):
+    system_prompt : str = Field(default=None, description = "system-prompt or system-instruction to falcon-instruct")
+    max_length : int = Field(default = 200, description= "Max tokens to generate")
+    top_k : int = Field(default=10,description="top_k candidates for each token generation")
+    temperature: float = Field(default=0.6, description="Temperature of falcon")
+    top_p: float = Field(default=0.6, description="Top P of falcon")
+    repetition_penalty: float = Field(default=10.0, description="Repetition penalty of falcon")
+
+class Outputs(CoreModel):
+    generated_text : str = Field(..., description="Generated Text from falcon-instruct")
+
 
 pipeline = None
 tokenizer = None
 
-@app.post("/load", response_model=None)
-def load():
+@func.on_startup
+async def load():
     global pipeline
     global tokenizer
     
@@ -70,9 +89,8 @@ def load():
         device_map=device_map,
     )
 
-
-@app.post("/", response_model=Outputs)
-async def main(inputs: Inputs, params: Params):
+@func.on_execute
+async def main(inputs: Inputs, params: Params)-> Outputs:
     if pipeline is None or tokenizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
     
