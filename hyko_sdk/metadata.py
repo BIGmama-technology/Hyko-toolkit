@@ -16,6 +16,8 @@ class HykoExtraTypes(str, Enum):
     IMAGE = "image"
     AUDIO = "audio"
     VIDEO = "video"
+    PDF = "pdf"
+    CSV = "csv"
 
 
 class JsonSchemaEnum(BaseModel):
