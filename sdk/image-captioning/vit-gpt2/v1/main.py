@@ -1,11 +1,25 @@
-import fastapi
 from fastapi.exceptions import HTTPException
-from config import Inputs, Params, Outputs
 from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
 import torch
 import cv2
+from pydantic import Field
+from hyko_sdk import CoreModel, SDKFunction, Image
 
-app = fastapi.FastAPI()
+
+func = SDKFunction(
+    description="An image captioning model gives a short description of the input image",
+    requires_gpu=False,
+)
+
+class Inputs(CoreModel):
+    image : Image = Field(..., description="User input image to be captionned")
+
+class Params(CoreModel):
+    pass
+
+class Outputs(CoreModel):
+    image_description : str = Field(..., description="description/caption of the image")
+
 
 model = None
 feature_extractor = None
@@ -18,11 +32,9 @@ gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
 
-@app.post(
-    "/load",
-    response_model=None,
-)
-def load():
+
+@func.on_startup
+async def load():
     global model
     global feature_extractor
     global tokenizer
@@ -34,16 +46,17 @@ def load():
     feature_extractor = ViTImageProcessor.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
     tokenizer = AutoTokenizer.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
 
-@app.post("/", response_model=Outputs)
-async def main(inputs: Inputs, params: Params):
+@func.on_execute
+async def main(inputs: Inputs, params: Params)->Outputs:
     if model is None or feature_extractor is None or tokenizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
-    await inputs.image.wait_data()
-    img = inputs.image.to_ndarray()
+    
+    img = inputs.image.to_ndarray() # type: ignore
     
     pixel_values = feature_extractor(images=cv2.cvtColor(img, cv2.COLOR_BGR2RGB), return_tensors="pt").pixel_values # type: ignore
     pixel_values = pixel_values.to(device)
     output_ids = model.generate(pixel_values, **gen_kwargs)
     preds = tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
     
+
     return Outputs(image_description=preds)

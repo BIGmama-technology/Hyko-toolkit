@@ -1,19 +1,34 @@
-import fastapi
 from fastapi.exceptions import HTTPException
-from config import Inputs, Params, Outputs, Image
 from transformers import OwlViTProcessor, OwlViTForObjectDetection
 import torch
 from PIL import Image as PILImage, ImageDraw
 import numpy as np
+from typing import List
+from pydantic import Field
+from hyko_sdk import CoreModel, SDKFunction, Image
 
 
-app = fastapi.FastAPI()
+func = SDKFunction(
+    description="Object detection/recogntion model, draws bounding boxes over the image if the object is in the list of tags.",
+    requires_gpu=False,
+)
+
+class Inputs(CoreModel):
+    img : Image = Field(..., description="Input Image")
+
+class Params(CoreModel):
+    tags : List[str] = Field(..., description="List of object(s) names to be detected")
+
+class Outputs(CoreModel):
+    output_image: Image = Field(..., description="Input image + detection bounding Boxes")
+
 
 processor = None
 model = None
 device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device('cpu')
-@app.post("/load", response_model=None)
-def load():
+
+@func.on_startup
+async def load():
     global model
     global processor
     if model is not None and processor is not None:
@@ -24,11 +39,11 @@ def load():
     model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32").to(device) #type: ignore
 
 
-@app.post("/", response_model=Outputs)
-async def main(inputs: Inputs, params: Params):
+@func.on_execute
+async def main(inputs: Inputs, params: Params)-> Outputs:
     if model is None or processor is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
-    await inputs.img.wait_data()
+   
     np_img = inputs.img.to_ndarray()
     pil_image = PILImage.fromarray(np_img)
     # img.save("TEST.jpg")
@@ -64,5 +79,5 @@ async def main(inputs: Inputs, params: Params):
         draw.text(detection["location"][:2], f"{detection['label']}: {detection['confidence']}", fill="red")
         
     img = Image.from_ndarray(np.asarray(pil_image))
-    await img.wait_data()
+    
     return Outputs(output_image=img)
