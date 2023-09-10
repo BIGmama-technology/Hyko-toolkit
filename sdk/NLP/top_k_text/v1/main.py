@@ -1,5 +1,5 @@
-from hyko_sdk import SDKFunction, CoreModel
 from pydantic import Field
+from hyko_sdk import SDKFunction, CoreModel
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import torch
