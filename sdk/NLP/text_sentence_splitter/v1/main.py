@@ -21,9 +21,9 @@ class Params(CoreModel):
     pass
 
 class Outputs(CoreModel):
-    sentences: list[str] = Field(..., descriptions="Splitted sentences")
+    sentences: list[str] = Field(..., description="Splitted sentences")
 
 
 @func.on_execute
-async def main(inputs: Inputs, params : Params):
+async def main(inputs: Inputs, params : Params) -> Outputs:
     return Outputs(sentences=nltk.sent_tokenize(inputs.text))
