@@ -50,6 +50,7 @@ async def main(inputs: Inputs , params: Params)-> Outputs:
 
     
     waveform, sample_rate = inputs.audio.to_ndarray(sampling_rate=16_000)
+    waveform = torch.unsqueeze(torch.tensor(waveform), 0).numpy()
 
     transcription = ""
     
