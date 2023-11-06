@@ -30,7 +30,7 @@ async def load():
         print("Model already Loaded")
         return
     
-    model = os.getenv("HYKO_HF_TEXT_GENERATION_MODEL")
+    model = os.getenv("HYKO_HF_MODEL")
     
     if model is None:
         raise HTTPException(status_code=500, detail="Model env not set")
@@ -52,4 +52,4 @@ async def main(inputs: Inputs, params: Params)-> Outputs:
     
     res = classifier(inputs.input_text, max_length=params.max_length)
 
-    return Outputs(generated_text=res[0]["generated_text"])
+    return Outputs(generated_text=res[0]["generated_text"]) # type: ignore
