@@ -31,7 +31,7 @@ async def load():
         print("Model already Loaded")
         return
     
-    model = os.getenv("HYKO_HF_SUMMARIZATION_MODEL")
+    model = os.getenv("HYKO_HF_MODEL")
     
     if model is None:
         raise HTTPException(status_code=500, detail="Model env not set")
@@ -53,4 +53,4 @@ async def main(inputs: Inputs, params: Params)-> Outputs:
     
     res = classifier(inputs.input_text, min_length=params.min_length, max_length=params.max_length)
     
-    return Outputs(summary_text=res[0]["summary_text"])
+    return Outputs(summary_text=res[0]["summary_text"]) # type: ignore

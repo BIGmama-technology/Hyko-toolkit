@@ -30,7 +30,7 @@ async def load():
         print("Model already Loaded")
         return
     
-    model = os.getenv("HYKO_HF_TEXT_CLASSIFICATION_MODEL")
+    model = os.getenv("HYKO_HF_MODEL")
     
     if model is None:
         raise HTTPException(status_code=500, detail="Model env not set")
@@ -51,6 +51,5 @@ async def main(inputs: Inputs, params: Params)-> Outputs:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
     
     res = classifier(inputs.input_text)
-    label = res[0]["label"]
-    score = res[0]["score"]
-    return Outputs(label=label, score=score)
+    
+    return Outputs(label=res[0]["label"], score=[0]["score"]) # type: ignore
