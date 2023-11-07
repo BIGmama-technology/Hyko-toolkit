@@ -13,7 +13,7 @@ class Inputs(CoreModel):
     input_text: str = Field(..., description="text to classify")
 
 class Params(CoreModel):
-    hugging_face_model: str = Field(..., description="Model") # WARNING: DO NOT REMOVE! implementation specific (mathwsch tefham)
+    hugging_face_model: str = Field(..., description="Model") # WARNING: DO NOT REMOVE! implementation specific
 
 class Outputs(CoreModel):
     label: str = Field(..., description="Class label")
