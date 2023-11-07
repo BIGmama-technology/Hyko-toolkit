@@ -52,4 +52,4 @@ async def main(inputs: Inputs, params: Params)-> Outputs:
     
     res = classifier(inputs.input_text)
     
-    return Outputs(label=res[0]["label"], score=[0]["score"]) # type: ignore
+    return Outputs(label=res[0]["label"], score=res[0]["score"]) # type: ignore
