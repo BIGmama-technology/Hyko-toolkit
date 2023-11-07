@@ -13,7 +13,7 @@ class Inputs(CoreModel):
     input_text: str = Field(..., description="text to summarize")
 
 class Params(CoreModel):
-    hugging_face_model: str = Field(..., description="Model") # WARNING: DO NOT REMOVE! implementation specific (mathwsch tefham)
+    hugging_face_model: str = Field(..., description="Model") # WARNING: DO NOT REMOVE! implementation specific
     min_length: int = Field(default=30, description="Minimum output length")
     max_length: int = Field(default=130, description="Maximum output length")
 

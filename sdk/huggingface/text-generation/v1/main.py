@@ -13,7 +13,7 @@ class Inputs(CoreModel):
     input_text: str = Field(..., description="input text")
 
 class Params(CoreModel):
-    hugging_face_model: str = Field(..., description="Model") # WARNING: DO NOT REMOVE! implementation specific (mathwsch tefham)
+    hugging_face_model: str = Field(..., description="Model") # WARNING: DO NOT REMOVE! implementation specific
     max_length: int = Field(default=30, description="maximum number of tokens to generate")
 
 class Outputs(CoreModel):
