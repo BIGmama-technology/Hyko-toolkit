@@ -1,6 +1,7 @@
-.PHONY: build_sdk build_sdk_cuda build_threaded override_dir build_single override_registry skip_push remove_containers
+.PHONY: build_sdk build_sdk_cuda build_threaded override_registry skip_push remove_containers
 
 dir ?= sdk
+registry ?= registry.treafik.me
 
 build_sdk:
 	python scripts/sdk-builder.py
@@ -15,7 +16,7 @@ build_dir:
 	python scripts/sdk-builder.py --dir $(dir) --cuda
 
 override_registry:
-	python scripts/sdk-builder.py --registry wbox.hyko.ai
+	python scripts/sdk-builder.py --registry $(registry)
 
 skip_push:
 	python scripts/sdk-builder.py --no-push
