@@ -11,7 +11,7 @@ RUN apt update && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install uvicorn hyko_sdk==0.4.14
+RUN pip install uvicorn hyko_sdk==0.4.15
 
 COPY . . 
 
