@@ -94,7 +94,13 @@ class Image(HykoBaseType):
         img = PIL_Image.fromarray(arr) # type: ignore
         img.save(file, format="PNG")
         return Image(bytearray(file.getbuffer().tobytes()), filename=filename, mime_type=encoding)
-
+    
+    @staticmethod
+    def from_pil(img: PIL_Image, filename: str = "image.png", encoding: MimeTypesUnion = "PNG") -> "Image":
+        file = io.BytesIO()
+        img.save(file, format="PNG")
+        return Image(bytearray(file.getbuffer().tobytes()), filename=filename, mime_type=encoding)
+    
     def __init__(
         self,
         val: Union[uuid.UUID, bytearray, str, 'Image'],
