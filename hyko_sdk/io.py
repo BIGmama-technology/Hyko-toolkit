@@ -236,6 +236,14 @@ class Image(HykoBaseType):
             return img[...,:3]
         else:
            raise RuntimeError("Image decode error (Imagedata not loaded)")
+    
+    def to_pil(self, keep_alpha_if_png: bool = False) -> PIL_Image:
+        if self.get_data():
+            img_bytes_io = io.BytesIO(self.get_data())
+            img = PIL_Image.open(img_bytes_io)
+            return img
+        else:
+           raise RuntimeError("Image decode error (Imagedata not loaded)")
 
         
         
