@@ -3,8 +3,6 @@ from pydantic import Field
 from hyko_sdk import CoreModel, SDKFunction, Image
 import os
 from transformers import pipeline
-import io
-from PIL import Image as PIL_Image
 
 func = SDKFunction(
     description="Hugging Face image captioning",
