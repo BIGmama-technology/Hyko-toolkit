@@ -96,7 +96,7 @@ class Image(HykoBaseType):
         return Image(bytearray(file.getbuffer().tobytes()), filename=filename, mime_type=encoding)
     
     @staticmethod
-    def from_pil(img: PIL_Image, filename: str = "image.png", encoding: MimeTypesUnion = "PNG") -> "Image":
+    def from_pil(img: PIL_Image.Image, filename: str = "image.png", encoding: MimeTypesUnion = "PNG") -> "Image":
         file = io.BytesIO()
         img.save(file, format="PNG")
         return Image(bytearray(file.getbuffer().tobytes()), filename=filename, mime_type=encoding)
@@ -243,7 +243,7 @@ class Image(HykoBaseType):
         else:
            raise RuntimeError("Image decode error (Imagedata not loaded)")
     
-    def to_pil(self, keep_alpha_if_png: bool = False) -> PIL_Image:
+    def to_pil(self, keep_alpha_if_png: bool = False) -> PIL_Image.Image:
         if self.get_data():
             img_bytes_io = io.BytesIO(self.get_data())
             img = PIL_Image.open(img_bytes_io)
