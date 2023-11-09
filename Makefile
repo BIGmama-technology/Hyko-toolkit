@@ -1,7 +1,10 @@
-.PHONY: build_sdk build_sdk_cuda build_threaded override_registry skip_push remove_containers
+.PHONY: setup build_sdk build_sdk_cuda build_threaded override_registry skip_push remove_containers remove_registry_images
 
 dir ?= sdk
 registry ?= registry.treafik.me
+
+setup:
+	./scripts/setup.sh
 
 build_sdk:
 	python scripts/sdk-builder.py
@@ -26,4 +29,3 @@ remove_containers:
 
 remove_registry_images:
 	docker images | grep '^registry' | awk '{print $3}' | xargs -I {} docker rmi -f {}
-
