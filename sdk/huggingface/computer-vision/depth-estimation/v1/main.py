@@ -3,11 +3,9 @@ from pydantic import Field
 from hyko_sdk import CoreModel, SDKFunction, Image
 import os
 from transformers import pipeline
-import io
-from PIL import Image as PIL_Image
 
 func = SDKFunction(
-    description="Hugging Face image captioning",
+    description="HuggingFace depth estimation",
     requires_gpu=False,
 )
 
@@ -18,7 +16,7 @@ class Params(CoreModel):
     hugging_face_model: str = Field(..., description="Model") # WARNING: DO NOT REMOVE! implementation specific
 
 class Outputs(CoreModel):
-    depth_map: Image = Field(..., description="Input image")
+    depth_map: Image = Field(..., description="Output depth map")
 
 
 estimator = None
