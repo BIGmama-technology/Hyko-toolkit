@@ -39,7 +39,7 @@ async def load():
         classifier = transformers.pipeline(
             task="text-classification",
             model=model,
-            device_map="auto",
+            device_map="cpu",
         )
     except Exception as exc:
         import logging
