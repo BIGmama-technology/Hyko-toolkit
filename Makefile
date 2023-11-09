@@ -23,3 +23,7 @@ skip_push:
 
 remove_containers:
 	docker rm -f $$(docker ps -a | grep hyko_sdk | awk '{print $$1;}')
+
+remove_registry_images:
+	docker images | grep '^registry' | awk '{print $3}' | xargs -I {} docker rmi -f {}
+
