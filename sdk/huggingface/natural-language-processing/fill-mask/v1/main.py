@@ -9,11 +9,16 @@ func = SDKFunction(
     requires_gpu=False,
 )
 
+
 class Inputs(CoreModel):
     masked_text: str = Field(..., description="Input text with <mask> to fill")
 
+
 class Params(CoreModel):
-    hugging_face_model: str = Field(..., description="Model") # WARNING: DO NOT REMOVE! implementation specific
+    hugging_face_model: str = Field(
+        ..., description="Model"
+    )  # WARNING: DO NOT REMOVE! implementation specific
+
 
 class Outputs(CoreModel):
     sequence: str = Field(..., description="Filled output text")
@@ -22,19 +27,20 @@ class Outputs(CoreModel):
 
 filler = None
 
+
 @func.on_startup
 async def load():
     global filler
-    
+
     if filler is not None:
         print("Model already Loaded")
         return
-    
+
     model = os.getenv("HYKO_HF_MODEL")
-    
+
     if model is None:
         raise HTTPException(status_code=500, detail="Model env not set")
-    
+
     try:
         filler = transformers.pipeline(
             task="fill-mask",
@@ -43,13 +49,15 @@ async def load():
         )
     except Exception as exc:
         import logging
+
         logging.error(exc)
 
+
 @func.on_execute
-async def main(inputs: Inputs, params: Params)-> Outputs:
+async def main(inputs: Inputs, params: Params) -> Outputs:
     if filler is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
 
     res = filler(inputs.masked_text)
-    
-    return Outputs(sequence=res[0]["sequence"], score=res[0]["score"]) # type: ignore
+
+    return Outputs(sequence=res[0]["sequence"], score=res[0]["score"])  # type: ignore
