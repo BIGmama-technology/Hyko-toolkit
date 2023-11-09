@@ -5,20 +5,20 @@ import transformers
 import os
 
 func = SDKFunction(
-    description="Hugging Face summarization",
+    description="Hugging Face Zero Shot Classification Task",
     requires_gpu=False,
 )
 
 class Inputs(CoreModel):
-    input_text: str = Field(..., description="text to summarize")
+    input_text: str = Field(..., description="Input text")
+    candidate_labels: list[str] = Field(..., description="Candidate labels to use for classification")
 
 class Params(CoreModel):
     hugging_face_model: str = Field(..., description="Model") # WARNING: DO NOT REMOVE! implementation specific
-    min_length: int = Field(default=30, description="Minimum output length")
-    max_length: int = Field(default=130, description="Maximum output length")
 
 class Outputs(CoreModel):
-    summary_text: str = Field(..., description="Summary output")
+    labels: list[str] = Field(..., description="Classified labels")
+    scores: list[float] = Field(..., description="Respective classification scores")
 
 
 classifier = None
@@ -38,7 +38,7 @@ async def load():
     
     try:
         classifier = transformers.pipeline(
-            task="summarization",
+            task="zero-shot-classification",
             model=model,
             device_map="cpu",
         )
@@ -51,6 +51,8 @@ async def main(inputs: Inputs, params: Params)-> Outputs:
     if classifier is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
     
-    res = classifier(inputs.input_text, min_length=params.min_length, max_length=params.max_length)
+    res = classifier(inputs.input_text, candidate_labels=inputs.candidate_labels)
     
-    return Outputs(summary_text=res[0]["summary_text"]) # type: ignore
+    print(res)
+    
+    return Outputs(labels=res["labels"], scores=res["scores"]) # type: ignore
