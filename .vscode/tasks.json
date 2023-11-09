@@ -1,0 +1,23 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "hyko backend",
+      "type": "shell",
+      "command": "cd ~/bigmama/hyko/core; ./scripts/run-local.sh",
+      "problemMatcher": []
+    },
+    {
+      "label": "hyko frontend",
+      "type": "shell",
+      "command": "cd ~/bigmama/hyko/monorepo; ./scripts/run-local.sh app"
+    },
+    {
+      "label": "run hyko",
+      "dependsOn": ["hyko backend", "hyko frontend"],
+      "problemMatcher": []
+    }
+  ]
+}
