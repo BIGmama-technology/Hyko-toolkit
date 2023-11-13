@@ -18,6 +18,9 @@ class Params(CoreModel):
     hugging_face_model: str = Field(
         ..., description="Model"
     )  # WARNING: DO NOT REMOVE! implementation specific
+    device_map: str = Field(
+        ..., description="Device map (Auto, CPU or GPU)"
+    )  # WARNING: DO NOT REMOVE! implementation specific
     min_length: int = Field(default=30, description="Minimum output length")
     max_length: int = Field(default=130, description="Maximum output length")
 
@@ -42,11 +45,13 @@ async def load():
     if model is None:
         raise HTTPException(status_code=500, detail="Model env not set")
 
+    device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
+
     try:
         classifier = transformers.pipeline(
             task="summarization",
             model=model,
-            device_map="cpu",
+            device_map=device_map,
         )
     except Exception as exc:
         import logging
