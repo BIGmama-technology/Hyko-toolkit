@@ -25,7 +25,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     with open(f"/app/video.{ext}", "wb") as f:
         f.write(inputs.video.get_data())
     # user video.{ext} instead of filename directly to avoid errors with names that has space in it
-    subprocess.run(f"ffmpeg -i /app/video.{ext} /app/audio.mp3 -y".split(" "))
+    subprocess.run(f"ffmpeg -i /app/video.{ext} -ac 1 /app/audio.mp3 -y".split(" "))
 
     with open("audio.mp3", "rb") as f:
         data = f.read()

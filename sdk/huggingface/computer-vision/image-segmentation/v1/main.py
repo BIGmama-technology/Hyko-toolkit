@@ -22,6 +22,9 @@ class Params(CoreModel):
     hugging_face_model: str = Field(
         ..., description="Model"
     )  # WARNING: DO NOT REMOVE! implementation specific
+    device_map: str = Field(
+        ..., description="Device map (Auto, CPU or GPU)"
+    )  # WARNING: DO NOT REMOVE! implementation specific
 
 
 class Outputs(CoreModel):
@@ -44,8 +47,14 @@ async def load():
     if model is None:
         raise HTTPException(status_code=500, detail="Model env not set")
 
+    device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
+
     try:
-        segmenter = pipeline("image-segmentation", model=model, device_map="cpu")
+        segmenter = pipeline(
+            "image-segmentation",
+            model=model,
+            device_map=device_map,
+        )
 
     except Exception as exc:
         import logging
