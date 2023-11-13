@@ -45,17 +45,12 @@ async def load():
 
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
 
-    try:
-        recognizer = pipeline(
-            "automatic-speech-recognition",
-            model=model,
-            device_map=device_map,
-        )
+    recognizer = pipeline(
+        "automatic-speech-recognition",
+        model=model,
+        device_map=device_map,
+    )
 
-    except Exception as exc:
-        import logging
-
-        logging.error(exc)
 
 
 @func.on_execute
