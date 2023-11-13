@@ -9,8 +9,6 @@ from .io import HykoBaseType
 from .metadata import MetaDataBase, HykoJsonSchemaExt, IOPortType
 from .utils import model_to_friendly_property_types
 import json
-import os
-import signal
 
 InputsType = TypeVar("InputsType", bound="BaseModel")
 ParamsType = TypeVar("ParamsType", bound="BaseModel")
@@ -78,7 +76,7 @@ class SDKFunction(FastAPI):
         self._status = asyncio.Future[bool]()
         self.description = description
         self.requires_gpu = requires_gpu
-
+        
     def on_startup(self, f: OnStartupFuncType):
         def blocking_exec():
             asyncio.run(f())
@@ -94,6 +92,7 @@ class SDKFunction(FastAPI):
     async def _wait_startup_tasks(self):
         if not len(self.startup_tasks):
             return
+        
         done, _ = await asyncio.wait(
             self.startup_tasks, return_when=asyncio.FIRST_EXCEPTION
         )
@@ -101,7 +100,7 @@ class SDKFunction(FastAPI):
             exc = task.exception()
             if exc is not None:
                 raise exc
-
+            
     def on_shutdown(self, f: OnShutdownFuncType) -> OnShutdownFuncType:
         async def wrapper() -> None:
             await f()
@@ -112,26 +111,15 @@ class SDKFunction(FastAPI):
         async def wait_startup_handler():
             try:
                 await self._wait_startup_tasks()
-            except Exception as exc:
+            except HTTPException as e:
+                raise e
+            except Exception as e:
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Exception occured during startup: {exc}",
+                    detail=f"Exception occured during startup:\n{e.__repr__()}",
                 )
-            return
 
         self.get("/wait_startup")(wait_startup_handler)
-
-        async def wait_startup_exit_handler():
-            try:
-                await self._wait_startup_tasks()
-            except:
-                os.kill(os.getpid(), signal.SIGINT)
-
-        try:
-            asyncio.get_running_loop()
-            self.startup_task = asyncio.create_task(wait_startup_exit_handler())
-        except RuntimeError:
-            pass
 
         f_args = [
             (param.name, param.annotation)
@@ -228,11 +216,13 @@ class SDKFunction(FastAPI):
         async def wrapper(
             storage_params: ExecStorageParams, inputs: InputsType, params: ParamsType
         ) -> OutputsType:
-            if not self.startup_task.done():
-                raise HTTPException(
-                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                    detail="SDK Function did not finish startup",
-                )
+            for task in self.startup_tasks:
+                if not task.done():
+                    raise HTTPException(
+                        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                        detail="SDK Function did not finish startup",
+                    )
+            
             pending_download_tasks: list[asyncio.Task[None]] = []
             HykoBaseType.set_sync(
                 storage_params.host,
@@ -251,9 +241,17 @@ class SDKFunction(FastAPI):
                     exc = task.exception()
                     if exc is not None:
                         raise exc
-            # print("Inputs done")
-            outputs = await f(inputs, params)
-
+            # print("Inputs done")  
+            try:
+                outputs = await f(inputs, params)
+            except HTTPException as e:
+                raise e
+            except Exception as e:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Exception occured during execution:\n{e.__repr__()}",
+                )
+            
             pending_upload_tasks: list[asyncio.Task[None]] = []
             HykoBaseType.set_sync(
                 storage_params.host,

@@ -49,16 +49,11 @@ async def load():
 
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
     
-    try:
-        qa_model = transformers.pipeline(
-            task="question-answering",
-            model=model,
-            device_map=device_map,
-        )
-    except Exception as exc:
-        import logging
-
-        logging.error(exc)
+    qa_model = transformers.pipeline(
+        task="question-answering",
+        model=model,
+        device_map=device_map,
+    )
 
 
 @func.on_execute

@@ -45,17 +45,11 @@ async def load():
 
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
 
-    try:
-        estimator = pipeline(
-            "depth-estimation",
-            model=model,
-            device_map=device_map,
-        )
-
-    except Exception as exc:
-        import logging
-
-        logging.error(exc)
+    estimator = pipeline(
+        "depth-estimation",
+        model=model,
+        device_map=device_map,
+    )
 
 
 @func.on_execute
