@@ -49,16 +49,11 @@ async def load():
 
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
 
-    try:
-        classifier = transformers.pipeline(
-            task="zero-shot-classification",
-            model=model,
-            device_map=device_map,
-        )
-    except Exception as exc:
-        import logging
-
-        logging.error(exc)
+    classifier = transformers.pipeline(
+        task="zero-shot-classification",
+        model=model,
+        device_map=device_map,
+    )
 
 
 @func.on_execute
@@ -67,7 +62,5 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
 
     res = classifier(inputs.input_text, candidate_labels=inputs.candidate_labels)
-
-    print(res)
 
     return Outputs(labels=res["labels"], scores=res["scores"])  # type: ignore
