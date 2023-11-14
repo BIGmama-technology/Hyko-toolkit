@@ -467,8 +467,8 @@ class Audio(HykoBaseType):
                 )
             )
             with open(out, "rb") as f:
-                self.data = bytearray(f.read())
-
+                self._obj.data = bytearray(f.read())
+                self._obj.name = out
             os.remove(out)
 
     def convert_to(self, new_ext: str):
@@ -476,7 +476,7 @@ class Audio(HykoBaseType):
             # user video.{ext} instead of filename directly to avoid errors with names that has space in it
             _, ext = os.path.splitext(self._obj.name)
             with open(f"/app/video.{ext}", "wb") as f:
-                f.write(self.data)
+                f.write(self.get_data())
 
             out = "media_converted." + new_ext
             if self._obj.name == out:
@@ -484,7 +484,8 @@ class Audio(HykoBaseType):
 
             subprocess.run(f"ffmpeg -i video.{ext} {out} -y".split(" "))
             with open(out, "rb") as f:
-                self.data = bytearray(f.read())
+                self._obj.data = bytearray(f.read())
+                self._obj.name = out
 
             os.remove(out)
 
@@ -496,13 +497,13 @@ class Audio(HykoBaseType):
         num_frames: int = -1,
     ) -> Tuple[np.ndarray, int]:  # type: ignore
         if self._obj and self._obj.name:
-            if "webm" in self._obj.name:
-                self.convert_to("mp3")
+            self.convert_to("mp3")
 
             if sampling_rate:
                 self.resample(sampling_rate)
 
             audio_readable = io.BytesIO(self.get_data())
+            audio_readable.name = self._obj.name
             with soundfile.SoundFile(audio_readable, "r") as file_:
                 if file_.format != "WAV" or normalize:
                     dtype = "float32"

@@ -44,15 +44,10 @@ async def load():
 
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
 
-    try:
-        generator = DiffusionPipeline.from_pretrained(
-            pretrained_model_name_or_path=model,
-            device_map=device_map,
-        )
-    except Exception as exc:
-        import logging
-
-        logging.error(exc)
+    generator = DiffusionPipeline.from_pretrained(
+        pretrained_model_name_or_path=model,
+        device_map=device_map,
+    )
 
 
 @func.on_execute
