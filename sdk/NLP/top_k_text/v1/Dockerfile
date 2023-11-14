@@ -5,7 +5,7 @@ RUN pip install scikit-learn sentence_transformers
 
 RUN python -c "from sentence_transformers import SentenceTransformer;model = SentenceTransformer('all-MiniLM-L6-v2',device='cpu')"
 
-RUN pip install uvicorn hyko_sdk==0.4.17
+RUN pip install uvicorn hyko_sdk==0.4.18
 
 COPY . .
 
