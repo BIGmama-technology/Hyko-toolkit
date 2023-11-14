@@ -6,7 +6,7 @@ import numpy as np
 from transformers import pipeline
 
 func = SDKFunction(
-    description="HuggingFace depth estimation",
+    description="HuggingFace automatic speech recognition",
     requires_gpu=False,
 )
 
