@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from pydantic import Field
 from hyko_sdk import CoreModel, SDKFunction, Audio
 import os
+import numpy as np
 from transformers import pipeline
 
 func = SDKFunction(
@@ -52,13 +53,20 @@ async def load():
     )
 
 
-
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     if recognizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
 
     audio_array, sample_rate = inputs.speech.to_ndarray()
-    result = recognizer({"sampling_rate": sample_rate, "raw": audio_array})
+    # divide audio array to 30s chunks and recognize each chunk
+    segment_duration = 30  # ms
+    segment_length = segment_duration * sample_rate
+    num_chunks = len(audio_array) // segment_length
+    chunks = np.array_split(audio_array, num_chunks)
 
-    return Outputs(text=result["text"])  # type: ignore
+    result = ""
+    for c in chunks:
+        result += recognizer({"sampling_rate": sample_rate, "raw": c})["text"]  # type: ignore
+
+    return Outputs(text=result)  # type: ignore
