@@ -8,6 +8,7 @@ from io import BytesIO
 import base64
 import json
 import httpx
+from httpx import Timeout
 from .metadata import HykoJsonSchemaExt, IOPortType, MetaData, MetaDataBase
 import tqdm
 import tqdm.utils
@@ -36,6 +37,7 @@ class ObjectStorageConn:
             base_url=f"https://{host}/projects/{project_id}/blueprints/{blueprint_id}",
             http2=True,
             verify=False,
+            timeout=Timeout(timeout=120),
         )
         pass
 
