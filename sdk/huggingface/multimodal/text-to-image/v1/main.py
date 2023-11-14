@@ -44,10 +44,15 @@ async def load():
 
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
 
+    if device_map == "auto":
+        raise RuntimeError("device_map should not be auto")
+
     generator = DiffusionPipeline.from_pretrained(
         pretrained_model_name_or_path=model,
-        device_map=device_map,
     )
+
+    if device_map.startswith("cuda"):
+        generator.to(device_map)
 
 
 @func.on_execute
