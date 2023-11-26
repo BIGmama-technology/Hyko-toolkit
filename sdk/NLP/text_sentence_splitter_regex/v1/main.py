@@ -18,7 +18,7 @@ class Params(CoreModel):
 
 
 class Outputs(CoreModel):
-    sentences: str = Field(..., description="Splitted sentences")
+    sentences: list[str] = Field(..., description="Splitted sentences")
 
 
 @func.on_startup
@@ -31,4 +31,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     logging.error("input", inputs.text)
     sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s", inputs.text)
     logging.error("output", sentences)
-    return Outputs(sentences=str(sentences))
+    return Outputs(sentences=sentences)
