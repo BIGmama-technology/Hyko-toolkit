@@ -60,6 +60,11 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     if classifier is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
 
-    res = classifier(inputs.input_text, max_length=params.max_length)
+    res: list[dict[str, str]] = classifier(inputs.input_text, max_length=params.max_length) # type: ignore
 
-    return Outputs(generated_text=res[0]["generated_text"])  # type: ignore
+    generated_text: str = res[0]["generated_text"]
+    
+    if len(generated_text) >= len(inputs.input_text):
+        return Outputs(generated_text=generated_text[len(inputs.input_text):])
+    else:
+        return Outputs(generated_text=generated_text)
