@@ -2,7 +2,7 @@ FROM hyko-sdk:latest
 
 WORKDIR /app
 
-RUN pip install PyPDF2
+RUN pip install PyPDF2 pycryptodome
 
 COPY . .
 
