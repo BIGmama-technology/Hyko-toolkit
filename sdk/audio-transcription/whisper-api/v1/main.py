@@ -26,7 +26,7 @@ class Outputs(CoreModel):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     
-    file = io.BytesIO(inputs.audio.data)
+    file = io.BytesIO(inputs.audio.get_data())
     file.name = inputs.audio.get_name()
 
     res = await openai.Audio.atranscribe(
