@@ -4,7 +4,8 @@ from transformers import WhisperProcessor, WhisperForConditionalGeneration
 from fastapi.exceptions import HTTPException
 from pydantic import Field
 from hyko_sdk import CoreModel, SDKFunction, Audio
-
+import os
+from transformers import pipeline
 
 func = SDKFunction(
     description="OpenAI's Audio Transcription model (Non API)",
@@ -17,13 +18,15 @@ class Inputs(CoreModel):
 
 class Params(CoreModel):
     language: str = Field(default="en", description="The language of the audio")
+    device_map: str = Field(
+        ..., description="Device map (Auto, CPU or GPU)"
+    )  # WARNING: DO NOT REMOVE! implementation specific
 
 class Outputs(CoreModel):
     transcribed_text: str = Field(..., description="Generated transcription text")
 
 model = None
 processor = None
-device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device('cpu')
 
 @func.on_startup
 async def load():
@@ -36,10 +39,13 @@ async def load():
     
     if not torch.cuda.is_available():
         raise Exception("Machine does not have cuda capable devices")
-    
+
+    device = os.getenv("HYKO_DEVICE_MAP", "cuda")
+
     processor = WhisperProcessor.from_pretrained("openai/whisper-large-v2")
     model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large-v2").to(device) # type: ignore
     model.config.forced_decoder_is = None
+
 
 
 @func.on_execute
@@ -50,6 +56,7 @@ async def main(inputs: Inputs , params: Params)-> Outputs:
 
     
     waveform, sample_rate = inputs.audio.to_ndarray(sampling_rate=16_000)
+    waveform = torch.unsqueeze(torch.tensor(waveform), 0).numpy()
 
     transcription = ""
     
@@ -57,13 +64,14 @@ async def main(inputs: Inputs , params: Params)-> Outputs:
     segment_size = seconds * sample_rate 
     segments_count = math.ceil(len(waveform) / segment_size)
     waveform_segments = [waveform[segment_size * i: min(segment_size * (i + 1), len(waveform))] for i in range(segments_count)]
-    forced_decoder_ids = processor.get_decoder_prompt_ids(language=params.language, task="transcribe")
+    forced_decoder_ids = processor.get_decoder_prompt_ids(language=params.language)
+    device = os.getenv("HYKO_DEVICE_MAP", "cuda")
 
 
     for segment in waveform_segments:
         
         input_features = processor.feature_extractor( # type: ignore
-            segment, sampling_rate=16_000, return_tensors="pt"
+            segment[0], sampling_rate=16_000, return_tensors="pt"
         ).input_features
 
         with torch.no_grad():

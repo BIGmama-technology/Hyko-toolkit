@@ -6,7 +6,7 @@ from .types import PyObjectId, StorageObject, StorageObjectType
 from .utils import ObjectStorageConn
 import numpy as np
 from PIL import Image as PIL_Image
-import soundfile # type: ignore
+import soundfile  # type: ignore
 import os
 import subprocess
 import io
@@ -16,7 +16,6 @@ import asyncio
 
 
 class HykoBaseType:
-
     _obj_id: Optional[UUID] = None
     _obj: Optional[StorageObject] = None
     _sync_conn: Optional[ObjectStorageConn] = None
@@ -43,33 +42,45 @@ class HykoBaseType:
 
     def set_obj_id(self, obj_id: UUID):
         self._obj_id = obj_id
-    
+
     def sync_storage(self):
         if self._sync_conn is None or self._sync_tasks is None:
             return
-        
+
         if self._obj is None and self._obj_id is not None:
+
             async def download_task(sync_conn: ObjectStorageConn, id: UUID):
-                obj_name, obj_type, obj_data = await sync_conn.download_object(id, show_progress=True)
+                obj_name, obj_type, obj_data = await sync_conn.download_object(
+                    id, show_progress=True
+                )
                 self.set_obj(obj_name, obj_type, obj_data)
 
-            self._sync_tasks.append(asyncio.create_task(download_task(self._sync_conn, self._obj_id)))
+            self._sync_tasks.append(
+                asyncio.create_task(download_task(self._sync_conn, self._obj_id))
+            )
             return
-        
-        if self._obj_id is None and self._obj is not None:
-            async def upload_task(sync_conn: ObjectStorageConn, obj: StorageObject):
-                self.set_obj_id(await sync_conn.upload_object(obj.name, obj.type, obj.data, show_progress=False))
 
-            self._sync_tasks.append(asyncio.create_task(upload_task(self._sync_conn, self._obj)))
+        if self._obj_id is None and self._obj is not None:
+
+            async def upload_task(sync_conn: ObjectStorageConn, obj: StorageObject):
+                self.set_obj_id(
+                    await sync_conn.upload_object(
+                        obj.name, obj.type, obj.data, show_progress=False
+                    )
+                )
+
+            self._sync_tasks.append(
+                asyncio.create_task(upload_task(self._sync_conn, self._obj))
+            )
             return
 
         raise Exception("Unexpected sync state")
-    
+
     def get_name(self):
         if self._obj is None:
             raise Exception("Object is not synced")
         return self._obj.name
-    
+
     def get_mime_type(self):
         if self._obj is None:
             raise Exception("Object is not synced")
@@ -80,8 +91,8 @@ class HykoBaseType:
             raise Exception("Object is not synced")
         return self._obj.data
 
-class Image(HykoBaseType):
 
+class Image(HykoBaseType):
     MimeTypesUnion = Literal["PNG"] | Literal["JPEG"]
 
     class MimeType(Enum):
@@ -89,19 +100,36 @@ class Image(HykoBaseType):
         JPEG = "JPEG"
 
     @staticmethod
-    def from_ndarray(arr: np.ndarray[Any, Any], filename: str = "image.png", encoding: MimeTypesUnion = "PNG") -> "Image":
+    def from_ndarray(
+        arr: np.ndarray[Any, Any],
+        filename: str = "image.png",
+        encoding: MimeTypesUnion = "PNG",
+    ) -> "Image":
         file = io.BytesIO()
-        img = PIL_Image.fromarray(arr) # type: ignore
+        img = PIL_Image.fromarray(arr)  # type: ignore
         img.save(file, format="PNG")
-        return Image(bytearray(file.getbuffer().tobytes()), filename=filename, mime_type=encoding)
+        return Image(
+            bytearray(file.getbuffer().tobytes()), filename=filename, mime_type=encoding
+        )
+
+    @staticmethod
+    def from_pil(
+        img: PIL_Image.Image,
+        filename: str = "image.png",
+        encoding: MimeTypesUnion = "PNG",
+    ) -> "Image":
+        file = io.BytesIO()
+        img.save(file, format="PNG")
+        return Image(
+            bytearray(file.getbuffer().tobytes()), filename=filename, mime_type=encoding
+        )
 
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, 'Image'],
+        val: Union[uuid.UUID, bytearray, str, "Image"],
         filename: Optional[str] = None,
         mime_type: Optional[MimeTypesUnion] = None,
     ) -> None:
-        
         if isinstance(val, Image):
             self._obj = val._obj
             self._obj_id = val._obj_id
@@ -114,14 +142,14 @@ class Image(HykoBaseType):
             self.sync_storage()
             # print("Image init from UUID")
             return
-        
+
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
             # print("Image init from Str")
             return
 
-        if isinstance(val, bytearray): # type: ignore
+        if isinstance(val, bytearray):  # type: ignore
             if filename is None:
                 filename = "test.png"
 
@@ -134,48 +162,47 @@ class Image(HykoBaseType):
                 self.set_obj(filename, StorageObjectType.IMAGE_JPEG, val)
             else:
                 raise ValueError("Got invalid mime type")
-            
+
             self.sync_storage()
             # print("Image init from Bytearray")
             return
-        
-        raise ValueError("Got invalid init value")
 
+        raise ValueError("Got invalid init value")
 
     def __str__(self) -> str:
         return f"{self._obj_id}"
-    
+
     @staticmethod
-    def serialize_id(value: 'Image') -> str:
+    def serialize_id(value: "Image") -> str:
         # print("Serializing Id")
         return f"{value._obj_id}"
-    
+
     @staticmethod
-    def serialize_object(value: 'Image') -> tuple[bytearray, str, str]:
+    def serialize_object(value: "Image") -> tuple[bytearray, str, str]:
         # print("Serializing StorageObject")
         if value._obj is None:
             raise ValueError("StorageObject serialization error, object not set")
         return (value._obj.data, value._obj.name, value._obj.type)
-    
+
     @staticmethod
-    def validate_from_id(value: str | UUID) -> 'Image':
+    def validate_from_id(value: str | UUID) -> "Image":
         # print("Validating Id")
         return Image(value)
-    
+
     @staticmethod
-    def validate_from_object(value: 'tuple[bytearray, str, str] | Image') -> 'Image':
+    def validate_from_object(value: "tuple[bytearray, str, str] | Image") -> "Image":
         # print("Validating StorageObject")
         # print(f"obj type: {type(value)}")
         if isinstance(value, Image):
             return value
         if value[2] == StorageObjectType.IMAGE_PNG:
-            obj_type = 'PNG'
+            obj_type = "PNG"
         elif value[2] == StorageObjectType.IMAGE_JPEG:
-            obj_type = 'JPEG'
+            obj_type = "JPEG"
         else:
             raise ValueError(f"Invalud StorageObject type, {value[2]}")
         return Image(value[0], value[1], obj_type)
-    
+
     @classmethod
     def __get_pydantic_core_schema__(
         cls,
@@ -189,24 +216,36 @@ class Image(HykoBaseType):
                 core_schema.chain_schema(
                     [
                         core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(Image.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            Image.validate_from_id
+                        ),
+                    ]
+                ),
                 core_schema.chain_schema(
                     [
                         core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(Image.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            Image.validate_from_id
+                        ),
+                    ]
+                ),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(Image.serialize_id),
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                Image.serialize_id
+            ),
         )
 
         python_schema = core_schema.union_schema(
             [
                 json_schema,
-                core_schema.no_info_plain_validator_function(Image.validate_from_object),
+                core_schema.no_info_plain_validator_function(
+                    Image.validate_from_object
+                ),
                 # core_schema.is_instance_schema(Image),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(Image.serialize_object)
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                Image.serialize_object
+            ),
         )
 
         return core_schema.json_or_python_schema(
@@ -214,17 +253,14 @@ class Image(HykoBaseType):
             python_schema=python_schema,
             # serialization=core_schema.plain_serializer_function_ser_schema(Image.serialize_id),
         )
-        
+
     @classmethod
     def __get_pydantic_json_schema__(
-        cls,
-        _core_schema: core_schema.CoreSchema,
-        handler: GetJsonSchemaHandler
+        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
     ):
         schema = handler(core_schema.str_schema())
         schema["type"] = "image"
         return schema
-    
 
     def to_ndarray(self, keep_alpha_if_png: bool = False) -> np.ndarray:
         if self.get_data():
@@ -233,15 +269,20 @@ class Image(HykoBaseType):
             img = np.asarray(img)
             if keep_alpha_if_png:
                 return img
-            return img[...,:3]
+            return img[..., :3]
         else:
-           raise RuntimeError("Image decode error (Imagedata not loaded)")
+            raise RuntimeError("Image decode error (Imagedata not loaded)")
 
-        
-        
+    def to_pil(self, keep_alpha_if_png: bool = False) -> PIL_Image.Image:
+        if self.get_data():
+            img_bytes_io = io.BytesIO(self.get_data())
+            img = PIL_Image.open(img_bytes_io)
+            return img
+        else:
+            raise RuntimeError("Image decode error (Imagedata not loaded)")
+
 
 class Audio(HykoBaseType):
-
     MimeTypesUnion = Literal["MPEG"] | Literal["WEBM"] | Literal["WAV"]
 
     class MimeType(Enum):
@@ -250,18 +291,21 @@ class Audio(HykoBaseType):
         WAV = "WAV"
 
     @staticmethod
-    def from_ndarray(arr: np.ndarray, sampling_rate: int) -> "Audio": # type: ignore
+    def from_ndarray(arr: np.ndarray, sampling_rate: int) -> "Audio":  # type: ignore
         file = io.BytesIO()
-        soundfile.write(file, arr, samplerate=sampling_rate, format="MP3") # type: ignore
-        return Audio(bytearray(file.getbuffer().tobytes()), filename="audio.mp3", mime_type="MPEG")
-    
+        soundfile.write(file, arr, samplerate=sampling_rate, format="MP3")  # type: ignore
+        return Audio(
+            bytearray(file.getbuffer().tobytes()),
+            filename="audio.mp3",
+            mime_type="MPEG",
+        )
+
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, 'Audio'],
+        val: Union[uuid.UUID, bytearray, str, "Audio"],
         filename: Optional[str] = None,
-        mime_type: Optional['Audio.MimeTypesUnion'] = None,
+        mime_type: Optional["Audio.MimeTypesUnion"] = None,
     ) -> None:
-        
         if isinstance(val, Audio):
             self._obj = val._obj
             self._obj_id = val._obj_id
@@ -274,73 +318,73 @@ class Audio(HykoBaseType):
             self.sync_storage()
             # print("Image init from UUID")
             return
-        
+
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
             # print("Image init from Str")
             return
 
-        if isinstance(val, bytearray): # type: ignore
+        if isinstance(val, bytearray):  # type: ignore
             if filename is None:
                 filename = "output.mp3"
                 # raise ValueError("Filename should not be None when creating an Image from a bytearray")
-            
+
             if mime_type is None:
-                mime_type = 'MPEG'
+                mime_type = "MPEG"
                 # raise ValueError("Mime type should not be None when creating an Image from a bytearray")
-            
-            if mime_type == 'MPEG':
+
+            if mime_type == "MPEG":
                 self.set_obj(filename, StorageObjectType.AUDIO_MPEG, val)
-            elif mime_type == 'WEBM':
+            elif mime_type == "WEBM":
                 self.set_obj(filename, StorageObjectType.AUDIO_WEBM, val)
-            elif mime_type == 'WAV':
+            elif mime_type == "WAV":
                 self.set_obj(filename, StorageObjectType.AUDIO_WAV, val)
             else:
                 raise ValueError(f"Got invalid mime type, {mime_type}")
-            
+
             self.sync_storage()
             # print("Image init from Bytearray")
             return
-        
+
         raise ValueError(f"Got invalid init value type, {type(val)}")
 
     def __str__(self) -> str:
         return f"{self._obj_id}"
-    
+
     @staticmethod
-    def serialize_id(value: 'Audio') -> str:
+    def serialize_id(value: "Audio") -> str:
         # print("Serializing Id")
         return f"{value._obj_id}"
-    
+
     @staticmethod
-    def serialize_object(value: 'Audio') -> tuple[bytearray, str, str]:
+    def serialize_object(value: "Audio") -> tuple[bytearray, str, str]:
         # print("Serializing StorageObject")
         if value._obj is None:
             raise ValueError("StorageObject serialization error, object not set")
         return (value._obj.data, value._obj.name, value._obj.type)
-    
+
     @staticmethod
-    def validate_from_id(value: str | UUID) -> 'Audio':
+    def validate_from_id(value: str | UUID) -> "Audio":
         # print("Validating Id")
         return Audio(value)
-    
+
     @staticmethod
-    def validate_from_object(value: 'tuple[bytearray, str, str] | Audio') -> 'Audio':
+    def validate_from_object(value: "tuple[bytearray, str, str] | Audio") -> "Audio":
         # print("Validating StorageObject")
         # print(f"obj type: {type(value)}")
         if isinstance(value, Audio):
             return value
         if value[2] == StorageObjectType.AUDIO_MPEG:
-            obj_type = 'MPEG'
+            obj_type = "MPEG"
         elif value[2] == StorageObjectType.AUDIO_WEBM:
-            obj_type = 'WEBM'
+            obj_type = "WEBM"
         elif value[2] == StorageObjectType.AUDIO_WAV:
-            obj_type = 'WAV'
+            obj_type = "WAV"
         else:
             raise ValueError(f"Invalud StorageObject type, {value[2]}")
         return Audio(value[0], value[1], obj_type)
-    
+
     @classmethod
     def __get_pydantic_core_schema__(
         cls,
@@ -354,24 +398,36 @@ class Audio(HykoBaseType):
                 core_schema.chain_schema(
                     [
                         core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(Audio.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            Audio.validate_from_id
+                        ),
+                    ]
+                ),
                 core_schema.chain_schema(
                     [
                         core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(Audio.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            Audio.validate_from_id
+                        ),
+                    ]
+                ),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(Audio.serialize_id),
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                Audio.serialize_id
+            ),
         )
 
         python_schema = core_schema.union_schema(
             [
                 json_schema,
-                core_schema.no_info_plain_validator_function(Audio.validate_from_object),
+                core_schema.no_info_plain_validator_function(
+                    Audio.validate_from_object
+                ),
                 # core_schema.is_instance_schema(Audio),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(Audio.serialize_object)
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                Audio.serialize_object
+            ),
         )
 
         return core_schema.json_or_python_schema(
@@ -379,18 +435,15 @@ class Audio(HykoBaseType):
             python_schema=python_schema,
             # serialization=core_schema.plain_serializer_function_ser_schema(Audio.serialize_id),
         )
-        
+
     @classmethod
     def __get_pydantic_json_schema__(
-        cls,
-        _core_schema: core_schema.CoreSchema,
-        handler: GetJsonSchemaHandler
+        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
     ):
         schema = handler(core_schema.str_schema())
         schema["type"] = "audio"
         return schema
-        
-        
+
     _SUBTYPE2DTYPE = {
         "PCM_S8": "int8",
         "PCM_U8": "uint8",
@@ -399,7 +452,7 @@ class Audio(HykoBaseType):
         "FLOAT": "float32",
         "DOUBLE": "float64",
     }
-    
+
     def resample(self, sampling_rate: int):
         if self._obj and self._obj.name:
             with open(self._obj.name, "wb") as f:
@@ -407,47 +460,50 @@ class Audio(HykoBaseType):
             out = "audio_resampled.mp3"
             if self._obj.name == out:
                 out = "audio_resampled_2.mp3"
-                
-            subprocess.run(f"ffmpeg -i {self._obj.name} -ac 1 -ar {sampling_rate} {out} -y".split(" "))
+
+            subprocess.run(
+                f"ffmpeg -i {self._obj.name} -ac 1 -ar {sampling_rate} {out} -y".split(
+                    " "
+                )
+            )
             with open(out, "rb") as f:
-                self.data = bytearray(f.read())
-                
+                self._obj.data = bytearray(f.read())
+                self._obj.name = out
             os.remove(out)
-            
+
     def convert_to(self, new_ext: str):
         if self._obj and self._obj.name:
-            
             # user video.{ext} instead of filename directly to avoid errors with names that has space in it
             _, ext = os.path.splitext(self._obj.name)
             with open(f"/app/video.{ext}", "wb") as f:
-                f.write(self.data)
-                
-            out = "media_converted." + new_ext 
+                f.write(self.get_data())
+
+            out = "media_converted." + new_ext
             if self._obj.name == out:
                 out = "media_converted_2." + new_ext
-                
+
             subprocess.run(f"ffmpeg -i video.{ext} {out} -y".split(" "))
             with open(out, "rb") as f:
-                self.data = bytearray(f.read())
-                
+                self._obj.data = bytearray(f.read())
+                self._obj.name = out
+
             os.remove(out)
-            
-    def to_ndarray( # type: ignore
+
+    def to_ndarray(  # type: ignore
         self,
         sampling_rate: Optional[int] = None,
         normalize: bool = True,
         frame_offset: int = 0,
         num_frames: int = -1,
-    ) -> Tuple[np.ndarray, int]: # type: ignore
-        
+    ) -> Tuple[np.ndarray, int]:  # type: ignore
         if self._obj and self._obj.name:
-            if "webm" in self._obj.name:
-                self.convert_to("mp3")
-                
+            self.convert_to("mp3")
+
             if sampling_rate:
                 self.resample(sampling_rate)
-            
+
             audio_readable = io.BytesIO(self.get_data())
+            audio_readable.name = self._obj.name
             with soundfile.SoundFile(audio_readable, "r") as file_:
                 if file_.format != "WAV" or normalize:
                     dtype = "float32"
@@ -456,18 +512,16 @@ class Audio(HykoBaseType):
                 else:
                     dtype = Audio._SUBTYPE2DTYPE[file_.subtype]
 
-                frames = file_._prepare_read(frame_offset, None, num_frames) # type: ignore
-                waveform: np.ndarray = file_.read(frames, dtype, always_2d=True) # type: ignore
+                frames = file_._prepare_read(frame_offset, None, num_frames)  # type: ignore
+                waveform: np.ndarray = file_.read(frames, dtype, always_2d=True)  # type: ignore
                 sample_rate: int = file_.samplerate
-                return waveform.reshape((waveform.shape[0])), sample_rate # type: ignore
-            
+                return waveform.reshape((waveform.shape[0])), sample_rate  # type: ignore
+
         else:
             raise RuntimeError("Audio decode error (Audio data not loaded)")
 
 
-
 class Video(HykoBaseType):
-
     MimeTypesUnion = Literal["MP4"] | Literal["WEBM"]
 
     class MimeType(Enum):
@@ -476,11 +530,10 @@ class Video(HykoBaseType):
 
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, 'Video'],
+        val: Union[uuid.UUID, bytearray, str, "Video"],
         filename: Optional[str] = None,
-        mime_type: Optional['Video.MimeTypesUnion'] = None,
+        mime_type: Optional["Video.MimeTypesUnion"] = None,
     ) -> None:
-        
         if isinstance(val, Video):
             self._obj = val._obj
             self._obj_id = val._obj_id
@@ -493,68 +546,67 @@ class Video(HykoBaseType):
             self.sync_storage()
             # print("Image init from UUID")
             return
-        
+
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
             # print("Image init from Str")
             return
 
-        if isinstance(val, bytearray): # type: ignore
+        if isinstance(val, bytearray):  # type: ignore
             if filename is None:
                 filename = "video.mp4"
-            
+
             if mime_type is None:
-                mime_type = 'MP4'
-            
-            if mime_type == 'MP4':
+                mime_type = "MP4"
+
+            if mime_type == "MP4":
                 self.set_obj(filename, StorageObjectType.VIDEO_MP4, val)
-            elif mime_type == 'WEBM':
+            elif mime_type == "WEBM":
                 self.set_obj(filename, StorageObjectType.VIDEO_WEBM, val)
             else:
                 raise ValueError(f"Got invalid mime type, {mime_type}")
-            
+
             self.sync_storage()
             # print("Image init from Bytearray")
             return
-        
+
         raise ValueError(f"Got invalid init value type, {type(val)}")
-    
 
     def __str__(self) -> str:
         return f"{self._obj_id}"
-    
+
     @staticmethod
-    def serialize_id(value: 'Video') -> str:
+    def serialize_id(value: "Video") -> str:
         # print("Serializing Id")
         return f"{value._obj_id}"
-    
+
     @staticmethod
-    def serialize_object(value: 'Video') -> tuple[bytearray, str, str]:
+    def serialize_object(value: "Video") -> tuple[bytearray, str, str]:
         # print("Serializing StorageObject")
         if value._obj is None:
             raise ValueError("StorageObject serialization error, object not set")
         return (value._obj.data, value._obj.name, value._obj.type)
-    
+
     @staticmethod
-    def validate_from_id(value: str | UUID) -> 'Video':
+    def validate_from_id(value: str | UUID) -> "Video":
         # print("Validating Id")
         return Video(value)
-    
+
     @staticmethod
-    def validate_from_object(value: 'tuple[bytearray, str, str] | Video') -> 'Video':
+    def validate_from_object(value: "tuple[bytearray, str, str] | Video") -> "Video":
         # print("Validating StorageObject")
         # print(f"obj type: {type(value)}")
         if isinstance(value, Video):
             return value
         if value[2] == StorageObjectType.VIDEO_MP4:
-            obj_type = 'MP4'
+            obj_type = "MP4"
         elif value[2] == StorageObjectType.VIDEO_WEBM:
-            obj_type = 'WEBM'
+            obj_type = "WEBM"
         else:
             raise ValueError(f"Invalid StorageObject type, {value[2]}")
         return Video(value[0], value[1], obj_type)
-    
+
     @classmethod
     def __get_pydantic_core_schema__(
         cls,
@@ -568,24 +620,36 @@ class Video(HykoBaseType):
                 core_schema.chain_schema(
                     [
                         core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(Video.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            Video.validate_from_id
+                        ),
+                    ]
+                ),
                 core_schema.chain_schema(
                     [
                         core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(Video.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            Video.validate_from_id
+                        ),
+                    ]
+                ),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(Video.serialize_id),
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                Video.serialize_id
+            ),
         )
 
         python_schema = core_schema.union_schema(
             [
                 json_schema,
-                core_schema.no_info_plain_validator_function(Video.validate_from_object),
+                core_schema.no_info_plain_validator_function(
+                    Video.validate_from_object
+                ),
                 # core_schema.is_instance_schema(Video),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(Video.serialize_object)
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                Video.serialize_object
+            ),
         )
 
         return core_schema.json_or_python_schema(
@@ -593,12 +657,10 @@ class Video(HykoBaseType):
             python_schema=python_schema,
             # serialization=core_schema.plain_serializer_function_ser_schema(Video.serialize_id),
         )
-        
+
     @classmethod
     def __get_pydantic_json_schema__(
-        cls,
-        _core_schema: core_schema.CoreSchema,
-        handler: GetJsonSchemaHandler
+        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
     ):
         schema = handler(core_schema.str_schema())
         schema["type"] = "video"
@@ -606,13 +668,11 @@ class Video(HykoBaseType):
 
 
 class PDF(HykoBaseType):
-
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, 'PDF'],
+        val: Union[uuid.UUID, bytearray, str, "PDF"],
         filename: Optional[str] = None,
     ) -> None:
-        
         if isinstance(val, PDF):
             self._obj = val._obj
             self._obj_id = val._obj_id
@@ -625,57 +685,56 @@ class PDF(HykoBaseType):
             self.sync_storage()
             # print("Image init from UUID")
             return
-        
+
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
             # print("Image init from Str")
             return
 
-        if isinstance(val, bytearray): # type: ignore
+        if isinstance(val, bytearray):  # type: ignore
             if filename is None:
                 filename = "output.pdf"
             self.set_obj(filename, StorageObjectType.PDF, val)
             self.sync_storage()
             # print("Image init from Bytearray")
             return
-        
-        raise ValueError("Got invalid init value")
 
+        raise ValueError("Got invalid init value")
 
     def __str__(self) -> str:
         return f"{self._obj_id}"
-    
+
     @staticmethod
-    def serialize_id(value: 'PDF') -> str:
+    def serialize_id(value: "PDF") -> str:
         # print("Serializing Id")
         return f"{value._obj_id}"
-    
+
     @staticmethod
-    def serialize_object(value: 'PDF') -> tuple[bytearray, str, str]:
+    def serialize_object(value: "PDF") -> tuple[bytearray, str, str]:
         # print("Serializing StorageObject")
         if value._obj is None:
             raise ValueError("StorageObject serialization error, object not set")
         return (value._obj.data, value._obj.name, value._obj.type)
-    
+
     @staticmethod
-    def validate_from_id(value: str | UUID) -> 'PDF':
+    def validate_from_id(value: str | UUID) -> "PDF":
         # print("Validating Id")
         return PDF(value)
-    
+
     @staticmethod
-    def validate_from_object(value: 'tuple[bytearray, str, str] | PDF') -> 'PDF':
+    def validate_from_object(value: "tuple[bytearray, str, str] | PDF") -> "PDF":
         # print("Validating StorageObject")
         # print(f"obj type: {type(value)}")
-        
+
         if isinstance(value, PDF):
             return value
-        
+
         if value[2] != StorageObjectType.PDF:
             raise ValueError(f"Invalid StorageObject type, {value[2]}")
-        
+
         return PDF(value[0], value[1])
-    
+
     @classmethod
     def __get_pydantic_core_schema__(
         cls,
@@ -689,15 +748,23 @@ class PDF(HykoBaseType):
                 core_schema.chain_schema(
                     [
                         core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(PDF.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            PDF.validate_from_id
+                        ),
+                    ]
+                ),
                 core_schema.chain_schema(
                     [
                         core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(PDF.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            PDF.validate_from_id
+                        ),
+                    ]
+                ),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(PDF.serialize_id),
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                PDF.serialize_id
+            ),
         )
 
         python_schema = core_schema.union_schema(
@@ -706,7 +773,9 @@ class PDF(HykoBaseType):
                 core_schema.no_info_plain_validator_function(PDF.validate_from_object),
                 # core_schema.is_instance_schema(Image),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(PDF.serialize_object)
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                PDF.serialize_object
+            ),
         )
 
         return core_schema.json_or_python_schema(
@@ -714,12 +783,10 @@ class PDF(HykoBaseType):
             python_schema=python_schema,
             # serialization=core_schema.plain_serializer_function_ser_schema(PDF.serialize_id),
         )
-        
+
     @classmethod
     def __get_pydantic_json_schema__(
-        cls,
-        _core_schema: core_schema.CoreSchema,
-        handler: GetJsonSchemaHandler
+        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
     ):
         schema = handler(core_schema.str_schema())
         schema["type"] = "pdf"
@@ -727,13 +794,11 @@ class PDF(HykoBaseType):
 
 
 class CSV(HykoBaseType):
-
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, 'CSV'],
+        val: Union[uuid.UUID, bytearray, str, "CSV"],
         filename: Optional[str] = None,
     ) -> None:
-        
         if isinstance(val, CSV):
             self._obj = val._obj
             self._obj_id = val._obj_id
@@ -746,57 +811,56 @@ class CSV(HykoBaseType):
             self.sync_storage()
             # print("Image init from UUID")
             return
-        
+
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
             # print("Image init from Str")
             return
 
-        if isinstance(val, bytearray): # type: ignore
+        if isinstance(val, bytearray):  # type: ignore
             if filename is None:
                 filename = "output.csv"
             self.set_obj(filename, StorageObjectType.CSV, val)
             self.sync_storage()
             # print("Image init from Bytearray")
             return
-        
-        raise ValueError("Got invalid init value")
 
+        raise ValueError("Got invalid init value")
 
     def __str__(self) -> str:
         return f"{self._obj_id}"
-    
+
     @staticmethod
-    def serialize_id(value: 'CSV') -> str:
+    def serialize_id(value: "CSV") -> str:
         # print("Serializing Id")
         return f"{value._obj_id}"
-    
+
     @staticmethod
-    def serialize_object(value: 'CSV') -> tuple[bytearray, str, str]:
+    def serialize_object(value: "CSV") -> tuple[bytearray, str, str]:
         # print("Serializing StorageObject")
         if value._obj is None:
             raise ValueError("StorageObject serialization error, object not set")
         return (value._obj.data, value._obj.name, value._obj.type)
-    
+
     @staticmethod
-    def validate_from_id(value: str | UUID) -> 'CSV':
+    def validate_from_id(value: str | UUID) -> "CSV":
         # print("Validating Id")
         return CSV(value)
-    
+
     @staticmethod
-    def validate_from_object(value: 'tuple[bytearray, str, str] | CSV') -> 'CSV':
+    def validate_from_object(value: "tuple[bytearray, str, str] | CSV") -> "CSV":
         # print("Validating StorageObject")
         # print(f"obj type: {type(value)}")
-        
+
         if isinstance(value, CSV):
             return value
-        
+
         if value[2] != StorageObjectType.CSV:
             raise ValueError(f"Invalid StorageObject type, {value[2]}")
-        
+
         return CSV(value[0], value[1])
-    
+
     @classmethod
     def __get_pydantic_core_schema__(
         cls,
@@ -810,15 +874,23 @@ class CSV(HykoBaseType):
                 core_schema.chain_schema(
                     [
                         core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(CSV.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            CSV.validate_from_id
+                        ),
+                    ]
+                ),
                 core_schema.chain_schema(
                     [
                         core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(CSV.validate_from_id),
-                    ]),
+                        core_schema.no_info_plain_validator_function(
+                            CSV.validate_from_id
+                        ),
+                    ]
+                ),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(CSV.serialize_id),
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                CSV.serialize_id
+            ),
         )
 
         python_schema = core_schema.union_schema(
@@ -827,7 +899,9 @@ class CSV(HykoBaseType):
                 core_schema.no_info_plain_validator_function(CSV.validate_from_object),
                 # core_schema.is_instance_schema(Image),
             ],
-            serialization=core_schema.plain_serializer_function_ser_schema(CSV.serialize_object)
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                CSV.serialize_object
+            ),
         )
 
         return core_schema.json_or_python_schema(
@@ -835,15 +909,20 @@ class CSV(HykoBaseType):
             python_schema=python_schema,
             # serialization=core_schema.plain_serializer_function_ser_schema(CSV.serialize_id),
         )
-        
+
     @classmethod
     def __get_pydantic_json_schema__(
-        cls,
-        _core_schema: core_schema.CoreSchema,
-        handler: GetJsonSchemaHandler
+        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
     ):
         schema = handler(core_schema.str_schema())
         schema["type"] = "csv"
         return schema
 
-__all__ = ["Image", "Audio", "Video", "PDF", "CSV", ]
+
+__all__ = [
+    "Image",
+    "Audio",
+    "Video",
+    "PDF",
+    "CSV",
+]

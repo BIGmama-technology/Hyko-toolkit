@@ -23,14 +23,14 @@ class MathOperation(str,Enum):
     PERCENT = "percent"
 
 class Inputs(CoreModel):
-    a: float = Field(..., description="Operand a")
-    b: float = Field(..., description="Operand b")
+    a: int = Field(..., description="Operand a")
+    b: int = Field(..., description="Operand b")
 
 class Params(CoreModel):
     operation: MathOperation = Field(..., description="Mathematical operation")
 
 class Outputs(CoreModel):
-    result: float = Field(..., description="Mathematical operation result")
+    result: int = Field(..., description="Mathematical operation result")
 
 @func.on_execute
 async def main(inputs: Inputs , params: Params)-> Outputs:
