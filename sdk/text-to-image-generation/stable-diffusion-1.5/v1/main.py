@@ -1,3 +1,4 @@
+import os
 from fastapi.exceptions import HTTPException
 from diffusers import StableDiffusionPipeline
 import torch
@@ -15,14 +16,16 @@ class Inputs(CoreModel):
     prompt: str = Field(..., description="User text prompt")
 
 class Params(CoreModel):
-    pass
+    device_map: str = Field(
+        ..., description="Device map (Auto, CPU or GPU)"
+    )  # WARNING: DO NOT REMOVE! implementation specific
+
 
 class Outputs(CoreModel):
     generated_image: Image = Field(..., description="AI Generated image described by user text prompt")
 
 
 model_pipeline = None
-device = torch.device("cuda:1") if torch.cuda.is_available() else torch.device('cpu')
 
 @func.on_startup
 async def load():
@@ -31,8 +34,8 @@ async def load():
         print("Model loaded already")
         return
     
-    repo_id = "runwayml/stable-diffusion-v1-5"
-    model_pipeline = StableDiffusionPipeline.from_pretrained(repo_id, torch_dtype = torch.float16)
+    device = os.getenv("HYKO_DEVICE_MAP", "cuda")
+    model_pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", torch_dtype = torch.float16)
     model_pipeline = model_pipeline.to(device)
 
 
