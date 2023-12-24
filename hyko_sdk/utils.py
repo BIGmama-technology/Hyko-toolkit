@@ -1,17 +1,18 @@
-from typing import Type
-from fastapi import HTTPException, status
-from pydantic import BaseModel
-from .types import PyObjectId
-from .metadata import HykoJsonSchemaExt, MetaData, MetaDataBase
-from uuid import UUID
-from io import BytesIO
 import base64
 import json
+from io import BytesIO
+from typing import Type
+from uuid import UUID
+
 import httpx
-from httpx import Timeout
-from .metadata import HykoJsonSchemaExt, IOPortType, MetaData, MetaDataBase
 import tqdm
 import tqdm.utils
+from fastapi import HTTPException, status
+from httpx import Timeout
+from pydantic import BaseModel
+
+from .metadata import HykoJsonSchemaExt, IOPortType, MetaData, MetaDataBase
+from .types import PyObjectId
 
 
 class ObjectStorageConn:
@@ -127,7 +128,14 @@ class ObjectStorageConn:
                 res = await self._conn.post(
                     url="/storage",
                     headers={"Content-Length": str(file_size)},
-                    files={"file": (filename, tqdm.utils.CallbackIOWrapper(progress.update, BytesIO(data)))},  # type: ignore
+                    files={
+                        "file": (
+                            filename,
+                            tqdm.utils.CallbackIOWrapper(
+                                progress.update, BytesIO(data)
+                            ),
+                        )
+                    },  # type: ignore
                 )
                 if not res.is_success:
                     raise ObjectStorageConn.UploadError(
@@ -217,21 +225,15 @@ def extract_metadata(
         description=description,
         inputs=HykoJsonSchemaExt(
             **inputs_json_schema,
-            friendly_property_types=model_to_friendly_property_types(
-                Inputs
-            ),  # type: ignore
+            friendly_property_types=model_to_friendly_property_types(Inputs),  # type: ignore
         ),
         params=HykoJsonSchemaExt(
             **params_json_schema,
-            friendly_property_types=model_to_friendly_property_types(
-                Params
-            ),  # type: ignore
+            friendly_property_types=model_to_friendly_property_types(Params),  # type: ignore
         ),
         outputs=HykoJsonSchemaExt(
             **outputs_json_schema,
-            friendly_property_types=model_to_friendly_property_types(
-                Outputs
-            ),  # type: ignore
+            friendly_property_types=model_to_friendly_property_types(Outputs),  # type: ignore
         ),
         requires_gpu=requires_gpu,
     )

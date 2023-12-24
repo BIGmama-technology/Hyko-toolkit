@@ -1,8 +1,0 @@
-hyko_sdk internal fastapi app (cleaner code/easier to add new functionalities)
-a load function rest route to allow hyko to load models as it wants (reload only when user wants to change device)
-nvidia support from hyko_compute_machine (mainly nvidia-smi) to get info about number of gpus and consumption essential for user to select device and share resources
-full typing support (arrays and maps)
-ffmpeg c python bindings to avoid saving files
-dev mode for each function for development experience
-docker logs for each function dev experience
-documentation for each function for ux
