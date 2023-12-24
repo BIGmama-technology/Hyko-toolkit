@@ -1,18 +1,21 @@
-from typing import Any, Type, Union, Optional, Tuple, Literal
-from enum import Enum
-from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
-from pydantic_core import core_schema
-from .types import PyObjectId, StorageObject, StorageObjectType
-from .utils import ObjectStorageConn
-import numpy as np
-from PIL import Image as PIL_Image
-import soundfile  # type: ignore
+import asyncio
+import io
 import os
 import subprocess
-import io
-from uuid import UUID
 import uuid
-import asyncio
+from enum import Enum
+from typing import Any, Literal, Optional, Tuple, Type, Union
+from uuid import UUID
+
+import numpy as np
+import soundfile  # type: ignore
+from numpy.typing import NDArray
+from PIL import Image as PIL_Image
+from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
+from pydantic_core import core_schema
+
+from .types import PyObjectId, StorageObject, StorageObjectType
+from .utils import ObjectStorageConn
 
 
 class HykoBaseType:
@@ -262,7 +265,7 @@ class Image(HykoBaseType):
         schema["type"] = "image"
         return schema
 
-    def to_ndarray(self, keep_alpha_if_png: bool = False) -> np.ndarray:
+    def to_ndarray(self, keep_alpha_if_png: bool = False) -> NDArray[Any]:
         if self.get_data():
             img_bytes_io = io.BytesIO(self.get_data())
             img = PIL_Image.open(img_bytes_io)
@@ -515,7 +518,7 @@ class Audio(HykoBaseType):
                 frames = file_._prepare_read(frame_offset, None, num_frames)  # type: ignore
                 waveform: np.ndarray = file_.read(frames, dtype, always_2d=True)  # type: ignore
                 sample_rate: int = file_.samplerate
-                return waveform.reshape((waveform.shape[0])), sample_rate  # type: ignore
+                return waveform.reshape(waveform.shape[0]), sample_rate  # type: ignore
 
         else:
             raise RuntimeError("Audio decode error (Audio data not loaded)")

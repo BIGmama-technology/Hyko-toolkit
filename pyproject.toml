@@ -1,3 +1,42 @@
+[tool.poetry]
+name = "hyko-sdk"
+version = "0.4.19"
+description = "Hyko's Software Development Kit"
+authors = ["Ouassim Abdelmalek Ghribi <oag@big-mama.io>", "Hachem Betrouni <hb@big-mama.io>", "Yousra Anfel Boucetta <jab@big-mama.io>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.100.1"
+pillow = "^10.0.0"
+httpx = "^0.24.1"
+h2 = "^4.1.0"
+tqdm = "^4.0"
+soundfile = "^0.12.1"
+numpy = "1.25.2"
+pymongo = "^4.5.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.6.0"
+ruff = "^0.1.9"
+gitlint = "^0.19.1"
+
+[tool.ruff]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP",  # pyupgrade
+    "N",  # pep8-naming
+]
+ignore = [
+    "E501",  # line too long
+    "B008",  # do not perform function calls in argument defaults
+]
+
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

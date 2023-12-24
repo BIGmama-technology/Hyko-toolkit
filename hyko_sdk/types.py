@@ -1,11 +1,12 @@
-from typing import Any, Callable
-from enum import Enum
-from pydantic import GetJsonSchemaHandler
-from pydantic_core import core_schema
-from pydantic.json_schema import JsonSchemaValue
-from bson.objectid import ObjectId
-from bson.errors import InvalidId
 from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Callable
+
+from bson.errors import InvalidId
+from bson.objectid import ObjectId
+from pydantic import GetJsonSchemaHandler
+from pydantic.json_schema import JsonSchemaValue
+from pydantic_core import core_schema
 
 
 class PyObjectId(ObjectId):
