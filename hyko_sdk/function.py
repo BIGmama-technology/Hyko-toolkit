@@ -1,14 +1,16 @@
-from typing import Optional, Callable, Any, Coroutine, TypeVar, Type
-from pydantic import BaseModel
+import asyncio
+import inspect
+import json
+from typing import Any, Callable, Coroutine, Optional, Type, TypeVar
+
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
-import inspect
-import asyncio
-from .types import PyObjectId
+from pydantic import BaseModel
+
 from .io import HykoBaseType
-from .metadata import MetaDataBase, HykoJsonSchemaExt, IOPortType
+from .metadata import HykoJsonSchemaExt, IOPortType, MetaDataBase
+from .types import PyObjectId
 from .utils import model_to_friendly_property_types
-import json
 
 InputsType = TypeVar("InputsType", bound="BaseModel")
 ParamsType = TypeVar("ParamsType", bound="BaseModel")
@@ -76,7 +78,7 @@ class SDKFunction(FastAPI):
         self._status = asyncio.Future[bool]()
         self.description = description
         self.requires_gpu = requires_gpu
-        
+
     def on_startup(self, f: OnStartupFuncType):
         def blocking_exec():
             asyncio.run(f())
@@ -92,7 +94,7 @@ class SDKFunction(FastAPI):
     async def _wait_startup_tasks(self):
         if not len(self.startup_tasks):
             return
-        
+
         done, _ = await asyncio.wait(
             self.startup_tasks, return_when=asyncio.FIRST_EXCEPTION
         )
@@ -100,7 +102,7 @@ class SDKFunction(FastAPI):
             exc = task.exception()
             if exc is not None:
                 raise exc
-            
+
     def on_shutdown(self, f: OnShutdownFuncType) -> OnShutdownFuncType:
         async def wrapper() -> None:
             await f()
@@ -222,7 +224,7 @@ class SDKFunction(FastAPI):
                         status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                         detail="SDK Function did not finish startup",
                     )
-            
+
             pending_download_tasks: list[asyncio.Task[None]] = []
             HykoBaseType.set_sync(
                 storage_params.host,
@@ -241,7 +243,7 @@ class SDKFunction(FastAPI):
                     exc = task.exception()
                     if exc is not None:
                         raise exc
-            # print("Inputs done")  
+            # print("Inputs done")
             try:
                 outputs = await f(inputs, params)
             except HTTPException as e:
@@ -251,7 +253,7 @@ class SDKFunction(FastAPI):
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail=f"Exception occured during execution:\n{e.__repr__()}",
                 )
-            
+
             pending_upload_tasks: list[asyncio.Task[None]] = []
             HykoBaseType.set_sync(
                 storage_params.host,
