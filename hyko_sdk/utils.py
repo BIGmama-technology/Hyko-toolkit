@@ -5,8 +5,6 @@ from typing import Type
 from uuid import UUID
 
 import httpx
-import tqdm
-import tqdm.utils
 from fastapi import HTTPException, status
 from httpx import Timeout
 from pydantic import BaseModel
@@ -42,11 +40,7 @@ class ObjectStorageConn:
         )
         pass
 
-    async def download_object(
-        self,
-        id: UUID,
-        show_progress: bool = False,
-    ):
+    async def download_object(self, id: UUID):
         head_res = await self._conn.head(f"/storage/{id}")
 
         if not head_res.is_success:
@@ -85,75 +79,27 @@ class ObjectStorageConn:
                 detail=f"Missing object content length header, url: {head_res.url}",
             )
 
-        if show_progress:
-            async with self._conn.stream("GET", f"/storage/{id}") as response_stream:
-                with tqdm.tqdm(
-                    total=int(object_size),
-                    unit_scale=True,
-                    unit_divisor=1024,
-                    unit="B",
-                    desc=f"Downloading {id}",
-                ) as progress:
-                    object_data = bytearray()
-                    async for chunk in response_stream.aiter_bytes():
-                        object_data += chunk
-                        progress.update(len(chunk))
-        else:
-            res = await self._conn.get(f"/storage/{id}")
-            if not res.is_success:
-                raise ObjectStorageConn.DownloadError(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Could not get object content, status: {res.status_code}, res: {res.text}",
-                )
-            object_data = bytearray(res.content)
+        res = await self._conn.get(f"/storage/{id}")
+        if not res.is_success:
+            raise ObjectStorageConn.DownloadError(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Could not get object content, status: {res.status_code}, res: {res.text}",
+            )
+        object_data = bytearray(res.content)
 
         return (object_name, object_type, object_data)
 
-    async def upload_object(
-        self,
-        filename: str,
-        content_type: str,
-        data: bytearray,
-        show_progress: bool = False,
-    ):
-        if show_progress:
-            file_size = len(data)
-            with tqdm.tqdm(
-                total=file_size,
-                unit_scale=True,
-                unit_divisor=1024,
-                unit="B",
-                desc=f"Uploading object, filename: {filename}, content_type: {content_type}",
-            ) as progress:
-                res = await self._conn.post(
-                    url="/storage",
-                    headers={"Content-Length": str(file_size)},
-                    files={
-                        "file": (
-                            filename,
-                            tqdm.utils.CallbackIOWrapper(
-                                progress.update, BytesIO(data)
-                            ),
-                        )
-                    },  # type: ignore
-                )
-                if not res.is_success:
-                    raise ObjectStorageConn.UploadError(
-                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        detail=f"Upload error, status: {res.status_code}, res: {res.text}",
-                    )
-                obj_id = UUID(res.text)
-        else:
-            res = await self._conn.post(
-                url="/storage",
-                files={"file": (filename, BytesIO(data), content_type)},
+    async def upload_object(self, filename: str, content_type: str, data: bytearray):
+        res = await self._conn.post(
+            url="/storage",
+            files={"file": (filename, BytesIO(data), content_type)},
+        )
+        if not res.is_success:
+            raise ObjectStorageConn.UploadError(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Upload error, status: {res.status_code}, res: {res.text}",
             )
-            if not res.is_success:
-                raise ObjectStorageConn.UploadError(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Upload error, status: {res.status_code}, res: {res.text}",
-                )
-            obj_id = UUID(res.text[1:-1])
+        obj_id = UUID(res.text[1:-1])
 
         return obj_id
 
@@ -179,13 +125,17 @@ def model_to_friendly_property_types(pydantic_model: Type[BaseModel]):
                 ] = f"enum[{str(pydantic_model.model_json_schema()['$defs'][str(field.annotation)[7:-2]]['type'])}]"
                 if "numeric" in out[field_name]:
                     out[field_name] = out[field_name].replace("numeric", "number")
+                print("field annotation is", str(field.annotation))
+                print("field.annotation[7:-2]", str(field.annotation)[7:-2])
             except KeyError:
                 raise RuntimeError(
                     f'Could not find {str(pydantic_model.model_json_schema()["$defs"][str(field.annotation)[7:-2]])} the enums defined in the json schema. Usually happens when you use class(Video, Enum) or similar type'
                 )
             continue
         if "<class" in annotation:
+            print("annotation is", annotation)
             annotation = annotation[8:-2]
+            print("annotation is ", annotation)
         annotation = annotation.replace("hyko_sdk.io.", "")
         annotation = annotation.replace("typing.", "")
         annotation = annotation.replace("str", "string")
