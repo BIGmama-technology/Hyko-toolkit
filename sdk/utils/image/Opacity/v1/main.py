@@ -1,16 +1,20 @@
-from fastapi.exceptions import HTTPException
-import numpy as np
-from pydantic import Field
-from hyko_sdk import CoreModel, SDKFunction, Image
 import os
-import cv2
-from PIL import Image as PIL_Image
 
+import cv2
+import numpy as np
+from fastapi.exceptions import HTTPException
+from PIL import Image as PIL_Image
+from pydantic import Field
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.io import Image
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Adjusts the opacity of an image",
     requires_gpu=False,
 )
+
 
 def convert_to_BGRA(image: np.ndarray, num_channels: int) -> np.ndarray:
     if num_channels == 3:
@@ -20,7 +24,7 @@ def convert_to_BGRA(image: np.ndarray, num_channels: int) -> np.ndarray:
     else:
         raise HTTPException(
             status_code=500,
-            detail="Invalid number of input channels. Only 3 or 4 channels are supported."
+            detail="Invalid number of input channels. Only 3 or 4 channels are supported.",
         )
 
 
@@ -38,11 +42,10 @@ def opacity(img: np.ndarray, opacity: float) -> np.ndarray:
 
 class Inputs(CoreModel):
     image: Image = Field(..., description="Input image to adjust opacity")
-   
 
 
 class Params(CoreModel):
-     opacity: float = Field(..., description="Opacity value (0-100)")
+    opacity: float = Field(..., description="Opacity value (0-100)")
 
 
 class Outputs(CoreModel):
@@ -50,18 +53,18 @@ class Outputs(CoreModel):
 
 
 @func.on_execute
-async def main(inputs: Inputs , params: Params)-> Outputs:
-   
-    file, ext = os.path.splitext(inputs.image.get_name()) # type: ignore
+async def main(inputs: Inputs, params: Params) -> Outputs:
+    file, ext = os.path.splitext(inputs.image.get_name())  # type: ignore
     with open(f"./image{ext}", "wb") as f:
-        f.write(inputs.image.get_data()) # type: ignore
-    
+        f.write(inputs.image.get_data())  # type: ignore
+
     img_np = np.array(PIL_Image.open(f"./image{ext}"))
 
     opacity = params.opacity
     if not (0 <= opacity <= 100):
-        raise HTTPException(status_code=500, detail="Opacity must be a percentage between 0 and 100.")
-    
+        raise HTTPException(
+            status_code=500, detail="Opacity must be a percentage between 0 and 100."
+        )
 
     h, w, c = img_np.shape
     if opacity == 100 and c == 4:
@@ -72,8 +75,6 @@ async def main(inputs: Inputs , params: Params)-> Outputs:
         imgout[:, :, 3] = (imgout[:, :, 3] * opacity).astype(np.uint8)
         adjusted_img_np = imgout
 
-  
     adjusted_image = Image.from_ndarray(adjusted_img_np)
-   
-    return Outputs(adjusted_image=adjusted_image)  
-  
+
+    return Outputs(adjusted_image=adjusted_image)

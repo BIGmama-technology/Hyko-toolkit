@@ -1,10 +1,12 @@
-from fastapi import HTTPException
-from pydantic import Field
-from hyko_sdk import CoreModel, SDKFunction, Image
-from transformers import pipeline
-from transformers.pipelines.image_to_text import ImageToTextPipeline
 import os
 
+from fastapi import HTTPException
+from pydantic import Field
+from transformers import pipeline
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.io import Image
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Hugging Face Image-To-Text Task",
@@ -15,6 +17,7 @@ func = SDKFunction(
 class Inputs(CoreModel):
     image: Image = Field(..., description="Input image")
 
+
 class Params(CoreModel):
     hugging_face_model: str = Field(
         ..., description="Model"
@@ -22,6 +25,7 @@ class Params(CoreModel):
     device_map: str = Field(
         ..., description="Device map (Auto, CPU or GPU)"
     )  # WARNING: DO NOT REMOVE! implementation specific
+
 
 class Outputs(CoreModel):
     generated_text: str = Field(..., description="Generated text")
@@ -44,7 +48,7 @@ async def load():
         raise HTTPException(status_code=500, detail="Model env not set")
 
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
-    
+
     captioner = pipeline(
         task="image-to-text",
         model=model,
