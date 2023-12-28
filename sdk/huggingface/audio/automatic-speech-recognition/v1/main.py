@@ -1,9 +1,13 @@
+import os
+
+import numpy as np
 from fastapi import HTTPException
 from pydantic import Field
-from hyko_sdk import CoreModel, SDKFunction, Audio
-import os
-import numpy as np
 from transformers import pipeline
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.io import Audio
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="HuggingFace automatic speech recognition",
