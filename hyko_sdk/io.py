@@ -53,9 +53,7 @@ class HykoBaseType:
         if self._obj is None and self._obj_id is not None:
 
             async def download_task(sync_conn: ObjectStorageConn, id: UUID):
-                obj_name, obj_type, obj_data = await sync_conn.download_object(
-                    id, show_progress=True
-                )
+                obj_name, obj_type, obj_data = await sync_conn.download_object(id)
                 self.set_obj(obj_name, obj_type, obj_data)
 
             self._sync_tasks.append(
@@ -67,9 +65,7 @@ class HykoBaseType:
 
             async def upload_task(sync_conn: ObjectStorageConn, obj: StorageObject):
                 self.set_obj_id(
-                    await sync_conn.upload_object(
-                        obj.name, obj.type, obj.data, show_progress=False
-                    )
+                    await sync_conn.upload_object(obj.name, obj.type, obj.data)
                 )
 
             self._sync_tasks.append(
