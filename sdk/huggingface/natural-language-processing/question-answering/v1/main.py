@@ -1,8 +1,11 @@
+import os
+
+import transformers
 from fastapi import HTTPException
 from pydantic import Field
-from hyko_sdk import CoreModel, SDKFunction
-import transformers
-import os
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Hugging Face Question Answering task",
@@ -48,7 +51,7 @@ async def load():
         raise HTTPException(status_code=500, detail="Model env not set")
 
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
-    
+
     qa_model = transformers.pipeline(
         task="question-answering",
         model=model,

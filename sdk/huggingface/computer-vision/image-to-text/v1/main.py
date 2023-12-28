@@ -1,8 +1,12 @@
+import os
+
 from fastapi import HTTPException
 from pydantic import Field
-from hyko_sdk import CoreModel, SDKFunction, Image
-import os
 from transformers import pipeline
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.io import Image
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Hugging Face image captioning",
@@ -44,12 +48,13 @@ async def load():
         raise HTTPException(status_code=500, detail="Model env not set")
 
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
-    
+
     captioner = pipeline(
         "image-to-text",
         model=model,
         device_map=device_map,
     )
+
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
