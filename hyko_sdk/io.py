@@ -4,7 +4,7 @@ import os
 import subprocess
 import uuid
 from enum import Enum
-from typing import Any, Literal, Optional, Tuple, Type, Union
+from typing import Any, Literal, Optional, Tuple, Type, TypeVar, Union
 from uuid import UUID
 
 import numpy as np
@@ -16,6 +16,8 @@ from pydantic_core import core_schema
 
 from .types import PyObjectId, StorageObject, StorageObjectType
 from .utils import ObjectStorageConn
+
+HykoBaseTypes = TypeVar("HykoBaseTypes", bound="HykoBaseType")
 
 
 class HykoBaseType:
@@ -74,6 +76,19 @@ class HykoBaseType:
             return
 
         raise Exception("Unexpected sync state")
+
+    @staticmethod
+    def serialize_id(value: Type[HykoBaseTypes]) -> str:
+        return f"{value._obj_id}"
+
+    @staticmethod
+    def serialize_object(value: Type[HykoBaseTypes]) -> tuple[bytearray, str, str]:
+        if value._obj is None:
+            raise ValueError("StorageObject serialization error, object not set")
+        return (value._obj.data, value._obj.name, value._obj.type)
+
+    def __str__(self) -> str:
+        return f"{self._obj_id}"
 
     def get_name(self):
         if self._obj is None:
@@ -167,21 +182,6 @@ class Image(HykoBaseType):
             return
 
         raise ValueError("Got invalid init value")
-
-    def __str__(self) -> str:
-        return f"{self._obj_id}"
-
-    @staticmethod
-    def serialize_id(value: "Image") -> str:
-        # print("Serializing Id")
-        return f"{value._obj_id}"
-
-    @staticmethod
-    def serialize_object(value: "Image") -> tuple[bytearray, str, str]:
-        # print("Serializing StorageObject")
-        if value._obj is None:
-            raise ValueError("StorageObject serialization error, object not set")
-        return (value._obj.data, value._obj.name, value._obj.type)
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Image":
@@ -347,21 +347,6 @@ class Audio(HykoBaseType):
             return
 
         raise ValueError(f"Got invalid init value type, {type(val)}")
-
-    def __str__(self) -> str:
-        return f"{self._obj_id}"
-
-    @staticmethod
-    def serialize_id(value: "Audio") -> str:
-        # print("Serializing Id")
-        return f"{value._obj_id}"
-
-    @staticmethod
-    def serialize_object(value: "Audio") -> tuple[bytearray, str, str]:
-        # print("Serializing StorageObject")
-        if value._obj is None:
-            raise ValueError("StorageObject serialization error, object not set")
-        return (value._obj.data, value._obj.name, value._obj.type)
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Audio":
@@ -572,21 +557,6 @@ class Video(HykoBaseType):
 
         raise ValueError(f"Got invalid init value type, {type(val)}")
 
-    def __str__(self) -> str:
-        return f"{self._obj_id}"
-
-    @staticmethod
-    def serialize_id(value: "Video") -> str:
-        # print("Serializing Id")
-        return f"{value._obj_id}"
-
-    @staticmethod
-    def serialize_object(value: "Video") -> tuple[bytearray, str, str]:
-        # print("Serializing StorageObject")
-        if value._obj is None:
-            raise ValueError("StorageObject serialization error, object not set")
-        return (value._obj.data, value._obj.name, value._obj.type)
-
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Video":
         # print("Validating Id")
@@ -701,21 +671,6 @@ class PDF(HykoBaseType):
 
         raise ValueError("Got invalid init value")
 
-    def __str__(self) -> str:
-        return f"{self._obj_id}"
-
-    @staticmethod
-    def serialize_id(value: "PDF") -> str:
-        # print("Serializing Id")
-        return f"{value._obj_id}"
-
-    @staticmethod
-    def serialize_object(value: "PDF") -> tuple[bytearray, str, str]:
-        # print("Serializing StorageObject")
-        if value._obj is None:
-            raise ValueError("StorageObject serialization error, object not set")
-        return (value._obj.data, value._obj.name, value._obj.type)
-
     @staticmethod
     def validate_from_id(value: str | UUID) -> "PDF":
         # print("Validating Id")
@@ -826,21 +781,6 @@ class CSV(HykoBaseType):
             return
 
         raise ValueError("Got invalid init value")
-
-    def __str__(self) -> str:
-        return f"{self._obj_id}"
-
-    @staticmethod
-    def serialize_id(value: "CSV") -> str:
-        # print("Serializing Id")
-        return f"{value._obj_id}"
-
-    @staticmethod
-    def serialize_object(value: "CSV") -> tuple[bytearray, str, str]:
-        # print("Serializing StorageObject")
-        if value._obj is None:
-            raise ValueError("StorageObject serialization error, object not set")
-        return (value._obj.data, value._obj.name, value._obj.type)
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "CSV":
