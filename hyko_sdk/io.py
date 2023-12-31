@@ -148,19 +148,19 @@ class Image(HykoBaseType):
             self._obj = val._obj
             self._obj_id = val._obj_id
             self.sync_storage()
-            # print("Image init from Image")
+
             return
 
         if isinstance(val, uuid.UUID):
             self._obj_id = val
             self.sync_storage()
-            # print("Image init from UUID")
+
             return
 
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
-            # print("Image init from Str")
+
             return
 
         if isinstance(val, bytearray):  # type: ignore
@@ -178,20 +178,17 @@ class Image(HykoBaseType):
                 raise ValueError("Got invalid mime type")
 
             self.sync_storage()
-            # print("Image init from Bytearray")
+
             return
 
         raise ValueError("Got invalid init value")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Image":
-        # print("Validating Id")
         return Image(value)
 
     @staticmethod
     def validate_from_object(value: "tuple[bytearray, str, str] | Image") -> "Image":
-        # print("Validating StorageObject")
-        # print(f"obj type: {type(value)}")
         if isinstance(value, Image):
             return value
         if value[2] == StorageObjectType.IMAGE_PNG:
@@ -309,29 +306,24 @@ class Audio(HykoBaseType):
             self._obj = val._obj
             self._obj_id = val._obj_id
             self.sync_storage()
-            # print("Image init from Audio")
             return
 
         if isinstance(val, uuid.UUID):
             self._obj_id = val
             self.sync_storage()
-            # print("Image init from UUID")
             return
 
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
-            # print("Image init from Str")
             return
 
         if isinstance(val, bytearray):  # type: ignore
             if filename is None:
                 filename = "output.mp3"
-                # raise ValueError("Filename should not be None when creating an Image from a bytearray")
 
             if mime_type is None:
                 mime_type = "MPEG"
-                # raise ValueError("Mime type should not be None when creating an Image from a bytearray")
 
             if mime_type == "MPEG":
                 self.set_obj(filename, StorageObjectType.AUDIO_MPEG, val)
@@ -343,20 +335,16 @@ class Audio(HykoBaseType):
                 raise ValueError(f"Got invalid mime type, {mime_type}")
 
             self.sync_storage()
-            # print("Image init from Bytearray")
             return
 
         raise ValueError(f"Got invalid init value type, {type(val)}")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Audio":
-        # print("Validating Id")
         return Audio(value)
 
     @staticmethod
     def validate_from_object(value: "tuple[bytearray, str, str] | Audio") -> "Audio":
-        # print("Validating StorageObject")
-        # print(f"obj type: {type(value)}")
         if isinstance(value, Audio):
             return value
         if value[2] == StorageObjectType.AUDIO_MPEG:
@@ -522,19 +510,16 @@ class Video(HykoBaseType):
             self._obj = val._obj
             self._obj_id = val._obj_id
             self.sync_storage()
-            # print("Image init from Video")
             return
 
         if isinstance(val, uuid.UUID):
             self._obj_id = val
             self.sync_storage()
-            # print("Image init from UUID")
             return
 
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
-            # print("Image init from Str")
             return
 
         if isinstance(val, bytearray):  # type: ignore
@@ -552,20 +537,16 @@ class Video(HykoBaseType):
                 raise ValueError(f"Got invalid mime type, {mime_type}")
 
             self.sync_storage()
-            # print("Image init from Bytearray")
             return
 
         raise ValueError(f"Got invalid init value type, {type(val)}")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Video":
-        # print("Validating Id")
         return Video(value)
 
     @staticmethod
     def validate_from_object(value: "tuple[bytearray, str, str] | Video") -> "Video":
-        # print("Validating StorageObject")
-        # print(f"obj type: {type(value)}")
         if isinstance(value, Video):
             return value
         if value[2] == StorageObjectType.VIDEO_MP4:
@@ -646,19 +627,16 @@ class PDF(HykoBaseType):
             self._obj = val._obj
             self._obj_id = val._obj_id
             self.sync_storage()
-            # print("Image init from PDF")
             return
 
         if isinstance(val, uuid.UUID):
             self._obj_id = val
             self.sync_storage()
-            # print("Image init from UUID")
             return
 
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
-            # print("Image init from Str")
             return
 
         if isinstance(val, bytearray):  # type: ignore
@@ -666,21 +644,16 @@ class PDF(HykoBaseType):
                 filename = "output.pdf"
             self.set_obj(filename, StorageObjectType.PDF, val)
             self.sync_storage()
-            # print("Image init from Bytearray")
             return
 
         raise ValueError("Got invalid init value")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "PDF":
-        # print("Validating Id")
         return PDF(value)
 
     @staticmethod
     def validate_from_object(value: "tuple[bytearray, str, str] | PDF") -> "PDF":
-        # print("Validating StorageObject")
-        # print(f"obj type: {type(value)}")
-
         if isinstance(value, PDF):
             return value
 
@@ -757,19 +730,16 @@ class CSV(HykoBaseType):
             self._obj = val._obj
             self._obj_id = val._obj_id
             self.sync_storage()
-            # print("Image init from CSV")
             return
 
         if isinstance(val, uuid.UUID):
             self._obj_id = val
             self.sync_storage()
-            # print("Image init from UUID")
             return
 
         if isinstance(val, str):
             self._obj_id = UUID(val)
             self.sync_storage()
-            # print("Image init from Str")
             return
 
         if isinstance(val, bytearray):  # type: ignore
@@ -777,21 +747,16 @@ class CSV(HykoBaseType):
                 filename = "output.csv"
             self.set_obj(filename, StorageObjectType.CSV, val)
             self.sync_storage()
-            # print("Image init from Bytearray")
             return
 
         raise ValueError("Got invalid init value")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "CSV":
-        # print("Validating Id")
         return CSV(value)
 
     @staticmethod
     def validate_from_object(value: "tuple[bytearray, str, str] | CSV") -> "CSV":
-        # print("Validating StorageObject")
-        # print(f"obj type: {type(value)}")
-
         if isinstance(value, CSV):
             return value
 

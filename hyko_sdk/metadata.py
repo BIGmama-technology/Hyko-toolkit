@@ -29,11 +29,11 @@ class JsonSchemaEnum(BaseModel):
 
 class Property(BaseModel):
     type: Optional[IOPortType | HykoExtraTypes] = None
-    anyOf: Optional[List["Property"]] = None
+    any_of: Optional[List["Property"]] = None
     items: Optional["Property"] = None
-    prefixItems: Optional[List["Property"]] = None
-    minItems: Optional[int] = None
-    maxItems: Optional[int] = None
+    prefix_items: Optional[List["Property"]] = None
+    min_items: Optional[int] = None
+    max_items: Optional[int] = None
     description: Optional[str] = None
     default: Optional[Any] = None
     ref: Optional[str] = Field(default=None, alias="$ref")

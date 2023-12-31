@@ -1,10 +1,10 @@
 import os
-from typing import List
 import sys
+from typing import List
 
 
 def walk_directory(root_path: str, pre_categories: List[str]):
-    print(f"Walking {root_path}/{'/'.join(pre_categories)}")
+    print(f"Walking {root_path}/{'/'.join(pre_categories)}")  # noqa: T201
 
     ls = os.listdir(root_path + "/" + "/".join(pre_categories))
     if "main.py" in ls and "Dockerfile" in ls:
