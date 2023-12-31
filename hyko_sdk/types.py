@@ -14,8 +14,8 @@ class PyObjectId(ObjectId):
     def validate(val: "str | bytes | PyObjectId | ObjectId") -> ObjectId:
         try:
             return ObjectId(val)
-        except InvalidId:
-            raise ValueError("Invalid ObjectId")
+        except InvalidId as e:
+            raise ValueError("Invalid ObjectId") from e
 
     @staticmethod
     def serialize(obj: "PyObjectId") -> str:

@@ -1,14 +1,15 @@
+import json
 import os
 import random
 import string
 import subprocess
 import sys
-import json
-from typing import Literal
-import pydantic
 import threading
+from typing import Literal
 
-from hyko_sdk.metadata import MetaData, MetaDataBase, IOPortType, Property
+import pydantic
+
+from hyko_sdk.metadata import IOPortType, MetaData, MetaDataBase, Property
 from hyko_sdk.utils import metadata_to_docker_label
 
 skip_folders = ["__pycache__", "venv"]
@@ -34,7 +35,7 @@ class FunctionBuildError(RuntimeError):
         )
 
 
-class NotAllowedTypes(FunctionBuildError):
+class NotAllowedTypesError(FunctionBuildError):
     def __init__(
         self,
         category: str,
@@ -51,7 +52,7 @@ class NotAllowedTypes(FunctionBuildError):
         )
 
 
-class UnionNotAllowed(FunctionBuildError):
+class UnionNotAllowedError(FunctionBuildError):
     def __init__(
         self,
         category: str,
@@ -68,7 +69,7 @@ class UnionNotAllowed(FunctionBuildError):
         )
 
 
-class EnumNotAllowed(FunctionBuildError):
+class EnumNotAllowedError(FunctionBuildError):
     def __init__(
         self,
         category: str,
@@ -85,7 +86,7 @@ class EnumNotAllowed(FunctionBuildError):
         )
 
 
-class UnknownArrayItemsType(FunctionBuildError):
+class UnknownArrayItemsTypeError(FunctionBuildError):
     def __init__(
         self,
         category: str,
@@ -106,7 +107,7 @@ failed_functions: list[FunctionBuildError] = []
 failed_functions_lock = threading.Lock()
 
 
-def process_function_dir(path: str, registry_host: str, push_image: bool):
+def process_function_dir(path: str, registry_host: str, push_image: bool):  # noqa: C901
     """Path has to be a valid path with no spaces in it"""
     if path[:2] == "./":
         path = path[2:]
@@ -132,23 +133,23 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
                 "Make sure your function follows the correct folder structure: catgeory/fn_name/v1/",
             )
 
-        print(f"Processing function: {category=} {function_name=} {version=}")
+        print(f"Processing function: {category=} {function_name=} {version=}")  # noqa: T201
 
-        print("Building metadata...")
+        print("Building metadata...")  # noqa: T201
         metadata_tag = f"{registry_host}/{category.lower()}/{function_name.lower()}:metadata-{version}"
         try:
             subprocess.run(
                 f"docker build -t {metadata_tag} ./{path}".split(" "), check=True
             )
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
             raise FunctionBuildError(
                 category,
                 function_name,
                 version,
                 "Error while running metadata docker container",
-            )
+            ) from e
 
-        __METADATA__START__SPECIAL__TOKEN__ = (
+        __METADATA__START__SPECIAL__TOKEN__ = (  # noqa: N806
             "__METADATA__START__SPECIAL__TOKEN__"
             + "".join(random.choice(string.ascii_letters) for _ in range(16))
         )
@@ -162,13 +163,13 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
                 check=True,
             )
         except subprocess.CalledProcessError as e:
-            print(e.stdout.decode())
+            print(e.stdout.decode())  # noqa: T201
             raise FunctionBuildError(
                 category,
                 function_name,
                 version,
                 "Error while running metadata docker container",
-            )
+            ) from e
 
         splitted = metadata_process.stdout.decode().split(
             __METADATA__START__SPECIAL__TOKEN__
@@ -178,10 +179,10 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
         elif len(splitted) == 1:
             metadata = splitted[0]
         else:
-            print("Probably an error happen in while catching stdout from metadata")
+            print("Probably an error happen in while catching stdout from metadata")  # noqa: T201
             return
 
-        print("METADATA:", metadata)
+        print("METADATA:", metadata)  # noqa: T201
         try:
             metadata = MetaDataBase(**json.loads(metadata))
             metadata = MetaData(
@@ -192,18 +193,18 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
                 version=version,
                 category=category,
             )
-        except pydantic.ValidationError:
+        except pydantic.ValidationError as e:
             raise FunctionBuildError(
                 category, function_name, version, "Invalid Function MetaData"
-            )
+            ) from e
 
         subprocess.run(f"docker rmi -f {metadata_tag}:latest".split(" "))
 
-        print("Type checking and validating schema...")
+        print("Type checking and validating schema...")  # noqa: T201
 
         fields: list[str] = []
 
-        def check_property(
+        def check_property(  # noqa: C901
             field: Property,
             field_name: str,
             field_type: Literal["input", "output", "param"],
@@ -211,28 +212,28 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
             allow_enum: bool,
         ):
             if field.type == IOPortType.OBJECT or field.type == IOPortType.NULL:
-                raise NotAllowedTypes(
+                raise NotAllowedTypesError(
                     category, function_name, version, field_name, field_type
                 )
 
             if not allow_union:
-                if field.anyOf is not None:
-                    if len(field.anyOf) == 2 and (
-                        field.anyOf[0].type is not None
-                        and field.anyOf[0].type == IOPortType.NULL
-                        or field.anyOf[1].type is not None
-                        and field.anyOf[1].type == IOPortType.NULL
+                if field.any_of is not None:
+                    if len(field.any_of) == 2 and (
+                        field.any_of[0].type is not None
+                        and field.any_of[0].type == IOPortType.NULL
+                        or field.any_of[1].type is not None
+                        and field.any_of[1].type == IOPortType.NULL
                     ):
                         """This is to allow Optional[Type]"""
                         pass
                     else:
-                        raise UnionNotAllowed(
+                        raise UnionNotAllowedError(
                             category, function_name, version, field_name, field_type
                         )
 
             if not allow_enum:
                 if field.ref is not None:
-                    raise EnumNotAllowed(
+                    raise EnumNotAllowedError(
                         category, function_name, version, field_name, field_type
                     )
 
@@ -242,13 +243,13 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
                         field.items, field_name, field_type, allow_union, allow_enum
                     )
 
-                elif field.prefixItems is not None:
-                    for item in field.prefixItems:
+                elif field.prefix_items is not None:
+                    for item in field.prefix_items:
                         check_property(
                             item, field_name, field_type, allow_union, allow_enum
                         )
                 else:
-                    raise UnknownArrayItemsType(
+                    raise UnknownArrayItemsTypeError(
                         category, function_name, version, field_name, field_type
                     )
 
@@ -282,54 +283,50 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):
                 "Port name must be unique within a function (across inputs, params and outputs)",
             )
 
-        print("Building...")
+        print("Building...")  # noqa: T201
         function_tag = (
             f"{registry_host}/{category.lower()}/{function_name.lower()}:{version}"
         )
-        build_cmd = f"docker build "
+        build_cmd = "docker build"
         build_cmd += f"--build-arg CATEGORY={category} "
         build_cmd += f"--build-arg FUNCTION_NAME={function_name} "
         build_cmd += f"-t {function_tag} "
         build_cmd += f"""--label metadata="{metadata_to_docker_label(metadata)}" """
         build_cmd += f"./{path}"
-        print("Executing cmd: ", build_cmd.split(" "))
+        print("Executing cmd: ", build_cmd.split(" "))  # noqa: T201
         try:
             subprocess.run(["/bin/sh", "-c", build_cmd], check=True)
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
             raise FunctionBuildError(
                 category,
                 function_name,
                 version,
                 "Failed to build function main docker image",
-            )
+            ) from e
 
         if push_image:
-            print()
-            print("Pushing...")
+            print()  # noqa: T201
+            print("Pushing...")  # noqa: T201
             try:
                 subprocess.run(f"docker push {function_tag}".split(" "), check=True)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as e:
                 raise FunctionBuildError(
                     category,
                     function_name,
                     version,
                     f"Failed to push to docker registry {registry_host}",
-                )
+                ) from e
 
     except FunctionBuildError as e:
         failed_functions_lock.acquire()
         failed_functions.append(e)
         failed_functions_lock.release()
-    # except Exception as e:
-    #     failed_functions_lock.acquire()
-    #     failed_functions.append(FunctionBuildError(path, "unknown", "Unexpected: " + str(e)))
-    #     failed_functions_lock.release()
 
 
 def walk_directory(
     path: str, no_gpu: bool, threaded: bool, registry_host: str, push_image: bool
 ):
-    print("Walking:", path)
+    print("Walking:", path)  # noqa: T201
 
     ls = os.listdir(path)
 
@@ -387,22 +384,22 @@ if __name__ == "__main__":
             elif arg == "--dir":
                 skip_next_arg = True
                 if i + 1 >= len(sys.argv):
-                    print("No directory was provided after --dir")
+                    print("No directory was provided after --dir")  # noqa: T201
                     exit(1)
                 directory = sys.argv[i + 1]
             elif arg == "--registry":
                 skip_next_arg = True
                 if i + 1 >= len(sys.argv):
-                    print("No registry host was provided after --registry")
+                    print("No registry host was provided after --registry")  # noqa: T201
                     exit(1)
                 registry_host = sys.argv[i + 1]
             elif arg == "--no-push":
                 push_image = False
             else:
-                print(f"unknown argument: {arg}")
+                print(f"unknown argument: {arg}")  # noqa: T201
                 exit(1)
         else:
-            print(f"unknown argument: {arg}")
+            print(f"unknown argument: {arg}")  # noqa: T201
             exit(1)
 
     build_info = f"Building {directory}"
@@ -413,17 +410,17 @@ if __name__ == "__main__":
     if push_image:
         build_info += f". Pushing to {registry_host}"
 
-    print(build_info)
+    print(build_info)  # noqa: T201
 
     if not no_gpu:
         subprocess.run(
-            f"docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(
+            "docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(
                 " "
             )
         )
 
     subprocess.run(
-        f"docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
+        "docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
             " "
         )
     )
@@ -437,10 +434,10 @@ if __name__ == "__main__":
             thread.join()
 
     successful_count = len(all_built_functions) - len(failed_functions)
-    print(
+    print(  # noqa: T201
         f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function"
     )
     for fn in failed_functions:
-        print(
+        print(  # noqa: T201
             f"ERROR WHILE BUILDING: {fn.category}/{fn.function_name}:{fn.version} REASON: {fn.reason}"
         )
