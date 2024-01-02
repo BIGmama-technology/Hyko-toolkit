@@ -10,7 +10,7 @@ from httpx import Timeout
 from pydantic import BaseModel
 
 from .metadata import HykoJsonSchemaExt, IOPortType, MetaData, MetaDataBase
-from .types import PyObjectId
+from .types import PyObjectId, StorageObjectType
 
 
 class ObjectStorageConn:
@@ -40,52 +40,28 @@ class ObjectStorageConn:
         )
         pass
 
-    async def download_object(self, id: UUID):
-        head_res = await self._conn.head(f"/storage/{id}")
-
-        if not head_res.is_success:
-            if head_res.status_code == status.HTTP_404_NOT_FOUND:
-                raise ObjectStorageConn.DownloadError(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"Object not found, url: {head_res.url}",
-                )
-            else:
-                raise ObjectStorageConn.DownloadError(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Could not read HEAD object info, status: {head_res.status_code}, res: {head_res.text}",
-                )
-
-        object_name = head_res.headers.get("X-Hyko-Storage-Name")
-
-        if object_name is None:
-            raise ObjectStorageConn.DownloadError(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Missing object name header, url: {head_res.url}",
-            )
-
-        object_type = head_res.headers.get("X-Hyko-Storage-Type")
-
-        if object_type is None:
-            raise ObjectStorageConn.DownloadError(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Missing object type header, url: {head_res.url}",
-            )
-
-        object_size = head_res.headers.get("Content-Length")
-
-        if object_size is None:
-            raise ObjectStorageConn.DownloadError(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Missing object content length header, url: {head_res.url}",
-            )
-
+    async def download_object(
+        self,
+        id: UUID,
+        expected_object_types: list[StorageObjectType],
+    ):
         res = await self._conn.get(f"/storage/{id}")
         if not res.is_success:
             raise ObjectStorageConn.DownloadError(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Could not get object content, status: {res.status_code}, res: {res.text}",
             )
+
+        headers = res.headers
+        object_name = headers.get("X-Hyko-Storage-Name")
+        object_type = headers.get("X-Hyko-Storage-Type")
         object_data = bytearray(res.content)
+
+        if object_type not in expected_object_types:
+            raise ObjectStorageConn.DownloadError(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Expected object types {expected_object_types}, but got {object_type}",
+            )
 
         return (object_name, object_type, object_data)
 

@@ -52,16 +52,36 @@ class HykoBaseType:
         if self._sync_conn is None or self._sync_tasks is None:
             return
 
+        expected_object_types_dict: dict[str, list[StorageObjectType]] = {
+            "Image": [
+                StorageObjectType.IMAGE_PNG,
+                StorageObjectType.IMAGE_JPEG,
+            ],
+            "Video": [StorageObjectType.VIDEO_MP4, StorageObjectType.VIDEO_WEBM],
+            "Audio": [
+                StorageObjectType.AUDIO_MPEG,
+                StorageObjectType.AUDIO_WAV,
+                StorageObjectType.AUDIO_WEBM,
+            ],
+            "PDF": [StorageObjectType.PDF],
+            "CSV": [StorageObjectType.CSV],
+        }
         if self._obj is None and self._obj_id is not None:
+            try:
+                expected_object_types = expected_object_types_dict[type(self).__name__]
 
-            async def download_task(sync_conn: ObjectStorageConn, id: UUID):
-                obj_name, obj_type, obj_data = await sync_conn.download_object(id)
-                self.set_obj(obj_name, obj_type, obj_data)
+                async def download_task(sync_conn: ObjectStorageConn, id: UUID):
+                    obj_name, obj_type, obj_data = await sync_conn.download_object(
+                        id, expected_object_types=expected_object_types
+                    )
+                    self.set_obj(obj_name, obj_type, obj_data)
 
-            self._sync_tasks.append(
-                asyncio.create_task(download_task(self._sync_conn, self._obj_id))
-            )
-            return
+                self._sync_tasks.append(
+                    asyncio.create_task(download_task(self._sync_conn, self._obj_id))
+                )
+                return
+            except KeyError as e:
+                raise Exception("Unexpected object type") from e
 
         if self._obj_id is None and self._obj is not None:
 
@@ -196,7 +216,7 @@ class Image(HykoBaseType):
         elif value[2] == StorageObjectType.IMAGE_JPEG:
             obj_type = "JPEG"
         else:
-            raise ValueError(f"Invalud StorageObject type, {value[2]}")
+            raise ValueError(f"Invalid StorageObject type, {value[2]}")
         return Image(value[0], value[1], obj_type)
 
     @classmethod
