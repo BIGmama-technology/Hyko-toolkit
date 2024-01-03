@@ -189,7 +189,6 @@ class HykoBaseType:
             [
                 json_schema,
                 core_schema.no_info_plain_validator_function(cls.validate_from_object),
-                # core_schema.is_instance_schema(Image),
             ],
             serialization=core_schema.plain_serializer_function_ser_schema(
                 cls.serialize_object
@@ -198,7 +197,6 @@ class HykoBaseType:
         return core_schema.json_or_python_schema(
             json_schema=json_schema,
             python_schema=python_schema,
-            # serialization=core_schema.plain_serializer_function_ser_schema(Image.serialize_id),
         )
 
     @classmethod
@@ -269,7 +267,7 @@ class Image(HykoBaseType):
             return
 
         if self._obj is None and self._obj_id is None:
-            ValueError(f"Got invalid init value type, {type(val)}")
+            raise ValueError(f"Got invalid init value type, {type(val)}")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Image":
@@ -351,7 +349,8 @@ class Audio(HykoBaseType):
             self.sync_storage()
             return
 
-        raise ValueError(f"Got invalid init value type, {type(val)}")
+        if self._obj is None and self._obj_id is None:
+            raise ValueError(f"Got invalid init value type, {type(val)}")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Audio":
@@ -422,7 +421,7 @@ class Audio(HykoBaseType):
         normalize: bool = True,
         frame_offset: int = 0,
         num_frames: int = -1,
-    ) -> Tuple[np.ndarray[Any, np.dtype[np.float64]], int]:
+    ) -> Tuple[NDArray[Any], int]:
         if self._obj and self._obj.name:
             self.convert_to("mp3")
 
@@ -480,7 +479,8 @@ class Video(HykoBaseType):
             self.sync_storage()
             return
 
-        raise ValueError(f"Got invalid init value type, {type(val)}")
+        if self._obj is None and self._obj_id is None:
+            raise ValueError(f"Got invalid init value type, {type(val)}")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Video":
@@ -513,7 +513,8 @@ class PDF(HykoBaseType):
             self.sync_storage()
             return
 
-        raise ValueError("Got invalid init value")
+        if self._obj is None and self._obj_id is None:
+            raise ValueError("Got invalid init value")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "PDF":
@@ -544,7 +545,8 @@ class CSV(HykoBaseType):
             self.sync_storage()
             return
 
-        raise ValueError("Got invalid init value")
+        if self._obj is None and self._obj_id is None:
+            raise ValueError("Got invalid init value")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "CSV":
