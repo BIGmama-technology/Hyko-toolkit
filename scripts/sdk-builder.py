@@ -182,7 +182,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
             print("Probably an error happen in while catching stdout from metadata")  # noqa: T201
             return
 
-        # print("METADATA:", metadata)  # noqa: T201
+        # print("METADATA:", metadata)
         try:
             metadata = MetaDataBase(**json.loads(metadata))
             metadata = MetaData(
@@ -200,7 +200,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
 
         subprocess.run(f"docker rmi -f {metadata_tag}:latest".split(" "))
 
-        # print("Type checking and validating schema...")  # noqa: T201
+        # print("Type checking and validating schema...")
 
         fields: list[str] = []
 
@@ -283,7 +283,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
                 "Port name must be unique within a function (across inputs, params and outputs)",
             )
 
-        # print("Building...")  # noqa: T201
+        # print("Building...")
         function_tag = (
             f"{registry_host}/{category.lower()}/{function_name.lower()}:{version}"
         )
@@ -293,7 +293,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
         build_cmd += f"-t {function_tag} "
         build_cmd += f"""--label metadata="{metadata_to_docker_label(metadata)}" """
         build_cmd += f"./{path}"
-        # print("Executing cmd: ", build_cmd.split(" "))  # noqa: T201
+        # print("Executing cmd: ", build_cmd.split(" "))
         try:
             subprocess.run(["/bin/sh", "-c", build_cmd], check=True)
         except subprocess.CalledProcessError as e:
@@ -305,8 +305,8 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
             ) from e
 
         if push_image:
-            # print()  # noqa: T201
-            # print("Pushing...")  # noqa: T201
+            # print()
+            # print("Pushing...")
             try:
                 subprocess.run(f"docker push {function_tag}".split(" "), check=True)
             except subprocess.CalledProcessError as e:
@@ -326,8 +326,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
 def walk_directory(
     path: str, no_gpu: bool, threaded: bool, registry_host: str, push_image: bool
 ):
-    # print("Walking:", path)  # noqa: T201
-
+    # print("Walking:", path)
     ls = os.listdir(path)
 
     if "main.py" in ls and "Dockerfile" in ls:
@@ -410,7 +409,7 @@ if __name__ == "__main__":
     if push_image:
         build_info += f". Pushing to {registry_host}"
 
-    # print(build_info)  # noqa: T201
+    # print(build_info)
 
     if not no_gpu:
         subprocess.run(
