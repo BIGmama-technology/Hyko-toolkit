@@ -26,6 +26,36 @@ class HykoBaseType:
     _sync_conn: Optional[ObjectStorageConn] = None
     _sync_tasks: Optional[list[asyncio.Task[None]]] = None
 
+    def __init__(
+        self,
+        val: Union[uuid.UUID, bytearray, str, "HykoBaseTypes"],
+    ) -> None:
+        if isinstance(val, HykoBaseType):
+            self._obj = val._obj
+            self._obj_id = val._obj_id
+            self.sync_storage()
+            return
+
+        if isinstance(val, uuid.UUID):
+            self._obj_id = val
+            self.sync_storage()
+            return
+
+        if isinstance(val, str):
+            self._obj_id = UUID(val)
+            self.sync_storage()
+            return
+
+    @staticmethod
+    def validate_from_id(value: Union[str, UUID]) -> "HykoBaseType":
+        ...
+
+    @staticmethod
+    def validate_from_object(
+        value: Union[tuple[bytearray, str, str], Any],
+    ) -> "HykoBaseType":
+        ...
+
     @classmethod
     def set_sync(
         cls,
@@ -125,6 +155,60 @@ class HykoBaseType:
             raise Exception("Object is not synced")
         return self._obj.data
 
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls,
+        source: Type["HykoBaseTypes"],
+        handler: GetCoreSchemaHandler,
+    ) -> core_schema.CoreSchema:
+        json_schema = core_schema.union_schema(
+            [
+                core_schema.chain_schema(
+                    [
+                        core_schema.str_schema(),
+                        core_schema.no_info_plain_validator_function(
+                            cls.validate_from_id
+                        ),
+                    ]
+                ),
+                core_schema.chain_schema(
+                    [
+                        core_schema.uuid_schema(),
+                        core_schema.no_info_plain_validator_function(
+                            cls.validate_from_id
+                        ),
+                    ]
+                ),
+            ],
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                cls.serialize_id
+            ),
+        )
+
+        python_schema = core_schema.union_schema(
+            [
+                json_schema,
+                core_schema.no_info_plain_validator_function(cls.validate_from_object),
+                # core_schema.is_instance_schema(Image),
+            ],
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                cls.serialize_object
+            ),
+        )
+        return core_schema.json_or_python_schema(
+            json_schema=json_schema,
+            python_schema=python_schema,
+            # serialization=core_schema.plain_serializer_function_ser_schema(Image.serialize_id),
+        )
+
+    @classmethod
+    def __get_pydantic_json_schema__(
+        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
+    ):
+        schema = handler(core_schema.str_schema())
+        schema["type"] = cls.__name__.lower()
+        return schema
+
 
 class Image(HykoBaseType):
     MimeTypesUnion = Literal["PNG"] | Literal["JPEG"]
@@ -164,26 +248,9 @@ class Image(HykoBaseType):
         filename: Optional[str] = None,
         mime_type: Optional[MimeTypesUnion] = None,
     ) -> None:
-        if isinstance(val, Image):
-            self._obj = val._obj
-            self._obj_id = val._obj_id
-            self.sync_storage()
+        super().__init__(val)
 
-            return
-
-        if isinstance(val, uuid.UUID):
-            self._obj_id = val
-            self.sync_storage()
-
-            return
-
-        if isinstance(val, str):
-            self._obj_id = UUID(val)
-            self.sync_storage()
-
-            return
-
-        if isinstance(val, bytearray):  # type: ignore
+        if isinstance(val, bytearray):
             if filename is None:
                 filename = "test.png"
 
@@ -192,16 +259,17 @@ class Image(HykoBaseType):
 
             if mime_type == "PNG":
                 self.set_obj(filename, StorageObjectType.IMAGE_PNG, val)
+
             elif mime_type == "JPEG":
                 self.set_obj(filename, StorageObjectType.IMAGE_JPEG, val)
             else:
                 raise ValueError("Got invalid mime type")
 
             self.sync_storage()
-
             return
 
-        raise ValueError("Got invalid init value")
+        if self._obj is None and self._obj_id is None:
+            ValueError(f"Got invalid init value type, {type(val)}")
 
     @staticmethod
     def validate_from_id(value: str | UUID) -> "Image":
@@ -218,65 +286,6 @@ class Image(HykoBaseType):
         else:
             raise ValueError(f"Invalid StorageObject type, {value[2]}")
         return Image(value[0], value[1], obj_type)
-
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls,
-        source: Type[Any],
-        handler: GetCoreSchemaHandler,
-    ) -> core_schema.CoreSchema:
-        assert source is Image
-
-        json_schema = core_schema.union_schema(
-            [
-                core_schema.chain_schema(
-                    [
-                        core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            Image.validate_from_id
-                        ),
-                    ]
-                ),
-                core_schema.chain_schema(
-                    [
-                        core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            Image.validate_from_id
-                        ),
-                    ]
-                ),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                Image.serialize_id
-            ),
-        )
-
-        python_schema = core_schema.union_schema(
-            [
-                json_schema,
-                core_schema.no_info_plain_validator_function(
-                    Image.validate_from_object
-                ),
-                # core_schema.is_instance_schema(Image),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                Image.serialize_object
-            ),
-        )
-
-        return core_schema.json_or_python_schema(
-            json_schema=json_schema,
-            python_schema=python_schema,
-            # serialization=core_schema.plain_serializer_function_ser_schema(Image.serialize_id),
-        )
-
-    @classmethod
-    def __get_pydantic_json_schema__(
-        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
-    ):
-        schema = handler(core_schema.str_schema())
-        schema["type"] = "image"
-        return schema
 
     def to_ndarray(self, keep_alpha_if_png: bool = False) -> NDArray[Any]:
         if self.get_data():
@@ -307,7 +316,7 @@ class Audio(HykoBaseType):
         WAV = "WAV"
 
     @staticmethod
-    def from_ndarray(arr: np.ndarray, sampling_rate: int) -> "Audio":  # type: ignore
+    def from_ndarray(arr: np.ndarray[Any, Any], sampling_rate: int) -> "Audio":
         file = io.BytesIO()
         soundfile.write(file, arr, samplerate=sampling_rate, format="MP3")  # type: ignore
         return Audio(
@@ -322,23 +331,8 @@ class Audio(HykoBaseType):
         filename: Optional[str] = None,
         mime_type: Optional["Audio.MimeTypesUnion"] = None,
     ) -> None:
-        if isinstance(val, Audio):
-            self._obj = val._obj
-            self._obj_id = val._obj_id
-            self.sync_storage()
-            return
-
-        if isinstance(val, uuid.UUID):
-            self._obj_id = val
-            self.sync_storage()
-            return
-
-        if isinstance(val, str):
-            self._obj_id = UUID(val)
-            self.sync_storage()
-            return
-
-        if isinstance(val, bytearray):  # type: ignore
+        super().__init__(val)
+        if isinstance(val, bytearray):
             if filename is None:
                 filename = "output.mp3"
 
@@ -376,65 +370,6 @@ class Audio(HykoBaseType):
         else:
             raise ValueError(f"Invalud StorageObject type, {value[2]}")
         return Audio(value[0], value[1], obj_type)
-
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls,
-        source: Type[Any],
-        handler: GetCoreSchemaHandler,
-    ) -> core_schema.CoreSchema:
-        assert source is Audio
-
-        json_schema = core_schema.union_schema(
-            [
-                core_schema.chain_schema(
-                    [
-                        core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            Audio.validate_from_id
-                        ),
-                    ]
-                ),
-                core_schema.chain_schema(
-                    [
-                        core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            Audio.validate_from_id
-                        ),
-                    ]
-                ),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                Audio.serialize_id
-            ),
-        )
-
-        python_schema = core_schema.union_schema(
-            [
-                json_schema,
-                core_schema.no_info_plain_validator_function(
-                    Audio.validate_from_object
-                ),
-                # core_schema.is_instance_schema(Audio),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                Audio.serialize_object
-            ),
-        )
-
-        return core_schema.json_or_python_schema(
-            json_schema=json_schema,
-            python_schema=python_schema,
-            # serialization=core_schema.plain_serializer_function_ser_schema(Audio.serialize_id),
-        )
-
-    @classmethod
-    def __get_pydantic_json_schema__(
-        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
-    ):
-        schema = handler(core_schema.str_schema())
-        schema["type"] = "audio"
-        return schema
 
     _SUBTYPE2DTYPE = {
         "PCM_S8": "int8",
@@ -481,13 +416,13 @@ class Audio(HykoBaseType):
 
             os.remove(out)
 
-    def to_ndarray(  # type: ignore
+    def to_ndarray(
         self,
         sampling_rate: Optional[int] = None,
         normalize: bool = True,
         frame_offset: int = 0,
         num_frames: int = -1,
-    ) -> Tuple[np.ndarray, int]:  # type: ignore
+    ) -> Tuple[np.ndarray[Any, np.dtype[np.float64]], int]:
         if self._obj and self._obj.name:
             self.convert_to("mp3")
 
@@ -526,23 +461,9 @@ class Video(HykoBaseType):
         filename: Optional[str] = None,
         mime_type: Optional["Video.MimeTypesUnion"] = None,
     ) -> None:
-        if isinstance(val, Video):
-            self._obj = val._obj
-            self._obj_id = val._obj_id
-            self.sync_storage()
-            return
+        super().__init__(val)
 
-        if isinstance(val, uuid.UUID):
-            self._obj_id = val
-            self.sync_storage()
-            return
-
-        if isinstance(val, str):
-            self._obj_id = UUID(val)
-            self.sync_storage()
-            return
-
-        if isinstance(val, bytearray):  # type: ignore
+        if isinstance(val, bytearray):
             if filename is None:
                 filename = "video.mp4"
 
@@ -577,65 +498,6 @@ class Video(HykoBaseType):
             raise ValueError(f"Invalid StorageObject type, {value[2]}")
         return Video(value[0], value[1], obj_type)
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls,
-        source: Type[Any],
-        handler: GetCoreSchemaHandler,
-    ) -> core_schema.CoreSchema:
-        assert source is Video
-
-        json_schema = core_schema.union_schema(
-            [
-                core_schema.chain_schema(
-                    [
-                        core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            Video.validate_from_id
-                        ),
-                    ]
-                ),
-                core_schema.chain_schema(
-                    [
-                        core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            Video.validate_from_id
-                        ),
-                    ]
-                ),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                Video.serialize_id
-            ),
-        )
-
-        python_schema = core_schema.union_schema(
-            [
-                json_schema,
-                core_schema.no_info_plain_validator_function(
-                    Video.validate_from_object
-                ),
-                # core_schema.is_instance_schema(Video),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                Video.serialize_object
-            ),
-        )
-
-        return core_schema.json_or_python_schema(
-            json_schema=json_schema,
-            python_schema=python_schema,
-            # serialization=core_schema.plain_serializer_function_ser_schema(Video.serialize_id),
-        )
-
-    @classmethod
-    def __get_pydantic_json_schema__(
-        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
-    ):
-        schema = handler(core_schema.str_schema())
-        schema["type"] = "video"
-        return schema
-
 
 class PDF(HykoBaseType):
     def __init__(
@@ -643,23 +505,8 @@ class PDF(HykoBaseType):
         val: Union[uuid.UUID, bytearray, str, "PDF"],
         filename: Optional[str] = None,
     ) -> None:
-        if isinstance(val, PDF):
-            self._obj = val._obj
-            self._obj_id = val._obj_id
-            self.sync_storage()
-            return
-
-        if isinstance(val, uuid.UUID):
-            self._obj_id = val
-            self.sync_storage()
-            return
-
-        if isinstance(val, str):
-            self._obj_id = UUID(val)
-            self.sync_storage()
-            return
-
-        if isinstance(val, bytearray):  # type: ignore
+        super().__init__(val)
+        if isinstance(val, bytearray):
             if filename is None:
                 filename = "output.pdf"
             self.set_obj(filename, StorageObjectType.PDF, val)
@@ -682,63 +529,6 @@ class PDF(HykoBaseType):
 
         return PDF(value[0], value[1])
 
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls,
-        source: Type[Any],
-        handler: GetCoreSchemaHandler,
-    ) -> core_schema.CoreSchema:
-        assert source is PDF
-
-        json_schema = core_schema.union_schema(
-            [
-                core_schema.chain_schema(
-                    [
-                        core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            PDF.validate_from_id
-                        ),
-                    ]
-                ),
-                core_schema.chain_schema(
-                    [
-                        core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            PDF.validate_from_id
-                        ),
-                    ]
-                ),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                PDF.serialize_id
-            ),
-        )
-
-        python_schema = core_schema.union_schema(
-            [
-                json_schema,
-                core_schema.no_info_plain_validator_function(PDF.validate_from_object),
-                # core_schema.is_instance_schema(Image),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                PDF.serialize_object
-            ),
-        )
-
-        return core_schema.json_or_python_schema(
-            json_schema=json_schema,
-            python_schema=python_schema,
-            # serialization=core_schema.plain_serializer_function_ser_schema(PDF.serialize_id),
-        )
-
-    @classmethod
-    def __get_pydantic_json_schema__(
-        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
-    ):
-        schema = handler(core_schema.str_schema())
-        schema["type"] = "pdf"
-        return schema
-
 
 class CSV(HykoBaseType):
     def __init__(
@@ -746,23 +536,8 @@ class CSV(HykoBaseType):
         val: Union[uuid.UUID, bytearray, str, "CSV"],
         filename: Optional[str] = None,
     ) -> None:
-        if isinstance(val, CSV):
-            self._obj = val._obj
-            self._obj_id = val._obj_id
-            self.sync_storage()
-            return
-
-        if isinstance(val, uuid.UUID):
-            self._obj_id = val
-            self.sync_storage()
-            return
-
-        if isinstance(val, str):
-            self._obj_id = UUID(val)
-            self.sync_storage()
-            return
-
-        if isinstance(val, bytearray):  # type: ignore
+        super().__init__(val)
+        if isinstance(val, bytearray):
             if filename is None:
                 filename = "output.csv"
             self.set_obj(filename, StorageObjectType.CSV, val)
@@ -784,63 +559,6 @@ class CSV(HykoBaseType):
             raise ValueError(f"Invalid StorageObject type, {value[2]}")
 
         return CSV(value[0], value[1])
-
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls,
-        source: Type[Any],
-        handler: GetCoreSchemaHandler,
-    ) -> core_schema.CoreSchema:
-        assert source is CSV
-
-        json_schema = core_schema.union_schema(
-            [
-                core_schema.chain_schema(
-                    [
-                        core_schema.str_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            CSV.validate_from_id
-                        ),
-                    ]
-                ),
-                core_schema.chain_schema(
-                    [
-                        core_schema.uuid_schema(),
-                        core_schema.no_info_plain_validator_function(
-                            CSV.validate_from_id
-                        ),
-                    ]
-                ),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                CSV.serialize_id
-            ),
-        )
-
-        python_schema = core_schema.union_schema(
-            [
-                json_schema,
-                core_schema.no_info_plain_validator_function(CSV.validate_from_object),
-                # core_schema.is_instance_schema(Image),
-            ],
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                CSV.serialize_object
-            ),
-        )
-
-        return core_schema.json_or_python_schema(
-            json_schema=json_schema,
-            python_schema=python_schema,
-            # serialization=core_schema.plain_serializer_function_ser_schema(CSV.serialize_id),
-        )
-
-    @classmethod
-    def __get_pydantic_json_schema__(
-        cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
-    ):
-        schema = handler(core_schema.str_schema())
-        schema["type"] = "csv"
-        return schema
 
 
 __all__ = [
