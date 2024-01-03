@@ -86,7 +86,7 @@ def metadata_to_docker_label(metadata: MetaData) -> str:
     ).decode()
 
 
-def docker_label_to_metadata(label: str) -> MetaData:  # used in backend
+def docker_label_to_metadata(label: str) -> MetaData:
     return MetaData(**json.loads(base64.b64decode(label.encode()).decode()))
 
 
@@ -160,4 +160,4 @@ def extract_metadata(
         requires_gpu=requires_gpu,
     )
 
-    print(__meta_data__.model_dump_json(indent=2, exclude_unset=True))  # noqa: T201
+    print(__meta_data__.model_dump_json(indent=2, exclude_unset=True))  # noqa: T201  # Important: Do not delete this print statement, as it outputs the metadata captured in the stdout
