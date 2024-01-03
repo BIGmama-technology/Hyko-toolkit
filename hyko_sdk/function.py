@@ -75,7 +75,6 @@ class SDKFunction(FastAPI):
         **kwargs: Any,
     ):
         super().__init__(**kwargs)
-
         self._status = asyncio.Future[bool]()
         self.description = description
         self.requires_gpu = requires_gpu
@@ -110,7 +109,7 @@ class SDKFunction(FastAPI):
 
         return self.on_event("shutdown")(wrapper)
 
-    def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):  # noqa: C901
+    def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):
         async def wait_startup_handler():
             try:
                 await self._wait_startup_tasks()
@@ -123,11 +122,11 @@ class SDKFunction(FastAPI):
                 ) from e
 
         self.get("/wait_startup")(wait_startup_handler)
-
         f_args = [
             (param.name, param.annotation)
             for param in inspect.signature(f).parameters.values()
         ]
+
         f_ret_type = inspect.signature(f).return_annotation
         if len(f_args) < 2:
             raise SDKFunction.InvalidExecParamsCount(
@@ -217,9 +216,9 @@ class SDKFunction(FastAPI):
             requires_gpu=self.requires_gpu,
         )
 
-        async def wrapper(  # noqa: C901
+        async def wrapper(
             storage_params: ExecStorageParams, inputs: InputsType, params: ParamsType
-        ) -> OutputsType:
+        ) -> JSONResponse:
             for task in self.startup_tasks:
                 if not task.done():
                     raise HTTPException(
@@ -274,11 +273,12 @@ class SDKFunction(FastAPI):
                     if exc is not None:
                         raise exc
 
-            return JSONResponse(content=json.loads(outputs.model_dump_json()))  # type: ignore
+            return JSONResponse(content=json.loads(outputs.model_dump_json()))
 
         storage_params_annotations = wrapper.__annotations__["storage_params"]
         wrapper.__annotations__ = f.__annotations__
         wrapper.__annotations__["storage_params"] = storage_params_annotations
+
         return self.post("/execute")(wrapper)
 
     def get_metadata(self) -> MetaDataBase:
