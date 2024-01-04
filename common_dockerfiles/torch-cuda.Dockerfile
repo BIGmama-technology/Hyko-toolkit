@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11.6-slim
 
 RUN apt update && \
     apt install -y --no-install-recommends build-essential libgl1-mesa-glx libglib2.0-0 && \
