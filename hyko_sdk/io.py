@@ -4,7 +4,7 @@ import os
 import subprocess
 import uuid
 from enum import Enum
-from typing import Any, Literal, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, Literal, Optional, Self, Tuple, Union
 from uuid import UUID
 
 import numpy as np
@@ -17,8 +17,6 @@ from pydantic_core import core_schema
 from .types import PyObjectId, StorageObject, StorageObjectType
 from .utils import ObjectStorageConn
 
-HykoBaseTypes = TypeVar("HykoBaseTypes", bound="HykoBaseType")
-
 
 class HykoBaseType:
     _obj_id: Optional[UUID] = None
@@ -28,7 +26,7 @@ class HykoBaseType:
 
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, "HykoBaseTypes"],
+        val: Union[uuid.UUID, bytearray, str, Self],
     ) -> None:
         if isinstance(val, HykoBaseType):
             self._obj = val._obj
@@ -46,14 +44,15 @@ class HykoBaseType:
             self.sync_storage()
             return
 
-    @staticmethod
-    def validate_from_id(value: Union[str, UUID]) -> "HykoBaseType":
+    @classmethod
+    def validate_from_id(cls, value: Union[str, UUID]) -> Self:
         ...
 
-    @staticmethod
+    @classmethod
     def validate_from_object(
+        cls,
         value: Union[tuple[bytearray, str, str], Any],
-    ) -> "HykoBaseType":
+    ) -> Self:
         ...
 
     @classmethod
@@ -127,12 +126,12 @@ class HykoBaseType:
 
         raise Exception("Unexpected sync state")
 
-    @staticmethod
-    def serialize_id(value: Type[HykoBaseTypes]) -> str:
+    @classmethod
+    def serialize_id(cls, value: Self) -> str:
         return f"{value._obj_id}"
 
-    @staticmethod
-    def serialize_object(value: Type[HykoBaseTypes]) -> tuple[bytearray, str, str]:
+    @classmethod
+    def serialize_object(cls, value: Self) -> tuple[bytearray, str, str]:
         if value._obj is None:
             raise ValueError("StorageObject serialization error, object not set")
         return (value._obj.data, value._obj.name, value._obj.type)
@@ -158,7 +157,7 @@ class HykoBaseType:
     @classmethod
     def __get_pydantic_core_schema__(
         cls,
-        source: Type["HykoBaseTypes"],
+        source: Self,
         handler: GetCoreSchemaHandler,
     ) -> core_schema.CoreSchema:
         json_schema = core_schema.union_schema(
@@ -242,7 +241,7 @@ class Image(HykoBaseType):
 
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, "Image"],
+        val: Union[uuid.UUID, bytearray, str, Self],
         filename: Optional[str] = None,
         mime_type: Optional[MimeTypesUnion] = None,
     ) -> None:
@@ -269,12 +268,14 @@ class Image(HykoBaseType):
         if self._obj is None and self._obj_id is None:
             raise ValueError(f"Got invalid init value type, {type(val)}")
 
-    @staticmethod
-    def validate_from_id(value: str | UUID) -> "Image":
+    @classmethod
+    def validate_from_id(cls, value: str | UUID) -> "Image":
         return Image(value)
 
-    @staticmethod
-    def validate_from_object(value: "tuple[bytearray, str, str] | Image") -> "Image":
+    @classmethod
+    def validate_from_object(
+        cls, value: "tuple[bytearray, str, str] | Image"
+    ) -> "Image":
         if isinstance(value, Image):
             return value
         if value[2] == StorageObjectType.IMAGE_PNG:
@@ -325,7 +326,7 @@ class Audio(HykoBaseType):
 
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, "Audio"],
+        val: Union[uuid.UUID, bytearray, str, Self],
         filename: Optional[str] = None,
         mime_type: Optional["Audio.MimeTypesUnion"] = None,
     ) -> None:
@@ -352,12 +353,14 @@ class Audio(HykoBaseType):
         if self._obj is None and self._obj_id is None:
             raise ValueError(f"Got invalid init value type, {type(val)}")
 
-    @staticmethod
-    def validate_from_id(value: str | UUID) -> "Audio":
+    @classmethod
+    def validate_from_id(cls, value: str | UUID) -> "Audio":
         return Audio(value)
 
-    @staticmethod
-    def validate_from_object(value: "tuple[bytearray, str, str] | Audio") -> "Audio":
+    @classmethod
+    def validate_from_object(
+        cls, value: "tuple[bytearray, str, str] | Audio"
+    ) -> "Audio":
         if isinstance(value, Audio):
             return value
         if value[2] == StorageObjectType.AUDIO_MPEG:
@@ -456,7 +459,7 @@ class Video(HykoBaseType):
 
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, "Video"],
+        val: Union[uuid.UUID, bytearray, str, Self],
         filename: Optional[str] = None,
         mime_type: Optional["Video.MimeTypesUnion"] = None,
     ) -> None:
@@ -482,12 +485,14 @@ class Video(HykoBaseType):
         if self._obj is None and self._obj_id is None:
             raise ValueError(f"Got invalid init value type, {type(val)}")
 
-    @staticmethod
-    def validate_from_id(value: str | UUID) -> "Video":
+    @classmethod
+    def validate_from_id(cls, value: str | UUID) -> "Video":
         return Video(value)
 
-    @staticmethod
-    def validate_from_object(value: "tuple[bytearray, str, str] | Video") -> "Video":
+    @classmethod
+    def validate_from_object(
+        cls, value: "tuple[bytearray, str, str] | Video"
+    ) -> "Video":
         if isinstance(value, Video):
             return value
         if value[2] == StorageObjectType.VIDEO_MP4:
@@ -502,7 +507,7 @@ class Video(HykoBaseType):
 class PDF(HykoBaseType):
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, "PDF"],
+        val: Union[uuid.UUID, bytearray, str, Self],
         filename: Optional[str] = None,
     ) -> None:
         super().__init__(val)
@@ -516,12 +521,12 @@ class PDF(HykoBaseType):
         if self._obj is None and self._obj_id is None:
             raise ValueError("Got invalid init value")
 
-    @staticmethod
-    def validate_from_id(value: str | UUID) -> "PDF":
+    @classmethod
+    def validate_from_id(cls, value: str | UUID) -> "PDF":
         return PDF(value)
 
-    @staticmethod
-    def validate_from_object(value: "tuple[bytearray, str, str] | PDF") -> "PDF":
+    @classmethod
+    def validate_from_object(cls, value: "tuple[bytearray, str, str] | PDF") -> "PDF":
         if isinstance(value, PDF):
             return value
 
@@ -534,7 +539,7 @@ class PDF(HykoBaseType):
 class CSV(HykoBaseType):
     def __init__(
         self,
-        val: Union[uuid.UUID, bytearray, str, "CSV"],
+        val: Union[uuid.UUID, bytearray, str, Self],
         filename: Optional[str] = None,
     ) -> None:
         super().__init__(val)
@@ -548,12 +553,12 @@ class CSV(HykoBaseType):
         if self._obj is None and self._obj_id is None:
             raise ValueError("Got invalid init value")
 
-    @staticmethod
-    def validate_from_id(value: str | UUID) -> "CSV":
+    @classmethod
+    def validate_from_id(cls, value: str | UUID) -> "CSV":
         return CSV(value)
 
-    @staticmethod
-    def validate_from_object(value: "tuple[bytearray, str, str] | CSV") -> "CSV":
+    @classmethod
+    def validate_from_object(cls, value: "tuple[bytearray, str, str] | CSV") -> "CSV":
         if isinstance(value, CSV):
             return value
 
