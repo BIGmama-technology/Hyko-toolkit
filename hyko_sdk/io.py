@@ -51,7 +51,7 @@ class HykoBaseType:
     @classmethod
     def validate_from_object(
         cls,
-        value: Union[tuple[bytearray, str, str], Any],
+        value: Union[tuple[bytearray, str, str], Self],
     ) -> Self:
         ...
 
