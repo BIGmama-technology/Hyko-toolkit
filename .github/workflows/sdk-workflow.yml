@@ -2,8 +2,6 @@ name: SDK CI/CD
 
 on:
   push:
-    branches:
-      - '*'
     branches-ignore:    
       - 'main'
   pull_request:
