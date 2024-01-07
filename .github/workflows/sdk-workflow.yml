@@ -5,6 +5,8 @@ on:
     branches:
       - '*'
   pull_request:
+    branches:
+      - main
     types:
       - closed
 
@@ -37,5 +39,5 @@ jobs:
       #   run: ruff format --check
 
       - name: Build SDK package
-        if: ${{ github.event.pull_request.merged }}
+        if: github.event.pull_request.merged == true
         run: poetry build
