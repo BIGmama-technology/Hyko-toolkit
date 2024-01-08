@@ -1,7 +1,8 @@
-from hyko_sdk import SDKFunction, CoreModel
-from pydantic import Field
-import re
 import logging
+import re
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Takes a paragraph and tokenizes (splits) it into a list of sentences",

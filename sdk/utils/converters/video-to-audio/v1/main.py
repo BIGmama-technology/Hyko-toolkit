@@ -1,18 +1,25 @@
-from pydantic import Field
-from hyko_sdk import CoreModel, Video, Audio, SDKFunction
 import os
 import subprocess
+
+from pydantic import Field
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.io import Audio, Video
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Convert a video type to audio type (takes only the audio data)",
     requires_gpu=False,
 )
 
+
 class Inputs(CoreModel):
     video: Video = Field(..., description="User input video to be converted to audio")
 
+
 class Params(CoreModel):
     pass
+
 
 class Outputs(CoreModel):
     audio: Audio = Field(..., description="converted audio")
