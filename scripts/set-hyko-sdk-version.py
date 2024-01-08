@@ -1,10 +1,10 @@
 import os
-from typing import List
 import sys
+from typing import List
 
 
 def walk_directory(root_path: str, pre_categories: List[str]):
-    print(f"Walking {root_path}/{'/'.join(pre_categories)}")
+    print(f"Walking {root_path}/{'/'.join(pre_categories)}")  # noqa: T201
 
     ls = os.listdir(root_path + "/" + "/".join(pre_categories))
     if "main.py" in ls and "Dockerfile" in ls:
@@ -44,15 +44,4 @@ if __name__ == "__main__":
             output += line
     if output != "":
         with open("common_dockerfiles/hyko-sdk.Dockerfile", "w") as f:
-            f.write(output)
-
-    output = ""
-    with open("setup.cfg") as f:
-        text = f.readlines()
-        for line in text:
-            if "version" in line:
-                line = "version = " + sys.argv[1] + "\n"
-            output += line
-    if output != "":
-        with open("setup.cfg", "w") as f:
             f.write(output)

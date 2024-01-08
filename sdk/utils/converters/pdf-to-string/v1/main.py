@@ -1,29 +1,35 @@
-from pydantic import Field
-from hyko_sdk import CoreModel, SDKFunction, PDF
-from PyPDF2 import PdfReader, PageObject
-from io import BytesIO
-import multiprocessing
 import asyncio
+import multiprocessing
+from io import BytesIO
+
+from pydantic import Field
+from PyPDF2 import PageObject, PdfReader
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.io import PDF
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Convert a PDF type to String type (extracts the text from the pdf)",
     requires_gpu=False,
 )
 
+
 class Inputs(CoreModel):
     pdf_file: PDF = Field(..., description="User input pdf to be converted to text")
 
+
 class Params(CoreModel):
     pass
+
 
 class Outputs(CoreModel):
     text: str = Field(..., description="Extracted text from pdf")
 
 
 def extract_text_multi(content: bytearray):
-    
     reader = PdfReader(BytesIO(content))
-    
+
     texts = multiprocessing.Manager().list(["" for _ in range(len(reader.pages))])
 
     processes: list[multiprocessing.Process] = []
@@ -39,8 +45,8 @@ def extract_text_multi(content: bytearray):
 
     for p in processes:
         p.join()
-    
-    return ''.join(texts)
+
+    return "".join(texts)
 
 
 @func.on_execute

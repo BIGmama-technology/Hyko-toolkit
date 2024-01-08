@@ -119,16 +119,15 @@ class SDKFunction(FastAPI):
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail=f"Exception occured during startup:\n{e.__repr__()}",
-                )
+                ) from e
 
         self.get("/wait_startup")(wait_startup_handler)
-
         f_args = [
             (param.name, param.annotation)
             for param in inspect.signature(f).parameters.values()
         ]
-        f_ret_type = inspect.signature(f).return_annotation
 
+        f_ret_type = inspect.signature(f).return_annotation
         if len(f_args) < 2:
             raise SDKFunction.InvalidExecParamsCount(
                 f_args=f_args,
@@ -136,6 +135,7 @@ class SDKFunction(FastAPI):
             )
 
         f_inputs_name, f_inputs_type = f_args[0]
+
         f_params_name, f_params_type = f_args[1]
 
         if not issubclass(f_inputs_type, BaseModel):
@@ -163,6 +163,7 @@ class SDKFunction(FastAPI):
             )
 
         inputs_json_schema = f_inputs_type.model_json_schema()
+
         if inputs_json_schema.get("$defs"):
             for k, v in inputs_json_schema["$defs"].items():
                 if v.get("type") and v["type"] == "numeric":
@@ -171,8 +172,8 @@ class SDKFunction(FastAPI):
         if inputs_json_schema.get("properties"):
             for k, v in inputs_json_schema["properties"].items():
                 if v.get("allOf") and len(v["allOf"]) == 1:
-                    allOf = inputs_json_schema["properties"][k].pop("allOf")
-                    inputs_json_schema["properties"][k]["$ref"] = allOf[0]["$ref"]
+                    all_of = inputs_json_schema["properties"][k].pop("allOf")
+                    inputs_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
 
         params_json_schema = f_params_type.model_json_schema()
         if params_json_schema.get("$defs"):
@@ -183,8 +184,8 @@ class SDKFunction(FastAPI):
         if params_json_schema.get("properties"):
             for k, v in params_json_schema["properties"].items():
                 if v.get("allOf") and len(v["allOf"]) == 1:
-                    allOf = params_json_schema["properties"][k].pop("allOf")
-                    params_json_schema["properties"][k]["$ref"] = allOf[0]["$ref"]
+                    all_of = params_json_schema["properties"][k].pop("allOf")
+                    params_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
 
         outputs_json_schema = f_ret_type.model_json_schema()
         if outputs_json_schema.get("$defs"):
@@ -195,8 +196,8 @@ class SDKFunction(FastAPI):
         if outputs_json_schema.get("properties"):
             for k, v in outputs_json_schema["properties"].items():
                 if v.get("allOf") and len(v["allOf"]) == 1:
-                    allOf = outputs_json_schema["properties"][k].pop("allOf")
-                    outputs_json_schema["properties"][k]["$ref"] = allOf[0]["$ref"]
+                    all_of = outputs_json_schema["properties"][k].pop("allOf")
+                    outputs_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
 
         self.__metadata__ = MetaDataBase(
             description=self.description,
@@ -217,7 +218,7 @@ class SDKFunction(FastAPI):
 
         async def wrapper(
             storage_params: ExecStorageParams, inputs: InputsType, params: ParamsType
-        ) -> OutputsType:
+        ) -> JSONResponse:
             for task in self.startup_tasks:
                 if not task.done():
                     raise HTTPException(
@@ -232,18 +233,18 @@ class SDKFunction(FastAPI):
                 storage_params.blueprint_id,
                 pending_download_tasks,
             )
-            # print("Rebuilding inputs")
+
             inputs = inputs.model_validate_json(inputs.model_dump_json())
             params = params.model_validate_json(params.model_dump_json())
             HykoBaseType.clear_sync()
-            # print("waiting for inputs")
+
             if len(pending_download_tasks):
                 done, _ = await asyncio.wait(pending_download_tasks)
                 for task in done:
                     exc = task.exception()
                     if exc is not None:
                         raise exc
-            # print("Inputs done")
+
             try:
                 outputs = await f(inputs, params)
             except HTTPException as e:
@@ -252,7 +253,7 @@ class SDKFunction(FastAPI):
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail=f"Exception occured during execution:\n{e.__repr__()}",
-                )
+                ) from e
 
             pending_upload_tasks: list[asyncio.Task[None]] = []
             HykoBaseType.set_sync(
@@ -261,23 +262,23 @@ class SDKFunction(FastAPI):
                 storage_params.blueprint_id,
                 pending_upload_tasks,
             )
-            # print("Rebuilding outputs")
+
             outputs = outputs.model_validate(outputs.model_dump())
             HykoBaseType.clear_sync()
-            # print("waiting for inputs")
+
             if len(pending_upload_tasks):
                 done, _ = await asyncio.wait(pending_upload_tasks)
                 for task in done:
                     exc = task.exception()
                     if exc is not None:
                         raise exc
-            # print("Inputs done")
 
-            return JSONResponse(content=json.loads(outputs.model_dump_json()))  # type: ignore
+            return JSONResponse(content=json.loads(outputs.model_dump_json()))
 
         storage_params_annotations = wrapper.__annotations__["storage_params"]
         wrapper.__annotations__ = f.__annotations__
         wrapper.__annotations__["storage_params"] = storage_params_annotations
+
         return self.post("/execute")(wrapper)
 
     def get_metadata(self) -> MetaDataBase:

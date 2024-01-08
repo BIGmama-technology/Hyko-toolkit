@@ -1,8 +1,11 @@
+import subprocess
+
+import transformers
 from fastapi import HTTPException
 from pydantic import Field
-from hyko_sdk import CoreModel, SDKFunction
-import transformers
-import subprocess
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Falcon 70B instruct",
@@ -34,11 +37,11 @@ async def load():
     if generator is not None:
         print("Model already Loaded")
         return
-    
+
     subprocess.run(
-        "git clone https://huggingface.co/upstage/Llama-2-70b-instruct".split(' ')
+        "git clone https://huggingface.co/upstage/Llama-2-70b-instruct".split(" ")
     )
-    
+
     generator = transformers.pipeline(
         model="Llama-2-70b-instruct",
         device_map="auto",
