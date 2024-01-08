@@ -1,42 +1,7 @@
 import math
-from enum import Enum
 
 from fastapi import HTTPException
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Perform mathematical operations on numbers",
-    requires_gpu=False,
-)
-
-
-class MathOperation(str, Enum):
-    ADD = "add"
-    SUBTRACT = "sub"
-    MULTIPLY = "mul"
-    DIVIDE = "div"
-    POWER = "pow"
-    LOG = "log"
-    MAXIMUM = "max"
-    MINIMUM = "min"
-    MODULO = "mod"
-    PERCENT = "percent"
-
-
-class Inputs(CoreModel):
-    a: int = Field(..., description="Operand a")
-    b: int = Field(..., description="Operand b")
-
-
-class Params(CoreModel):
-    operation: MathOperation = Field(..., description="Mathematical operation")
-
-
-class Outputs(CoreModel):
-    result: int = Field(..., description="Mathematical operation result")
+from metadata import Inputs, MathOperation, Outputs, Params, func
 
 
 @func.on_execute
