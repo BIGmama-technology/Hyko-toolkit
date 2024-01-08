@@ -109,11 +109,8 @@ failed_functions_lock = threading.Lock()
 
 def process_function_dir(path: str, registry_host: str, push_image: bool):  # noqa: C901
     """Path has to be a valid path with no spaces in it"""
-    if path[:2] == "./":
-        path = path[2:]
-
-    if path[-1] == "/":
-        path = path[:-1]
+    path = path.lstrip("./")
+    path = path.rstrip("/")
 
     splitted = path.split("/")
     try:
@@ -155,9 +152,9 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
         )
         try:
             metadata_process = subprocess.run(
-                f"docker run -it --rm {metadata_tag} python -c".split(" ")
+                f"docker run -it --rm {metadata_tag} poetry run python -c".split(" ")
                 + [
-                    f"from main import func;print('{__METADATA__START__SPECIAL__TOKEN__}');print(func.dump_metadata())"
+                    f"from metadata import func;print('{__METADATA__START__SPECIAL__TOKEN__}');print(func.dump_metadata())"
                 ],
                 capture_output=True,
                 check=True,
