@@ -2,11 +2,15 @@
 TODO handle the output of segmentation, now only one mask is supported and is
 returned as a PIL image.
 """
+import os
+
 from fastapi import HTTPException
 from pydantic import Field
-from hyko_sdk import CoreModel, SDKFunction, Image
-import os
 from transformers import pipeline
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.io import Image
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="HuggingFace image segmentation",

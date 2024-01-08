@@ -1,8 +1,11 @@
+import os
+
+import transformers
 from fastapi import HTTPException
 from pydantic import Field
-from hyko_sdk import CoreModel, SDKFunction
-import transformers
-import os
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Hugging Face fill mask task",
