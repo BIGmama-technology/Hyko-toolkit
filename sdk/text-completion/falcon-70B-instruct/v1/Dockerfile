@@ -11,7 +11,7 @@ RUN wget https://github.com/git-lfs/git-lfs/releases/download/v3.4.0/git-lfs-lin
     tar -xvf git-lfs-linux-amd64-v3.4.0.tar.gz && \
     cd git-lfs-3.4.0/ && \
     ./install.sh
-RUN pip install uvicorn hyko_sdk==0.4.18
+RUN pip install uvicorn hyko_sdk==0.4.23
 
 COPY . .
 CMD ["uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
