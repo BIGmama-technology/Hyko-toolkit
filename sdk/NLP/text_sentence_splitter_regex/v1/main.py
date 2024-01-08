@@ -1,6 +1,8 @@
 import logging
 import re
 
+from pydantic import Field
+
 from hyko_sdk.function import SDKFunction
 from hyko_sdk.metadata import CoreModel
 
