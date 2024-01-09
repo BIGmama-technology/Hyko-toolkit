@@ -16,7 +16,7 @@ func = SDKFunction(
 )
 
 
-def convert_to_BGRA(image: np.ndarray, num_channels: int) -> np.ndarray:
+def convert_to_bgra(image: np.ndarray, num_channels: int) -> np.ndarray:
     if num_channels == 3:
         return cv2.cvtColor(image, cv2.COLOR_BGR2BGRA)
     elif num_channels == 4:
@@ -32,7 +32,7 @@ def opacity(img: np.ndarray, opacity: float) -> np.ndarray:
     h, w, c = img.shape
     if opacity == 100 and c == 4:
         return img
-    imgout = convert_to_BGRA(img, c)
+    imgout = convert_to_bgra(img, c)
     opacity /= 100
 
     imgout[:, :, 3] *= opacity
@@ -70,7 +70,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     if opacity == 100 and c == 4:
         adjusted_img_np = img_np
     else:
-        imgout = convert_to_BGRA(img_np, c)
+        imgout = convert_to_bgra(img_np, c)
         opacity /= 100
         imgout[:, :, 3] = (imgout[:, :, 3] * opacity).astype(np.uint8)
         adjusted_img_np = imgout

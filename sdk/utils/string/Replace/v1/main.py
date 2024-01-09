@@ -13,8 +13,8 @@ func = SDKFunction(
 
 
 class ReplaceMode(str, Enum):
-    replaceAll = "replaceAll"
-    replaceFirst = "replaceFirst"
+    replace_all = "replaceAll"
+    replace_first = "replaceFirst"
 
 
 class Inputs(CoreModel):
@@ -35,9 +35,9 @@ class Outputs(CoreModel):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if params.replace_mode == ReplaceMode.replaceAll:
+    if params.replace_mode == ReplaceMode.replace_all:
         replaced_text = inputs.text.replace(params.old_substring, params.new_substring)
-    elif params.replace_mode == ReplaceMode.replaceFirst:
+    elif params.replace_mode == ReplaceMode.replace_first:
         replaced_text = inputs.text.replace(
             params.old_substring, params.new_substring, 1
         )

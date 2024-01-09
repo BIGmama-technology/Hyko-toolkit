@@ -1,6 +1,3 @@
-import os
-
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import torch
 from datasets import load_dataset
 from fastapi import HTTPException
