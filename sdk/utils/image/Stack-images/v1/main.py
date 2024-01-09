@@ -36,7 +36,7 @@ class Outputs(CoreModel):
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs, params: Params) -> Outputs:  # noqa: C901
     image1 = inputs.image1.to_ndarray()
     image2 = inputs.image2.to_ndarray()
     orientation = params.orientation

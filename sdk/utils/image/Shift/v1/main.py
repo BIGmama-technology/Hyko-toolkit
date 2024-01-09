@@ -61,7 +61,7 @@ def get_h_w_c(image):
     return height, width, channels
 
 
-def convert_to_BGRA(img: np.ndarray, in_c: int) -> np.ndarray:
+def convert_to_bgra(img: np.ndarray, in_c: int) -> np.ndarray:
     if in_c not in (1, 3, 4):
         raise HTTPException(
             status_code=500, detail=f"Number of channels ({in_c}) unexpected"
@@ -88,7 +88,7 @@ async def shift_image(inputs: Inputs, params: Params) -> Outputs:
     c = get_h_w_c(image_cv2)[2]
 
     if fill == FillColor.TRANSPARENT:
-        image_cv2 = convert_to_BGRA(image_cv2, c)
+        image_cv2 = convert_to_bgra(image_cv2, c)
     fill_color = fill.get_color(c)  # type: ignore
 
     translation_matrix = np.asfarray(
