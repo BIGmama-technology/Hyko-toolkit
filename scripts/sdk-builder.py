@@ -107,7 +107,7 @@ failed_functions: list[FunctionBuildError] = []
 failed_functions_lock = threading.Lock()
 
 
-def process_function_dir(path: str, registry_host: str, push_image: bool):  # noqa: C901
+def process_function_dir(path: str, registry_host: str):  # noqa: C901
     """Path has to be a valid path with no spaces in it"""
     path = path.lstrip("./")
     path = path.rstrip("/")
@@ -130,56 +130,38 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
                 "Make sure your function follows the correct folder structure: catgeory/fn_name/v1/",
             )
 
-        # print(f"Processing function: {category=} {function_name=} {version=}")
-
-        # print("Building metadata...")
-        metadata_tag = f"{registry_host}/{category.lower()}/{function_name.lower()}:metadata-{version}"
-        try:
-            subprocess.run(
-                f"docker build -t {metadata_tag} ./{path}".split(" "), check=True
-            )
-        except subprocess.CalledProcessError as e:
-            raise FunctionBuildError(
-                category,
-                function_name,
-                version,
-                "Error while running metadata docker container",
-            ) from e
-
-        __METADATA__START__SPECIAL__TOKEN__ = (  # noqa: N806
-            "__METADATA__START__SPECIAL__TOKEN__"
-            + "".join(random.choice(string.ascii_letters) for _ in range(16))
+        start_token = "STAR_TOKEN" + "".join(
+            random.choice(string.ascii_letters) for _ in range(16)
         )
         try:
             metadata_process = subprocess.run(
-                f"docker run -it --rm {metadata_tag} poetry run python -c".split(" ")
+                "poetry run python -c".split(" ")
                 + [
-                    f"from metadata import func;print('{__METADATA__START__SPECIAL__TOKEN__}');print(func.dump_metadata())"
+                    f"from metadata import func;print('{start_token}');print(func.dump_metadata())"
                 ],
+                cwd=path,
                 capture_output=True,
                 check=True,
             )
         except subprocess.CalledProcessError as e:
-            print(e.stdout.decode())  # noqa: T201
+            print(e.stdout.decode())
             raise FunctionBuildError(
                 category,
                 function_name,
                 version,
-                "Error while running metadata docker container",
+                "Error while extracting metadata",
             ) from e
 
-        splitted = metadata_process.stdout.decode().split(
-            __METADATA__START__SPECIAL__TOKEN__
-        )
+        splitted = metadata_process.stdout.decode().split(start_token)
         if len(splitted) == 2:
             metadata = splitted[1]
         elif len(splitted) == 1:
             metadata = splitted[0]
         else:
-            print("Probably an error happen in while catching stdout from metadata")  # noqa: T201
+            print("Probably an error happen in while catching stdout from metadata")
             return
 
-        # print("METADATA:", metadata)
+        print("METADATA:", metadata)
         try:
             metadata = MetaDataBase(**json.loads(metadata))
             metadata = MetaData(
@@ -195,9 +177,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
                 category, function_name, version, "Invalid Function MetaData"
             ) from e
 
-        subprocess.run(f"docker rmi -f {metadata_tag}:latest".split(" "))
-
-        # print("Type checking and validating schema...")
+        print("Type checking and validating schema...")
 
         fields: list[str] = []
 
@@ -280,7 +260,7 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
                 "Port name must be unique within a function (across inputs, params and outputs)",
             )
 
-        # print("Building...")
+        print("Building...")
         function_tag = (
             f"{registry_host}/{category.lower()}/{function_name.lower()}:{version}"
         )
@@ -301,18 +281,16 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
                 "Failed to build function main docker image",
             ) from e
 
-        if push_image:
-            # print()
-            # print("Pushing...")
-            try:
-                subprocess.run(f"docker push {function_tag}".split(" "), check=True)
-            except subprocess.CalledProcessError as e:
-                raise FunctionBuildError(
-                    category,
-                    function_name,
-                    version,
-                    f"Failed to push to docker registry {registry_host}",
-                ) from e
+        print("Pushing...")
+        try:
+            subprocess.run(f"docker push {function_tag}".split(" "), check=True)
+        except subprocess.CalledProcessError as e:
+            raise FunctionBuildError(
+                category,
+                function_name,
+                version,
+                f"Failed to push to docker registry {registry_host}",
+            ) from e
 
     except FunctionBuildError as e:
         failed_functions_lock.acquire()
@@ -320,29 +298,20 @@ def process_function_dir(path: str, registry_host: str, push_image: bool):  # no
         failed_functions_lock.release()
 
 
-def walk_directory(
-    path: str, no_gpu: bool, threaded: bool, registry_host: str, push_image: bool
-):
-    # print("Walking:", path)
+def walk_directory(path: str, threaded: bool, registry_host: str):
     ls = os.listdir(path)
 
-    if "main.py" in ls and "Dockerfile" in ls:
-        if no_gpu:
-            with open(path + "/Dockerfile") as f:
-                dockerfile = f.read()
-                if "cuda" in dockerfile:
-                    return
-
+    if all(f in ls for f in ["main.py", "metadata.py", "Dockerfile"]):
         all_built_functions.append(path)
 
         if threaded:
             thread = threading.Thread(
-                target=process_function_dir, args=[path, registry_host, push_image]
+                target=process_function_dir, args=[path, registry_host]
             )
             thread.start()
             threads.append(thread)
         else:
-            process_function_dir(path, registry_host, push_image)
+            process_function_dir(path, registry_host)
 
     else:
         for sub_folder in ls:
@@ -352,18 +321,14 @@ def walk_directory(
             if not os.path.isdir(path + "/" + sub_folder):
                 continue
 
-            walk_directory(
-                path + "/" + sub_folder, no_gpu, threaded, registry_host, push_image
-            )
+            walk_directory(path + "/" + sub_folder, threaded, registry_host)
 
 
 if __name__ == "__main__":
     directory = "./sdk"
     threaded = False
-    no_gpu = True
     registry_host = "registry.traefik.me"
     skip_next_arg = False
-    push_image = True
     for i, arg in enumerate(sys.argv):
         if i == 0:
             continue
@@ -375,65 +340,52 @@ if __name__ == "__main__":
         if arg[:2] == "--":
             if arg == "--threaded":
                 threaded = True
-            elif arg == "--cuda":
-                no_gpu = False
             elif arg == "--dir":
                 skip_next_arg = True
                 if i + 1 >= len(sys.argv):
-                    print("No directory was provided after --dir")  # noqa: T201
+                    print("No directory was provided after --dir")
                     exit(1)
                 directory = sys.argv[i + 1]
             elif arg == "--registry":
                 skip_next_arg = True
                 if i + 1 >= len(sys.argv):
-                    print("No registry host was provided after --registry")  # noqa: T201
+                    print("No registry host was provided after --registry")
                     exit(1)
                 registry_host = sys.argv[i + 1]
-            elif arg == "--no-push":
-                push_image = False
             else:
-                print(f"unknown argument: {arg}")  # noqa: T201
+                print(f"unknown argument: {arg}")
                 exit(1)
         else:
-            print(f"unknown argument: {arg}")  # noqa: T201
+            print(f"unknown argument: {arg}")
             exit(1)
 
     build_info = f"Building {directory}"
     if threaded:
         build_info += " with multithreading"
-    if no_gpu:
-        build_info += ". Skipping Dockerfiles with torch-cuda as base image"
-    if push_image:
-        build_info += f". Pushing to {registry_host}"
-
-    # print(build_info)
-
-    if not no_gpu:
-        subprocess.run(
-            "docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(
-                " "
-            )
-        )
 
     subprocess.run(
         "docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
             " "
         )
     )
+    subprocess.run(
+        "docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(
+            " "
+        )
+    )
 
-    if directory[-1] == "/":
-        directory = directory[:-1]
-    walk_directory(directory, no_gpu, threaded, registry_host, push_image)
+    directory = directory.rstrip("/")
+    walk_directory(directory, threaded, registry_host)
 
     if threaded:
         for thread in threads:
             thread.join()
 
     successful_count = len(all_built_functions) - len(failed_functions)
-    print(  # noqa: T201
+    print(
         f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function"
     )
     for fn in failed_functions:
-        print(  # noqa: T201
+        print(
             f"ERROR WHILE BUILDING: {fn.category}/{fn.function_name}:{fn.version} REASON: {fn.reason}"
         )
