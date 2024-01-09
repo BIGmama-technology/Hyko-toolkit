@@ -6,10 +6,10 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from .io import HykoBaseType
-from .metadata import HykoJsonSchemaExt, MetaDataBase
-from .types import PyObjectId
-from .utils import model_to_friendly_property_types
+from hyko_sdk.io import HykoBaseType
+from hyko_sdk.metadata import HykoJsonSchemaExt, MetaDataBase
+from hyko_sdk.types import PyObjectId
+from hyko_sdk.utils import model_to_friendly_property_types
 
 InputsType = TypeVar("InputsType", bound="BaseModel")
 ParamsType = TypeVar("ParamsType", bound="BaseModel")
@@ -122,7 +122,7 @@ class SDKFunction(FastAPI):
 
         return self.on_event("shutdown")(wrapper)
 
-    def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):
+    def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):  # noqa: C901
         async def wait_startup_handler():
             try:
                 await self._wait_startup_tasks()
@@ -136,7 +136,7 @@ class SDKFunction(FastAPI):
 
         self.get("/wait_startup")(wait_startup_handler)
 
-        async def wrapper(
+        async def wrapper(  # noqa: C901
             storage_params: ExecStorageParams, inputs: InputsType, params: ParamsType
         ) -> JSONResponse:
             for task in self.startup_tasks:

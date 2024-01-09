@@ -14,8 +14,8 @@ from PIL import Image as PIL_Image
 from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
 from pydantic_core import core_schema
 
-from .types import PyObjectId, StorageObject, StorageObjectType
-from .utils import ObjectStorageConn
+from hyko_sdk.types import PyObjectId, StorageObject, StorageObjectType
+from hyko_sdk.utils import ObjectStorageConn
 
 
 class HykoBaseType:
