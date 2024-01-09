@@ -161,7 +161,6 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
             print("Probably an error happen in while catching stdout from metadata")
             return
 
-        print("METADATA:", metadata)
         try:
             metadata = MetaDataBase(**json.loads(metadata))
             metadata = MetaData(
@@ -291,6 +290,18 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
                 version,
                 f"Failed to push to docker registry {registry_host}",
             ) from e
+
+        if registry_host != "registry.traefik.me":
+            print("Removing the image")
+            try:
+                subprocess.run(f"docker rmi {function_tag}".split(" "), check=True)
+            except subprocess.CalledProcessError as e:
+                raise FunctionBuildError(
+                    category,
+                    function_name,
+                    version,
+                    "Failed to remove built image from host",
+                ) from e
 
     except FunctionBuildError as e:
         failed_functions_lock.acquire()
