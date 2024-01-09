@@ -130,7 +130,7 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
                 "Make sure your function follows the correct folder structure: catgeory/fn_name/v1/",
             )
 
-        start_token = "STAR_TOKEN" + "".join(
+        start_token = "START_TOKEN" + "".join(
             random.choice(string.ascii_letters) for _ in range(16)
         )
         try:
