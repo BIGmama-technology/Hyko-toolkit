@@ -9,8 +9,8 @@ from fastapi import HTTPException, status
 from httpx import Timeout
 from pydantic import BaseModel
 
-from .metadata import MetaData
-from .types import PyObjectId, StorageObjectType
+from hyko_sdk.metadata import MetaData
+from hyko_sdk.types import PyObjectId, StorageObjectType
 
 
 class ObjectStorageConn:
