@@ -40,10 +40,10 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             detail="Historical X and Y axises should have the same length",
         )
 
-    X = np.array(params.historical_y).reshape(-1, 1)
-    Y = np.array(params.historical_y).reshape(-1, 1)
+    x = np.array(params.historical_y).reshape(-1, 1)
+    y = np.array(params.historical_y).reshape(-1, 1)
 
-    linear_regression.fit(X, Y)
+    linear_regression.fit(x, y)
     predict_y = linear_regression.predict([[inputs.predict_x]])  # type: ignore
 
     return Outputs(predict_y=predict_y)  # type: ignore
