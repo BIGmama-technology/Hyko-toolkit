@@ -5,7 +5,7 @@ from metadata import Inputs, MathOperation, Outputs, Params, func
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs, params: Params) -> Outputs:  # noqa: C901
     a = inputs.a
     op = params.operation
     b = inputs.b
