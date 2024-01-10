@@ -1,36 +1,12 @@
-from typing import List
-
 import numpy as np
 import torch
 from fastapi.exceptions import HTTPException
+from metadata import Inputs, Outputs, Params, func
 from PIL import Image as PILImage
 from PIL import ImageDraw
-from pydantic import Field
 from transformers import OwlViTForObjectDetection, OwlViTProcessor
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Object detection/recogntion model, draws bounding boxes over the image if the object is in the list of tags.",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    img: Image = Field(..., description="Input Image")
-
-
-class Params(CoreModel):
-    tags: List[str] = Field(..., description="List of object(s) names to be detected")
-
-
-class Outputs(CoreModel):
-    output_image: Image = Field(
-        ..., description="Input image + detection bounding Boxes"
-    )
-
 
 processor = None
 model = None
@@ -48,7 +24,7 @@ async def load():
     processor = OwlViTProcessor.from_pretrained("google/owlvit-base-patch32")
     model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32").to(
         device
-    )  # type: ignore
+    )
 
 
 @func.on_execute
@@ -58,7 +34,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
 
     np_img = inputs.img.to_ndarray()
     pil_image = PILImage.fromarray(np_img)
-    # img.save("TEST.jpg")
     draw = ImageDraw.Draw(pil_image)
     texts = params.tags
 
@@ -67,7 +42,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     ).to(device)
 
     with torch.no_grad():
-        outputs = model(**inputs)  # type: ignore
+        outputs = model(**inputs)
 
     target_sizes = (
         torch.Tensor([torch.from_numpy(np_img).size()[::-1]])
