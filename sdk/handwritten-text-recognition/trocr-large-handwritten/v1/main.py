@@ -1,29 +1,7 @@
 import torch
 from fastapi import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Perform Handwritten Text Recognition on an input image",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    image: Image = Field(..., description="Input image containing handwritten text")
-
-
-class Params(CoreModel):
-    pass
-
-
-class Outputs(CoreModel):
-    generated_text: str = Field(..., description="Recognized text from the input image")
-
 
 model = None
 processor = None
