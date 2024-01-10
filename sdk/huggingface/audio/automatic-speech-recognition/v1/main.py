@@ -2,35 +2,8 @@ import os
 
 import numpy as np
 from fastapi import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import pipeline
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import Audio
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="HuggingFace automatic speech recognition",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    speech: Audio = Field(..., description="Input speech")
-
-
-class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    text: str = Field(..., description="Recognized speech text")
-
 
 recognizer = None
 
