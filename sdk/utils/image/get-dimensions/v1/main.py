@@ -6,7 +6,7 @@ from PIL import Image as PIL_Image
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    file, ext = os.path.splitext(inputs.image.get_name())  # type: ignore
+    _, ext = os.path.splitext(inputs.image.get_name())  # type: ignore
     with open(f"./image{ext}", "wb") as f:
         f.write(inputs.image.get_data())  # type: ignore
 

@@ -11,13 +11,13 @@ func = SDKFunction(
 )
 
 
-@func.set_input
 class FlipAxis(str, Enum):
     horizontal = "horizontal"
     vertical = "vertical"
     both = "both"
 
 
+@func.set_input
 class Inputs(CoreModel):
     image: Image = Field(..., description="Input image")
 
