@@ -1,36 +1,8 @@
 import cv2
 import numpy as np
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Adjust brightness and contrast of an image",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    image: Image = Field(
-        ..., description="Input image to adjust brightness and contrast"
-    )
-
-
-class Params(CoreModel):
-    brightness: float = Field(
-        ..., description="Brightness adjustment factor (e.g., 1.0 for no change)"
-    )
-    contrast: float = Field(
-        ..., description="Contrast adjustment factor (e.g., 1.0 for no change)"
-    )
-
-
-class Outputs(CoreModel):
-    adjusted_image: Image = Field(
-        ..., description="Image with adjusted brightness and contrast"
-    )
 
 
 @func.on_execute
