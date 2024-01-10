@@ -2,36 +2,7 @@ import os
 
 import transformers
 from fastapi import HTTPException
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Hugging Face text generation",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    input_text: str = Field(..., description="input text")
-
-
-class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    max_length: int = Field(
-        default=30, description="maximum number of tokens to generate"
-    )
-
-
-class Outputs(CoreModel):
-    generated_text: str = Field(..., description="Completion text")
-
+from metadata import Inputs, Outputs, Params, func
 
 classifier = None
 
