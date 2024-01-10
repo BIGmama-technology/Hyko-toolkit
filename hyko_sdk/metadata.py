@@ -56,7 +56,6 @@ class MetaDataBase(BaseModel):
     inputs: HykoJsonSchemaExt
     outputs: HykoJsonSchemaExt
     params: HykoJsonSchemaExt
-    requires_gpu: bool
     model_config = ConfigDict(populate_by_name=True)
 
 
