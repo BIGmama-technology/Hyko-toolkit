@@ -1,30 +1,7 @@
-from typing import List
-
 import torch
 from fastapi.exceptions import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Perform zero-shot classification on text input, assigning it to one of the predefined classes",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    text: str = Field(..., description="Input text to be classified")
-
-
-class Params(CoreModel):
-    classes: List[str] = Field(..., description="A list of possible classes")
-
-
-class Outputs(CoreModel):
-    output_class: str = Field(..., description="The predicted class")
-
 
 model = None
 tokenizer = None
