@@ -312,7 +312,10 @@ def walk_directory(
 ):
     ls = os.listdir(path)
 
-    if all(f in ls for f in ["main.py", "metadata.py", "Dockerfile"]):
+    if (
+        all(f in ls for f in ["main.py", "metadata.py", "Dockerfile"])
+        and ".hykoignore" not in ls
+    ):
         if not enable_cuda:
             with open(path + "/Dockerfile") as f:
                 dockerfile = f.read()
