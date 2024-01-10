@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import random
@@ -269,7 +270,6 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         build_cmd += f"-t {function_tag} "
         build_cmd += f"""--label metadata="{metadata_to_docker_label(metadata)}" """
         build_cmd += f"./{path}"
-        # print("Executing cmd: ", build_cmd.split(" "))
         try:
             subprocess.run(["/bin/sh", "-c", build_cmd], check=True)
         except subprocess.CalledProcessError as e:
@@ -309,10 +309,18 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         failed_functions_lock.release()
 
 
-def walk_directory(path: str, threaded: bool, registry_host: str):
+def walk_directory(
+    path: str, threaded: bool, registry_host: str, enable_cuda: bool = False
+):
     ls = os.listdir(path)
 
     if all(f in ls for f in ["main.py", "metadata.py", "Dockerfile"]):
+        if not enable_cuda:
+            with open(path + "/Dockerfile") as f:
+                dockerfile = f.read()
+                if "cuda" in dockerfile:
+                    return
+
         all_built_functions.append(path)
 
         if threaded:
@@ -332,61 +340,54 @@ def walk_directory(path: str, threaded: bool, registry_host: str):
             if not os.path.isdir(path + "/" + sub_folder):
                 continue
 
-            walk_directory(path + "/" + sub_folder, threaded, registry_host)
+            walk_directory(
+                path + "/" + sub_folder, threaded, registry_host, enable_cuda
+            )
+
+
+def parse_args(args: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="This script will build an image of your functions and push them to Hyko registry"
+    )
+    parser.add_argument(
+        "--dir", default=["./sdk"], nargs="+", help="A list of function paths", type=str
+    )
+    parser.add_argument("--threaded", action="store_true", help="Enable threaded mode")
+    parser.add_argument("--cuda", action="store_true", help="Re-build torch-cuda image")
+    parser.add_argument(
+        "--registry",
+        default="registry.traefik.me",
+        help="Set a custom registry host",
+        type=str,
+    )
+
+    return parser.parse_args(args)
 
 
 if __name__ == "__main__":
-    directory = "./sdk"
-    threaded = False
-    registry_host = "registry.traefik.me"
-    skip_next_arg = False
-    for i, arg in enumerate(sys.argv):
-        if i == 0:
-            continue
-
-        if skip_next_arg:
-            skip_next_arg = False
-            continue
-
-        if arg[:2] == "--":
-            if arg == "--threaded":
-                threaded = True
-            elif arg == "--dir":
-                skip_next_arg = True
-                if i + 1 >= len(sys.argv):
-                    print("No directory was provided after --dir")
-                    exit(1)
-                directory = sys.argv[i + 1]
-            elif arg == "--registry":
-                skip_next_arg = True
-                if i + 1 >= len(sys.argv):
-                    print("No registry host was provided after --registry")
-                    exit(1)
-                registry_host = sys.argv[i + 1]
-            else:
-                print(f"unknown argument: {arg}")
-                exit(1)
-        else:
-            print(f"unknown argument: {arg}")
-            exit(1)
-
-    build_info = f"Building {directory}"
-    if threaded:
-        build_info += " with multithreading"
+    args = parse_args(sys.argv[1:])
+    directories = args.dir
+    threaded = args.threaded
+    registry_host = args.registry
+    enable_cuda = args.cuda
 
     subprocess.run(
         "docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
             " "
         )
     )
-    subprocess.run(
-        "docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(
-            " "
+    if enable_cuda:
+        subprocess.run(
+            "docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(
+                " "
+            )
         )
-    )
 
-    directory = directory.rstrip("/")
-    walk_directory(directory, threaded, registry_host)
+    # directory = directory.rstrip("/")
+    print(directories)
+    for dir in directories:
+        dir = dir.rstrip("/")
+        walk_directory(dir, threaded, registry_host, enable_cuda)
 
     if threaded:
         for thread in threads:
