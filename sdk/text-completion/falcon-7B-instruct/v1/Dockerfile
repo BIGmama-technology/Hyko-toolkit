@@ -1,4 +1,4 @@
-FROM torch-cuda:latest AS main
+FROM torch-cuda:latest 
 
 WORKDIR /app
 RUN pip install sentencepiece einops
