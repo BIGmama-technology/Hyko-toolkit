@@ -5,7 +5,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Convert a given string to lowercase",
-    requires_gpu=False,
 )
 
 

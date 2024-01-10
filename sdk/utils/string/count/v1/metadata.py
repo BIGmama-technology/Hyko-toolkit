@@ -5,7 +5,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Count the number of occurrences of a substring in a string",
-    requires_gpu=False,
 )
 
 
