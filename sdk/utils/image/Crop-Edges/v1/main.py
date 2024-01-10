@@ -3,32 +3,10 @@ import os
 import cv2
 import numpy as np
 from fastapi import HTTPException
+from metadata import Inputs, Outputs, Params, func
 from PIL import Image as PIL_Image
-from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Crop an image from the specified edges",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    image: Image = Field(..., description="Input image")
-
-
-class Params(CoreModel):
-    top: int = Field(..., description="Number of pixels to crop from the top")
-    left: int = Field(..., description="Number of pixels to crop from the left")
-    right: int = Field(..., description="Number of pixels to crop from the right")
-    bottom: int = Field(..., description="Number of pixels to crop from the bottom")
-
-
-class Outputs(CoreModel):
-    cropped_image: Image = Field(..., description="Output cropped image")
 
 
 @func.on_execute
