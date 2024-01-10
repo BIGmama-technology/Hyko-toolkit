@@ -4,33 +4,9 @@ import numpy as np
 import torch
 from diffusers import StableDiffusionPipeline
 from fastapi.exceptions import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Text to Image Generation Model",
-    requires_gpu=True,
-)
-
-
-class Inputs(CoreModel):
-    prompt: str = Field(..., description="User text prompt")
-
-
-class Params(CoreModel):
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    generated_image: Image = Field(
-        ..., description="AI Generated image described by user text prompt"
-    )
-
 
 model_pipeline = None
 
