@@ -70,12 +70,10 @@ class SDKFunction(FastAPI):
     def __init__(
         self,
         description: str,
-        requires_gpu: bool,
         **kwargs: Any,
     ):
         super().__init__(**kwargs)
         self.description = description
-        self.requires_gpu = requires_gpu
         self.inputs: Type[BaseModel]
         self.outputs: Type[BaseModel]
         self.params: Type[BaseModel]
@@ -238,7 +236,6 @@ class SDKFunction(FastAPI):
                 **outputs_json_schema,
                 friendly_property_types=model_to_friendly_property_types(self.outputs),
             ),
-            requires_gpu=self.requires_gpu,
         )
 
     def dump_metadata(self, indent: Optional[int] = None) -> str:
