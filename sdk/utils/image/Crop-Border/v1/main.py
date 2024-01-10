@@ -3,31 +3,10 @@ import os
 import cv2
 import numpy as np
 from fastapi import HTTPException
+from metadata import Inputs, Outputs, Params, func
 from PIL import Image as PIL_Image
-from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Remove a specified amount of pixels from all four borders of an image",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    image: Image = Field(..., description="Input image")
-
-
-class Params(CoreModel):
-    amount: int = Field(
-        ..., description="Number of pixels to drop from all four borders"
-    )
-
-
-class Outputs(CoreModel):
-    cropped_image: Image = Field(..., description="Output image")
 
 
 @func.on_execute

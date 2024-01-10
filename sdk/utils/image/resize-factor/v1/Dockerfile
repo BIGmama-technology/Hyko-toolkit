@@ -2,7 +2,6 @@ FROM hyko-sdk:latest
 
 WORKDIR /app
 
-
 COPY . .
 
 RUN poetry run pip install --no-cache-dir numpy opencv-python-headless pillow
