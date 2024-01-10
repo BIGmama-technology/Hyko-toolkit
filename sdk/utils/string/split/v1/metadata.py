@@ -5,7 +5,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Split a string to a list of strings based on delimiter",
-    requires_gpu=False,
 )
 
 
