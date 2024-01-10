@@ -2,33 +2,7 @@ import os
 
 import transformers
 from fastapi import HTTPException
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Hugging Face translation task",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    original_text: str = Field(..., description="Original input text")
-
-
-class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    translation_text: str = Field(..., description="Translated text")
-
+from metadata import Inputs, Outputs, Params, func
 
 translator = None
 
