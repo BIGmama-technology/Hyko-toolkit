@@ -5,7 +5,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Calculate the length of a string",
-    requires_gpu=False,
 )
 
 

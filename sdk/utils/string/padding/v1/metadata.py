@@ -7,7 +7,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Pads text until it has a certain length",
-    requires_gpu=False,
 )
 
 

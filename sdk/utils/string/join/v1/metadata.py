@@ -5,7 +5,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Join a list of strings with a specified delimiter",
-    requires_gpu=False,
 )
 
 
