@@ -16,7 +16,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             status_code=500, detail="Width and height must be positive values"
         )
 
-    file, ext = os.path.splitext(inputs.image.get_name())
+    _, ext = os.path.splitext(inputs.image.get_name())
     with open(f"./image{ext}", "wb") as f:
         f.write(inputs.image.get_data())
 
