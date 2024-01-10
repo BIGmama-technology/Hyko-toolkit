@@ -177,8 +177,6 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
                 category, function_name, version, "Invalid Function MetaData"
             ) from e
 
-        print("Type checking and validating schema...")
-
         fields: list[str] = []
 
         def check_property(  # noqa: C901
@@ -233,7 +231,7 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         # INPUTS
         for field_name, field in metadata.inputs.properties.items():
             check_property(
-                field, field_name, "input", allow_union=True, allow_enum=True
+                field, field_name, "input", allow_union=True, allow_enum=False
             )
             fields.append(field_name)
 
@@ -383,8 +381,6 @@ if __name__ == "__main__":
             )
         )
 
-    # directory = directory.rstrip("/")
-    print(directories)
     for dir in directories:
         dir = dir.rstrip("/")
         walk_directory(dir, threaded, registry_host, enable_cuda)
