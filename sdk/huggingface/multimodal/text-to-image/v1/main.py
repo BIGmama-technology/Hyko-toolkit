@@ -2,34 +2,9 @@ import os
 
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from fastapi import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Hugging Face Text to Image Task",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    prompt: str = Field(..., description="Input text")
-
-
-class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    generated_image: Image = Field(..., description="Generated image")
-
 
 generator = None
 
