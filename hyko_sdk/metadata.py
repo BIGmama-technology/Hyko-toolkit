@@ -23,7 +23,7 @@ class HykoExtraTypes(str, Enum):
 
 
 class JsonSchemaEnum(BaseModel):
-    enum: list[Any]
+    enum: list[str]
     type: IOPortType
 
 

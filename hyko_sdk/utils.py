@@ -124,24 +124,16 @@ def model_to_friendly_property_types(pydantic_model: Type[BaseModel]):
     for field_name, field in pydantic_model.model_fields.items():
         annotation = str(field.annotation).lower()
         if "enum" in annotation:
-            try:
-                out[
-                    field_name
-                ] = f"enum[{str(pydantic_model.model_json_schema()['$defs'][str(field.annotation)[7:-2]]['type'])}]"
-                if "numeric" in out[field_name]:
-                    out[field_name] = out[field_name].replace("numeric", "number")
-            except KeyError as e:
-                raise RuntimeError(
-                    f'Could not find {str(pydantic_model.model_json_schema()["$defs"][str(field.annotation)[7:-2]])} the enums defined in the json schema. Usually happens when you use class(Video, Enum) or similar type'
-                ) from e
+            out[field_name] = "enum"
             continue
-
-        annotation = annotation.replace("<class ", "").rstrip(" >")
+        annotation = annotation.lstrip("<").rstrip(">")
+        annotation = annotation.replace("class ", "")
         annotation = annotation.replace("hyko_sdk.io.", "")
         annotation = annotation.replace("typing.", "")
         annotation = annotation.replace("str", "string")
         annotation = annotation.replace("int", "integer")
         annotation = annotation.replace("float", "number")
-
+        annotation = annotation.replace(" ", "")
+        annotation = annotation.replace("'", "")
         out[field_name] = annotation
     return out
