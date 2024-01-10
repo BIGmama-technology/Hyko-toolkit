@@ -3,33 +3,8 @@ import os
 
 import torch
 from fastapi.exceptions import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import WhisperForConditionalGeneration, WhisperProcessor
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import Audio
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="OpenAI's Audio Transcription model (Non API)",
-    requires_gpu=True,
-)
-
-
-class Inputs(CoreModel):
-    audio: Audio = Field(..., description="Input audio that will be transcribed")
-
-
-class Params(CoreModel):
-    language: str = Field(default="en", description="The language of the audio")
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    transcribed_text: str = Field(..., description="Generated transcription text")
-
 
 model = None
 processor = None
