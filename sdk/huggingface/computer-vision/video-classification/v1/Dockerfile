@@ -1,8 +1,8 @@
-FROM torch-cuda:latest AS main
+FROM torch-cuda:latest 
 
 WORKDIR /app
 
 COPY . .
 
-RUN pip install decord
+RUN poetry run pip install decord
 CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
