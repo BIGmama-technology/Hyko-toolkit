@@ -1,33 +1,9 @@
 import torch
 from fastapi import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import TextStreamer
 from transformers.models.llama.modeling_llama import LlamaForCausalLM
 from transformers.models.llama.tokenization_llama_fast import LlamaTokenizerFast
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Meta Llama-2 30B instruct text generation model.",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    prompt: str = Field(..., description="User prompt")
-
-
-class Params(CoreModel):
-    system_prompt: str = Field(
-        default=None, description="system-prompt or system-instruction"
-    )
-    max_new_tokens: int = Field(default=256, description="Max tokens to generate")
-
-
-class Outputs(CoreModel):
-    generated_text: str = Field(..., description="Generated Text from falcon-instruct")
-
 
 tokenizer = None
 model = None

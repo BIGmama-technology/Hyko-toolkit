@@ -1,30 +1,10 @@
 import numpy as np
 import torch
 from fastapi.exceptions import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import AutoImageProcessor, SegformerModel
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Image Segmentation Model, this models takes an image and partition it to locate objects and their contours in the image",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    image: Image = Field(..., description="User inputted image to be segmented")
-
-
-class Params(CoreModel):
-    pass
-
-
-class Outputs(CoreModel):
-    segmented_image: Image = Field(..., description="Segmented image")
-
 
 model = None
 image_processor = None

@@ -2,37 +2,7 @@ import os
 
 import transformers
 from fastapi import HTTPException
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Hugging Face Zero Shot Classification Task",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    input_text: str = Field(..., description="Input text")
-    candidate_labels: list[str] = Field(
-        ..., description="Candidate labels to use for classification"
-    )
-
-
-class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    labels: list[str] = Field(..., description="Classified labels")
-    scores: list[float] = Field(..., description="Respective classification scores")
-
+from metadata import Inputs, Outputs, Params, func
 
 classifier = None
 

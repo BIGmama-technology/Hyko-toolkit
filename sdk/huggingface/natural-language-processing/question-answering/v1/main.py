@@ -2,37 +2,7 @@ import os
 
 import transformers
 from fastapi import HTTPException
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Hugging Face Question Answering task",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    question: str = Field(..., description="Input question")
-    context: str = Field(..., description="Context from which to answer the question")
-
-
-class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    answer: str = Field(..., description="Answer to the question")
-    start: int = Field(..., description="Start index")
-    end: int = Field(..., description="End index")
-    score: float = Field(..., description="Score of the answer")
-
+from metadata import Inputs, Outputs, Params, func
 
 qa_model = None
 

@@ -1,16 +1,8 @@
 import numpy as np
 import torch
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Takes a list of strings and a query and returns the top K most similar sentences to the query",
-    requires_gpu=False,
-)
 
 
 @func.on_startup
@@ -18,21 +10,6 @@ async def init():
     global model
     model = SentenceTransformer(
         "all-MiniLM-L6-v2", device="cuda:0" if torch.cuda.is_available() else "cpu"
-    )
-
-
-class Inputs(CoreModel):
-    sentences: list[str] = Field(..., description="List of sentences to search in")
-
-
-class Params(CoreModel):
-    query: str = Field(..., description="Query string")
-    top_k: int = Field(default=5, description="Number of sentences to output")
-
-
-class Outputs(CoreModel):
-    selected_sentences: list[str] = Field(
-        ..., description="List of top k elected sentences"
     )
 
 
