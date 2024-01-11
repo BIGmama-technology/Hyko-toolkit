@@ -28,7 +28,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     img = inputs.image.to_ndarray()  # type: ignore
 
     inputs_ = processor(
-        text=params.classes,
+        text=inputs.classes,
         images=img,
         return_tensors="pt",
         padding=True,
@@ -45,4 +45,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         if probs[max_index] <= probs[i]:
             max_index = i
 
-    return Outputs(output_class=params.classes[max_index])
+    return Outputs(output_class=inputs.classes[max_index])
