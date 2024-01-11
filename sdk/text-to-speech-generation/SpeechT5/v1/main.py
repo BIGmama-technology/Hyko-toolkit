@@ -1,38 +1,10 @@
-import os
-
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import torch
 from datasets import load_dataset
 from fastapi import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import SpeechT5ForTextToSpeech, SpeechT5HifiGan, SpeechT5Processor
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Audio
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Generate audio from English text input",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    text: str = Field(
-        ..., description="English text input provided by the user for speech generation"
-    )
-
-
-class Params(CoreModel):
-    pass
-
-
-class Outputs(CoreModel):
-    audio: Audio = Field(
-        ...,
-        description="Generated audio containing the speech corresponding to the provided text",
-    )
-
 
 model = None
 processor = None

@@ -1,36 +1,8 @@
 import os
 
 from fastapi import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import pipeline
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Hugging Face image classification",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    input_image: Image = Field(..., description="Input image")
-    labels: list[str] = Field(..., description="Labels for classification")
-
-
-class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    summary: str = Field(..., description="Summary of the classification")
-
 
 classifier = None
 

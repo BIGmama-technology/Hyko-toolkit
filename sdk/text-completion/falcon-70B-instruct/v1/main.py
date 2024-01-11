@@ -1,31 +1,6 @@
-import subprocess
-
 import transformers
 from fastapi import HTTPException
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Falcon 70B instruct",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    input_text: str = Field(..., description="input text")
-
-
-class Params(CoreModel):
-    max_length: int = Field(
-        default=30, description="maximum number of tokens to generate"
-    )
-
-
-class Outputs(CoreModel):
-    generated_text: str = Field(..., description="Completion text")
-
+from metadata import Inputs, Outputs, Params, func
 
 generator = None
 
@@ -37,10 +12,6 @@ async def load():
     if generator is not None:
         print("Model already Loaded")
         return
-
-    subprocess.run(
-        "git clone https://huggingface.co/upstage/Llama-2-70b-instruct".split(" ")
-    )
 
     generator = transformers.pipeline(
         model="Llama-2-70b-instruct",

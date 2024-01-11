@@ -1,35 +1,10 @@
 import os
 
 from fastapi import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import pipeline
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Audio
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="HuggingFace text to speech, run on cude may cause issues on cpu",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    text: str = Field(..., description="Input text")
-
-
-class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    speech: Audio = Field(..., description="Synthesized speech")
-
 
 synthesizer = None
 
