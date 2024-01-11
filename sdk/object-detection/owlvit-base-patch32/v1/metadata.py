@@ -12,11 +12,12 @@ func = SDKFunction(
 @func.set_input
 class Inputs(CoreModel):
     img: Image = Field(..., description="Input Image")
+    tags: list[str] = Field(..., description="List of object(s) names to be detected")
 
 
 @func.set_param
 class Params(CoreModel):
-    tags: list[str] = Field(..., description="List of object(s) names to be detected")
+    pass
 
 
 @func.set_output

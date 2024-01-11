@@ -7,7 +7,7 @@ from metadata import Inputs, Outputs, Params, func
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     input_strings = inputs.input_strings
-    indexes = params.indexes
+    indexes = inputs.indexes
 
     output_strings: List[str] = []
 
