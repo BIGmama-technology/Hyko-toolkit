@@ -7,7 +7,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Perform mathematical operations on numbers",
-    requires_gpu=False,
 )
 
 

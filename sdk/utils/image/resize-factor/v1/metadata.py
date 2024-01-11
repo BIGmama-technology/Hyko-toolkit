@@ -6,6 +6,10 @@ from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Image
 from hyko_sdk.metadata import CoreModel
 
+func = SDKFunction(
+    description="Resize an image by a factor",
+)
+
 
 class InterpolationMethod(str, Enum):
     Area = "area"
@@ -13,11 +17,6 @@ class InterpolationMethod(str, Enum):
     Lanczos = "lanczos"
     NearestNeighbor = "nearest-neighbor"
     Cubic = "cubic"
-
-
-func = SDKFunction(
-    description="Resize an image by a factor",
-)
 
 
 @func.set_input
