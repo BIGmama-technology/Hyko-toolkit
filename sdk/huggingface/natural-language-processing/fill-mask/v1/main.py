@@ -2,34 +2,7 @@ import os
 
 import transformers
 from fastapi import HTTPException
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Hugging Face fill mask task",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    masked_text: str = Field(..., description="Input text with <mask> to fill")
-
-
-class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-
-
-class Outputs(CoreModel):
-    sequence: str = Field(..., description="Filled output text")
-    score: float = Field(..., description="Score of the filled sequence")
-
+from metadata import Inputs, Outputs, Params, func
 
 filler = None
 

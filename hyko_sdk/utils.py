@@ -9,8 +9,8 @@ from fastapi import HTTPException, status
 from httpx import Timeout
 from pydantic import BaseModel
 
-from .metadata import HykoJsonSchemaExt, IOPortType, MetaData, MetaDataBase
-from .types import PyObjectId, StorageObjectType
+from hyko_sdk.metadata import MetaData
+from hyko_sdk.types import PyObjectId, StorageObjectType
 
 
 class ObjectStorageConn:
@@ -124,69 +124,16 @@ def model_to_friendly_property_types(pydantic_model: Type[BaseModel]):
     for field_name, field in pydantic_model.model_fields.items():
         annotation = str(field.annotation).lower()
         if "enum" in annotation:
-            try:
-                out[
-                    field_name
-                ] = f"enum[{str(pydantic_model.model_json_schema()['$defs'][str(field.annotation)[7:-2]]['type'])}]"
-                if "numeric" in out[field_name]:
-                    out[field_name] = out[field_name].replace("numeric", "number")
-            except KeyError as e:
-                raise RuntimeError(
-                    f'Could not find {str(pydantic_model.model_json_schema()["$defs"][str(field.annotation)[7:-2]])} the enums defined in the json schema. Usually happens when you use class(Video, Enum) or similar type'
-                ) from e
+            out[field_name] = "enum"
             continue
-        if "<class" in annotation:
-            annotation = annotation[8:-2]
+        annotation = annotation.lstrip("<").rstrip(">")
+        annotation = annotation.replace("class ", "")
         annotation = annotation.replace("hyko_sdk.io.", "")
         annotation = annotation.replace("typing.", "")
         annotation = annotation.replace("str", "string")
         annotation = annotation.replace("int", "integer")
         annotation = annotation.replace("float", "number")
-
+        annotation = annotation.replace(" ", "")
+        annotation = annotation.replace("'", "")
         out[field_name] = annotation
     return out
-
-
-def extract_metadata(
-    inputs: BaseModel,
-    params: BaseModel,
-    outputs: BaseModel,
-    description: str,
-    requires_gpu: bool,
-):
-    inputs_json_schema = inputs.model_json_schema()
-    if inputs_json_schema.get("$defs"):
-        for k, v in inputs_json_schema["$defs"].items():
-            if v.get("type") and v["type"] == "numeric":
-                inputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
-
-    params_json_schema = params.model_json_schema()
-    if params_json_schema.get("$defs"):
-        for k, v in params_json_schema["$defs"].items():
-            if v.get("type") and v["type"] == "numeric":
-                params_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
-
-    outputs_json_schema = outputs.model_json_schema()
-    if outputs_json_schema.get("$defs"):
-        for k, v in outputs_json_schema["$defs"].items():
-            if v.get("type") and v["type"] == "numeric":
-                outputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
-
-    __meta_data__ = MetaDataBase(
-        description=description,
-        inputs=HykoJsonSchemaExt(
-            **inputs_json_schema,
-            friendly_property_types=model_to_friendly_property_types(inputs),  # type: ignore
-        ),
-        params=HykoJsonSchemaExt(
-            **params_json_schema,
-            friendly_property_types=model_to_friendly_property_types(params),  # type: ignore
-        ),
-        outputs=HykoJsonSchemaExt(
-            **outputs_json_schema,
-            friendly_property_types=model_to_friendly_property_types(outputs),  # type: ignore
-        ),
-        requires_gpu=requires_gpu,
-    )
-
-    print(__meta_data__.model_dump_json(indent=2, exclude_unset=True))  # noqa: T201  # Important: Do not delete this print statement, as it outputs the metadata captured in the stdout

@@ -1,5 +1,4 @@
 import asyncio
-import inspect
 import json
 from typing import Any, Callable, Coroutine, Optional, Type, TypeVar
 
@@ -7,10 +6,10 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from .io import HykoBaseType
-from .metadata import HykoJsonSchemaExt, IOPortType, MetaDataBase
-from .types import PyObjectId
-from .utils import model_to_friendly_property_types
+from hyko_sdk.io import HykoBaseType
+from hyko_sdk.metadata import HykoJsonSchemaExt, MetaDataBase
+from hyko_sdk.types import PyObjectId
+from hyko_sdk.utils import model_to_friendly_property_types
 
 InputsType = TypeVar("InputsType", bound="BaseModel")
 ParamsType = TypeVar("ParamsType", bound="BaseModel")
@@ -71,13 +70,25 @@ class SDKFunction(FastAPI):
     def __init__(
         self,
         description: str,
-        requires_gpu: bool,
         **kwargs: Any,
     ):
         super().__init__(**kwargs)
-        self._status = asyncio.Future[bool]()
         self.description = description
-        self.requires_gpu = requires_gpu
+        self.inputs: Type[BaseModel]
+        self.outputs: Type[BaseModel]
+        self.params: Type[BaseModel]
+
+    def set_input(self, cls: Any):
+        self.inputs = cls
+        return cls
+
+    def set_output(self, cls: Any):
+        self.outputs = cls
+        return cls
+
+    def set_param(self, cls: Any):
+        self.params = cls
+        return cls
 
     def on_startup(self, f: OnStartupFuncType):
         def blocking_exec():
@@ -109,7 +120,7 @@ class SDKFunction(FastAPI):
 
         return self.on_event("shutdown")(wrapper)
 
-    def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):
+    def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):  # noqa: C901
         async def wait_startup_handler():
             try:
                 await self._wait_startup_tasks()
@@ -122,101 +133,8 @@ class SDKFunction(FastAPI):
                 ) from e
 
         self.get("/wait_startup")(wait_startup_handler)
-        f_args = [
-            (param.name, param.annotation)
-            for param in inspect.signature(f).parameters.values()
-        ]
 
-        f_ret_type = inspect.signature(f).return_annotation
-        if len(f_args) < 2:
-            raise SDKFunction.InvalidExecParamsCount(
-                f_args=f_args,
-                f_ret_type=f_ret_type,
-            )
-
-        f_inputs_name, f_inputs_type = f_args[0]
-
-        f_params_name, f_params_type = f_args[1]
-
-        if not issubclass(f_inputs_type, BaseModel):
-            raise SDKFunction.InvalidExecInputsType(
-                f_args=f_args,
-                f_ret_type=f_ret_type,
-                name=f_inputs_name,
-                type=f_inputs_type,
-            )
-
-        if not issubclass(f_params_type, BaseModel):
-            raise SDKFunction.InvalidExecInputsType(
-                f_args=f_args,
-                f_ret_type=f_ret_type,
-                name=f_params_name,
-                type=f_params_type,
-            )
-
-        if not issubclass(f_ret_type, BaseModel) or isinstance(
-            f_ret_type, inspect.Parameter.empty
-        ):
-            raise SDKFunction.InvalidExecRetType(
-                f_args=f_args,
-                f_ret_type=f_ret_type,
-            )
-
-        inputs_json_schema = f_inputs_type.model_json_schema()
-
-        if inputs_json_schema.get("$defs"):
-            for k, v in inputs_json_schema["$defs"].items():
-                if v.get("type") and v["type"] == "numeric":
-                    inputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
-
-        if inputs_json_schema.get("properties"):
-            for k, v in inputs_json_schema["properties"].items():
-                if v.get("allOf") and len(v["allOf"]) == 1:
-                    all_of = inputs_json_schema["properties"][k].pop("allOf")
-                    inputs_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
-
-        params_json_schema = f_params_type.model_json_schema()
-        if params_json_schema.get("$defs"):
-            for k, v in params_json_schema["$defs"].items():
-                if v.get("type") and v["type"] == "numeric":
-                    params_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
-
-        if params_json_schema.get("properties"):
-            for k, v in params_json_schema["properties"].items():
-                if v.get("allOf") and len(v["allOf"]) == 1:
-                    all_of = params_json_schema["properties"][k].pop("allOf")
-                    params_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
-
-        outputs_json_schema = f_ret_type.model_json_schema()
-        if outputs_json_schema.get("$defs"):
-            for k, v in outputs_json_schema["$defs"].items():
-                if v.get("type") and v["type"] == "numeric":
-                    outputs_json_schema["$defs"][k]["type"] = IOPortType.NUMBER
-
-        if outputs_json_schema.get("properties"):
-            for k, v in outputs_json_schema["properties"].items():
-                if v.get("allOf") and len(v["allOf"]) == 1:
-                    all_of = outputs_json_schema["properties"][k].pop("allOf")
-                    outputs_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
-
-        self.__metadata__ = MetaDataBase(
-            description=self.description,
-            inputs=HykoJsonSchemaExt(
-                **inputs_json_schema,
-                friendly_property_types=model_to_friendly_property_types(f_inputs_type),
-            ),
-            params=HykoJsonSchemaExt(
-                **params_json_schema,
-                friendly_property_types=model_to_friendly_property_types(f_params_type),
-            ),
-            outputs=HykoJsonSchemaExt(
-                **outputs_json_schema,
-                friendly_property_types=model_to_friendly_property_types(f_ret_type),
-            ),
-            requires_gpu=self.requires_gpu,
-        )
-
-        async def wrapper(
+        async def wrapper(  # noqa: C901
             storage_params: ExecStorageParams, inputs: InputsType, params: ParamsType
         ) -> JSONResponse:
             for task in self.startup_tasks:
@@ -282,7 +200,43 @@ class SDKFunction(FastAPI):
         return self.post("/execute")(wrapper)
 
     def get_metadata(self) -> MetaDataBase:
-        return self.__metadata__
+        inputs_json_schema = self.inputs.model_json_schema()
+        params_json_schema = self.params.model_json_schema()
+        outputs_json_schema = self.outputs.model_json_schema()
+
+        if inputs_json_schema.get("properties"):
+            for k, v in inputs_json_schema["properties"].items():
+                if v.get("allOf") and len(v["allOf"]) == 1:
+                    all_of = inputs_json_schema["properties"][k].pop("allOf")
+                    inputs_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
+
+        if params_json_schema.get("properties"):
+            for k, v in params_json_schema["properties"].items():
+                if v.get("allOf") and len(v["allOf"]) == 1:
+                    all_of = params_json_schema["properties"][k].pop("allOf")
+                    params_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
+
+        if outputs_json_schema.get("properties"):
+            for k, v in outputs_json_schema["properties"].items():
+                if v.get("allOf") and len(v["allOf"]) == 1:
+                    all_of = outputs_json_schema["properties"][k].pop("allOf")
+                    outputs_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
+
+        return MetaDataBase(
+            description=self.description,
+            inputs=HykoJsonSchemaExt(
+                **inputs_json_schema,
+                friendly_property_types=model_to_friendly_property_types(self.inputs),
+            ),
+            params=HykoJsonSchemaExt(
+                **params_json_schema,
+                friendly_property_types=model_to_friendly_property_types(self.params),
+            ),
+            outputs=HykoJsonSchemaExt(
+                **outputs_json_schema,
+                friendly_property_types=model_to_friendly_property_types(self.outputs),
+            ),
+        )
 
     def dump_metadata(self, indent: Optional[int] = None) -> str:
         return self.get_metadata().model_dump_json(indent=indent)

@@ -1,37 +1,8 @@
 import io
-from typing import Optional
 
 import openai
 from fastapi import HTTPException, status
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import Audio
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="OpenAI Audio Transcription model (API).This model converts audio recordings into written text",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    audio: Audio = Field(..., description="Audio to be transcribed")
-
-
-class Params(CoreModel):
-    prompt: Optional[str] = Field(
-        default=None, description="User additional text prompt for the model"
-    )
-    language: Optional[str] = Field(
-        default="en", description="ISO-639-1 transcription language"
-    )
-    api_key: str = Field(..., description="OpenAI API KEY")
-    temperature: Optional[float] = Field(default=None, description="Model temperature")
-
-
-class Outputs(CoreModel):
-    transcribed_text: str = Field(..., description="Generated transcription text")
+from metadata import Inputs, Outputs, Params, func
 
 
 @func.on_execute
