@@ -5,7 +5,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Hugging Face text generation",
-    requires_gpu=False,
 )
 
 
