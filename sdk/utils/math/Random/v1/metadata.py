@@ -5,7 +5,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Generate a random integer",
-    requires_gpu=False,
 )
 
 

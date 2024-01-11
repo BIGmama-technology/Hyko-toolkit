@@ -6,7 +6,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="HuggingFace depth estimation",
-    requires_gpu=False,
 )
 
 
@@ -17,12 +16,8 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = Field(
-        ..., description="Model"
-    )  # WARNING: DO NOT REMOVE! implementation specific
-    device_map: str = Field(
-        ..., description="Device map (Auto, CPU or GPU)"
-    )  # WARNING: DO NOT REMOVE! implementation specific
+    hugging_face_model: str = Field(..., description="Model")
+    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_output

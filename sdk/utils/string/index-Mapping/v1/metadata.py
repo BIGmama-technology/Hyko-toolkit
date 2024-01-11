@@ -11,11 +11,12 @@ func = SDKFunction(
 @func.set_input
 class Inputs(CoreModel):
     input_strings: list[str] = Field(..., description="list of input strings")
+    indexes: list[int] = Field(..., description="list of indexes")
 
 
 @func.set_param
 class Params(CoreModel):
-    indexes: list[int] = Field(..., description="list of indexes")
+    pass
 
 
 @func.set_output

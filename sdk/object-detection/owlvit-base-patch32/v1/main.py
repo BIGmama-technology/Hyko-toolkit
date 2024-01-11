@@ -35,7 +35,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     np_img = inputs.img.to_ndarray()
     pil_image = PILImage.fromarray(np_img)
     draw = ImageDraw.Draw(pil_image)
-    texts = params.tags
+    texts = inputs.tags
 
     inputs = processor(
         text=[texts], images=torch.from_numpy(np_img).to(device), return_tensors="pt"

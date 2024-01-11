@@ -13,12 +13,13 @@ class Inputs(CoreModel):
     predict_x: float = Field(
         ..., description="X axis value for which to predict Y axis value"
     )
+    historical_x: list[float] = Field(..., description="Historical data of X axis")
+    historical_y: list[float] = Field(..., description="Historical data of Y axis")
 
 
 @func.set_param
 class Params(CoreModel):
-    historical_x: list[float] = Field(..., description="Historical data of X axis")
-    historical_y: list[float] = Field(..., description="Historical data of Y axis")
+    pass
 
 
 @func.set_output

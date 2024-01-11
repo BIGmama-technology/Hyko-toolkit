@@ -6,7 +6,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Generate audio from a given prompt",
-    requires_gpu=False,
 )
 
 

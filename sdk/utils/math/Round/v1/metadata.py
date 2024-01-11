@@ -7,7 +7,6 @@ from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
     description="Round an input number",
-    requires_gpu=False,
 )
 
 
