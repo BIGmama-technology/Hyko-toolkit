@@ -2,29 +2,8 @@ import asyncio
 import multiprocessing
 from io import BytesIO
 
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from PyPDF2 import PageObject, PdfReader
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import PDF
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Convert a PDF type to String type (extracts the text from the pdf)",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    pdf_file: PDF = Field(..., description="User input pdf to be converted to text")
-
-
-class Params(CoreModel):
-    pass
-
-
-class Outputs(CoreModel):
-    text: str = Field(..., description="Extracted text from pdf")
 
 
 def extract_text_multi(content: bytearray):

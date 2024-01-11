@@ -1,36 +1,7 @@
-from typing import List
-
 import torch
 from fastapi import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from transformers import CLIPModel, CLIPProcessor
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="""
-Classify an image to one class out of the list of classes.
-Example: if the classes are ['cat', 'dog'] then the model will have to choose if the image is either a cat or dog
-""",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    image: Image = Field(..., description="Image input by user to be classified")
-
-
-class Params(CoreModel):
-    classes: List[str] = Field(
-        ..., description="List of classes to classify the input image on"
-    )
-
-
-class Outputs(CoreModel):
-    output_class: str = Field(..., description="The class of the image")
-
 
 model = None
 processor = None
@@ -57,7 +28,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     img = inputs.image.to_ndarray()  # type: ignore
 
     inputs_ = processor(
-        text=params.classes,
+        text=inputs.classes,
         images=img,
         return_tensors="pt",
         padding=True,
@@ -74,4 +45,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         if probs[max_index] <= probs[i]:
             max_index = i
 
-    return Outputs(output_class=params.classes[max_index])
+    return Outputs(output_class=inputs.classes[max_index])

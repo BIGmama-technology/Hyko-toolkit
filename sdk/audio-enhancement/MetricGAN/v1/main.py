@@ -2,30 +2,10 @@ import shutil
 
 import torch
 from fastapi import HTTPException
-from pydantic import Field
+from metadata import Inputs, Outputs, Params, func
 from speechbrain.pretrained import SpectralMaskEnhancement
 
-from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Audio
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
-    description="Enhance the quality of an audio recording. This model is designed to reduce noise and enhance the clarity of an audio file",
-    requires_gpu=False,
-)
-
-
-class Inputs(CoreModel):
-    audio: Audio = Field(..., description="Audio input by the user for enhancement")
-
-
-class Params(CoreModel):
-    pass
-
-
-class Outputs(CoreModel):
-    enhanced: Audio = Field(..., description="Enhanced audio after processing")
-
 
 model = None
 tokenizer = None
