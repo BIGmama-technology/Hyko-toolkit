@@ -1,4 +1,5 @@
-# The HYKO SDK.
+# The HYKO SDK
+
 - `./hyko-sdk` package which defines functions endpoitns `/on_startup`, `/on_execute`, defines hyko typing system and what downloads/uploads inputs and outputs.
 
 - `./sdk` A collection of functions and AI models that are available on hyko.
@@ -18,12 +19,93 @@ Follow this convetion by [npm](https://docs.npmjs.com/about-semantic-versioning)
 | Changes that break backward compatibility | Major release | Increment the first digit and reset middle and last digits to zero | 2.0.0 |
 
 Generate a `pypi` token and add it to configure poetry to use it
+
 ```bash
 poetry config pypi-token.pypi your-pypi-token
 ```
 
 Now you can build and publish
+
 ```bash
 poetry build
 poetry publish
-``` 
+```
+
+## How to add a new function
+
+- create a new directory inside `./sdk` with the following naming convention `./sdk/category_name/function_name/version/`
+- this directory can contain anything (git repo, helper modules, requirements.txt, etc.), but most importantly it needs to contain `metadata.py` where you define the inputs, params and outputs of your function, a `main.py` where you define the `on_execute`, `on_startup` and `on_shutdown` functions and finally a `Dockerfile` for building your function.
+
+`metadata.py`
+
+```python
+from pydantic import Field
+
+from hyko_sdk.function import SDKFunction
+from hyko_sdk.metadata import CoreModel
+
+func = SDKFunction(
+    description="description of your function goes here",
+)
+
+
+@func.set_input
+class Inputs(CoreModel):
+    input_name: input_type = Field(..., description="Input description") # example
+
+
+@func.set_param
+class Params(CoreModel):
+    # same as above
+    pass
+
+
+@func.set_output
+class Outputs(CoreModel):
+    # same as above
+    pass
+```
+
+`main.py`
+
+```python
+from metadata import Inputs, Outputs, Params, func
+
+@func.on_startup
+async def load():
+    """define here what you need to run while starting your function ex. loading model weights."""
+    pass
+
+
+@func.on_execute
+async def main(inputs: Inputs, params: Params) -> Outputs:
+    """define the logic of your function"""
+    return Outputs()
+
+@func
+async def shutdown(x)
+    pass
+
+```
+
+`Dockerfile`
+
+```Dockerfile
+FROM torch-cuda:latest # or FROM hyko-sdk:latest in case you dont need torch and cuda
+
+WORKDIR /app
+
+COPY . .
+
+CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
+```
+
+- finally run `sdk_builder.py` on your function to validate it, build its image and push it to your registry.
+
+```bash
+python ./scripts/sdk_builder.py --dir path/to/your_function --cuda --registry registry.treafik.me
+```
+
+## Resources
+
+- [fastapi deprecated on_event](https://fastapi.tiangolo.com/advanced/events/)
