@@ -111,3 +111,5 @@ python ./scripts/sdk_builder.py --dir path/to/your_function --cuda --registry re
 - [get started with docker](https://docker-curriculum.com/)
 - [python exceptions](https://dev.to/derlin/diving-deeper-into-python-exceptions-cf1?ref=dailydev)
 - [fastapi deprecated on_event](https://fastapi.tiangolo.com/advanced/events/)
+- [Pydantic Docs](https://docs.pydantic.dev/latest/)
+- [Get started with Json Schema](https://json-schema.org/learn/getting-started-step-by-step)
