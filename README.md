@@ -33,8 +33,8 @@ poetry publish
 
 ## How to add a new function
 
-- create a new directory inside `./sdk` with the following naming convention `./sdk/category_name/function_name/version/`
-- this directory can contain anything (git repo, helper modules, requirements.txt, etc.), but most importantly it needs to contain `metadata.py` where you define the inputs, params and outputs of your function, a `main.py` where you define the `on_execute`, `on_startup` and `on_shutdown` functions and finally a `Dockerfile` for building your function.
+- Create a new directory inside `./sdk` with the following naming convention `./sdk/category_name/function_name/version/`
+- This directory can contain anything (git repo, helper modules, requirements.txt, etc.), but most importantly it needs to contain `metadata.py` where you define the inputs, params and outputs of your function, a `main.py` where you define the `on_execute`, `on_startup` and `on_shutdown` functions and finally a `Dockerfile` for building your function.
 
 `metadata.py`
 
@@ -84,6 +84,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
 
 @func
 async def shutdown(x)
+    """define what you need to run when shutting down your function"""
     pass
 
 ```
@@ -100,12 +101,13 @@ COPY . .
 CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
 ```
 
-- finally run `sdk_builder.py` on your function to validate it, build its image and push it to your registry.
+- Finally run `sdk_builder.py` on your function to validate it, build its image and push it to your registry.
 
 ```bash
 python ./scripts/sdk_builder.py --dir path/to/your_function --cuda --registry registry.treafik.me
 ```
 
 ## Resources
-
+- [get started with docker](https://docker-curriculum.com/)
+- [python exceptions](https://dev.to/derlin/diving-deeper-into-python-exceptions-cf1?ref=dailydev)
 - [fastapi deprecated on_event](https://fastapi.tiangolo.com/advanced/events/)
