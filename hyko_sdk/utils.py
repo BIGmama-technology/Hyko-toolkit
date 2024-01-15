@@ -27,13 +27,11 @@ class ObjectStorageConn:
     def __init__(
         self,
         host: str,
-        project_id: PyObjectId,
         blueprint_id: PyObjectId,
     ) -> None:
-        self.project_id = project_id
         self.blueprint_id = blueprint_id
         self._conn = httpx.AsyncClient(
-            base_url=f"https://{host}/projects/{project_id}/blueprints/{blueprint_id}",
+            base_url=f"https://{host}/blueprints/{blueprint_id}",
             http2=True,
             verify=False,
             timeout=Timeout(timeout=120),
