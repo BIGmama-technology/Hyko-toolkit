@@ -22,7 +22,6 @@ OnExecuteFuncType = Callable[[InputsType, ParamsType], Coroutine[Any, Any, Outpu
 
 class ExecStorageParams(BaseModel):
     host: str
-    project_id: PyObjectId
     blueprint_id: PyObjectId
 
 
@@ -147,7 +146,6 @@ class SDKFunction(FastAPI):
             pending_download_tasks: list[asyncio.Task[None]] = []
             HykoBaseType.set_sync(
                 storage_params.host,
-                storage_params.project_id,
                 storage_params.blueprint_id,
                 pending_download_tasks,
             )
@@ -176,7 +174,6 @@ class SDKFunction(FastAPI):
             pending_upload_tasks: list[asyncio.Task[None]] = []
             HykoBaseType.set_sync(
                 storage_params.host,
-                storage_params.project_id,
                 storage_params.blueprint_id,
                 pending_upload_tasks,
             )
@@ -240,8 +237,3 @@ class SDKFunction(FastAPI):
 
     def dump_metadata(self, indent: Optional[int] = None) -> str:
         return self.get_metadata().model_dump_json(indent=indent)
-
-
-__all__ = [
-    "SDKFunction",
-]
