@@ -59,11 +59,10 @@ class HykoBaseType:
     def set_sync(
         cls,
         storage_host: str,
-        project_id: PyObjectId,
         blueprint_id: PyObjectId,
         pending_tasks: list[asyncio.Task[None]],
     ):
-        cls._sync_conn = ObjectStorageConn(storage_host, project_id, blueprint_id)
+        cls._sync_conn = ObjectStorageConn(storage_host, blueprint_id)
         cls._sync_tasks = pending_tasks
 
     @classmethod
@@ -566,12 +565,3 @@ class CSV(HykoBaseType):
             raise ValueError(f"Invalid StorageObject type, {value[2]}")
 
         return CSV(value[0], value[1])
-
-
-__all__ = [
-    "Image",
-    "Audio",
-    "Video",
-    "PDF",
-    "CSV",
-]
