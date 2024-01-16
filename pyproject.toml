@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hyko_sdk"
-version = "0.5.0"
+version = "2.0.1"
 description = "Hyko's Software Development Kit"
 authors = ["Ouassim Abdelmalek Ghribi <oag@big-mama.io>", "Hachem Betrouni <hb@big-mama.io>", "Yousra Anfel Boucetta <jab@big-mama.io>"]
 readme = "README.md"
