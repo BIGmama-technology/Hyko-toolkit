@@ -59,10 +59,15 @@ class MetaDataBase(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class Category(str, Enum):
+    MODEL = "models"
+    FUNCTION = "functions"
+
+
 class MetaData(MetaDataBase):
-    version: str
     name: str
-    category: str
+    task: str
+    category: Category
 
 
 class CoreModel(BaseModel):
