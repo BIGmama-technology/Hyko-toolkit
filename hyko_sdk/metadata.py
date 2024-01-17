@@ -63,6 +63,13 @@ class Category(str, Enum):
     MODEL = "models"
     FUNCTION = "functions"
 
+    @classmethod
+    def get_enum_from_string(cls, input_string: str):
+        for enum_member in cls:
+            if input_string == enum_member.value:
+                return enum_member
+        raise ValueError("String does not match any enum value")
+
 
 class MetaData(MetaDataBase):
     name: str
