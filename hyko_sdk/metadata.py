@@ -74,6 +74,7 @@ class Category(str, Enum):
 class MetaData(MetaDataBase):
     name: str
     task: str
+    image: str
     category: Category
 
 

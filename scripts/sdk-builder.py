@@ -182,12 +182,14 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
             print("Probably an error happen in while catching stdout from metadata")
             return
 
+        image_name = f"{registry_host}/{category.lower()}/{task.lower()}/{function_name.lower()}:latest"
         try:
             metadata = MetaDataBase(**json.loads(metadata))
             metadata = MetaData(
                 **metadata.model_dump(
                     exclude_unset=True, exclude_none=True, by_alias=True
                 ),
+                image=image_name,
                 name=function_name,
                 category=category,
                 task=task,
@@ -241,11 +243,10 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
             )
 
         print("Building...")
-        function_tag = f"{registry_host}/{category.lower()}/{task.lower()}/{function_name.lower()}:latest"
         build_cmd = "docker build "
         build_cmd += f"--build-arg CATEGORY={category} "
         build_cmd += f"--build-arg FUNCTION_NAME={function_name} "
-        build_cmd += f"-t {function_tag} "
+        build_cmd += f"-t {image_name} "
         build_cmd += f"""--label metadata="{metadata_to_docker_label(metadata)}" """
         build_cmd += f"./{path}"
         try:
@@ -258,7 +259,7 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
 
         print("Pushing...")
         try:
-            subprocess.run(f"docker push {function_tag}".split(" "), check=True)
+            subprocess.run(f"docker push {image_name}".split(" "), check=True)
         except subprocess.CalledProcessError as e:
             raise FunctionBuildError(
                 function_name,
@@ -268,7 +269,7 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         if registry_host != "registry.traefik.me":
             print("Removing the image")
             try:
-                subprocess.run(f"docker rmi {function_tag}".split(" "), check=True)
+                subprocess.run(f"docker rmi {image_name}".split(" "), check=True)
             except subprocess.CalledProcessError as e:
                 raise FunctionBuildError(
                     function_name,
