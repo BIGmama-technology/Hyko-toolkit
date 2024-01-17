@@ -142,17 +142,13 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         try:
             function_name = splitted[-1]
             task = splitted[-2]
-            category = splitted[-3]
-            for c in Category:
-                if c.name == category:
-                    category = c
+            category = Category.get_enum_from_string(splitted[1])
 
-            assert isinstance(category, Category)
-
-        except (IndexError, AssertionError) as err:
+        except (IndexError, ValueError) as err:
             raise FunctionBuildError(
                 path,
-                f"Make sure your function follows the correct folder structure: category/task/fn_name/ current allowed categories {Category._member_names_}",
+                f"""Make sure your function follows the correct folder structure:
+                hyko_toolkit/category/../../task/fn_name/ current allowed categories {[c.value for c in Category]}""",
             ) from err
 
         start_token = "START_TOKEN" + "".join(
@@ -245,9 +241,7 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
             )
 
         print("Building...")
-        function_tag = (
-            f"{registry_host}/{category.lower()}/{function_name.lower()}:latest"
-        )
+        function_tag = f"{registry_host}/{category.lower()}/{task.lower()}/{function_name.lower()}:latest"
         build_cmd = "docker build "
         build_cmd += f"--build-arg CATEGORY={category} "
         build_cmd += f"--build-arg FUNCTION_NAME={function_name} "
