@@ -10,7 +10,7 @@ from typing import Literal
 
 import pydantic
 
-from hyko_sdk.metadata import IOPortType, MetaData, MetaDataBase, Property
+from hyko_sdk.metadata import Category, IOPortType, MetaData, MetaDataBase, Property
 from hyko_sdk.utils import metadata_to_docker_label
 
 skip_folders = ["__pycache__", "venv"]
@@ -19,36 +19,24 @@ threads: list[threading.Thread] = []
 
 
 class FunctionBuildError(RuntimeError):
-    category: str
     function_name: str
-    version: str
     reason: str
 
-    def __init__(
-        self, category: str, function_name: str, version: str, reason: str
-    ) -> None:
-        self.category = category
+    def __init__(self, function_name: str, reason: str) -> None:
         self.function_name = function_name
-        self.version = version
         self.reason = reason
-        super().__init__(
-            f"Error while building {function_name + ':' + version}. Reason: {reason}"
-        )
+        super().__init__(f"Error while building {function_name}, reason: {reason}")
 
 
 class NotAllowedTypesError(FunctionBuildError):
     def __init__(
         self,
-        category: str,
         function_name: str,
-        version: str,
         field_name: str,
         field_type: Literal["input"] | Literal["output"] | Literal["param"],
     ) -> None:
         super().__init__(
-            category,
             function_name,
-            version,
             f"Dictionnary or None types are not allowed: {field_type} name: {field_name}",
         )
 
@@ -56,16 +44,12 @@ class NotAllowedTypesError(FunctionBuildError):
 class UnionNotAllowedError(FunctionBuildError):
     def __init__(
         self,
-        category: str,
         function_name: str,
-        version: str,
         field_name: str,
         field_type: Literal["input"] | Literal["output"] | Literal["param"],
     ) -> None:
         super().__init__(
-            category,
             function_name,
-            version,
             f"Union is not allowed in {field_type} ports: {field_type} name: {field_name}",
         )
 
@@ -73,16 +57,12 @@ class UnionNotAllowedError(FunctionBuildError):
 class EnumNotAllowedError(FunctionBuildError):
     def __init__(
         self,
-        category: str,
         function_name: str,
-        version: str,
         field_name: str,
         field_type: Literal["input"] | Literal["output"] | Literal["param"],
     ) -> None:
         super().__init__(
-            category,
             function_name,
-            version,
             f"Enum is not allowed in {field_type} ports: {field_type} name: {field_name}",
         )
 
@@ -90,22 +70,66 @@ class EnumNotAllowedError(FunctionBuildError):
 class UnknownArrayItemsTypeError(FunctionBuildError):
     def __init__(
         self,
-        category: str,
         function_name: str,
-        version: str,
         field_name: str,
         field_type: Literal["input"] | Literal["output"] | Literal["param"],
     ) -> None:
         super().__init__(
-            category,
             function_name,
-            version,
             f"list[Unknown] is not allowed. {field_type} name: {field_name}",
         )
 
 
 failed_functions: list[FunctionBuildError] = []
 failed_functions_lock = threading.Lock()
+
+
+def check_property(  # noqa: C901
+    function_name: str,
+    field: Property,
+    field_name: str,
+    field_type: Literal["input", "output", "param"],
+    allow_union: bool,
+    allow_enum: bool,
+):
+    if field.type == IOPortType.OBJECT or field.type == IOPortType.NULL:
+        raise NotAllowedTypesError(function_name, field_name, field_type)
+
+    if not allow_union:
+        if field.anyOf is not None:
+            if len(field.anyOf) == 2 and (
+                field.anyOf[0].type is not None
+                and field.anyOf[0].type == IOPortType.NULL
+                or field.anyOf[1].type is not None
+                and field.anyOf[1].type == IOPortType.NULL
+            ):
+                """This is to allow Optional[Type]"""
+                pass
+            else:
+                raise UnionNotAllowedError(function_name, field_name, field_type)
+
+    if not allow_enum:
+        if field.ref is not None:
+            raise EnumNotAllowedError(function_name, field_name, field_type)
+
+    if field.type == IOPortType.ARRAY:
+        if field.items is not None:
+            check_property(
+                function_name,
+                field.items,
+                field_name,
+                field_type,
+                allow_union,
+                allow_enum,
+            )
+
+        elif field.prefixItems is not None:
+            for item in field.prefixItems:
+                check_property(
+                    function_name, item, field_name, field_type, allow_union, allow_enum
+                )
+        else:
+            raise UnknownArrayItemsTypeError(function_name, field_name, field_type)
 
 
 def process_function_dir(path: str, registry_host: str):  # noqa: C901
@@ -115,25 +139,22 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
 
     splitted = path.split("/")
     try:
-        if len(splitted) == 2:
-            version = splitted[0]
-            function_name = splitted[1]
-            category = "uncategorized"
-        elif len(splitted) > 2:
-            version = splitted[-1]
-            function_name = splitted[-2]
-            category = "/".join(splitted[:-2]).lower()
-        else:
+        try:
+            function_name = splitted[-1]
+            task = splitted[-2]
+            category = Category.get_enum_from_string(splitted[1])
+
+        except (IndexError, ValueError) as err:
             raise FunctionBuildError(
                 path,
-                "unknown",
-                path,
-                "Make sure your function follows the correct folder structure: catgeory/fn_name/v1/",
-            )
+                f"""Make sure your function follows the correct folder structure:
+                hyko_toolkit/category/../../task/fn_name/ current allowed categories {[c.value for c in Category]}""",
+            ) from err
 
         start_token = "START_TOKEN" + "".join(
             random.choice(string.ascii_letters) for _ in range(16)
         )
+
         try:
             metadata_process = subprocess.run(
                 "poetry run python -c".split(" ")
@@ -147,13 +168,12 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         except subprocess.CalledProcessError as e:
             print(e.stdout.decode())
             raise FunctionBuildError(
-                category,
                 function_name,
-                version,
                 "Error while extracting metadata",
             ) from e
 
         splitted = metadata_process.stdout.decode().split(start_token)
+
         if len(splitted) == 2:
             metadata = splitted[1]
         elif len(splitted) == 1:
@@ -162,142 +182,97 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
             print("Probably an error happen in while catching stdout from metadata")
             return
 
+        image_name = f"{registry_host}/{category.lower()}/{task.lower()}/{function_name.lower()}:latest"
         try:
             metadata = MetaDataBase(**json.loads(metadata))
             metadata = MetaData(
                 **metadata.model_dump(
                     exclude_unset=True, exclude_none=True, by_alias=True
                 ),
+                image=image_name,
                 name=function_name,
-                version=version,
                 category=category,
+                task=task,
             )
         except pydantic.ValidationError as e:
-            raise FunctionBuildError(
-                category, function_name, version, "Invalid Function MetaData"
-            ) from e
+            raise FunctionBuildError(function_name, "Invalid Function MetaData") from e
 
         fields: list[str] = []
-
-        def check_property(  # noqa: C901
-            field: Property,
-            field_name: str,
-            field_type: Literal["input", "output", "param"],
-            allow_union: bool,
-            allow_enum: bool,
-        ):
-            if field.type == IOPortType.OBJECT or field.type == IOPortType.NULL:
-                raise NotAllowedTypesError(
-                    category, function_name, version, field_name, field_type
-                )
-
-            if not allow_union:
-                if field.anyOf is not None:
-                    if len(field.anyOf) == 2 and (
-                        field.anyOf[0].type is not None
-                        and field.anyOf[0].type == IOPortType.NULL
-                        or field.anyOf[1].type is not None
-                        and field.anyOf[1].type == IOPortType.NULL
-                    ):
-                        """This is to allow Optional[Type]"""
-                        pass
-                    else:
-                        raise UnionNotAllowedError(
-                            category, function_name, version, field_name, field_type
-                        )
-
-            if not allow_enum:
-                if field.ref is not None:
-                    raise EnumNotAllowedError(
-                        category, function_name, version, field_name, field_type
-                    )
-
-            if field.type == IOPortType.ARRAY:
-                if field.items is not None:
-                    check_property(
-                        field.items, field_name, field_type, allow_union, allow_enum
-                    )
-
-                elif field.prefixItems is not None:
-                    for item in field.prefixItems:
-                        check_property(
-                            item, field_name, field_type, allow_union, allow_enum
-                        )
-                else:
-                    raise UnknownArrayItemsTypeError(
-                        category, function_name, version, field_name, field_type
-                    )
 
         # INPUTS
         for field_name, field in metadata.inputs.properties.items():
             check_property(
-                field, field_name, "input", allow_union=True, allow_enum=False
+                function_name,
+                field,
+                field_name,
+                "input",
+                allow_union=True,
+                allow_enum=False,
             )
             fields.append(field_name)
 
         # PARAMETERS
         for field_name, field in metadata.params.properties.items():
             check_property(
-                field, field_name, "param", allow_union=False, allow_enum=True
+                function_name,
+                field,
+                field_name,
+                "param",
+                allow_union=False,
+                allow_enum=True,
             )
             fields.append(field_name)
 
         # OUTPUTS
         for field_name, field in metadata.outputs.properties.items():
             check_property(
-                field, field_name, "output", allow_union=False, allow_enum=False
+                function_name,
+                field,
+                field_name,
+                "output",
+                allow_union=False,
+                allow_enum=False,
             )
             fields.append(field_name)
 
         unique_fields = set(fields)
         if len(unique_fields) != len(fields):
             raise FunctionBuildError(
-                category,
                 function_name,
-                version,
                 "Port name must be unique within a function (across inputs, params and outputs)",
             )
 
         print("Building...")
-        function_tag = (
-            f"{registry_host}/{category.lower()}/{function_name.lower()}:{version}"
-        )
         build_cmd = "docker build "
         build_cmd += f"--build-arg CATEGORY={category} "
         build_cmd += f"--build-arg FUNCTION_NAME={function_name} "
-        build_cmd += f"-t {function_tag} "
+        build_cmd += f"-t {image_name} "
         build_cmd += f"""--label metadata="{metadata_to_docker_label(metadata)}" """
         build_cmd += f"./{path}"
         try:
             subprocess.run(["/bin/sh", "-c", build_cmd], check=True)
         except subprocess.CalledProcessError as e:
             raise FunctionBuildError(
-                category,
                 function_name,
-                version,
                 "Failed to build function main docker image",
             ) from e
 
         print("Pushing...")
         try:
-            subprocess.run(f"docker push {function_tag}".split(" "), check=True)
+            subprocess.run(f"docker push {image_name}".split(" "), check=True)
         except subprocess.CalledProcessError as e:
             raise FunctionBuildError(
-                category,
                 function_name,
-                version,
                 f"Failed to push to docker registry {registry_host}",
             ) from e
 
         if registry_host != "registry.traefik.me":
             print("Removing the image")
             try:
-                subprocess.run(f"docker rmi {function_tag}".split(" "), check=True)
+                subprocess.run(f"docker rmi {image_name}".split(" "), check=True)
             except subprocess.CalledProcessError as e:
                 raise FunctionBuildError(
-                    category,
                     function_name,
-                    version,
                     "Failed to remove built image from host",
                 ) from e
 
@@ -351,7 +326,11 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         description="This script will build an image of your functions and push them to Hyko registry"
     )
     parser.add_argument(
-        "--dir", default=["./sdk"], nargs="+", help="A list of function paths", type=str
+        "--dir",
+        default=["./hyko_toolkit"],
+        nargs="+",
+        help="A list of functions or models paths",
+        type=str,
     )
     parser.add_argument("--threaded", action="store_true", help="Enable threaded mode")
     parser.add_argument("--cuda", action="store_true", help="Re-build torch-cuda image")
@@ -397,6 +376,4 @@ if __name__ == "__main__":
         f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function"
     )
     for fn in failed_functions:
-        print(
-            f"ERROR WHILE BUILDING: {fn.category}/{fn.function_name}:{fn.version} REASON: {fn.reason}"
-        )
+        print(f"ERROR WHILE BUILDING: {fn.function_name} REASON: {fn.reason}")
