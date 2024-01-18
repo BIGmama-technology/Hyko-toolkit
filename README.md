@@ -1,8 +1,8 @@
 # The HYKO SDK
 
-- `./hyko-sdk` package which defines functions endpoitns `/on_startup`, `/on_execute`, defines hyko typing system and what downloads/uploads inputs and outputs.
+- `./hyko_sdk` package which defines functions endpoitns `/on_startup`, `/on_execute`, defines hyko typing system and what downloads/uploads inputs and outputs.
 
-- `./sdk` A collection of functions and AI models that are available on hyko.
+- `./hyko_toolkit` A collection of functions and AI models that are available on hyko.
 - `./scripts/sdk_builder.py` allows you to validate and build images of sdk functions and to push them to a registry.
 
 ## To publish
