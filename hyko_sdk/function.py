@@ -26,43 +26,6 @@ class ExecStorageParams(BaseModel):
 
 
 class SDKFunction(FastAPI):
-    class InvalidExecSignature(BaseException):
-        f_args: list[tuple[str, Type[Any]]]
-        f_ret_type: Optional[Type[Any]]
-
-        def __init__(
-            self, f_args: list[tuple[str, Type[Any]]], f_ret_type: Optional[Type[Any]]
-        ) -> None:
-            self.f_args = f_args
-            self.f_ret_type = f_ret_type
-
-        def __str__(self) -> str:
-            return f"args: {self.f_args}, ret_type: {self.f_ret_type}"
-
-    class InvalidExecParamsCount(InvalidExecSignature):
-        pass
-
-    class InvalidExecInputsType(InvalidExecSignature):
-        name: str
-        type: Type[Any]
-
-        def __init__(
-            self,
-            f_args: list[tuple[str, Type[Any]]],
-            f_ret_type: Optional[Type[Any]],
-            name: str,
-            type: Type[Any],
-        ) -> None:
-            super().__init__(f_args, f_ret_type)
-            self.name = name
-            self.type = type
-
-    class InvalidExecParamsType(InvalidExecInputsType):
-        pass
-
-    class InvalidExecRetType(InvalidExecSignature):
-        pass
-
     __metadata__: MetaDataBase
 
     def __init__(
@@ -89,16 +52,10 @@ class SDKFunction(FastAPI):
         return cls
 
     def on_startup(self, f: OnStartupFuncType) -> OnStartupFuncType:
-        async def wrapper() -> None:
-            await f()
-
-        return self.post("/wait_startup")(wrapper)
+        return self.post("/wait_startup")(f)
 
     def on_shutdown(self, f: OnShutdownFuncType) -> OnShutdownFuncType:
-        async def wrapper() -> None:
-            await f()
-
-        return self.on_event("shutdown")(wrapper)
+        return self.on_event("shutdown")(f)
 
     def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):  # noqa: C901
         async def wrapper(
