@@ -57,7 +57,7 @@ class SDKFunction(FastAPI):
     def on_shutdown(self, f: OnShutdownFuncType) -> OnShutdownFuncType:
         return self.on_event("shutdown")(f)
 
-    def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):  # noqa: C901
+    def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):
         async def wrapper(
             storage_params: ExecStorageParams,
             inputs: InputsType,
