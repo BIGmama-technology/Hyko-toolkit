@@ -11,10 +11,6 @@ detector = None
 async def load():
     global detector
 
-    if detector is not None:
-        print("Model already Loaded")
-        return
-
     model = os.getenv("HYKO_HF_MODEL")
 
     if model is None:

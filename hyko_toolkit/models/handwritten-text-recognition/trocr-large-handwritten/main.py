@@ -13,9 +13,6 @@ device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("
 async def load():
     global model
     global processor
-    if model is not None and processor is not None:
-        print("Model loaded already")
-        return
 
     processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-handwritten")
     model = VisionEncoderDecoderModel.from_pretrained(
