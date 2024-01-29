@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from hyko_sdk.io import HykoBaseType
-from hyko_sdk.metadata import HykoJsonSchemaExt, MetaDataBase
+from hyko_sdk.metadata import HykoJsonSchema, MetaDataBase
 from hyko_sdk.types import PyObjectId
 from hyko_sdk.utils import model_to_friendly_property_types
 
@@ -15,7 +15,7 @@ InputsType = TypeVar("InputsType", bound="BaseModel")
 ParamsType = TypeVar("ParamsType", bound="BaseModel")
 OutputsType = TypeVar("OutputsType", bound="BaseModel")
 
-OnStartupFuncType = Callable[[], Coroutine[Any, Any, None]]
+OnStartupFuncType = Callable[[ParamsType], Coroutine[Any, Any, None]]
 OnShutdownFuncType = Callable[[], Coroutine[Any, Any, None]]
 OnExecuteFuncType = Callable[[InputsType, ParamsType], Coroutine[Any, Any, OutputsType]]
 
@@ -35,9 +35,10 @@ class SDKFunction(FastAPI):
     ):
         super().__init__(**kwargs)
         self.description = description
-        self.inputs: Type[BaseModel]
-        self.outputs: Type[BaseModel]
-        self.params: Type[BaseModel]
+        self.inputs: Type[BaseModel] = BaseModel
+        self.outputs: Type[BaseModel] = BaseModel
+        self.params: Type[BaseModel] = BaseModel
+        self.startup_params: Type[BaseModel] = BaseModel
         self.started: bool = False
 
     def set_input(self, cls: Any):
@@ -52,13 +53,24 @@ class SDKFunction(FastAPI):
         self.params = cls
         return cls
 
-    def on_startup(self, f: OnStartupFuncType) -> OnStartupFuncType:
-        async def wrapper():
-            if not self.started:
-                await f()
-                self.started = True
+    def set_startup_params(self, cls: Any):
+        self.startup_params = cls
+        return cls
 
-        return self.post("/wait_startup")(wrapper)
+    def on_startup(self, f: OnStartupFuncType[ParamsType]):
+        async def wrapper(startup_params: ParamsType):
+            if not self.started:
+                try:
+                    await f(startup_params)
+                    self.started = True
+                except Exception as e:
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail=e.__repr__(),
+                    ) from e
+
+        wrapper.__annotations__ = f.__annotations__
+        return self.post("/startup")(wrapper)
 
     def on_shutdown(self, f: OnShutdownFuncType) -> OnShutdownFuncType:
         return self.on_event("shutdown")(f)
@@ -89,12 +101,10 @@ class SDKFunction(FastAPI):
 
             try:
                 outputs = await f(inputs, params)
-            except HTTPException as e:
-                raise e
             except Exception as e:
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Exception occured during execution:\n{e.__repr__()}",
+                    detail=e.__repr__(),
                 ) from e
 
             pending_upload_tasks: list[asyncio.Task[None]] = []
@@ -122,7 +132,8 @@ class SDKFunction(FastAPI):
 
         return self.post("/execute")(wrapper)
 
-    def get_metadata(self) -> MetaDataBase:
+    def get_metadata(self) -> MetaDataBase:  # noqa: C901
+        startup_params_json_schema = self.startup_params.model_json_schema()
         inputs_json_schema = self.inputs.model_json_schema()
         params_json_schema = self.params.model_json_schema()
         outputs_json_schema = self.outputs.model_json_schema()
@@ -145,17 +156,29 @@ class SDKFunction(FastAPI):
                     all_of = outputs_json_schema["properties"][k].pop("allOf")
                     outputs_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
 
+        if startup_params_json_schema.get("properties"):
+            for k, v in params_json_schema["properties"].items():
+                if v.get("allOf") and len(v["allOf"]) == 1:
+                    all_of = params_json_schema["properties"][k].pop("allOf")
+                    params_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
+
         return MetaDataBase(
             description=self.description,
-            inputs=HykoJsonSchemaExt(
+            inputs=HykoJsonSchema(
                 **inputs_json_schema,
                 friendly_property_types=model_to_friendly_property_types(self.inputs),
             ),
-            params=HykoJsonSchemaExt(
+            startup_params=HykoJsonSchema(
+                **startup_params_json_schema,
+                friendly_property_types=model_to_friendly_property_types(
+                    self.startup_params
+                ),
+            ),
+            params=HykoJsonSchema(
                 **params_json_schema,
                 friendly_property_types=model_to_friendly_property_types(self.params),
             ),
-            outputs=HykoJsonSchemaExt(
+            outputs=HykoJsonSchema(
                 **outputs_json_schema,
                 friendly_property_types=model_to_friendly_property_types(self.outputs),
             ),
