@@ -12,10 +12,6 @@ recognizer = None
 async def load():
     global recognizer
 
-    if recognizer is not None:
-        print("Model already Loaded")
-        return
-
     model = os.getenv("HYKO_HF_MODEL")
 
     if model is None:

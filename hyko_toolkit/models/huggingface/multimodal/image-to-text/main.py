@@ -11,10 +11,6 @@ captioner = None
 async def load():
     global captioner
 
-    if captioner is not None:
-        print("Model already Loaded")
-        return
-
     model = os.getenv("HYKO_HF_MODEL")
 
     if model is None:
@@ -31,9 +27,6 @@ async def load():
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if captioner is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded yet")
-
     res = captioner(inputs.image.to_pil())
 
     return Outputs(generated_text=res[0]["generated_text"])  # type: ignore
