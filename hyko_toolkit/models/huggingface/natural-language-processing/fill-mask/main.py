@@ -11,10 +11,6 @@ filler = None
 async def load():
     global filler
 
-    if filler is not None:
-        print("Model already Loaded")
-        return
-
     model = os.getenv("HYKO_HF_MODEL")
 
     if model is None:

@@ -11,10 +11,6 @@ qa_model = None
 async def load():
     global qa_model
 
-    if qa_model is not None:
-        print("Model already Loaded")
-        return
-
     model = os.getenv("HYKO_HF_MODEL")
 
     if model is None:

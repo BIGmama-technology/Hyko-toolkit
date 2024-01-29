@@ -11,10 +11,6 @@ classifier = None
 async def load():
     global classifier
 
-    if classifier is not None:
-        print("Model already Loaded")
-        return
-
     model = os.getenv("HYKO_HF_MODEL")
 
     if model is None:
@@ -31,9 +27,6 @@ async def load():
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if classifier is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded yet")
-
     res = classifier(inputs.input_image.to_pil(), candidate_labels=inputs.labels)
 
     return Outputs(summary=str(res))  # type: ignore
