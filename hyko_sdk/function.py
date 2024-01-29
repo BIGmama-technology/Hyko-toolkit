@@ -38,6 +38,7 @@ class SDKFunction(FastAPI):
         self.inputs: Type[BaseModel]
         self.outputs: Type[BaseModel]
         self.params: Type[BaseModel]
+        self.started: bool = False
 
     def set_input(self, cls: Any):
         self.inputs = cls
@@ -52,7 +53,12 @@ class SDKFunction(FastAPI):
         return cls
 
     def on_startup(self, f: OnStartupFuncType) -> OnStartupFuncType:
-        return self.post("/wait_startup")(f)
+        async def wrapper():
+            if not self.started:
+                await f()
+                self.started = True
+
+        return self.post("/wait_startup")(wrapper)
 
     def on_shutdown(self, f: OnShutdownFuncType) -> OnShutdownFuncType:
         return self.on_event("shutdown")(f)
