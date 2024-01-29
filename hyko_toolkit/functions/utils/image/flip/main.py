@@ -32,3 +32,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     flipped_image_output = Image.from_ndarray(flipped_rgb_image)
 
     return Outputs(flipped_image=flipped_image_output)
+
+
+print(func.dump_metadata())
