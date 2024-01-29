@@ -11,10 +11,6 @@ vqa_pipeline = None
 async def load():
     global vqa_pipeline
 
-    if vqa_pipeline is not None:
-        print("Model already Loaded")
-        return
-
     model = os.getenv("HYKO_HF_MODEL")
 
     if model is None:

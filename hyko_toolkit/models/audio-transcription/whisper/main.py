@@ -1,41 +1,27 @@
 import math
-import os
 
 import torch
-from fastapi.exceptions import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import WhisperForConditionalGeneration, WhisperProcessor
-
-model = None
-processor = None
 
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     global model
     global processor
+    global device
 
-    if model is not None and processor is not None:
-        print("Model loaded already")
-        return
+    device = startup_params.device_map
 
-    if not torch.cuda.is_available():
-        raise Exception("Machine does not have cuda capable devices")
-
-    device = os.getenv("HYKO_DEVICE_MAP", "cuda")
-
-    processor = WhisperProcessor.from_pretrained("openai/whisper-large-v2")
-    model = WhisperForConditionalGeneration.from_pretrained(
-        "openai/whisper-large-v2"
-    ).to(device)  # type: ignore
+    processor = WhisperProcessor.from_pretrained("openai/whisper-tiny")
+    model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-tiny").to(
+        device
+    )
     model.config.forced_decoder_is = None
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if model is None or processor is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded yet")
-
     waveform, sample_rate = inputs.audio.to_ndarray(sampling_rate=16_000)
     waveform = torch.unsqueeze(torch.tensor(waveform), 0).numpy()
 
@@ -49,7 +35,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         for i in range(segments_count)
     ]
     forced_decoder_ids = processor.get_decoder_prompt_ids(language=params.language)
-    device = os.getenv("HYKO_DEVICE_MAP", "cuda")
 
     for segment in waveform_segments:
         input_features = processor.feature_extractor(  # type: ignore
@@ -60,13 +45,14 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             output_toks = model.generate(
                 input_features.to(device=device), forced_decoder_ids=forced_decoder_ids
             )
-            print("Device: ", output_toks.device)  # type: ignore
             transcription_segment = str(
                 processor.batch_decode(
                     output_toks, max_new_tokens=10000, skip_special_tokens=True
                 )[0]
             )
-            print(transcription_segment)
             transcription += transcription_segment
 
     return Outputs(transcribed_text=transcription)
+
+
+print(func.dump_metadata())

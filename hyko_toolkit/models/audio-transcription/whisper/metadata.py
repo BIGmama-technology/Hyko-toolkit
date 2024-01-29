@@ -9,6 +9,12 @@ func = SDKFunction(
 )
 
 
+@func.set_startup_params
+class StartupParams(CoreModel):
+    device_map: str = Field(default="auto", description="Device used")
+    huggingface_model_name: str
+
+
 @func.set_input
 class Inputs(CoreModel):
     audio: Audio = Field(..., description="Input audio that will be transcribed")
@@ -17,7 +23,6 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     language: str = Field(default="en", description="The language of the audio")
-    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_output

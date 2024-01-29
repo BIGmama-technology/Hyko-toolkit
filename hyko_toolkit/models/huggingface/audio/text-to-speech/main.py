@@ -13,23 +13,13 @@ synthesizer = None
 async def load():
     global synthesizer
 
-    if synthesizer is not None:
-        print("Model already Loaded")
-        return
-
     model = os.getenv("HYKO_HF_MODEL")
     device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
 
     if model is None:
         raise HTTPException(status_code=500, detail="Model env not set")
 
-    try:
-        synthesizer = pipeline("text-to-speech", model=model, device_map=device_map)
-
-    except Exception as exc:
-        import logging
-
-        logging.error(exc)
+    synthesizer = pipeline("text-to-speech", model=model, device_map=device_map)
 
 
 @func.on_execute

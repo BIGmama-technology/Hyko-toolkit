@@ -13,16 +13,12 @@ generator = None
 async def load():
     global generator
 
-    if generator is not None:
-        print("Model already Loaded")
-        return
-
     model = os.getenv("HYKO_HF_MODEL")
 
     if model is None:
         raise HTTPException(status_code=500, detail="Model env not set")
 
-    device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
+    device_map = os.getenv("HYKO_DEVICE_MAP")
 
     if device_map == "auto":
         raise RuntimeError("device_map should not be auto")
@@ -37,9 +33,6 @@ async def load():
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if generator is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded yet")
-
     res = generator(inputs.prompt)
 
     return Outputs(generated_image=Image.from_pil(res.images[0]))  # type: ignore

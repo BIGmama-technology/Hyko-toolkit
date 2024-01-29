@@ -22,3 +22,7 @@ class Params(CoreModel):
 @func.set_output
 class Outputs(CoreModel):
     enhanced: Audio = Field(..., description="Enhanced audio after processing")
+
+
+class StartupParams(CoreModel):
+    device_map: str

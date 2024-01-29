@@ -2,26 +2,22 @@ import shutil
 
 import torch
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 from speechbrain.pretrained import SpectralMaskEnhancement
 
 from hyko_sdk.io import Audio
 
 model = None
-tokenizer = None
 device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     global model
-    global tokenizer
-    if model is not None and tokenizer is not None:
-        print("Model loaded already")
-        return
 
     model = SpectralMaskEnhancement.from_hparams(
-        source="speechbrain/metricgan-plus-voicebank"
+        source="speechbrain/metricgan-plus-voicebank",
+        device=startup_params.device_map,
     )
 
 
