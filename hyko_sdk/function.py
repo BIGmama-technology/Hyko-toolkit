@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from hyko_sdk.io import HykoBaseType
-from hyko_sdk.metadata import HykoJsonSchema, MetaDataBase
+from hyko_sdk.metadata import CoreModel, HykoJsonSchema, MetaDataBase
 from hyko_sdk.types import PyObjectId
 from hyko_sdk.utils import model_to_friendly_property_types
 
@@ -35,10 +35,10 @@ class SDKFunction(FastAPI):
     ):
         super().__init__(**kwargs)
         self.description = description
-        self.inputs: Type[BaseModel] = BaseModel
-        self.outputs: Type[BaseModel] = BaseModel
-        self.params: Type[BaseModel] = BaseModel
-        self.startup_params: Type[BaseModel] = BaseModel
+        self.inputs: Type[BaseModel]
+        self.outputs: Type[BaseModel]
+        self.params: Type[BaseModel]
+        self.startup_params: Type[BaseModel] = CoreModel
         self.started: bool = False
 
     def set_input(self, cls: Any):
