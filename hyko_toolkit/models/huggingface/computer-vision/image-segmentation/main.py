@@ -12,11 +12,11 @@ segmenter = None
 
 
 @func.on_startup
-async def load(params: StartupParams):
+async def load(startup_params: StartupParams):
     global segmenter
 
-    model = params.hugging_face_model
-    device_map = params.device_map
+    model = startup_params.hugging_face_model
+    device_map = startup_params.device_map
 
     segmenter = pipeline(
         "image-segmentation",
