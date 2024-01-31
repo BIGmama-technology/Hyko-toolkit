@@ -9,15 +9,20 @@ func = SDKFunction(
 )
 
 
-@func.set_input
-class Inputs(CoreModel):
-    input_image: Image = Field(..., description="Input image")
+@func.set_startup_params
+class StartupParams(CoreModel):
+    hugging_face_model: str = Field(..., description="Model")
+    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = Field(..., description="Model")
-    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+    pass
+
+
+@func.set_input
+class Inputs(CoreModel):
+    input_image: Image = Field(..., description="Input image")
 
 
 @func.set_output
