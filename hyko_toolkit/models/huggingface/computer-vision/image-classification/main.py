@@ -1,22 +1,15 @@
-import os
-
-from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import pipeline
 
 classifier = None
 
 
 @func.on_startup
-async def load():
+async def load(params: StartupParams):
     global classifier
 
-    model = os.getenv("HYKO_HF_MODEL")
-
-    if model is None:
-        raise HTTPException(status_code=500, detail="Model env not set")
-
-    device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
+    model = params.hugging_face_model
+    device_map = params.device_map
 
     classifier = pipeline(
         "image-classification",
@@ -27,9 +20,6 @@ async def load():
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if classifier is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded yet")
+    res = classifier(inputs.input_image.to_pil())
 
-    res = classifier(inputs.input_image.to_pil())  # type: ignore
-
-    return Outputs(image_class=res[0]["label"])  # type: ignore
+    return Outputs(image_class=res[0]["label"])
