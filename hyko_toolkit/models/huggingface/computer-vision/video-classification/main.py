@@ -3,8 +3,6 @@ import os
 from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import pipeline
 
-segmenter = None
-
 
 @func.on_startup
 async def load(startup_params: StartupParams):
