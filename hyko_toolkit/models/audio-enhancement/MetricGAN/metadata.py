@@ -9,6 +9,11 @@ func = SDKFunction(
 )
 
 
+@func.set_startup_params
+class StartupParams(CoreModel):
+    device_map: str
+
+
 @func.set_input
 class Inputs(CoreModel):
     audio: Audio = Field(..., description="Audio input by the user for enhancement")
@@ -22,7 +27,3 @@ class Params(CoreModel):
 @func.set_output
 class Outputs(CoreModel):
     enhanced: Audio = Field(..., description="Enhanced audio after processing")
-
-
-class StartupParams(CoreModel):
-    device_map: str
