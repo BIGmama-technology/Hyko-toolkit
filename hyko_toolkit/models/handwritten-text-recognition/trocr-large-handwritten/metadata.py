@@ -9,6 +9,11 @@ func = SDKFunction(
 )
 
 
+@func.set_startup_params
+class StartupParams(CoreModel):
+    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+
+
 @func.set_input
 class Inputs(CoreModel):
     image: Image = Field(..., description="Input image containing handwritten text")
