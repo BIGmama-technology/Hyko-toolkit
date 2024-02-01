@@ -1,22 +1,14 @@
-import os
-
 import transformers
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
-
-filler = None
+from metadata import Inputs, Outputs, Params, StartupParams, func
 
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     global filler
 
-    model = os.getenv("HYKO_HF_MODEL")
-
-    if model is None:
-        raise HTTPException(status_code=500, detail="Model env not set")
-
-    device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
+    model = startup_params.hugging_face_model
+    device_map = startup_params.device_map
 
     filler = transformers.pipeline(
         task="fill-mask",

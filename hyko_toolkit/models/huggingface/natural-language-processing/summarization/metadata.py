@@ -8,6 +8,12 @@ func = SDKFunction(
 )
 
 
+@func.set_startup_params
+class StartupParams(CoreModel):
+    hugging_face_model: str = Field(..., description="Model")
+    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+
+
 @func.set_input
 class Inputs(CoreModel):
     input_text: str = Field(..., description="text to summarize")
@@ -15,9 +21,6 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = Field(..., description="Model")
-    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
-    min_length: int = Field(default=30, description="Minimum output length")
     max_length: int = Field(default=130, description="Maximum output length")
 
 
