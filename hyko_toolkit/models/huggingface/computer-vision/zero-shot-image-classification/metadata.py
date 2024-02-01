@@ -10,7 +10,7 @@ func = SDKFunction(
 
 
 @func.set_startup_params
-class StartupParams:
+class StartupParams(CoreModel):
     hugging_face_model: str = Field(..., description="Model")
     device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
 
