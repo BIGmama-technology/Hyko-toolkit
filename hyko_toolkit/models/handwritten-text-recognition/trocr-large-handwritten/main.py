@@ -1,22 +1,20 @@
 import torch
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
-
-model = None
-processor = None
-
-device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     global model
     global processor
+    device = startup_params.device_map
 
-    processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-handwritten")
+    processor = TrOCRProcessor.from_pretrained(
+        "microsoft/trocr-large-handwritten", device=device
+    )
     model = VisionEncoderDecoderModel.from_pretrained(
-        "microsoft/trocr-large-handwritten"
+        "microsoft/trocr-large-handwritten", device=device
     )
 
 

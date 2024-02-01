@@ -1,14 +1,10 @@
 import shutil
 
 import torch
-from fastapi import HTTPException
 from metadata import Inputs, Outputs, Params, StartupParams, func
 from speechbrain.pretrained import SpectralMaskEnhancement
 
 from hyko_sdk.io import Audio
-
-model = None
-device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
 
 
 @func.on_startup
@@ -23,9 +19,6 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if model is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded yet")
-
     waveform, sample_rate = inputs.audio.to_ndarray()
     waveform = torch.unsqueeze(torch.tensor(waveform), 0)
 
