@@ -1,26 +1,20 @@
 import numpy as np
 import torch
-from fastapi.exceptions import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 from PIL import Image as PILImage
 from PIL import ImageDraw
 from transformers import OwlViTForObjectDetection, OwlViTProcessor
 
 from hyko_sdk.io import Image
 
-processor = None
-model = None
-device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device("cpu")
-
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     global model
     global processor
-    if model is not None and processor is not None:
-        print("Model loaded already")
-        return
+    global device
 
+    device = startup_params.device_map
     processor = OwlViTProcessor.from_pretrained("google/owlvit-base-patch32")
     model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32").to(
         device
@@ -29,9 +23,6 @@ async def load():
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if model is None or processor is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded yet")
-
     np_img = inputs.img.to_ndarray()
     pil_image = PILImage.fromarray(np_img)
     draw = ImageDraw.Draw(pil_image)
