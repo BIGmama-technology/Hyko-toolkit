@@ -9,6 +9,11 @@ func = SDKFunction(
 )
 
 
+@func.set_startup_params
+class StartupParams(CoreModel):
+    device_map: str = Field(default="auto", description="Device used")
+
+
 @func.set_input
 class Inputs(CoreModel):
     img: Image = Field(..., description="Input Image")
