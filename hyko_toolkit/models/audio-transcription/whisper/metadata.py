@@ -12,7 +12,6 @@ func = SDKFunction(
 @func.set_startup_params
 class StartupParams(CoreModel):
     device_map: str = Field(default="auto", description="Device used")
-    huggingface_model_name: str
 
 
 @func.set_input
