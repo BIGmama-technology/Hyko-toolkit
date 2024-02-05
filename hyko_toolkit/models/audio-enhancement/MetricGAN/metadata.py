@@ -11,7 +11,7 @@ func = SDKFunction(
 
 @func.set_startup_params
 class StartupParams(CoreModel):
-    device_map: str
+    pass
 
 
 @func.set_input
