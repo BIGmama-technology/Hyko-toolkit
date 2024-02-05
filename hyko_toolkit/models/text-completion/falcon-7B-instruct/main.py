@@ -1,21 +1,13 @@
 import torch
 import transformers
-from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import AutoTokenizer
-
-pipeline = None
-tokenizer = None
 
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     global pipeline
     global tokenizer
-
-    if pipeline is not None or tokenizer is not None:
-        print("Model already Loaded")
-        return
 
     model = "tiiuae/falcon-7b-instruct"
     tokenizer = AutoTokenizer.from_pretrained(model)
@@ -69,9 +61,6 @@ async def load():
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if pipeline is None or tokenizer is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded yet")
-
     if params.system_prompt:
         prompt = params.system_prompt + "\n" + inputs.prompt
     else:

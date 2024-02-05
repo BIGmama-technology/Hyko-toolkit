@@ -12,8 +12,7 @@ async def load(startup_params: StartupParams):
     global model
 
     model = SpectralMaskEnhancement.from_hparams(
-        source="speechbrain/metricgan-plus-voicebank",
-        device=startup_params.device_map,
+        source="speechbrain/metricgan-plus-voicebank"
     )
 
 
