@@ -37,7 +37,7 @@ class NotAllowedTypesError(FunctionBuildError):
     ) -> None:
         super().__init__(
             function_name,
-            f"Dictionnary or None types are not allowed: {field_type} name: {field_name}",
+            f"Dictionary or None types are not allowed: {field_type} name: {field_name}",
         )
 
 
