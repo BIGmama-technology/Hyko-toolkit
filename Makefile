@@ -1,7 +1,7 @@
 .PHONY: setup build_sdk override_registry remove_containers remove_registry_images lint format
 
 dir ?= hyko_toolkit
-registry ?= registry.treafik.me
+registry ?= registry.traefik.me
 
 setup:
 	./scripts/setup.sh
