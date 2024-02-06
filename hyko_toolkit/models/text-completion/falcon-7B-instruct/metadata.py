@@ -1,11 +1,19 @@
+from typing import Optional
+
 from pydantic import Field
 
 from hyko_sdk.function import SDKFunction
 from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
-    description="Automatically complete and generate text based on provided input. This model predicts and generates the next word or sentence given a partial text input.",
+    description="""Automatically complete and generate text based on provided input.
+    This model predicts and generates the next word or sentence given a partial text input."""
 )
+
+
+@func.set_startup_params
+class StartupParams(CoreModel):
+    pass
 
 
 @func.set_input
@@ -15,7 +23,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    system_prompt: str = Field(
+    system_prompt: Optional[str] = Field(
         default=None,
         description="system-prompt or system-instruction to falcon-instruct",
     )

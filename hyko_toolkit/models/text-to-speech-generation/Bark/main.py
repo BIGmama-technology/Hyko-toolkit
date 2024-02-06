@@ -1,11 +1,11 @@
 from bark import SAMPLE_RATE, generate_audio, preload_models
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 
 from hyko_sdk.io import Audio
 
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     preload_models()  # grabs best device
 
 

@@ -1,26 +1,13 @@
-import os
-
 import transformers
-from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
-
-classifier = None
+from metadata import Inputs, Outputs, Params, StartupParams, func
 
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     global classifier
 
-    if classifier is not None:
-        print("Model already Loaded")
-        return
-
-    model = os.getenv("HYKO_HF_MODEL")
-
-    if model is None:
-        raise HTTPException(status_code=500, detail="Model env not set")
-
-    device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
+    model = startup_params.hugging_face_model
+    device_map = startup_params.device_map
 
     classifier = transformers.pipeline(
         task="text-generation",
@@ -31,9 +18,6 @@ async def load():
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if classifier is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded yet")
-
     res: list[dict[str, str]] = classifier(
         inputs.input_text, max_length=params.max_length
     )  # type: ignore

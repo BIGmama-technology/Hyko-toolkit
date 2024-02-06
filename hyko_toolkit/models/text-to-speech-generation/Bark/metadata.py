@@ -9,6 +9,11 @@ func = SDKFunction(
 )
 
 
+@func.set_startup_params
+class StartupParams(CoreModel):
+    pass
+
+
 @func.set_input
 class Inputs(CoreModel):
     text: str = Field(..., description="Prompt for audio generation")

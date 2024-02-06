@@ -8,6 +8,12 @@ func = SDKFunction(
 )
 
 
+@func.set_startup_params
+class StartupParams(CoreModel):
+    hugging_face_model: str = Field(..., description="Model")
+    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+
+
 @func.set_input
 class Inputs(CoreModel):
     question: str = Field(..., description="Input question")

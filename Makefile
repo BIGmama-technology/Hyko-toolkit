@@ -1,22 +1,13 @@
-.PHONY: setup build_sdk build_threaded build_dir override_registry remove_containers remove_registry_images count_models lint format
+.PHONY: setup build_sdk override_registry remove_containers remove_registry_images lint format
 
-dir ?= sdk
-registry ?= registry.treafik.me
+dir ?= hyko_toolkit
+registry ?= registry.traefik.me
 
 setup:
-	./scripts/setup-env.sh
+	./scripts/setup.sh
 
-build_sdk:
-	python scripts/sdk-builder.py
-
-build_threaded:
-	python scripts/sdk-builder.py --threaded
-
-build_dir:
-	python scripts/sdk-builder.py --dir $(dir)
-
-override_registry:
-	python scripts/sdk-builder.py --dir $(dir) --registry $(registry)
+build:
+	python scripts/sdk-builder.py --dir $(dir) --registry $(registry) --cuda
 
 remove_containers:
 	docker rm -f $$(docker ps -a | grep hyko_sdk | awk '{print $$1;}')
