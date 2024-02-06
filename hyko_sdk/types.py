@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Callable
 
@@ -54,21 +53,13 @@ class PyObjectId(ObjectId):
         return handler(_core_schema)
 
 
-class StorageObjectType(str, Enum):
-    TEXT = "text/plain"
-    CSV = "text/csv"
-    PDF = "application/pdf"
-    IMAGE_PNG = "image/png"
-    IMAGE_JPEG = "image/jpeg"
-    AUDIO_MPEG = "audio/mpeg"
-    AUDIO_WEBM = "audio/webm"
-    AUDIO_WAV = "audio/wav"
-    VIDEO_MP4 = "video/mp4"
-    VIDEO_WEBM = "video/webm"
-
-
-@dataclass
-class StorageObject:
-    name: str
-    type: StorageObjectType
-    data: bytearray
+class MimeType(str, Enum):
+    TXT = "txt"
+    CSV = "csv"
+    PDF = "pdf"
+    PNG = "png"
+    JPEG = "jpeg"
+    MPEG = "mpeg"
+    WEBM = "webm"
+    WAV = "wav"
+    MP4 = "mp4"
