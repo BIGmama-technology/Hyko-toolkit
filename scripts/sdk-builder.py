@@ -37,7 +37,7 @@ class NotAllowedTypesError(FunctionBuildError):
     ) -> None:
         super().__init__(
             function_name,
-            f"Dictionnary or None types are not allowed: {field_type} name: {field_name}",
+            f"Dictionary or None types are not allowed: {field_type} name: {field_name}",
         )
 
 
@@ -372,8 +372,11 @@ if __name__ == "__main__":
             thread.join()
 
     successful_count = len(all_built_functions) - len(failed_functions)
+
     print(
-        f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function"
+        "no built functions, make sure to run this script with --cuda to build models that require pytorch:"
+        if len(all_built_functions) == 0
+        else f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function"
     )
     for fn in failed_functions:
         print(f"ERROR WHILE BUILDING: {fn.function_name} REASON: {fn.reason}")
