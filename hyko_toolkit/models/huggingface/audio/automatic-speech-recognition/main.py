@@ -1,27 +1,17 @@
-import os
-
 import numpy as np
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import pipeline
 
 recognizer = None
 
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     global recognizer
 
-    if recognizer is not None:
-        print("Model already Loaded")
-        return
-
-    model = os.getenv("HYKO_HF_MODEL")
-
-    if model is None:
-        raise HTTPException(status_code=500, detail="Model env not set")
-
-    device_map = os.getenv("HYKO_DEVICE_MAP", "auto")
+    model = startup_params.hugging_face_model
+    device_map = startup_params.device_map
 
     recognizer = pipeline(
         "automatic-speech-recognition",

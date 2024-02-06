@@ -1,27 +1,20 @@
 import torch
 from datasets import load_dataset
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import SpeechT5ForTextToSpeech, SpeechT5HifiGan, SpeechT5Processor
 
 from hyko_sdk.io import Audio
 
-model = None
-processor = None
-vocoder = None
-
-device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
-
 
 @func.on_startup
-async def load():
+async def load(startup_params: StartupParams):
     global model
     global processor
     global vocoder
-    if model is not None and processor is not None:
-        print("Model loaded already")
-        return
+    global device
 
+    device = startup_params.device_map
     processor = SpeechT5Processor.from_pretrained("microsoft/speecht5_tts")
     model = SpeechT5ForTextToSpeech.from_pretrained("microsoft/speecht5_tts")
     vocoder = SpeechT5HifiGan.from_pretrained("microsoft/speecht5_hifigan")
