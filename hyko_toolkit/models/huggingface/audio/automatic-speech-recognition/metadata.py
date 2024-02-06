@@ -9,6 +9,12 @@ func = SDKFunction(
 )
 
 
+@func.set_startup_params
+class StartupParams(CoreModel):
+    hugging_face_model: str = Field(..., description="Model")
+    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+
+
 @func.set_input
 class Inputs(CoreModel):
     speech: Audio = Field(..., description="Input speech")
@@ -16,8 +22,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = Field(..., description="Model")
-    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+    pass
 
 
 @func.set_output

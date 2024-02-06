@@ -45,17 +45,15 @@ class HykoJsonSchema(BaseModel):
     required: List[str] = []
     defs: Optional[Dict[str, JsonSchemaEnum]] = Field(default=None, alias="$defs")
     model_config = ConfigDict(populate_by_name=True)
-
-
-class HykoJsonSchemaExt(HykoJsonSchema):
     friendly_property_types: Dict[str, str] = {}
 
 
 class MetaDataBase(BaseModel):
     description: str
-    inputs: HykoJsonSchemaExt
-    outputs: HykoJsonSchemaExt
-    params: HykoJsonSchemaExt
+    startup_params: HykoJsonSchema
+    params: HykoJsonSchema
+    inputs: HykoJsonSchema
+    outputs: HykoJsonSchema
     model_config = ConfigDict(populate_by_name=True)
 
 
