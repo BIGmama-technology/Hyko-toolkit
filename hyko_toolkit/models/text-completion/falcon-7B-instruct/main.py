@@ -12,50 +12,13 @@ async def load(startup_params: StartupParams):
     model = "tiiuae/falcon-7b-instruct"
     tokenizer = AutoTokenizer.from_pretrained(model)
 
-    device_map = {
-        "transformer.word_embeddings": 0,
-        "lm_head": 0,
-        "transformer.h.0": 0,
-        "transformer.h.1": 0,
-        "transformer.h.2": 0,
-        "transformer.h.3": 0,
-        "transformer.h.4": 0,
-        "transformer.h.5": 0,
-        "transformer.h.6": 0,
-        "transformer.h.7": 0,
-        "transformer.h.8": 0,
-        "transformer.h.9": 0,
-        "transformer.h.10": 0,
-        "transformer.h.11": 0,
-        "transformer.h.12": 0,
-        "transformer.h.13": 0,
-        "transformer.h.14": 0,
-        "transformer.h.15": 0,
-        "transformer.h.16": 1,
-        "transformer.h.17": 1,
-        "transformer.h.18": 1,
-        "transformer.h.19": 1,
-        "transformer.h.20": 1,
-        "transformer.h.21": 1,
-        "transformer.h.22": 1,
-        "transformer.h.23": 1,
-        "transformer.h.24": 1,
-        "transformer.h.25": 1,
-        "transformer.h.26": 1,
-        "transformer.h.27": 1,
-        "transformer.h.28": 1,
-        "transformer.h.29": 1,
-        "transformer.h.30": 1,
-        "transformer.h.31": 1,
-        "transformer.ln_f": 1,
-    }
     pipeline = transformers.pipeline(
         "text-generation",
         model=model,
         tokenizer=tokenizer,
         torch_dtype=torch.bfloat16,
         trust_remote_code=True,
-        device_map=device_map,
+        device_map="Auto",
     )
 
 
