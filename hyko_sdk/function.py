@@ -1,4 +1,3 @@
-import asyncio
 import json
 from typing import Any, Callable, Coroutine, Optional, Type, TypeVar
 
@@ -6,7 +5,6 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from hyko_sdk.io import HykoBaseType
 from hyko_sdk.metadata import CoreModel, HykoJsonSchema, MetaDataBase
 from hyko_sdk.types import PyObjectId
 from hyko_sdk.utils import model_to_friendly_property_types
@@ -77,28 +75,9 @@ class SDKFunction(FastAPI):
 
     def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):
         async def wrapper(
-            storage_params: ExecStorageParams,
             inputs: InputsType,
             params: ParamsType,
         ) -> JSONResponse:
-            pending_download_tasks: list[asyncio.Task[None]] = []
-            HykoBaseType.set_sync(
-                storage_params.host,
-                storage_params.blueprint_id,
-                pending_download_tasks,
-            )
-
-            inputs = inputs.model_validate_json(inputs.model_dump_json())
-            params = params.model_validate_json(params.model_dump_json())
-            HykoBaseType.clear_sync()
-
-            if len(pending_download_tasks):
-                done, _ = await asyncio.wait(pending_download_tasks)
-                for task in done:
-                    exc = task.exception()
-                    if exc is not None:
-                        raise exc
-
             try:
                 outputs = await f(inputs, params)
             except Exception as e:
@@ -107,28 +86,9 @@ class SDKFunction(FastAPI):
                     detail=e.__repr__(),
                 ) from e
 
-            pending_upload_tasks: list[asyncio.Task[None]] = []
-            HykoBaseType.set_sync(
-                storage_params.host,
-                storage_params.blueprint_id,
-                pending_upload_tasks,
-            )
-
-            outputs = outputs.model_validate(outputs.model_dump())
-            HykoBaseType.clear_sync()
-
-            if len(pending_upload_tasks):
-                done, _ = await asyncio.wait(pending_upload_tasks)
-                for task in done:
-                    exc = task.exception()
-                    if exc is not None:
-                        raise exc
-
             return JSONResponse(content=json.loads(outputs.model_dump_json()))
 
-        storage_params_annotations = wrapper.__annotations__["storage_params"]
         wrapper.__annotations__ = f.__annotations__
-        wrapper.__annotations__["storage_params"] = storage_params_annotations
 
         return self.post("/execute")(wrapper)
 
