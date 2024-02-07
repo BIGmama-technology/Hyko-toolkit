@@ -6,7 +6,6 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from hyko_sdk.metadata import CoreModel, HykoJsonSchema, MetaDataBase
-from hyko_sdk.types import PyObjectId
 from hyko_sdk.utils import model_to_friendly_property_types
 
 InputsType = TypeVar("InputsType", bound="BaseModel")
@@ -16,11 +15,6 @@ OutputsType = TypeVar("OutputsType", bound="BaseModel")
 OnStartupFuncType = Callable[[ParamsType], Coroutine[Any, Any, None]]
 OnShutdownFuncType = Callable[[], Coroutine[Any, Any, None]]
 OnExecuteFuncType = Callable[[InputsType, ParamsType], Coroutine[Any, Any, OutputsType]]
-
-
-class ExecStorageParams(BaseModel):
-    host: str
-    blueprint_id: PyObjectId
 
 
 class SDKFunction(FastAPI):
@@ -92,35 +86,11 @@ class SDKFunction(FastAPI):
 
         return self.post("/execute")(wrapper)
 
-    def get_metadata(self) -> MetaDataBase:  # noqa: C901
+    def get_metadata(self) -> MetaDataBase:
         startup_params_json_schema = self.startup_params.model_json_schema()
         inputs_json_schema = self.inputs.model_json_schema()
         params_json_schema = self.params.model_json_schema()
         outputs_json_schema = self.outputs.model_json_schema()
-
-        if inputs_json_schema.get("properties"):
-            for k, v in inputs_json_schema["properties"].items():
-                if v.get("allOf") and len(v["allOf"]) == 1:
-                    all_of = inputs_json_schema["properties"][k].pop("allOf")
-                    inputs_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
-
-        if params_json_schema.get("properties"):
-            for k, v in params_json_schema["properties"].items():
-                if v.get("allOf") and len(v["allOf"]) == 1:
-                    all_of = params_json_schema["properties"][k].pop("allOf")
-                    params_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
-
-        if outputs_json_schema.get("properties"):
-            for k, v in outputs_json_schema["properties"].items():
-                if v.get("allOf") and len(v["allOf"]) == 1:
-                    all_of = outputs_json_schema["properties"][k].pop("allOf")
-                    outputs_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
-
-        if startup_params_json_schema.get("properties"):
-            for k, v in params_json_schema["properties"].items():
-                if v.get("allOf") and len(v["allOf"]) == 1:
-                    all_of = params_json_schema["properties"][k].pop("allOf")
-                    params_json_schema["properties"][k]["$ref"] = all_of[0]["$ref"]
 
         return MetaDataBase(
             description=self.description,
@@ -145,4 +115,4 @@ class SDKFunction(FastAPI):
         )
 
     def dump_metadata(self, indent: Optional[int] = None) -> str:
-        return self.get_metadata().model_dump_json(indent=indent)
+        return self.get_metadata().model_dump_json(indent=indent, exclude_none=True)
