@@ -1,5 +1,6 @@
 import io
 import os
+import subprocess
 from typing import Any, Optional
 from uuid import UUID, uuid4
 
@@ -17,7 +18,7 @@ from pydantic_core import core_schema
 from hyko_sdk.metadata import CoreModel
 from hyko_sdk.types import MimeType
 
-GLOBAL_STORAGE_PATH = "/storage"
+GLOBAL_STORAGE_PATH = "/app/storage"
 
 
 class HykoBaseType(CoreModel):
@@ -31,8 +32,13 @@ class HykoBaseType(CoreModel):
         obj_mime = MimeType(obj_mime.lstrip("."))
         return file_name
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.file_name
+
+    def get_mime(self) -> MimeType:
+        _, obj_mime = os.path.splitext(self.file_name)
+        obj_mime = MimeType(obj_mime.lstrip("."))
+        return obj_mime
 
     def save(self, obj_data: bytes) -> None:
         """save obj to file system"""
@@ -161,6 +167,36 @@ class Audio(HykoBaseType):
             val=file.getbuffer().tobytes(),
             obj_mime=MimeType.MP3,
         )
+
+    def convert_to(self, new_ext: MimeType):
+        out = "audio_converted." + new_ext.value
+
+        subprocess.run(
+            f"ffmpeg -i {os.path.join(GLOBAL_STORAGE_PATH, self.file_name)} {out} -y".split(
+                " "
+            )
+        )
+        with open(out, "rb") as f:
+            data = f.read()
+        os.remove(out)
+
+        return Audio(val=data, obj_mime=new_ext)
+
+    def to_ndarray(  # type: ignore
+        self,
+        frame_offset: int = 0,
+        num_frames: int = -1,
+    ):
+        new_audio = self.convert_to(MimeType.MP3)
+
+        audio_readable = io.BytesIO(new_audio.get_data())
+
+        with soundfile.SoundFile(audio_readable, "r") as file_:
+            frames = file_._prepare_read(frame_offset, None, num_frames)  # type: ignore
+            waveform: np.ndarray = file_.read(frames, "float32", always_2d=True)  # type: ignore
+            sample_rate: int = file_.samplerate
+
+        return waveform, sample_rate  # type: ignore
 
 
 class Video(HykoBaseType):
