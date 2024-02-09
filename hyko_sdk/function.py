@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from hyko_sdk.metadata import CoreModel, HykoJsonSchema, MetaDataBase
-from hyko_sdk.utils import model_to_friendly_property_types
+from hyko_sdk.utils import to_friendly_types
 
 InputsType = TypeVar("InputsType", bound="BaseModel")
 ParamsType = TypeVar("ParamsType", bound="BaseModel")
@@ -96,23 +96,25 @@ class SDKFunction(FastAPI):
             description=self.description,
             inputs=HykoJsonSchema(
                 **inputs_json_schema,
-                friendly_property_types=model_to_friendly_property_types(self.inputs),
+                friendly_types=to_friendly_types(self.inputs),
             ),
             startup_params=HykoJsonSchema(
                 **startup_params_json_schema,
-                friendly_property_types=model_to_friendly_property_types(
-                    self.startup_params
-                ),
+                friendly_types=to_friendly_types(self.startup_params),
             ),
             params=HykoJsonSchema(
                 **params_json_schema,
-                friendly_property_types=model_to_friendly_property_types(self.params),
+                friendly_types=to_friendly_types(self.params),
             ),
             outputs=HykoJsonSchema(
                 **outputs_json_schema,
-                friendly_property_types=model_to_friendly_property_types(self.outputs),
+                friendly_types=to_friendly_types(self.outputs),
             ),
         )
 
     def dump_metadata(self, indent: Optional[int] = None) -> str:
-        return self.get_metadata().model_dump_json(indent=indent, exclude_none=True)
+        return self.get_metadata().model_dump_json(
+            indent=indent,
+            exclude_none=True,
+            exclude_defaults=True,
+        )
