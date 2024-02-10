@@ -18,8 +18,6 @@ OnExecuteFuncType = Callable[[InputsType, ParamsType], Coroutine[Any, Any, Outpu
 
 
 class SDKFunction(FastAPI):
-    __metadata__: MetaDataBase
-
     def __init__(
         self,
         description: str,
@@ -117,4 +115,5 @@ class SDKFunction(FastAPI):
             indent=indent,
             exclude_none=True,
             exclude_defaults=True,
+            by_alias=True,
         )
