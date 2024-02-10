@@ -16,7 +16,7 @@ from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
 
 from hyko_sdk.metadata import CoreModel
-from hyko_sdk.types import MimeType
+from hyko_sdk.types import Ext
 
 GLOBAL_STORAGE_PATH = "/app/storage"
 
@@ -27,18 +27,18 @@ class HykoBaseType(CoreModel):
     @field_validator("file_name")
     @classmethod
     def validate_file_name(cls, file_name: str):
-        obj_id, obj_mime = os.path.splitext(file_name)
+        obj_id, obj_ext = os.path.splitext(file_name)
         obj_id = UUID(obj_id)
-        obj_mime = MimeType(obj_mime.lstrip("."))
+        obj_ext = Ext(obj_ext.lstrip("."))
         return file_name
 
     def get_name(self) -> str:
         return self.file_name
 
-    def get_mime(self) -> MimeType:
-        _, obj_mime = os.path.splitext(self.file_name)
-        obj_mime = MimeType(obj_mime.lstrip("."))
-        return obj_mime
+    def get_ext(self) -> Ext:
+        _, obj_ext = os.path.splitext(self.file_name)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        return obj_ext
 
     def save(self, obj_data: bytes) -> None:
         """save obj to file system"""
@@ -65,21 +65,21 @@ class HykoBaseType(CoreModel):
 class Image(HykoBaseType):
     @field_validator("file_name")
     @classmethod
-    def mime_validator(cls, file_name: str):
-        _, obj_mime = os.path.splitext(file_name)
-        if obj_mime.lstrip(".") not in [MimeType.PNG.value, MimeType.JPEG.value]:
-            raise ValueError("Invalid mime for image")
+    def ext_validator(cls, file_name: str):
+        _, obj_ext = os.path.splitext(file_name)
+        if obj_ext.lstrip(".") not in [Ext.PNG.value, Ext.JPEG.value]:
+            raise ValueError("Invalid file extension for image")
         return file_name
 
     def __init__(
         self,
-        obj_mime: MimeType = MimeType.PNG,
+        obj_ext: Ext = Ext.PNG,
         file_name: Optional[str] = None,
         val: Optional[bytes] = None,
     ):
         if not file_name:
             obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_mime.value
+            file_name = str(obj_id) + "." + obj_ext.value
 
         super().__init__(file_name=file_name)
 
@@ -89,7 +89,7 @@ class Image(HykoBaseType):
     @staticmethod
     def from_ndarray(
         arr: np.ndarray[Any, Any],
-        encoding: MimeType = MimeType.PNG,
+        encoding: Ext = Ext.PNG,
     ) -> "Image":
         file = io.BytesIO()
         img = PIL_Image.fromarray(arr)  # type: ignore
@@ -97,20 +97,20 @@ class Image(HykoBaseType):
 
         return Image(
             val=file.getbuffer().tobytes(),
-            obj_mime=encoding,
+            obj_ext=encoding,
         )
 
     @staticmethod
     def from_pil(
         img: PIL_Image.Image,
-        encoding: MimeType = MimeType.PNG,
+        encoding: Ext = Ext.PNG,
     ) -> "Image":
         file = io.BytesIO()
         img.save(file, format=encoding.value)
 
         return Image(
             val=file.getbuffer().tobytes(),
-            obj_mime=encoding,
+            obj_ext=encoding,
         )
 
     def to_ndarray(self, keep_alpha_if_png: bool = False) -> NDArray[Any]:
@@ -133,26 +133,26 @@ class Image(HykoBaseType):
 class Audio(HykoBaseType):
     @field_validator("file_name")
     @classmethod
-    def mime_validator(cls, file_name: str):
-        _, obj_mime = os.path.splitext(file_name)
-        if obj_mime.lstrip(".") not in [
-            MimeType.MPEG.value,
-            MimeType.WEBM.value,
-            MimeType.WAV.value,
-            MimeType.MP3.value,
+    def ext_validator(cls, file_name: str):
+        _, obj_ext = os.path.splitext(file_name)
+        if obj_ext.lstrip(".") not in [
+            Ext.MPEG.value,
+            Ext.WEBM.value,
+            Ext.WAV.value,
+            Ext.MP3.value,
         ]:
-            raise ValueError("Invalid mime for Audio")
+            raise ValueError("Invalid file extension for Audio")
         return file_name
 
     def __init__(
         self,
-        obj_mime: MimeType = MimeType.MP3,
+        obj_ext: Ext = Ext.MP3,
         file_name: Optional[str] = None,
         val: Optional[bytes] = None,
     ):
         if not file_name:
             obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_mime.value
+            file_name = str(obj_id) + "." + obj_ext.value
 
         super().__init__(file_name=file_name)
 
@@ -165,10 +165,10 @@ class Audio(HykoBaseType):
         soundfile.write(file, arr, samplerate=sampling_rate, format="MP3")  # type: ignore
         return Audio(
             val=file.getbuffer().tobytes(),
-            obj_mime=MimeType.MP3,
+            obj_ext=Ext.MP3,
         )
 
-    def convert_to(self, new_ext: MimeType):
+    def convert_to(self, new_ext: Ext):
         out = "audio_converted." + new_ext.value
 
         subprocess.run(
@@ -180,14 +180,14 @@ class Audio(HykoBaseType):
             data = f.read()
         os.remove(out)
 
-        return Audio(val=data, obj_mime=new_ext)
+        return Audio(val=data, obj_ext=new_ext)
 
     def to_ndarray(  # type: ignore
         self,
         frame_offset: int = 0,
         num_frames: int = -1,
     ):
-        new_audio = self.convert_to(MimeType.MP3)
+        new_audio = self.convert_to(Ext.MP3)
 
         audio_readable = io.BytesIO(new_audio.get_data())
 
@@ -202,24 +202,24 @@ class Audio(HykoBaseType):
 class Video(HykoBaseType):
     @field_validator("file_name")
     @classmethod
-    def mime_validator(cls, file_name: str):
-        _, obj_mime = os.path.splitext(file_name)
-        if obj_mime.lstrip(".") not in [
-            MimeType.WEBM.value,
-            MimeType.MP4.value,
+    def ext_validator(cls, file_name: str):
+        _, obj_ext = os.path.splitext(file_name)
+        if obj_ext.lstrip(".") not in [
+            Ext.WEBM.value,
+            Ext.MP4.value,
         ]:
-            raise ValueError("Invalid mime for Audio")
+            raise ValueError("Invalid file extension for Video")
         return file_name
 
     def __init__(
         self,
-        obj_mime: MimeType = MimeType.MP4,
+        obj_ext: Ext = Ext.MP4,
         file_name: Optional[str] = None,
         val: Optional[bytes] = None,
     ):
         if not file_name:
             obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_mime.value
+            file_name = str(obj_id) + "." + obj_ext.value
 
         super().__init__(file_name=file_name)
 
@@ -230,23 +230,23 @@ class Video(HykoBaseType):
 class PDF(HykoBaseType):
     @field_validator("file_name")
     @classmethod
-    def mime_validator(cls, file_name: str):
-        _, obj_mime = os.path.splitext(file_name)
-        if obj_mime.lstrip(".") not in [
-            MimeType.PDF.value,
+    def ext_validator(cls, file_name: str):
+        _, obj_ext = os.path.splitext(file_name)
+        if obj_ext.lstrip(".") not in [
+            Ext.PDF.value,
         ]:
-            raise ValueError("Invalid mime for Audio")
+            raise ValueError("Invalid file extension for PDF")
         return file_name
 
     def __init__(
         self,
-        obj_mime: MimeType = MimeType.PDF,
+        obj_ext: Ext = Ext.PDF,
         file_name: Optional[str] = None,
         val: Optional[bytes] = None,
     ):
         if not file_name:
             obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_mime.value
+            file_name = str(obj_id) + "." + obj_ext.value
 
         super().__init__(file_name=file_name)
 
@@ -257,23 +257,23 @@ class PDF(HykoBaseType):
 class CSV(HykoBaseType):
     @field_validator("file_name")
     @classmethod
-    def mime_validator(cls, file_name: str):
-        _, obj_mime = os.path.splitext(file_name)
-        if obj_mime.lstrip(".") not in [
-            MimeType.CSV.value,
+    def ext_validator(cls, file_name: str):
+        _, obj_ext = os.path.splitext(file_name)
+        if obj_ext.lstrip(".") not in [
+            Ext.CSV.value,
         ]:
-            raise ValueError("Invalid mime for Audio")
+            raise ValueError("Invalid file extension for CSV")
         return file_name
 
     def __init__(
         self,
-        obj_mime: MimeType = MimeType.CSV,
+        obj_ext: Ext = Ext.CSV,
         file_name: Optional[str] = None,
         val: Optional[bytes] = None,
     ):
         if not file_name:
             obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_mime.value
+            file_name = str(obj_id) + "." + obj_ext.value
 
         super().__init__(file_name=file_name)
 
