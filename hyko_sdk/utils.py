@@ -29,10 +29,10 @@ def to_friendly_types(pydantic_model: Type[BaseModel]):
         annotation = annotation.replace("hyko_sdk.io.", "")
         annotation = annotation.replace("__main__.", "")
         annotation = annotation.replace("typing.", "")
-        annotation = annotation.replace("str", "string")
-        annotation = annotation.replace("int", "number")
-        annotation = annotation.replace("float", "number")
         annotation = annotation.replace(" ", "")
         annotation = annotation.replace("'", "")
+        annotation = annotation.replace("str", "text")
+        annotation = annotation.replace("int", "whole number")
+        annotation = annotation.replace("float", "decimal number")
         out[field_name] = annotation
     return out
