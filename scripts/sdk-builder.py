@@ -96,12 +96,12 @@ def check_property(  # noqa: C901
         raise NotAllowedTypesError(function_name, field_name, field_type)
 
     if not allow_union:
-        if field.anyOf is not None:
-            if len(field.anyOf) == 2 and (
-                field.anyOf[0].type is not None
-                and field.anyOf[0].type == IOPortType.NULL
-                or field.anyOf[1].type is not None
-                and field.anyOf[1].type == IOPortType.NULL
+        if field.any_of is not None:
+            if len(field.any_of) == 2 and (
+                field.any_of[0].type is not None
+                and field.any_of[0].type == IOPortType.NULL
+                or field.any_of[1].type is not None
+                and field.any_of[1].type == IOPortType.NULL
             ):
                 """This is to allow Optional[Type]"""
                 pass
@@ -123,8 +123,8 @@ def check_property(  # noqa: C901
                 allow_enum,
             )
 
-        elif field.prefixItems is not None:
-            for item in field.prefixItems:
+        elif field.prefix_items is not None:
+            for item in field.prefix_items:
                 check_property(
                     function_name, item, field_name, field_type, allow_union, allow_enum
                 )
