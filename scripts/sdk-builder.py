@@ -6,11 +6,10 @@ import string
 import subprocess
 import sys
 import threading
-from typing import Literal
 
-import pydantic
+from pydantic import ValidationError
 
-from hyko_sdk.metadata import Category, IOPortType, MetaData, MetaDataBase, Property
+from hyko_sdk.metadata import Category, MetaData, MetaDataBase
 from hyko_sdk.utils import metadata_to_docker_label
 
 skip_folders = ["__pycache__", "venv"]
@@ -28,111 +27,11 @@ class FunctionBuildError(RuntimeError):
         super().__init__(f"Error while building {function_name}, reason: {reason}")
 
 
-class NotAllowedTypesError(FunctionBuildError):
-    def __init__(
-        self,
-        function_name: str,
-        field_name: str,
-        field_type: Literal["input"] | Literal["output"] | Literal["param"],
-    ) -> None:
-        super().__init__(
-            function_name,
-            f"Dictionary or None types are not allowed: {field_type} name: {field_name}",
-        )
-
-
-class UnionNotAllowedError(FunctionBuildError):
-    def __init__(
-        self,
-        function_name: str,
-        field_name: str,
-        field_type: Literal["input"] | Literal["output"] | Literal["param"],
-    ) -> None:
-        super().__init__(
-            function_name,
-            f"Union is not allowed in {field_type} ports: {field_type} name: {field_name}",
-        )
-
-
-class EnumNotAllowedError(FunctionBuildError):
-    def __init__(
-        self,
-        function_name: str,
-        field_name: str,
-        field_type: Literal["input"] | Literal["output"] | Literal["param"],
-    ) -> None:
-        super().__init__(
-            function_name,
-            f"Enum is not allowed in {field_type} ports: {field_type} name: {field_name}",
-        )
-
-
-class UnknownArrayItemsTypeError(FunctionBuildError):
-    def __init__(
-        self,
-        function_name: str,
-        field_name: str,
-        field_type: Literal["input"] | Literal["output"] | Literal["param"],
-    ) -> None:
-        super().__init__(
-            function_name,
-            f"list[Unknown] is not allowed. {field_type} name: {field_name}",
-        )
-
-
 failed_functions: list[FunctionBuildError] = []
 failed_functions_lock = threading.Lock()
 
 
-def check_property(  # noqa: C901
-    function_name: str,
-    field: Property,
-    field_name: str,
-    field_type: Literal["input", "output", "param"],
-    allow_union: bool,
-    allow_enum: bool,
-):
-    if field.type == IOPortType.OBJECT or field.type == IOPortType.NULL:
-        raise NotAllowedTypesError(function_name, field_name, field_type)
-
-    if not allow_union:
-        if field.any_of is not None:
-            if len(field.any_of) == 2 and (
-                field.any_of[0].type is not None
-                and field.any_of[0].type == IOPortType.NULL
-                or field.any_of[1].type is not None
-                and field.any_of[1].type == IOPortType.NULL
-            ):
-                """This is to allow Optional[Type]"""
-                pass
-            else:
-                raise UnionNotAllowedError(function_name, field_name, field_type)
-
-    if not allow_enum:
-        if field.ref is not None:
-            raise EnumNotAllowedError(function_name, field_name, field_type)
-
-    if field.type == IOPortType.ARRAY:
-        if field.items is not None:
-            check_property(
-                function_name,
-                field.items,
-                field_name,
-                field_type,
-                allow_union,
-                allow_enum,
-            )
-
-        elif field.prefix_items is not None:
-            for item in field.prefix_items:
-                check_property(
-                    function_name, item, field_name, field_type, allow_union, allow_enum
-                )
-        else:
-            raise UnknownArrayItemsTypeError(function_name, field_name, field_type)
-
-
-def process_function_dir(path: str, registry_host: str):  # noqa: C901
+def process_function_dir(path: str, registry_host: str):
     """Path has to be a valid path with no spaces in it"""
     path = path.lstrip("./")
     path = path.rstrip("/")
@@ -176,8 +75,6 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
 
         if len(splitted) == 2:
             metadata = splitted[1]
-        elif len(splitted) == 1:
-            metadata = splitted[0]
         else:
             print("Probably an error happen in while catching stdout from metadata")
             return
@@ -194,53 +91,8 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
                 category=category,
                 task=task,
             )
-        except pydantic.ValidationError as e:
+        except ValidationError as e:
             raise FunctionBuildError(function_name, "Invalid Function MetaData") from e
-
-        fields: list[str] = []
-
-        # INPUTS
-        for field_name, field in metadata.inputs.properties.items():
-            check_property(
-                function_name,
-                field,
-                field_name,
-                "input",
-                allow_union=True,
-                allow_enum=False,
-            )
-            fields.append(field_name)
-
-        # PARAMETERS
-        for field_name, field in metadata.params.properties.items():
-            check_property(
-                function_name,
-                field,
-                field_name,
-                "param",
-                allow_union=False,
-                allow_enum=True,
-            )
-            fields.append(field_name)
-
-        # OUTPUTS
-        for field_name, field in metadata.outputs.properties.items():
-            check_property(
-                function_name,
-                field,
-                field_name,
-                "output",
-                allow_union=False,
-                allow_enum=False,
-            )
-            fields.append(field_name)
-
-        unique_fields = set(fields)
-        if len(unique_fields) != len(fields):
-            raise FunctionBuildError(
-                function_name,
-                "Port name must be unique within a function (across inputs, params and outputs)",
-            )
 
         print("Building...")
         build_cmd = "docker build "
