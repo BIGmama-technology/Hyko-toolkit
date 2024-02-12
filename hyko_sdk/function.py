@@ -16,6 +16,8 @@ OnStartupFuncType = Callable[[ParamsType], Coroutine[Any, Any, None]]
 OnShutdownFuncType = Callable[[], Coroutine[Any, Any, None]]
 OnExecuteFuncType = Callable[[InputsType, ParamsType], Coroutine[Any, Any, OutputsType]]
 
+T = TypeVar("T", bound=Type[BaseModel])
+
 
 class SDKFunction(FastAPI):
     def __init__(
@@ -31,19 +33,19 @@ class SDKFunction(FastAPI):
         self.startup_params: Type[BaseModel] = CoreModel
         self.started: bool = False
 
-    def set_input(self, cls: Any):
+    def set_input(self, cls: T) -> T:
         self.inputs = cls
         return cls
 
-    def set_output(self, cls: Any):
+    def set_output(self, cls: T) -> T:
         self.outputs = cls
         return cls
 
-    def set_param(self, cls: Any):
+    def set_param(self, cls: T) -> T:
         self.params = cls
         return cls
 
-    def set_startup_params(self, cls: Any):
+    def set_startup_params(self, cls: T) -> T:
         self.startup_params = cls
         return cls
 
