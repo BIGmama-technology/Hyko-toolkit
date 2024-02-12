@@ -35,9 +35,9 @@ def opacity(img: np.ndarray, opacity: float) -> np.ndarray:
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    file, ext = os.path.splitext(inputs.image.get_name())  # type: ignore
+    file, ext = os.path.splitext(inputs.image.get_name())
     with open(f"./image{ext}", "wb") as f:
-        f.write(inputs.image.get_data())  # type: ignore
+        f.write(inputs.image.get_data())
 
     img_np = np.array(PIL_Image.open(f"./image{ext}"))
 

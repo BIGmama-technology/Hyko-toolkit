@@ -17,7 +17,7 @@ from pydantic_core import core_schema
 
 from hyko_sdk.types import Ext
 
-GLOBAL_STORAGE_PATH = "/home/hachem/bigmama/hyko/Hyko-sdk/storage"
+GLOBAL_STORAGE_PATH = "/storage"
 
 
 class HykoBaseType:
