@@ -16,9 +16,9 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             status_code=500, detail="Scale factor must be a positive value"
         )
 
-    file, ext = os.path.splitext(inputs.image.get_name())  # type: ignore
+    file, ext = os.path.splitext(inputs.image.get_name())
     with open(f"./image{ext}", "wb") as f:
-        f.write(inputs.image.get_data())  # type: ignore
+        f.write(inputs.image.get_data())
 
     image_pil = PIL_Image.open(f"./image{ext}")
     image_cv2 = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
