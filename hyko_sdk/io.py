@@ -17,7 +17,7 @@ from pydantic_core import core_schema
 
 from hyko_sdk.types import Ext
 
-GLOBAL_STORAGE_PATH = "/storage"
+GLOBAL_STORAGE_PATH = "/home/hachem/bigmama/hyko/Hyko-sdk/storage"
 
 
 class HykoBaseType:
@@ -39,25 +39,27 @@ class HykoBaseType:
             self.save(val)
 
     @staticmethod
-    def validate_object(val: "HykoBaseType"):
-        file_name = val.file_name
-        obj_id, obj_ext = os.path.splitext(file_name)
-        obj_id = UUID(obj_id)
-        obj_ext = Ext(obj_ext.lstrip("."))
-        return HykoBaseType(obj_ext=obj_ext, file_name=file_name)
+    def validate_object(val: Any) -> Any:
+        ...
 
     @staticmethod
-    def validate_file_name(file_name: str):
-        obj_id, obj_ext = os.path.splitext(file_name)
-        obj_id = UUID(obj_id)
-        obj_ext = Ext(obj_ext.lstrip("."))
-        return HykoBaseType(obj_ext=obj_ext, file_name=file_name)
+    def validate_file_name(file_name: str) -> Any:
+        ...
 
     def get_name(self) -> str:
         return self.file_name
 
     def save(self, obj_data: bytes) -> None:
-        """save obj to file system"""
+        """Save obj to file system.
+
+        Now its saving both preview and original;.
+        TODO: preview should be of less quality."""
+
+        with open(
+            os.path.join(GLOBAL_STORAGE_PATH, "preview_" + self.file_name), "wb"
+        ) as f:
+            f.write(obj_data)
+
         with open(os.path.join(GLOBAL_STORAGE_PATH, self.file_name), "wb") as f:
             f.write(obj_data)
 
@@ -110,6 +112,30 @@ class HykoBaseType:
 
 class Image(HykoBaseType):
     @staticmethod
+    def validate_object(val: "Image"):
+        file_name = val.file_name
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [
+            Ext.PNG,
+            Ext.JPEG,
+            Ext.MPEG,
+        ], "Invalid file extension for Image error"
+        return Image(obj_ext=obj_ext, file_name=file_name)
+
+    @staticmethod
+    def validate_file_name(file_name: str):
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [
+            Ext.PNG,
+            Ext.JPEG,
+        ], "Invalid file extension for Image error"
+        return Image(obj_ext=obj_ext, file_name=file_name)
+
+    @staticmethod
     def from_ndarray(
         arr: np.ndarray[Any, Any],
         encoding: Ext = Ext.PNG,
@@ -155,6 +181,31 @@ class Image(HykoBaseType):
 
 class Audio(HykoBaseType):
     @staticmethod
+    def validate_object(val: "Audio"):
+        file_name = val.file_name
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [
+            Ext.MP3,
+            Ext.WEBM,
+            Ext.WAV,
+        ], "Invalid file extension for Audio error"
+        return Audio(obj_ext=obj_ext, file_name=file_name)
+
+    @staticmethod
+    def validate_file_name(file_name: str):
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [
+            Ext.MP3,
+            Ext.WEBM,
+            Ext.WAV,
+        ], "Invalid file extension for Audio error"
+        return Audio(obj_ext=obj_ext, file_name=file_name)
+
+    @staticmethod
     def from_ndarray(arr: np.ndarray[Any, Any], sampling_rate: int) -> "Audio":
         file = io.BytesIO()
         soundfile.write(file, arr, samplerate=sampling_rate, format="MP3")  # type: ignore
@@ -195,12 +246,63 @@ class Audio(HykoBaseType):
 
 
 class Video(HykoBaseType):
-    pass
+    @staticmethod
+    def validate_object(val: "Video"):
+        file_name = val.file_name
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [
+            Ext.MP4,
+            Ext.WEBM,
+        ], "Invalid file extension for Video error"
+        return Video(obj_ext=obj_ext, file_name=file_name)
+
+    @staticmethod
+    def validate_file_name(file_name: str):
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [
+            Ext.MP4,
+            Ext.WEBM,
+        ], "Invalid file extension for Video error"
+        return Video(obj_ext=obj_ext, file_name=file_name)
 
 
 class PDF(HykoBaseType):
-    pass
+    @staticmethod
+    def validate_object(val: "PDF"):
+        file_name = val.file_name
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [Ext.PDF], "Invalid file extension for PDF error"
+        return PDF(obj_ext=obj_ext, file_name=file_name)
+
+    @staticmethod
+    def validate_file_name(file_name: str):
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [Ext.PDF], "Invalid file extension for PDF error"
+        return PDF(obj_ext=obj_ext, file_name=file_name)
 
 
 class CSV(HykoBaseType):
-    pass
+    @staticmethod
+    def validate_object(val: "CSV"):
+        file_name = val.file_name
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [Ext.CSV], "Invalid file extension for CSV error"
+        return CSV(obj_ext=obj_ext, file_name=file_name)
+
+    @staticmethod
+    def validate_file_name(file_name: str):
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        assert obj_ext.value in [Ext.CSV], "Invalid file extension for CSV error"
+        return CSV(obj_ext=obj_ext, file_name=file_name)
