@@ -1,7 +1,7 @@
 import io
 import os
 import subprocess
-from typing import Any, Optional
+from typing import Any, Optional, Self
 from uuid import UUID, uuid4
 
 import numpy as np
@@ -9,36 +9,52 @@ import soundfile  # type: ignore
 from numpy.typing import NDArray
 from PIL import Image as PIL_Image
 from pydantic import (
+    GetCoreSchemaHandler,
     GetJsonSchemaHandler,
-    field_validator,
 )
 from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
 
-from hyko_sdk.metadata import CoreModel
 from hyko_sdk.types import Ext
 
-GLOBAL_STORAGE_PATH = "/app/storage"
+GLOBAL_STORAGE_PATH = "/home/hachem/bigmama/hyko/Hyko-sdk/storage"
 
 
-class HykoBaseType(CoreModel):
+class HykoBaseType:
     file_name: str
 
-    @field_validator("file_name")
-    @classmethod
-    def validate_file_name(cls, file_name: str):
+    def __init__(
+        self,
+        obj_ext: Ext,
+        file_name: Optional[str] = None,
+        val: Optional[bytes] = None,
+    ):
+        if not file_name:
+            obj_id = uuid4()
+            file_name = str(obj_id) + "." + obj_ext.value
+
+        self.file_name = file_name
+
+        if val:
+            self.save(val)
+
+    @staticmethod
+    def validate_object(val: "HykoBaseType"):
+        file_name = val.file_name
         obj_id, obj_ext = os.path.splitext(file_name)
         obj_id = UUID(obj_id)
         obj_ext = Ext(obj_ext.lstrip("."))
-        return file_name
+        return HykoBaseType(obj_ext=obj_ext, file_name=file_name)
+
+    @staticmethod
+    def validate_file_name(file_name: str):
+        obj_id, obj_ext = os.path.splitext(file_name)
+        obj_id = UUID(obj_id)
+        obj_ext = Ext(obj_ext.lstrip("."))
+        return HykoBaseType(obj_ext=obj_ext, file_name=file_name)
 
     def get_name(self) -> str:
         return self.file_name
-
-    def get_ext(self) -> Ext:
-        _, obj_ext = os.path.splitext(self.file_name)
-        obj_ext = Ext(obj_ext.lstrip("."))
-        return obj_ext
 
     def save(self, obj_data: bytes) -> None:
         """save obj to file system"""
@@ -61,31 +77,38 @@ class HykoBaseType(CoreModel):
 
         return json_schema
 
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls,
+        source: Self,
+        handler: GetCoreSchemaHandler,
+    ) -> core_schema.CoreSchema:
+        json_schema = core_schema.chain_schema(
+            [
+                core_schema.str_schema(),
+                core_schema.no_info_plain_validator_function(cls.validate_file_name),
+            ],
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                cls.get_name
+            ),
+        )
+
+        python_schema = core_schema.union_schema(
+            [
+                json_schema,
+                core_schema.no_info_plain_validator_function(cls.validate_object),
+            ],
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                cls.get_name
+            ),
+        )
+        return core_schema.json_or_python_schema(
+            json_schema=json_schema,
+            python_schema=python_schema,
+        )
+
 
 class Image(HykoBaseType):
-    @field_validator("file_name")
-    @classmethod
-    def ext_validator(cls, file_name: str):
-        _, obj_ext = os.path.splitext(file_name)
-        if obj_ext.lstrip(".") not in [Ext.PNG.value, Ext.JPEG.value]:
-            raise ValueError("Invalid file extension for image")
-        return file_name
-
-    def __init__(
-        self,
-        obj_ext: Ext = Ext.PNG,
-        file_name: Optional[str] = None,
-        val: Optional[bytes] = None,
-    ):
-        if not file_name:
-            obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_ext.value
-
-        super().__init__(file_name=file_name)
-
-        if val:
-            self.save(val)
-
     @staticmethod
     def from_ndarray(
         arr: np.ndarray[Any, Any],
@@ -131,34 +154,6 @@ class Image(HykoBaseType):
 
 
 class Audio(HykoBaseType):
-    @field_validator("file_name")
-    @classmethod
-    def ext_validator(cls, file_name: str):
-        _, obj_ext = os.path.splitext(file_name)
-        if obj_ext.lstrip(".") not in [
-            Ext.MPEG.value,
-            Ext.WEBM.value,
-            Ext.WAV.value,
-            Ext.MP3.value,
-        ]:
-            raise ValueError("Invalid file extension for Audio")
-        return file_name
-
-    def __init__(
-        self,
-        obj_ext: Ext = Ext.MP3,
-        file_name: Optional[str] = None,
-        val: Optional[bytes] = None,
-    ):
-        if not file_name:
-            obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_ext.value
-
-        super().__init__(file_name=file_name)
-
-        if val:
-            self.save(val)
-
     @staticmethod
     def from_ndarray(arr: np.ndarray[Any, Any], sampling_rate: int) -> "Audio":
         file = io.BytesIO()
@@ -200,82 +195,12 @@ class Audio(HykoBaseType):
 
 
 class Video(HykoBaseType):
-    @field_validator("file_name")
-    @classmethod
-    def ext_validator(cls, file_name: str):
-        _, obj_ext = os.path.splitext(file_name)
-        if obj_ext.lstrip(".") not in [
-            Ext.WEBM.value,
-            Ext.MP4.value,
-        ]:
-            raise ValueError("Invalid file extension for Video")
-        return file_name
-
-    def __init__(
-        self,
-        obj_ext: Ext = Ext.MP4,
-        file_name: Optional[str] = None,
-        val: Optional[bytes] = None,
-    ):
-        if not file_name:
-            obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_ext.value
-
-        super().__init__(file_name=file_name)
-
-        if val:
-            self.save(val)
+    pass
 
 
 class PDF(HykoBaseType):
-    @field_validator("file_name")
-    @classmethod
-    def ext_validator(cls, file_name: str):
-        _, obj_ext = os.path.splitext(file_name)
-        if obj_ext.lstrip(".") not in [
-            Ext.PDF.value,
-        ]:
-            raise ValueError("Invalid file extension for PDF")
-        return file_name
-
-    def __init__(
-        self,
-        obj_ext: Ext = Ext.PDF,
-        file_name: Optional[str] = None,
-        val: Optional[bytes] = None,
-    ):
-        if not file_name:
-            obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_ext.value
-
-        super().__init__(file_name=file_name)
-
-        if val:
-            self.save(val)
+    pass
 
 
 class CSV(HykoBaseType):
-    @field_validator("file_name")
-    @classmethod
-    def ext_validator(cls, file_name: str):
-        _, obj_ext = os.path.splitext(file_name)
-        if obj_ext.lstrip(".") not in [
-            Ext.CSV.value,
-        ]:
-            raise ValueError("Invalid file extension for CSV")
-        return file_name
-
-    def __init__(
-        self,
-        obj_ext: Ext = Ext.CSV,
-        file_name: Optional[str] = None,
-        val: Optional[bytes] = None,
-    ):
-        if not file_name:
-            obj_id = uuid4()
-            file_name = str(obj_id) + "." + obj_ext.value
-
-        super().__init__(file_name=file_name)
-
-        if val:
-            self.save(val)
+    pass
