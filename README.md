@@ -92,7 +92,7 @@ async def shutdown(x)
 `Dockerfile`
 
 ```Dockerfile
-FROM torch-cuda:latest # or FROM hyko-sdk:latest in case you dont need torch and cuda
+FROM hyko-sdk:latest# or FROM hyko-sdk:latest in case you dont need torch and cuda
 
 WORKDIR /app
 
