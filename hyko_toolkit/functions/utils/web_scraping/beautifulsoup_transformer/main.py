@@ -20,7 +20,12 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     loader = AsyncChromiumLoader(urls=inputs.urls)
     docs = loader.load()
     bs_transformer = BeautifulSoupTransformer()
-    tags = params.tags_to_extract.split("+")
+    tags = "".join(params.tags_to_extract.split()).split(",")
     docs_transformed = bs_transformer.transform_documents(docs, tags)
-    page_contents = [text.page_content for text in docs_transformed]
+    # Assuming docs_transformed is a list of transformed documents
+    page_contents = []
+    # Iterate over each transformed document and concatenate it with the URL header
+    for i, text in enumerate(docs_transformed):
+        url_header = f"\n=== URL {i+1} {inputs.urls[i]} === \n"
+        page_contents.append(f"{url_header}\n{text.page_content}")
     return Outputs(result=page_contents)
