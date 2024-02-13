@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -25,7 +25,6 @@ class HykoExtraTypes(str, Enum):
 class Property(BaseModel):
     type: Optional[IOPortType | HykoExtraTypes] = None
     description: Optional[str] = None
-    default: Optional[Any] = None
     all_of: Optional[list[dict[str, str]]] = Field(default=None, alias="allOf")
     ref: Optional[str] = Field(default=None, alias="$ref")
 
@@ -33,16 +32,12 @@ class Property(BaseModel):
     any_of: Optional[List["Property"]] = Field(default=None, alias="anyOf")
 
     items: Optional["Property"] = None
-    prefix_items: Optional[List["Property"]] = Field(default=None, alias="prefixItems")
-    min_items: Optional[int] = Field(default=None, alias="minItems")
-    max_items: Optional[int] = Field(default=None, alias="maxItems")
 
     model_config = ConfigDict(populate_by_name=True)
 
 
 class HykoJsonSchema(BaseModel):
     properties: Dict[str, Property] = {}
-    required: Optional[List[str]] = None
     defs: Optional[Dict[str, Property]] = Field(default=None, alias="$defs")
     friendly_types: Dict[str, str] = {}
 
