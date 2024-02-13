@@ -17,6 +17,10 @@ RUN touch README.md
 
 RUN poetry install --without dev --no-root && rm -rf $POETRY_CACHE_DIR
 
+# Conditional installation based on the build argument
+ARG INSTALL_OPTIONAL_PACKAGES=false
+RUN if [ "$INSTALL_OPTIONAL_PACKAGES" = "true" ] ; then poetry add transformers[torch] diffusers[torch] accelerate sentencepiece ; fi
+
 WORKDIR /hyko_sdk
 COPY hyko_sdk .
 RUN poetry install --without dev

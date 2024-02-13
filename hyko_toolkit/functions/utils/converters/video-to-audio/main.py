@@ -4,6 +4,7 @@ import subprocess
 from metadata import Inputs, Outputs, Params, func
 
 from hyko_sdk.io import Audio
+from hyko_sdk.types import Ext
 
 
 @func.on_execute
@@ -17,7 +18,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
 
     with open("audio.mp3", "rb") as f:
         data = f.read()
-
-    audio = Audio(bytearray(data), filename="audio.mp3", mime_type="MPEG")
     os.remove("audio.mp3")
+
+    audio = Audio(val=data, obj_ext=Ext.MP3)
     return Outputs(audio=audio)
