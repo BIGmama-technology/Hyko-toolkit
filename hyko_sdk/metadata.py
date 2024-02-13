@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -22,30 +22,26 @@ class HykoExtraTypes(str, Enum):
     CSV = "csv"
 
 
-class JsonSchemaEnum(BaseModel):
-    enum: list[str]
-    type: IOPortType
-
-
 class Property(BaseModel):
     type: Optional[IOPortType | HykoExtraTypes] = None
-    anyOf: Optional[List["Property"]] = None  # noqa: N815
-    items: Optional["Property"] = None
-    prefixItems: Optional[List["Property"]] = None  # noqa: N815
-    minItems: Optional[int] = None  # noqa: N815
-    maxItems: Optional[int] = None  # noqa: N815
     description: Optional[str] = None
-    default: Optional[Any] = None
+    all_of: Optional[list[dict[str, str]]] = Field(default=None, alias="allOf")
     ref: Optional[str] = Field(default=None, alias="$ref")
+
+    enum: Optional[list[str]] = None
+    any_of: Optional[List["Property"]] = Field(default=None, alias="anyOf")
+
+    items: Optional["Property"] = None
+
     model_config = ConfigDict(populate_by_name=True)
 
 
 class HykoJsonSchema(BaseModel):
     properties: Dict[str, Property] = {}
-    required: List[str] = []
-    defs: Optional[Dict[str, JsonSchemaEnum]] = Field(default=None, alias="$defs")
+    defs: Optional[Dict[str, Property]] = Field(default=None, alias="$defs")
+    friendly_types: Dict[str, str] = {}
+
     model_config = ConfigDict(populate_by_name=True)
-    friendly_property_types: Dict[str, str] = {}
 
 
 class MetaDataBase(BaseModel):
@@ -54,7 +50,6 @@ class MetaDataBase(BaseModel):
     params: HykoJsonSchema
     inputs: HykoJsonSchema
     outputs: HykoJsonSchema
-    model_config = ConfigDict(populate_by_name=True)
 
 
 class Category(str, Enum):
