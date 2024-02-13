@@ -31,7 +31,7 @@ failed_functions: list[FunctionBuildError] = []
 failed_functions_lock = threading.Lock()
 
 
-def process_function_dir(path: str, registry_host: str):
+def process_function_dir(path: str, registry_host: str):  # noqa: C901
     """Path has to be a valid path with no spaces in it"""
     path = path.lstrip("./")
     path = path.rstrip("/")
@@ -94,6 +94,20 @@ def process_function_dir(path: str, registry_host: str):
         except ValidationError as e:
             raise FunctionBuildError(function_name, "Invalid Function MetaData") from e
 
+        print("re-build hyko_sdk image with or without extra packages")
+        build_cmd = "docker build -t hyko-sdk:latest "
+        build_cmd += "--build-arg INSTALL_OPTIONAL_PACKAGES="
+        build_cmd += "true" if category == Category.MODEL else "false"
+        build_cmd += " -f common_dockerfiles/hyko-sdk.Dockerfile ."
+
+        try:
+            subprocess.run(build_cmd.split(" "), check=True)
+        except subprocess.CalledProcessError as e:
+            raise FunctionBuildError(
+                function_name,
+                "Failed to build hyko sdk docker image",
+            ) from e
+
         print("Building...")
         build_cmd = "docker build "
         build_cmd += f"--build-arg CATEGORY={category} "
@@ -134,21 +148,13 @@ def process_function_dir(path: str, registry_host: str):
         failed_functions_lock.release()
 
 
-def walk_directory(
-    path: str, threaded: bool, registry_host: str, enable_cuda: bool = False
-):
+def walk_directory(path: str, threaded: bool, registry_host: str):
     ls = os.listdir(path)
 
     if (
         all(f in ls for f in ["main.py", "metadata.py", "Dockerfile"])
         and ".hykoignore" not in ls
     ):
-        if not enable_cuda:
-            with open(path + "/Dockerfile") as f:
-                dockerfile = f.read()
-                if "cuda" in dockerfile:
-                    return
-
         all_built_functions.append(path)
 
         if threaded:
@@ -168,9 +174,7 @@ def walk_directory(
             if not os.path.isdir(path + "/" + sub_folder):
                 continue
 
-            walk_directory(
-                path + "/" + sub_folder, threaded, registry_host, enable_cuda
-            )
+            walk_directory(path + "/" + sub_folder, threaded, registry_host)
 
 
 def parse_args(args: list[str]) -> argparse.Namespace:
@@ -185,7 +189,6 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         type=str,
     )
     parser.add_argument("--threaded", action="store_true", help="Enable threaded mode")
-    parser.add_argument("--cuda", action="store_true", help="Re-build torch-cuda image")
     parser.add_argument(
         "--registry",
         default="registry.traefik.me",
@@ -201,23 +204,10 @@ if __name__ == "__main__":
     directories = args.dir
     threaded = args.threaded
     registry_host = args.registry
-    enable_cuda = args.cuda
-
-    subprocess.run(
-        "docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
-            " "
-        )
-    )
-    if enable_cuda:
-        subprocess.run(
-            "docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(
-                " "
-            )
-        )
 
     for dir in directories:
         dir = dir.rstrip("/")
-        walk_directory(dir, threaded, registry_host, enable_cuda)
+        walk_directory(dir, threaded, registry_host)
 
     if threaded:
         for thread in threads:
@@ -226,7 +216,7 @@ if __name__ == "__main__":
     successful_count = len(all_built_functions) - len(failed_functions)
 
     print(
-        "no built functions, make sure to run this script with --cuda to build models that require pytorch:"
+        "no built functions"
         if len(all_built_functions) == 0
         else f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function"
     )
