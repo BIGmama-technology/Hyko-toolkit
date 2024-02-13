@@ -19,7 +19,8 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     tags_to_extract: str = Field(
-        ..., description="A list of HTML tags to extract content from"
+        ...,
+        description="Specify HTML tags for extraction, separated by commas.",
     )
 
 
