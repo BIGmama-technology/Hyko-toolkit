@@ -1,4 +1,4 @@
-FROM torch-cuda:latest
+FROM hyko-sdk:latest
 
 WORKDIR /app
 

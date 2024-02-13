@@ -6,11 +6,10 @@ import string
 import subprocess
 import sys
 import threading
-from typing import Literal
 
-import pydantic
+from pydantic import ValidationError
 
-from hyko_sdk.metadata import Category, IOPortType, MetaData, MetaDataBase, Property
+from hyko_sdk.metadata import Category, MetaData, MetaDataBase
 from hyko_sdk.utils import metadata_to_docker_label
 
 skip_folders = ["__pycache__", "venv"]
@@ -28,108 +27,8 @@ class FunctionBuildError(RuntimeError):
         super().__init__(f"Error while building {function_name}, reason: {reason}")
 
 
-class NotAllowedTypesError(FunctionBuildError):
-    def __init__(
-        self,
-        function_name: str,
-        field_name: str,
-        field_type: Literal["input"] | Literal["output"] | Literal["param"],
-    ) -> None:
-        super().__init__(
-            function_name,
-            f"Dictionary or None types are not allowed: {field_type} name: {field_name}",
-        )
-
-
-class UnionNotAllowedError(FunctionBuildError):
-    def __init__(
-        self,
-        function_name: str,
-        field_name: str,
-        field_type: Literal["input"] | Literal["output"] | Literal["param"],
-    ) -> None:
-        super().__init__(
-            function_name,
-            f"Union is not allowed in {field_type} ports: {field_type} name: {field_name}",
-        )
-
-
-class EnumNotAllowedError(FunctionBuildError):
-    def __init__(
-        self,
-        function_name: str,
-        field_name: str,
-        field_type: Literal["input"] | Literal["output"] | Literal["param"],
-    ) -> None:
-        super().__init__(
-            function_name,
-            f"Enum is not allowed in {field_type} ports: {field_type} name: {field_name}",
-        )
-
-
-class UnknownArrayItemsTypeError(FunctionBuildError):
-    def __init__(
-        self,
-        function_name: str,
-        field_name: str,
-        field_type: Literal["input"] | Literal["output"] | Literal["param"],
-    ) -> None:
-        super().__init__(
-            function_name,
-            f"list[Unknown] is not allowed. {field_type} name: {field_name}",
-        )
-
-
 failed_functions: list[FunctionBuildError] = []
 failed_functions_lock = threading.Lock()
-
-
-def check_property(  # noqa: C901
-    function_name: str,
-    field: Property,
-    field_name: str,
-    field_type: Literal["input", "output", "param"],
-    allow_union: bool,
-    allow_enum: bool,
-):
-    if field.type == IOPortType.OBJECT or field.type == IOPortType.NULL:
-        raise NotAllowedTypesError(function_name, field_name, field_type)
-
-    if not allow_union:
-        if field.anyOf is not None:
-            if len(field.anyOf) == 2 and (
-                field.anyOf[0].type is not None
-                and field.anyOf[0].type == IOPortType.NULL
-                or field.anyOf[1].type is not None
-                and field.anyOf[1].type == IOPortType.NULL
-            ):
-                """This is to allow Optional[Type]"""
-                pass
-            else:
-                raise UnionNotAllowedError(function_name, field_name, field_type)
-
-    if not allow_enum:
-        if field.ref is not None:
-            raise EnumNotAllowedError(function_name, field_name, field_type)
-
-    if field.type == IOPortType.ARRAY:
-        if field.items is not None:
-            check_property(
-                function_name,
-                field.items,
-                field_name,
-                field_type,
-                allow_union,
-                allow_enum,
-            )
-
-        elif field.prefixItems is not None:
-            for item in field.prefixItems:
-                check_property(
-                    function_name, item, field_name, field_type, allow_union, allow_enum
-                )
-        else:
-            raise UnknownArrayItemsTypeError(function_name, field_name, field_type)
 
 
 def process_function_dir(path: str, registry_host: str):  # noqa: C901
@@ -176,8 +75,6 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
 
         if len(splitted) == 2:
             metadata = splitted[1]
-        elif len(splitted) == 1:
-            metadata = splitted[0]
         else:
             print("Probably an error happen in while catching stdout from metadata")
             return
@@ -194,53 +91,22 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
                 category=category,
                 task=task,
             )
-        except pydantic.ValidationError as e:
+        except ValidationError as e:
             raise FunctionBuildError(function_name, "Invalid Function MetaData") from e
 
-        fields: list[str] = []
+        print("re-build hyko_sdk image with or without extra packages")
+        build_cmd = "docker build -t hyko-sdk:latest "
+        build_cmd += "--build-arg INSTALL_OPTIONAL_PACKAGES="
+        build_cmd += "true" if category == Category.MODEL else "false"
+        build_cmd += " -f common_dockerfiles/hyko-sdk.Dockerfile ."
 
-        # INPUTS
-        for field_name, field in metadata.inputs.properties.items():
-            check_property(
-                function_name,
-                field,
-                field_name,
-                "input",
-                allow_union=True,
-                allow_enum=False,
-            )
-            fields.append(field_name)
-
-        # PARAMETERS
-        for field_name, field in metadata.params.properties.items():
-            check_property(
-                function_name,
-                field,
-                field_name,
-                "param",
-                allow_union=False,
-                allow_enum=True,
-            )
-            fields.append(field_name)
-
-        # OUTPUTS
-        for field_name, field in metadata.outputs.properties.items():
-            check_property(
-                function_name,
-                field,
-                field_name,
-                "output",
-                allow_union=False,
-                allow_enum=False,
-            )
-            fields.append(field_name)
-
-        unique_fields = set(fields)
-        if len(unique_fields) != len(fields):
+        try:
+            subprocess.run(build_cmd.split(" "), check=True)
+        except subprocess.CalledProcessError as e:
             raise FunctionBuildError(
                 function_name,
-                "Port name must be unique within a function (across inputs, params and outputs)",
-            )
+                "Failed to build hyko sdk docker image",
+            ) from e
 
         print("Building...")
         build_cmd = "docker build "
@@ -282,21 +148,13 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         failed_functions_lock.release()
 
 
-def walk_directory(
-    path: str, threaded: bool, registry_host: str, enable_cuda: bool = False
-):
+def walk_directory(path: str, threaded: bool, registry_host: str):
     ls = os.listdir(path)
 
     if (
         all(f in ls for f in ["main.py", "metadata.py", "Dockerfile"])
         and ".hykoignore" not in ls
     ):
-        if not enable_cuda:
-            with open(path + "/Dockerfile") as f:
-                dockerfile = f.read()
-                if "cuda" in dockerfile:
-                    return
-
         all_built_functions.append(path)
 
         if threaded:
@@ -316,9 +174,7 @@ def walk_directory(
             if not os.path.isdir(path + "/" + sub_folder):
                 continue
 
-            walk_directory(
-                path + "/" + sub_folder, threaded, registry_host, enable_cuda
-            )
+            walk_directory(path + "/" + sub_folder, threaded, registry_host)
 
 
 def parse_args(args: list[str]) -> argparse.Namespace:
@@ -333,7 +189,6 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         type=str,
     )
     parser.add_argument("--threaded", action="store_true", help="Enable threaded mode")
-    parser.add_argument("--cuda", action="store_true", help="Re-build torch-cuda image")
     parser.add_argument(
         "--registry",
         default="registry.traefik.me",
@@ -349,23 +204,10 @@ if __name__ == "__main__":
     directories = args.dir
     threaded = args.threaded
     registry_host = args.registry
-    enable_cuda = args.cuda
-
-    subprocess.run(
-        "docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
-            " "
-        )
-    )
-    if enable_cuda:
-        subprocess.run(
-            "docker build -t torch-cuda:latest -f common_dockerfiles/torch-cuda.Dockerfile .".split(
-                " "
-            )
-        )
 
     for dir in directories:
         dir = dir.rstrip("/")
-        walk_directory(dir, threaded, registry_host, enable_cuda)
+        walk_directory(dir, threaded, registry_host)
 
     if threaded:
         for thread in threads:
@@ -374,7 +216,7 @@ if __name__ == "__main__":
     successful_count = len(all_built_functions) - len(failed_functions)
 
     print(
-        "no built functions, make sure to run this script with --cuda to build models that require pytorch:"
+        "no built functions"
         if len(all_built_functions) == 0
         else f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function"
     )
