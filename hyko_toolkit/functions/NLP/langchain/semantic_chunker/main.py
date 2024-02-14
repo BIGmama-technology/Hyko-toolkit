@@ -26,7 +26,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     docsdocs = text_splitter.create_documents([inputs.text])
     page_contents = []
     for i, text in enumerate(docsdocs):
-        sep = f"\n<<-- Part {i+1} -->>\n"
+        sep = f"<<-- Part {i+1} -->>"
         page_contents.append(f"{sep}\n{text.page_content}")
     output = " ".join(page_contents)
     return Outputs(result=output)
