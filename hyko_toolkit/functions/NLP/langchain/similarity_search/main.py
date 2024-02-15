@@ -33,7 +33,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             "k": params.top_k,
         },
     )
-    relevant_documents = retriever.invoke(params.query)
+    relevant_documents = retriever.invoke(inputs.query)
     relevant_documents = [f"--> {i.page_content} \n" for i in relevant_documents]
     result = " ".join(relevant_documents)
     return Outputs(result=result)
