@@ -14,6 +14,10 @@ class Inputs(CoreModel):
         ...,
         description="Text Input. ",
     )
+    query: str = Field(
+        ...,
+        description="Query or the Question to compare against the input text.",
+    )
 
 
 @func.set_startup_params
@@ -23,10 +27,6 @@ class StartupParams(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    query: str = Field(
-        ...,
-        description="Query to compare against the input text.",
-    )
     top_k: int = Field(
         ...,
         description="Number of top results to consider. ",
