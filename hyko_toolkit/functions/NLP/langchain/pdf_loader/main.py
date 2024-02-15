@@ -6,6 +6,17 @@ from metadata import Inputs, Outputs, Params, func
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
+    """
+    Processes a PDF file provided in binary format, extracts text content from it,
+    and returns the concatenated text as output.
+
+    Args:
+        inputs (Inputs): Input data containing the PDF file in binary format.
+        params (Params): Parameters for the function (not used in this function).
+
+    Returns:
+        Outputs: Extracted text content from the PDF file.
+    """
     pdf_bytes_io = BytesIO(inputs.pdf_file.get_data())
     with open("file.pdf", "wb") as file:
         file.write(pdf_bytes_io.getbuffer())
