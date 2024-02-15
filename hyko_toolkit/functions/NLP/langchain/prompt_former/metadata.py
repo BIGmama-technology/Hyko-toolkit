@@ -3,7 +3,7 @@ from pydantic import Field
 from hyko_sdk.function import SDKFunction
 from hyko_sdk.metadata import CoreModel
 
-func = SDKFunction(description="SemanticChunker Tool.")
+func = SDKFunction(description="Prompt Former Tool.")
 
 
 @func.set_input
@@ -19,4 +19,4 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="Prompt. ")
+    result: str = Field(..., description="Final Prompt. ")
