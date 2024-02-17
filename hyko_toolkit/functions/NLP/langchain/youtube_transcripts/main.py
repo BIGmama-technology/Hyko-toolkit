@@ -24,5 +24,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     )
     documents = loader.load()
     relevant_documents = [i.page_content for i in documents]
-    result = " ".join(relevant_documents)
-    return Outputs(result=result)
+    return Outputs(result=relevant_documents)
