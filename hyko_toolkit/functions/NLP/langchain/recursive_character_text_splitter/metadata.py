@@ -3,7 +3,7 @@ from pydantic import Field
 from hyko_sdk.function import SDKFunction
 from hyko_sdk.metadata import CoreModel
 
-func = SDKFunction(description="Recursive Character Text Splitter Tool.")
+func = SDKFunction(description="Recursive Character Text Splitter.")
 
 
 @func.set_input
@@ -28,4 +28,4 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="Processed text with chunks")
+    chunks: list[str] = Field(..., description="Processed text with chunks")
