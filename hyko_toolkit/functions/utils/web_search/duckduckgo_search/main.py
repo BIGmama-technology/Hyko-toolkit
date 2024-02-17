@@ -22,4 +22,5 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         result_str = ""
         for result in results:
             result_str += f"Title: {result['title']}\nURL: {result['href']}\nBody: {result['body']}\n\n"
-        return Outputs(result=result_str)
+
+    return Outputs(result=result_str)
