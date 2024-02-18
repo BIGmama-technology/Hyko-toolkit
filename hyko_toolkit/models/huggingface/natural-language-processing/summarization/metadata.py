@@ -22,6 +22,7 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     max_length: int = Field(default=130, description="Maximum output length")
+    min_length: int = Field(default=0, description="Minumum output length")
 
 
 @func.set_output
