@@ -1,7 +1,16 @@
+from enum import Enum
+
 from pydantic import Field
 
 from hyko_sdk.function import SDKFunction
 from hyko_sdk.metadata import CoreModel
+
+
+class SupportedLanguages(str, Enum):
+    english = "en"
+    arabic = "ar"
+    french = "fr"
+
 
 func = SDKFunction(description="Search wikipedia summaries.")
 
@@ -20,9 +29,9 @@ class Params(CoreModel):
         ...,
         description="Number of search results to return.",
     )
-    language: str = Field(
+    language: SupportedLanguages = Field(
         ...,
-        description="The search Language (Ex : en or ar).",
+        description="The search Language.",
     )
 
 
