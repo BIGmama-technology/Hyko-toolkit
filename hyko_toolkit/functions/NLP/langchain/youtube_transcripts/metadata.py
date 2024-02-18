@@ -1,7 +1,16 @@
+from enum import Enum
+
 from pydantic import Field
 
 from hyko_sdk.function import SDKFunction
 from hyko_sdk.metadata import CoreModel
+
+
+class SupportedLanguages(str, Enum):
+    english = "en"
+    arabic = "ar"
+    french = "fr"
+
 
 func = SDKFunction(description="Transcript extraction from youtube video.")
 
@@ -16,13 +25,13 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    language: str = Field(
+    language: SupportedLanguages = Field(
         ...,
-        description="Originale Language Id .example : en , ar.",
+        description="Originale Language Id.",
     )
-    translation: str = Field(
+    translation: SupportedLanguages = Field(
         ...,
-        description="Translation Language Id .example : en , ar",
+        description="Translation Language Id.",
     )
 
 
