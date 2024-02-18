@@ -12,4 +12,4 @@ RUN apt-get update && \
     export PATH="$PATH:$(npm bin)"
 
 RUN playwright install chromium
-CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000","--loop" , "asyncio" ,  "main:func"]
+CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "--loop", "asyncio", "main:func"]
