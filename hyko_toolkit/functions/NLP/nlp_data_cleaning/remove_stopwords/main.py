@@ -1,9 +1,12 @@
 import nltk
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, Params, StartupParams, func
 from nltk.tokenize import word_tokenize
 
-nltk.download("punkt")
-nltk.download("stopwords")
+
+@func.on_startup
+async def load(startup_params: StartupParams):
+    nltk.download("punkt")
+    nltk.download("stopwords")
 
 
 @func.on_execute
