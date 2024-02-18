@@ -3,7 +3,9 @@ from pydantic import Field
 from hyko_sdk.function import SDKFunction
 from hyko_sdk.metadata import CoreModel
 
-func = SDKFunction(description="Recursive Character Text Splitter.")
+func = SDKFunction(
+    description="Divides text recursively based on specified characters, ensuring semantic coherence."
+)
 
 
 @func.set_input
