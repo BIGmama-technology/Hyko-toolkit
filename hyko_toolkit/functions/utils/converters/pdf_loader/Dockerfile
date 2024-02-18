@@ -4,5 +4,5 @@ WORKDIR /app
 
 COPY . .
 
-RUN poetry add PyPDF2 pycryptodome
+RUN poetry run pip install langchain pypdf
 CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
