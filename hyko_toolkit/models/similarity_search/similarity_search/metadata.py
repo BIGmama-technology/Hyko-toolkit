@@ -10,9 +10,9 @@ func = SDKFunction(
 
 @func.set_input
 class Inputs(CoreModel):
-    text: str = Field(
+    docs: list[str] = Field(
         ...,
-        description="Text Input. ",
+        description="Text Input.",
     )
     query: str = Field(
         ...,
@@ -29,14 +29,14 @@ class StartupParams(CoreModel):
 class Params(CoreModel):
     top_k: int = Field(
         ...,
-        description="Number of top results to consider. ",
+        description="Number of top results to consider.",
     )
     score_threshold: float = Field(
         ...,
-        description="Threshold score to filter similarity results. ",
+        description="Threshold score to filter similarity results.",
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="Top K results. ")
+    result: list[str] = Field(..., description="Top K results. ")
