@@ -1,5 +1,5 @@
 FROM hyko-sdk:latest
- 
+
 WORKDIR /app
 
 COPY . .
