@@ -21,10 +21,8 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     Returns:
         Outputs: Processed text containing relevant documents based on the similarity score threshold.
     """
-    docs = inputs.text
-    parts = docs.split("<<-- Part")
-    new_doc = [doc.split("-->>")[-1].strip() for doc in parts[1:]]
-    lang_docs = [Document(page_content=i) for i in new_doc]
+    docs = inputs.docs
+    lang_docs = [Document(page_content=i) for i in docs]
     db = FAISS.from_documents(documents=lang_docs, embedding=embeddings)
     retriever = db.as_retriever(
         search_type="similarity_score_threshold",
@@ -34,6 +32,5 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         },
     )
     relevant_documents = retriever.invoke(inputs.query)
-    relevant_documents = [f"--> {i.page_content} \n" for i in relevant_documents]
-    result = " ".join(relevant_documents)
-    return Outputs(result=result)
+    relevant_documents = [i.page_content for i in relevant_documents]
+    return Outputs(result=relevant_documents)
