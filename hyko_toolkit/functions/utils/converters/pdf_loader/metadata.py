@@ -5,7 +5,7 @@ from hyko_sdk.io import PDF
 from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
-    description="Convert a PDF type to String type (extracts the text from the pdf)",
+    description="Extracts text from pdf.",
 )
 
 

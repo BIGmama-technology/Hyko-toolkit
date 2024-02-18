@@ -4,4 +4,4 @@ WORKDIR /app
 COPY . .
 RUN poetry run pip install duckduckgo_search
 
-CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000","--loop" , "asyncio" ,  "main:func"]
+CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "--loop" , "asyncio", "main:func"]
