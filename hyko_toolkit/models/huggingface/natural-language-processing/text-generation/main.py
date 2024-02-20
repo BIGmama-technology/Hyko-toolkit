@@ -20,6 +20,7 @@ async def load(startup_params: StartupParams):
 async def main(inputs: Inputs, params: Params) -> Outputs:
     res: list[dict[str, str]] = pipe(
         inputs.input_text,
+        do_sample=True,
         max_new_tokens=params.max_new_tokens,
         temperature=params.temperature,
         top_p=params.top_p,
