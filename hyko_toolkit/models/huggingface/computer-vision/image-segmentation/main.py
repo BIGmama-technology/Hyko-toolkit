@@ -2,8 +2,9 @@
 TODO handle the output of segmentation, now only one mask is supported and is
 returned as a PIL image.
 """
-
+import numpy as np
 from metadata import Inputs, Outputs, Params, StartupParams, func
+from PIL import Image as PILLImage
 from transformers import pipeline
 
 from hyko_sdk.io import Image
@@ -28,6 +29,9 @@ async def load(startup_params: StartupParams):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     res = segmenter(inputs.input_image.to_pil())
-    mask = Image.from_pil(res[0]["mask"])
-
+    masks = [mask["mask"] for mask in res]
+    mask_arrays = [np.array(mask) for mask in masks]
+    stacked_mask = np.hstack(mask_arrays)
+    stacked_image = PILLImage.fromarray(stacked_mask)
+    mask = Image.from_pil(stacked_image)
     return Outputs(mask=mask)
