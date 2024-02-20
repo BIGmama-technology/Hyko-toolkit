@@ -21,10 +21,12 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    pass
+    top_k: int = Field(
+        default=5, description="Number of top predictions to return (default: 5)."
+    )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    sequence: str = Field(..., description="Filled output text")
-    score: float = Field(..., description="Score of the filled sequence")
+    sequence: list[str] = Field(..., description="Filled output text")
+    score: list[float] = Field(..., description="Score of the filled sequence")
