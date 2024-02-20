@@ -1,8 +1,8 @@
 FROM hyko-sdk:latest
 
 RUN pip install --no-cache-dir transformers[torch]
-RUN pip install --no-cache-dir sentencepiece
 RUN pip install --no-cache-dir accelerate
+RUN pip install --no-cache-dir sentencepiece
 
 COPY . .
 
