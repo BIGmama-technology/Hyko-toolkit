@@ -28,7 +28,12 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    res = segmenter(inputs.input_image.to_pil())
+    res = segmenter(
+        inputs.input_image.to_pil(),
+        threshold=params.threshold,
+        mask_threshold=params.mask_threshold,
+        overlap_mask_area_threshold=params.overlap_mask_area_threshold,
+    )
     masks = [mask["mask"] for mask in res]
     mask_arrays = [np.array(mask) for mask in masks]
     stacked_mask = np.hstack(mask_arrays)
