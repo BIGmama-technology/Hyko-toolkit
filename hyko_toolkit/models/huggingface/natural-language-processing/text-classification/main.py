@@ -19,5 +19,7 @@ async def load(startup_params: StartupParams):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     res = classifier(inputs.input_text)
+    labels = [prediction["label"] for prediction in res]
+    scores = [prediction["score"] for prediction in res]
 
-    return Outputs(label=res[0]["label"], score=res[0]["score"])  # type: ignore
+    return Outputs(label=labels, score=scores)  # type: ignore
