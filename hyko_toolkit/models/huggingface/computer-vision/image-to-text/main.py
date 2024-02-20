@@ -18,6 +18,15 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    res = captioner(inputs.input_image.to_pil())
+    res = captioner(
+        inputs.input_image.to_pil(),
+        max_new_tokens=params.max_new_tokens,
+        generate_kwargs={
+            "do_sample": True,
+            "top_p": params.top_p,
+            "top_k": params.top_k,
+            "temperature": params.temperature,
+        },
+    )
 
     return Outputs(caption=res[0]["generated_text"])  # type: ignore
