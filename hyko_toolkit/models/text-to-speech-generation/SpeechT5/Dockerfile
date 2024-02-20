@@ -1,7 +1,10 @@
 FROM hyko-sdk:latest
 
-WORKDIR /app
+RUN pip install --no-cache-dir transformers[torch]
+RUN pip install --no-cache-dir accelerate
+RUN pip install --no-cache-dir einops 
+RUN pip install --no-cache-dir datasets
+
 COPY . .
 
-RUN poetry run pip install einops datasets
-CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
