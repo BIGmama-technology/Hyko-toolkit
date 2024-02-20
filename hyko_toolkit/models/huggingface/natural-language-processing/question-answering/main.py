@@ -18,7 +18,12 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    res = qa_model(question=inputs.question, context=inputs.context)  # type: ignore
+    res = qa_model(
+        question=inputs.question,
+        context=inputs.context,
+        doc_strideint=params.doc_strideint,
+        top_k=params.top_k,
+    )  # type: ignore
 
     return Outputs(
         answer=res["answer"],  # type: ignore
