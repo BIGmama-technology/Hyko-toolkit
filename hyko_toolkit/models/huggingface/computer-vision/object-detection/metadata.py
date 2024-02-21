@@ -27,4 +27,4 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    summary: str = Field(..., description="Summary of objects detected")
+    final: Image = Field(..., description="final image")
