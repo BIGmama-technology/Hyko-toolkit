@@ -1,6 +1,6 @@
 FROM hyko-sdk:latest
 
-RUN pip install --no-cache-dir duckduckgo_search
+RUN --mount=type=cache,target=/root/.cache/pip pip install duckduckgo_search
 
 COPY . .
 

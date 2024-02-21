@@ -1,9 +1,9 @@
 FROM hyko-sdk:latest
  
-RUN pip install --no-cache-dir langchain 
-RUN pip install --no-cache-dir html2text
-RUN pip install --no-cache-dir BeautifulSoup4
-RUN pip install --no-cache-dir bs4
+RUN --mount=type=cache,target=/root/.cache/pip pip install langchain 
+RUN --mount=type=cache,target=/root/.cache/pip pip install html2text
+RUN --mount=type=cache,target=/root/.cache/pip pip install BeautifulSoup4
+RUN --mount=type=cache,target=/root/.cache/pip pip install bs4
 
 COPY . .
 
