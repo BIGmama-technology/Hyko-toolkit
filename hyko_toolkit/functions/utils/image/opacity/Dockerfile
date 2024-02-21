@@ -1,6 +1,6 @@
 FROM hyko-sdk:latest
 
-RUN pip install --no-cache-dir opencv-python==4.8.0.76 
+RUN --mount=type=cache,target=/root/.cache/pip pip install opencv-python==4.8.0.76 
 
 COPY . .
 

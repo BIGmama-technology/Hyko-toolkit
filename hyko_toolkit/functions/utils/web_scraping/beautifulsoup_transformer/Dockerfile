@@ -6,10 +6,10 @@ RUN apt-get update && \
     npm install -g playwright && \
     export PATH="$PATH:$(npm bin)"
 
-RUN pip install --no-cache-dir playwright 
-RUN pip install --no-cache-dir langchain
-RUN pip install --no-cache-dir beautifulsoup4 
-RUN pip install --no-cache-dir nest_asyncio
+RUN --mount=type=cache,target=/root/.cache/pip pip install playwright 
+RUN --mount=type=cache,target=/root/.cache/pip pip install langchain
+RUN --mount=type=cache,target=/root/.cache/pip pip install beautifulsoup4 
+RUN --mount=type=cache,target=/root/.cache/pip pip install nest_asyncio
 
 RUN playwright install chromium
 
