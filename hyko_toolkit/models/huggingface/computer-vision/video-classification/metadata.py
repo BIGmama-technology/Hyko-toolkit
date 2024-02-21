@@ -22,7 +22,13 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    pass
+    top_k: int = Field(
+        default=1,
+        description="The number of top labels that will be returned by the pipeline.",
+    )
+    frame_sampling_rate: int = Field(
+        default=1, description="The sampling rate used to select frames from the video."
+    )
 
 
 @func.set_output
