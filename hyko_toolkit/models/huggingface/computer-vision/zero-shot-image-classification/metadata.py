@@ -28,4 +28,5 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    summary: str = Field(..., description="Summary of the classification")
+    labels: list[str] = Field(..., description="Class of the image.")
+    scores: list[float] = Field(..., description="Scores for each class.")
