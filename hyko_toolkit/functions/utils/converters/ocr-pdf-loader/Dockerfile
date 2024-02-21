@@ -1,11 +1,12 @@
 FROM hyko-sdk:latest
 
-WORKDIR /app
+ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata
+
+RUN --mount=type=cache,target=/root/.cache/pip pip install pytesseract 
+RUN --mount=type=cache,target=/root/.cache/pip pip install pdf2image 
+RUN --mount=type=cache,target=/root/.cache/pip pip install PyMuPDF
+RUN apt-get update && apt-get install -y tesseract-ocr libtesseract-dev tesseract-ocr-fra tesseract-ocr-ara
 
 COPY . .
 
-RUN poetry run pip install pytesseract pdf2image PyMuPDF
-RUN apt-get update && apt-get install -y tesseract-ocr libtesseract-dev tesseract-ocr-fra tesseract-ocr-ara
-ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata
-
-CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
