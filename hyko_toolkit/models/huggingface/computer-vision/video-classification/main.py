@@ -26,5 +26,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         f.write(inputs.input_video.get_data())
 
     res = segmenter(f"/app/video.{ext}")
-
-    return Outputs(summary=str(res))  # type: ignore
+    labels = [prediction["label"] for prediction in res]
+    scores = [prediction["score"] for prediction in res]
+    return Outputs(labels=labels, scores=scores)
