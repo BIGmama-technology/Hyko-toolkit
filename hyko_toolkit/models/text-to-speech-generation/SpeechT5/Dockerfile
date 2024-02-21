@@ -1,9 +1,9 @@
 FROM hyko-sdk:latest
 
-RUN pip install --no-cache-dir transformers[torch]
-RUN pip install --no-cache-dir accelerate
-RUN pip install --no-cache-dir einops 
-RUN pip install --no-cache-dir datasets
+RUN --mount=type=cache,target=/root/.cache/pip pip install transformers[torch]
+RUN --mount=type=cache,target=/root/.cache/pip pip install accelerate
+RUN --mount=type=cache,target=/root/.cache/pip pip install einops 
+RUN --mount=type=cache,target=/root/.cache/pip pip install datasets
 
 COPY . .
 

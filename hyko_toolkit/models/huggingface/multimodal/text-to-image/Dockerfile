@@ -1,6 +1,6 @@
 FROM hyko-sdk:latest
 
-RUN pip install --no-cache-dir diffusers[torch]
+RUN --mount=type=cache,target=/root/.cache/pip pip install diffusers[torch]
 
 COPY . .
 

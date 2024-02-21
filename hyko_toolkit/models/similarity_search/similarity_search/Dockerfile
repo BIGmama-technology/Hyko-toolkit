@@ -2,9 +2,9 @@ FROM hyko-sdk:latest
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir langchain 
-RUN pip install --no-cache-dir sentence_transformers
-RUN pip install --no-cache-dir faiss-cpu
+RUN --mount=type=cache,target=/root/.cache/pip pip install langchain 
+RUN --mount=type=cache,target=/root/.cache/pip pip install sentence_transformers
+RUN --mount=type=cache,target=/root/.cache/pip pip install faiss-cpu
 
 COPY . .
 
