@@ -5,6 +5,8 @@
 - `./hyko_toolkit` A collection of functions and AI models that are available on hyko.
 - `./scripts/sdk_builder.py` allows you to validate and build images of sdk functions and to push them to a registry.
 
+Make sure to enable build kit in your docker since we are using it to mount cache for pip.
+
 ## To publish
 
 Before publishing a new version of `hyko-sdk` make sure to update its version in `pyproject.toml`
