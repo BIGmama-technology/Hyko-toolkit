@@ -24,7 +24,7 @@ async def load(startup_params: StartupParams):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     img = inputs.input_image.to_pil()
-    res = detector(img)
+    res = detector(img, threshold=params.threshold)
     image = np.array(img.convert("RGB"))
     for result in res:
         box = result["box"]
