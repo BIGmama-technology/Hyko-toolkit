@@ -23,7 +23,10 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    pass
+    hypothesis_template: str = Field(
+        default="This is a photo of {}",
+        description="Template for image classification hypothesis.",
+    )
 
 
 @func.set_output

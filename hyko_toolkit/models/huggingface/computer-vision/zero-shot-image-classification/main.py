@@ -18,7 +18,11 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    res = classifier(inputs.input_image.to_pil(), candidate_labels=inputs.labels)
+    res = classifier(
+        inputs.input_image.to_pil(),
+        candidate_labels=inputs.labels,
+        hypothesis_template=params.hypothesis_template,
+    )
     labels = [prediction["label"] for prediction in res]
     scores = [prediction["score"] for prediction in res]
     return Outputs(labels=labels, scores=scores)
