@@ -1,6 +1,6 @@
 FROM hyko-sdk:latest
 
-RUN pip install langchain
+RUN --mount=type=cache,target=/root/.cache/pip pip install langchain
 
 COPY . .
 
