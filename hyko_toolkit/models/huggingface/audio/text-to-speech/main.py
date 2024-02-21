@@ -18,7 +18,15 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    result_audio = synthesizer(inputs.text)
+    result_audio = synthesizer(
+        inputs=inputs.text,
+        generate_kwargs={
+            "do_sample": True,
+            "top_k": params.top_k,
+            "top_p": params.top_p,
+            "temperature": params.temperature,
+        },
+    )  # type: ignore
     result_audio = Audio.from_ndarray(
         result_audio["audio"], sampling_rate=result_audio["sampling_rate"]
     )
