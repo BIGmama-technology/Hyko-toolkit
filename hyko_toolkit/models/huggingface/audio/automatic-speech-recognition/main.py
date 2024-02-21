@@ -34,6 +34,13 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
 
     result = ""
     for c in chunks:
-        result += recognizer({"sampling_rate": sample_rate, "raw": c})["text"]  # type: ignore
-
+        result += recognizer(
+            inputs={"sampling_rate": sample_rate, "raw": c},
+            generate_kwargs={
+                "do_sample": True,
+                "top_k": params.top_k,
+                "top_p": params.top_p,
+                "temperature": params.temperature,
+            },
+        )["text"]  # type: ignore
     return Outputs(text=result)  # type: ignore
