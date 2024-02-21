@@ -1,7 +1,7 @@
 FROM hyko-sdk:latest
 
-RUN pip install --no-cache-dir langchain 
-RUN pip install --no-cache-dir pypdf
+RUN --mount=type=cache,target=/root/.cache/pip pip install langchain 
+RUN --mount=type=cache,target=/root/.cache/pip pip install pypdf
 
 COPY . .
 

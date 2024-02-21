@@ -1,8 +1,8 @@
 FROM hyko-sdk:latest
 
-RUN pip install --no-cache-dir langchain
-RUN pip install --no-cache-dir pytube
-RUN pip install --no-cache-dir youtube-transcript-api
+RUN --mount=type=cache,target=/root/.cache/pip pip install langchain
+RUN --mount=type=cache,target=/root/.cache/pip pip install pytube
+RUN --mount=type=cache,target=/root/.cache/pip pip install youtube-transcript-api
 
 COPY . .
 

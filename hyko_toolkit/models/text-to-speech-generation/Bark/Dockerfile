@@ -1,8 +1,8 @@
 FROM hyko-sdk:latest
 
 RUN apt update && apt install -y git
-RUN pip install --no-cache-dir transformers[torch]
-RUN pip install --no-cache-dir accelerate
+RUN --mount=type=cache,target=/root/.cache/pip pip install transformers[torch]
+RUN --mount=type=cache,target=/root/.cache/pip pip install accelerate
 RUN pip install "git+https://github.com/suno-ai/bark.git"
 
 COPY . .

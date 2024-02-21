@@ -2,9 +2,9 @@ FROM hyko-sdk:latest
 
 ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata
 
-RUN pip install --no-cache-dir pytesseract 
-RUN pip install --no-cache-dir pdf2image 
-RUN pip install --no-cache-dir PyMuPDF
+RUN --mount=type=cache,target=/root/.cache/pip pip install pytesseract 
+RUN --mount=type=cache,target=/root/.cache/pip pip install pdf2image 
+RUN --mount=type=cache,target=/root/.cache/pip pip install PyMuPDF
 RUN apt-get update && apt-get install -y tesseract-ocr libtesseract-dev tesseract-ocr-fra tesseract-ocr-ara
 
 COPY . .

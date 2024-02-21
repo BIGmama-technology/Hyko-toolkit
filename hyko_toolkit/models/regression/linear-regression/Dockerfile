@@ -1,6 +1,6 @@
 FROM hyko-sdk:latest
 
-RUN pip install --no-cache-dir scikit_learn
+RUN --mount=type=cache,target=/root/.cache/pip pip install scikit_learn
 
 COPY . .
 
