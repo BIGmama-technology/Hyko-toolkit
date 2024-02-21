@@ -27,4 +27,5 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    summary: str = Field(..., description="Summary of results")
+    labels: list[str] = Field(..., description="Class of the video.")
+    scores: list[float] = Field(..., description="Scores for each class.")
