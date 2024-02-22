@@ -28,5 +28,5 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    answer: str = Field(..., description="Generated answer")
-    score: float = Field(..., description="Confidance score")
+    answer: list[str] = Field(..., description="Generated answer")
+    score: list[float] = Field(..., description="Confidance score")
