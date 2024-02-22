@@ -21,7 +21,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     res = qa_model(
         question=inputs.question,
         context=inputs.context,
-        doc_strideint=params.doc_strideint,
+        doc_strideint=params.doc_stride,
         top_k=params.top_k,
     )  # type: ignore
 
