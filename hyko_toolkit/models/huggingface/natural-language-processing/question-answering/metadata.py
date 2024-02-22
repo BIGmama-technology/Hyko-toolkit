@@ -23,7 +23,7 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     top_k: int = Field(default=1, description="Keep best k options (default:1).")
-    doc_strideint: int = Field(
+    doc_stride: int = Field(
         default=1,
         description="The stride of the splitting sliding window (default:128).",
     )
