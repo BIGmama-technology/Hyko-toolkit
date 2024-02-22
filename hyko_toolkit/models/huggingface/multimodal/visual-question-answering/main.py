@@ -21,5 +21,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     res = vqa_pipeline(
         image=inputs.image.to_pil(), question=inputs.question, top_k=params.top_k
     )
-
-    return Outputs(answer=res[0]["answer"], score=res[0]["score"])  # type: ignore
+    answer = [prediction["answer"] for prediction in res]
+    scores = [prediction["score"] for prediction in res]
+    return Outputs(answer=answer, score=scores)  # type: ignore
