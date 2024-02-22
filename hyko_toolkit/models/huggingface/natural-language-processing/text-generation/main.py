@@ -28,8 +28,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     )  # type: ignore
 
     generated_text: str = res[0]["generated_text"]
-
-    # if len(generated_text) >= len(inputs.input_text):
-    #    return Outputs(generated_text=generated_text[len(inputs.input_text) :])
-    # else:
     return Outputs(generated_text=generated_text)
