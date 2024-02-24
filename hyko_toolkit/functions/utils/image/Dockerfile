@@ -1,9 +1,6 @@
-FROM base:latest as deps
+FROM hyko-sdk:latest
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install opencv-python==4.8.0.76 
-
-FROM hyko-sdk:latest
-COPY --from=deps /.venv /.venv
 
 COPY . .
 

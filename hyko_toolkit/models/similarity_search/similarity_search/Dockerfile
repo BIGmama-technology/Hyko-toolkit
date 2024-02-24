@@ -1,11 +1,10 @@
-FROM base:latest as deps
+FROM hyko-sdk:latest
+
+WORKDIR /app
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install langchain 
 RUN --mount=type=cache,target=/root/.cache/pip pip install sentence_transformers
 RUN --mount=type=cache,target=/root/.cache/pip pip install faiss-cpu
-
-FROM hyko-sdk:latest
-COPY --from=deps /.venv /.venv
 
 COPY . .
 
