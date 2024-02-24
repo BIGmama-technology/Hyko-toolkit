@@ -1,9 +1,6 @@
-FROM base:latest as deps
-
-RUN --mount=type=cache,target=/root/.cache/pip pip install nltk
-
 FROM hyko-sdk:latest
-COPY --from=deps /.venv /.venv
+ 
+RUN --mount=type=cache,target=/root/.cache/pip pip install nltk
 
 COPY . .
 
