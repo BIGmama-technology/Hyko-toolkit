@@ -94,20 +94,6 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         except ValidationError as e:
             raise FunctionBuildError(function_name, "Invalid Function MetaData") from e
 
-        print("re-build hyko_sdk image with or without extra packages")
-        build_cmd = "docker build -t hyko-sdk:latest "
-        build_cmd += "--build-arg INSTALL_OPTIONAL_PACKAGES="
-        build_cmd += "true" if category == Category.MODEL else "false"
-        build_cmd += " -f common_dockerfiles/hyko-sdk.Dockerfile ."
-
-        try:
-            subprocess.run(build_cmd.split(" "), check=True)
-        except subprocess.CalledProcessError as e:
-            raise FunctionBuildError(
-                function_name,
-                "Failed to build hyko sdk docker image",
-            ) from e
-
         print("Building...")
         build_cmd = "docker build "
         build_cmd += f"--build-arg CATEGORY={category} "
@@ -204,6 +190,15 @@ if __name__ == "__main__":
     directories = args.dir
     threaded = args.threaded
     registry_host = args.registry
+
+    print("build hyko_sdk image")
+
+    subprocess.run(
+        "docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
+            " "
+        ),
+        check=True,
+    )
 
     for dir in directories:
         dir = dir.rstrip("/")

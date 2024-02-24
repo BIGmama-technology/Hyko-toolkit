@@ -1,9 +1,10 @@
 FROM hyko-sdk:latest
  
-
-WORKDIR /app
+RUN --mount=type=cache,target=/root/.cache/pip pip install langchain 
+RUN --mount=type=cache,target=/root/.cache/pip pip install html2text
+RUN --mount=type=cache,target=/root/.cache/pip pip install BeautifulSoup4
+RUN --mount=type=cache,target=/root/.cache/pip pip install bs4
 
 COPY . .
-RUN poetry run pip install langchain html2text bs4 BeautifulSoup4
 
-CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
