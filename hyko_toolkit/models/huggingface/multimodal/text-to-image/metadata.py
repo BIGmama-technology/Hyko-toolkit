@@ -18,11 +18,22 @@ class StartupParams(CoreModel):
 @func.set_input
 class Inputs(CoreModel):
     prompt: str = Field(..., description="Input text")
+    image: Image = Field(..., description="Input Image")
+    negative_prompt: str = Field(..., description="Input text")
 
 
 @func.set_param
 class Params(CoreModel):
-    pass
+    num_inference_steps: int = Field(
+        default=15, description="The number of denoising steps."
+    )
+    strength: float = Field(
+        default=0.8,
+        description="Indicates extent to transform the reference image (between 0 and 1).",
+    )
+    guidance_scale: float = Field(
+        default=7.5, description="Guidance scale influences image-text coherence.(> 1)"
+    )
 
 
 @func.set_output
