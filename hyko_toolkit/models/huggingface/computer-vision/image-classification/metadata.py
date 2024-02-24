@@ -22,9 +22,12 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    pass
+    top_k: int = Field(
+        default=2, description="Number of top predictions to return (default: 2)."
+    )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    image_class: str = Field(..., description="Class of the image")
+    labels: list[str] = Field(..., description="Class of the image.")
+    scores: list[float] = Field(..., description="Scores.")

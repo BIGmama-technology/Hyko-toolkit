@@ -22,7 +22,17 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    pass
+    threshold: float = Field(
+        default=0.9, description="Probability threshold to filter out predicted masks."
+    )
+    mask_threshold: float = Field(
+        default=0.5,
+        description="Threshold to use when turning the predicted masks into binary values.",
+    )
+    overlap_mask_area_threshold: float = Field(
+        default=0.5,
+        description="Mask overlap threshold to eliminate small, disconnected segments.",
+    )
 
 
 @func.set_output

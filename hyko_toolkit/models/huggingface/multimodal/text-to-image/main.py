@@ -23,6 +23,12 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    res = generator(inputs.prompt)
-
+    res = generator(
+        prompt=inputs.prompt,
+        num_inference_steps=params.num_inference_steps,
+        image=inputs.image,
+        negative_prompt=inputs.negative_prompt,
+        strength=params.strength,
+        guidance_scale=params.guidance_scale,
+    )
     return Outputs(generated_image=Image.from_pil(res.images[0]))  # type: ignore

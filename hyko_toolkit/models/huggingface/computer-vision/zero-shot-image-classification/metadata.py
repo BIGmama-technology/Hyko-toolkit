@@ -23,9 +23,13 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    pass
+    hypothesis_template: str = Field(
+        default="This is a photo of {}",
+        description="Template for image classification hypothesis.",
+    )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    summary: str = Field(..., description="Summary of the classification")
+    labels: list[str] = Field(..., description="Class of the image.")
+    scores: list[float] = Field(..., description="Scores for each class.")

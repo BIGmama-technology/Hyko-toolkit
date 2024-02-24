@@ -16,7 +16,7 @@ class StartupParams(CoreModel):
 
 @func.set_input
 class Inputs(CoreModel):
-    input_text: str = Field(..., description="text to classify")
+    input_text: list[str] = Field(..., description="Text to classify.")
 
 
 @func.set_param
@@ -26,5 +26,5 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    label: str = Field(..., description="Class label")
-    score: float = Field(..., description="Associated score to the class label")
+    label: list[str] = Field(..., description="Class labels")
+    score: list[float] = Field(..., description="Associated score to the class label")
