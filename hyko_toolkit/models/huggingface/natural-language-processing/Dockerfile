@@ -5,7 +5,7 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install accelerate
 RUN --mount=type=cache,target=/root/.cache/pip pip install sentencepiece
 
 FROM hyko-sdk:latest
-COPY --from=deps /.venv/* /.venv/
+COPY --from=deps /.venv /.venv
 
 COPY . .
 
