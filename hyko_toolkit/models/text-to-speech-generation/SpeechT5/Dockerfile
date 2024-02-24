@@ -1,7 +1,10 @@
 FROM hyko-sdk:latest
 
-WORKDIR /app
+RUN --mount=type=cache,target=/root/.cache/pip pip install transformers[torch]
+RUN --mount=type=cache,target=/root/.cache/pip pip install accelerate
+RUN --mount=type=cache,target=/root/.cache/pip pip install einops 
+RUN --mount=type=cache,target=/root/.cache/pip pip install datasets
+
 COPY . .
 
-RUN poetry run pip install einops datasets
-CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "3000", "main:func"]
