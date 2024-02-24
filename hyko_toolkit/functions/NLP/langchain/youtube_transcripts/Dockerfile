@@ -1,8 +1,11 @@
-FROM hyko-sdk:latest
+FROM base:latest as deps
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install langchain
 RUN --mount=type=cache,target=/root/.cache/pip pip install pytube
 RUN --mount=type=cache,target=/root/.cache/pip pip install youtube-transcript-api
+
+FROM hyko-sdk:latest
+COPY --from=deps /.venv /.venv
 
 COPY . .
 

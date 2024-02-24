@@ -1,6 +1,9 @@
-FROM hyko-sdk:latest
+FROM base:latest as deps
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install langchain
+
+FROM hyko-sdk:latest
+COPY --from=deps /.venv /.venv
 
 COPY . .
 
