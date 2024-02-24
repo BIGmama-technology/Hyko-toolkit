@@ -22,6 +22,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     if filler is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
 
-    res = filler(inputs.masked_text)
-
-    return Outputs(sequence=res[0]["sequence"], score=res[0]["score"])  # type: ignore
+    res = filler(inputs.masked_text, top_k=params.top_k)
+    sequences = [prediction["sequence"] for prediction in res]
+    scores = [prediction["score"] for prediction in res]
+    return Outputs(sequence=sequences, score=scores)  # type: ignore

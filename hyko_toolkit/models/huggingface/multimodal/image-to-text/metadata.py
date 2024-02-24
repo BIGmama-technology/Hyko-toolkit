@@ -22,7 +22,18 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    pass
+    max_new_tokens: int = Field(
+        default=30, description="Cap newly generated content length"
+    )
+    top_k: int = Field(
+        default=1, description="Keep best k options (exploration vs. fluency)"
+    )
+    temperature: float = Field(
+        default=0.5, description="Randomness (fluency vs. creativity)"
+    )
+    top_p: float = Field(
+        default=0.5, description="Focus high-probability words (diversity control)"
+    )
 
 
 @func.set_output
