@@ -1,8 +1,11 @@
-FROM hyko-sdk:latest
+FROM base:latest as deps
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install transformers[torch]
 RUN --mount=type=cache,target=/root/.cache/pip pip install accelerate
 RUN --mount=type=cache,target=/root/.cache/pip pip install sentencepiece
+
+FROM hyko-sdk:latest
+COPY --from=deps /.venv /.venv
 
 COPY . .
 
