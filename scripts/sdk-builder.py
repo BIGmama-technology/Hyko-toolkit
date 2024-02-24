@@ -169,8 +169,14 @@ if __name__ == "__main__":
     directories = args.dir
     registry_host = args.registry
 
-    print("build hyko_sdk image")
+    print("build base and hyko_sdk images...")
 
+    subprocess.run(
+        "docker build -t base:latest -f common_dockerfiles/base.Dockerfile .".split(
+            " "
+        ),
+        check=True,
+    )
     subprocess.run(
         "docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
             " "
