@@ -12,11 +12,11 @@ func = SDKFunction(
 
 
 class SupportedTypes(str, Enum):
-    # mkv = "mkv"
-    # mov = "mov"
-    # avi = "avi"
+    mkv = "mkv"
+    mov = "mov"
+    avi = "avi"
     mp4 = "mp4"
-    # wmv = "wmv"
+    wmv = "wmv"
     webm = "webm"
 
 
