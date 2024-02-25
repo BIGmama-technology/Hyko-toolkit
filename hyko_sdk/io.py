@@ -255,6 +255,10 @@ class Video(HykoBaseType):
         assert obj_ext.value in [
             Ext.MP4,
             Ext.WEBM,
+            Ext.AVI,
+            Ext.MKV,
+            Ext.MOV,
+            Ext.WMV,
         ], "Invalid file extension for Video error"
         return Video(obj_ext=obj_ext, file_name=file_name)
 
@@ -266,6 +270,10 @@ class Video(HykoBaseType):
         assert obj_ext.value in [
             Ext.MP4,
             Ext.WEBM,
+            Ext.AVI,
+            Ext.MKV,
+            Ext.MOV,
+            Ext.WMV,
         ], "Invalid file extension for Video error"
         return Video(obj_ext=obj_ext, file_name=file_name)
 
