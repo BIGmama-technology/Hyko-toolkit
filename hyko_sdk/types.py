@@ -12,3 +12,7 @@ class Ext(str, Enum):
     WAV = "wav"
     MP4 = "mp4"
     MP3 = "mp3"
+    AVI = "avi"
+    MKV = "mkv"
+    MOV = "mov"
+    WMV = "wmv"
