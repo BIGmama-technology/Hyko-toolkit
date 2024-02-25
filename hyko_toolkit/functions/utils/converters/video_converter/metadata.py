@@ -18,6 +18,7 @@ class SupportedTypes(str, Enum):
     mp4 = "mp4"
     wmv = "wmv"
     webm = "webm"
+    gif = "gif"
 
 
 @func.set_input
