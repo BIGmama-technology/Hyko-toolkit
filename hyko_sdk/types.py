@@ -16,3 +16,4 @@ class Ext(str, Enum):
     MKV = "mkv"
     MOV = "mov"
     WMV = "wmv"
+    GIF = "gif"

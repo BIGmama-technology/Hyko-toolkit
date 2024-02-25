@@ -259,6 +259,7 @@ class Video(HykoBaseType):
             Ext.MKV,
             Ext.MOV,
             Ext.WMV,
+            Ext.GIF,
         ], "Invalid file extension for Video error"
         return Video(obj_ext=obj_ext, file_name=file_name)
 
@@ -274,6 +275,7 @@ class Video(HykoBaseType):
             Ext.MKV,
             Ext.MOV,
             Ext.WMV,
+            Ext.GIF,
         ], "Invalid file extension for Video error"
         return Video(obj_ext=obj_ext, file_name=file_name)
 
