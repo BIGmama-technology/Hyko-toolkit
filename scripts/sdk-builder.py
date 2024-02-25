@@ -5,38 +5,31 @@ import random
 import string
 import subprocess
 import sys
-import threading
+from dataclasses import dataclass
 
 from pydantic import ValidationError
 
 from hyko_sdk.metadata import Category, MetaData, MetaDataBase
 from hyko_sdk.utils import metadata_to_docker_label
 
-skip_folders = ["__pycache__", "venv"]
-all_built_functions: list[str] = []
-threads: list[threading.Thread] = []
+SKIP_FOLDERS = ["__pycache__", "venv"]
 
 
-class FunctionBuildError(RuntimeError):
+@dataclass
+class BuildError(BaseException):
     function_name: str
     reason: str
 
-    def __init__(self, function_name: str, reason: str) -> None:
-        self.function_name = function_name
-        self.reason = reason
-        super().__init__(f"Error while building {function_name}, reason: {reason}")
+
+all_built_functions: list[str] = []
+failed_functions: list[BuildError] = []
 
 
-failed_functions: list[FunctionBuildError] = []
-failed_functions_lock = threading.Lock()
-
-
-def process_function_dir(path: str, registry_host: str):  # noqa: C901
+def process_function_dir(path: str, dockerfile_path: str, registry_host: str):
     """Path has to be a valid path with no spaces in it"""
-    path = path.lstrip("./")
-    path = path.rstrip("/")
+    path = os.path.normpath(path)
+    splitted = path.split(os.sep)
 
-    splitted = path.split("/")
     try:
         try:
             function_name = splitted[-1]
@@ -44,7 +37,7 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
             category = Category.get_enum_from_string(splitted[1])
 
         except (IndexError, ValueError) as err:
-            raise FunctionBuildError(
+            raise BuildError(
                 path,
                 f"""Make sure your function follows the correct folder structure:
                 hyko_toolkit/category/../../task/fn_name/ current allowed categories {[c.value for c in Category]}""",
@@ -66,18 +59,17 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
             )
         except subprocess.CalledProcessError as e:
             print(e.stdout.decode())
-            raise FunctionBuildError(
+            raise BuildError(
                 function_name,
                 "Error while extracting metadata",
             ) from e
 
         splitted = metadata_process.stdout.decode().split(start_token)
 
-        if len(splitted) == 2:
-            metadata = splitted[1]
-        else:
-            print("Probably an error happen in while catching stdout from metadata")
-            return
+        assert (
+            len(splitted) == 2
+        ), "Probably an error happen in while catching stdout from metadata"
+        metadata = splitted[1]
 
         image_name = f"{registry_host}/{category.lower()}/{task.lower()}/{function_name.lower()}:latest"
         try:
@@ -92,7 +84,7 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
                 task=task,
             )
         except ValidationError as e:
-            raise FunctionBuildError(function_name, "Invalid Function MetaData") from e
+            raise BuildError(function_name, "Invalid Function MetaData") from e
 
         print("Building...")
         build_cmd = "docker build "
@@ -100,11 +92,12 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         build_cmd += f"--build-arg FUNCTION_NAME={function_name} "
         build_cmd += f"-t {image_name} "
         build_cmd += f"""--label metadata="{metadata_to_docker_label(metadata)}" """
+        build_cmd += f"-f ./{dockerfile_path} "
         build_cmd += f"./{path}"
         try:
             subprocess.run(["/bin/sh", "-c", build_cmd], check=True)
         except subprocess.CalledProcessError as e:
-            raise FunctionBuildError(
+            raise BuildError(
                 function_name,
                 "Failed to build function main docker image",
             ) from e
@@ -113,54 +106,41 @@ def process_function_dir(path: str, registry_host: str):  # noqa: C901
         try:
             subprocess.run(f"docker push {image_name}".split(" "), check=True)
         except subprocess.CalledProcessError as e:
-            raise FunctionBuildError(
+            raise BuildError(
                 function_name,
                 f"Failed to push to docker registry {registry_host}",
             ) from e
 
         if registry_host != "registry.traefik.me":
             print("Removing the image")
-            try:
-                subprocess.run(f"docker rmi {image_name}".split(" "), check=True)
-            except subprocess.CalledProcessError as e:
-                raise FunctionBuildError(
-                    function_name,
-                    "Failed to remove built image from host",
-                ) from e
+            subprocess.run(f"docker rmi {image_name}".split(" "))
 
-    except FunctionBuildError as e:
-        failed_functions_lock.acquire()
+    except BuildError as e:
         failed_functions.append(e)
-        failed_functions_lock.release()
 
 
-def walk_directory(path: str, threaded: bool, registry_host: str):
+def walk_directory(path: str, registry_host: str, dockerfile_path: str):
     ls = os.listdir(path)
 
-    if (
-        all(f in ls for f in ["main.py", "metadata.py", "Dockerfile"])
-        and ".hykoignore" not in ls
-    ):
-        all_built_functions.append(path)
+    if "Dockerfile" in ls:
+        dockerfile_full_path = os.path.join(path, "Dockerfile")
+        dockerfile_path = dockerfile_full_path
 
-        if threaded:
-            thread = threading.Thread(
-                target=process_function_dir, args=[path, registry_host]
-            )
-            thread.start()
-            threads.append(thread)
-        else:
-            process_function_dir(path, registry_host)
+    if all(f in ls for f in ["main.py", "metadata.py"]) and ".hykoignore" not in ls:
+        all_built_functions.append(path)
+        process_function_dir(path, dockerfile_path, registry_host)
 
     else:
         for sub_folder in ls:
-            if sub_folder in skip_folders:
+            sub_folder_path = os.path.join(path, sub_folder)
+
+            if sub_folder in SKIP_FOLDERS:
                 continue
 
-            if not os.path.isdir(path + "/" + sub_folder):
+            if not os.path.isdir(sub_folder_path):
                 continue
 
-            walk_directory(path + "/" + sub_folder, threaded, registry_host)
+            walk_directory(sub_folder_path, registry_host, dockerfile_path)
 
 
 def parse_args(args: list[str]) -> argparse.Namespace:
@@ -174,7 +154,6 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         help="A list of functions or models paths",
         type=str,
     )
-    parser.add_argument("--threaded", action="store_true", help="Enable threaded mode")
     parser.add_argument(
         "--registry",
         default="registry.traefik.me",
@@ -188,7 +167,6 @@ def parse_args(args: list[str]) -> argparse.Namespace:
 if __name__ == "__main__":
     args = parse_args(sys.argv[1:])
     directories = args.dir
-    threaded = args.threaded
     registry_host = args.registry
 
     print("build hyko_sdk image")
@@ -201,12 +179,7 @@ if __name__ == "__main__":
     )
 
     for dir in directories:
-        dir = dir.rstrip("/")
-        walk_directory(dir, threaded, registry_host)
-
-    if threaded:
-        for thread in threads:
-            thread.join()
+        walk_directory(dir, registry_host, dockerfile_path=".")
 
     successful_count = len(all_built_functions) - len(failed_functions)
 
