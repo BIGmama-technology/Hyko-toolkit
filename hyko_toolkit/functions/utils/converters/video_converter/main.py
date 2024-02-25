@@ -41,6 +41,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         "mkv": Ext.MKV,
         "mov": Ext.MOV,
         "wmv": Ext.WMV,
+        "gif": Ext.GIF,
     }
 
     with open(f"/app/video{ext}", "wb") as f:
