@@ -37,10 +37,10 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     type_to_object = {
         "webm": Ext.WEBM,
         "mp4": Ext.MP4,
-        # "avi": Ext.AVI,
-        # "mkv": Ext.MKV,
-        # "mov": Ext.MOV,
-        # "wmv": Ext.WMV,
+        "avi": Ext.AVI,
+        "mkv": Ext.MKV,
+        "mov": Ext.MOV,
+        "wmv": Ext.WMV,
     }
 
     with open(f"/app/video{ext}", "wb") as f:
