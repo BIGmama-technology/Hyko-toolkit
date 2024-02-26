@@ -1,3 +1,5 @@
+from urllib.parse import parse_qs, urlparse
+
 from fastapi import HTTPException
 from metadata import Inputs, Outputs, Params, func
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -16,8 +18,9 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
          If the video has no transcript available, returns a message indicating so.
     """
     try:
+        video_id = parse_qs(urlparse(inputs.video_url).query)["v"][0]
         transcript_result = YouTubeTranscriptApi.get_transcript(
-            inputs.video_id, languages=[params.language]
+            video_id, languages=[params.language]
         )
         text_result = [segment["text"] for segment in transcript_result]
         video_transcript = " ".join(text_result)
