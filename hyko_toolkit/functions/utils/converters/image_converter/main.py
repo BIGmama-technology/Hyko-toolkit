@@ -19,13 +19,10 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     Returns:
     - Outputs: An object containing the converted image data.
     """
+    image_np = np.frombuffer(inputs.input_image.get_data(), dtype=np.uint8)
+    image = cv2.imdecode(image_np, flags=cv2.IMREAD_COLOR)
     _, ext = os.path.splitext(inputs.input_image.get_name())
-    with open(f"./image{ext}", "wb") as f:
-        f.write(inputs.input_image.get_data())
-    image = cv2.imread(f"./image{ext}")
-
     result_img_path = f"./image{ext.split('.')[-1]}.{params.target_type}"
-
     success = cv2.imwrite(
         result_img_path, cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
     )
