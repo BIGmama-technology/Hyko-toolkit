@@ -17,7 +17,7 @@ func = SDKFunction(description="Transcript extraction from youtube video.")
 
 @func.set_input
 class Inputs(CoreModel):
-    video_id: str = Field(
+    video_url: str = Field(
         ...,
         description="Youtube Video Id.",
     )
