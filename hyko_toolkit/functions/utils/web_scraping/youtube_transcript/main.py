@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from metadata import Inputs, Outputs, Params, func
 from youtube_transcript_api import YouTubeTranscriptApi
 
@@ -21,5 +22,8 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         text_result = [segment["text"] for segment in transcript_result]
         video_transcript = " ".join(text_result)
         return Outputs(result=video_transcript)
-    except:  # noqa: E722
-        return Outputs(result="This video has no transcript available.")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="Error retrieving transcript: This video has no transcript available.",
+        ) from e
