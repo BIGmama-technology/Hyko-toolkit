@@ -23,25 +23,20 @@ def download_video(url, resolution):
     Returns:
     - bytes: The video content as bytes if successful, otherwise None.
     """
-    try:
-        yt = YouTube(url)
-        if resolution == "highest":
-            stream = yt.streams.get_highest_resolution()
-        elif resolution == "lowest":
-            stream = yt.streams.get_lowest_resolution()
-        else:
-            stream = yt.streams.filter(res=resolution).first()
 
-        # Download video to memory buffer
-        video_buffer = io.BytesIO()
-        stream.stream_to_buffer(video_buffer)
-        video_content = video_buffer.getvalue()
-        video_buffer.close()
-
-        return video_content
-    except Exception as e:
-        print("An error occurred:", str(e))
-        return None
+    yt = YouTube(url)
+    if resolution == "highest":
+        stream = yt.streams.get_highest_resolution()
+    elif resolution == "lowest":
+        stream = yt.streams.get_lowest_resolution()
+    else:
+        stream = yt.streams.filter(res=resolution).first()
+    # Download video to memory buffer
+    video_buffer = io.BytesIO()
+    stream.stream_to_buffer(video_buffer)
+    video_content = video_buffer.getvalue()
+    video_buffer.close()
+    return video_content
 
 
 @func.on_execute
