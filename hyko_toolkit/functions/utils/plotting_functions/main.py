@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import List, Optional, Union
+from typing import List, Optional
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -77,8 +77,8 @@ def generate_histogram(y):
 
 def generate_plot(
     plot_type: str,
-    x: Optional[List[Union[float, int]]] = None,
-    y: Optional[List[Union[float, int]]] = None,
+    x: Optional[List[float]] = None,
+    y: Optional[List[float]] = None,
 ) -> Optional[BytesIO]:
     plot_functions = {
         "Violin_Plot": generate_violin_plot,
