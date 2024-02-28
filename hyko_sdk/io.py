@@ -121,6 +121,16 @@ class Image(HykoBaseType):
             Ext.PNG,
             Ext.JPEG,
             Ext.MPEG,
+            Ext.TIFF,
+            Ext.TIF,
+            Ext.BMP,
+            Ext.JP2,
+            Ext.DIB,
+            Ext.PGM,
+            Ext.PPM,
+            Ext.PNM,
+            Ext.RAS,
+            Ext.HDR,
         ], "Invalid file extension for Image error"
         return Image(obj_ext=obj_ext, file_name=file_name)
 
@@ -132,6 +142,17 @@ class Image(HykoBaseType):
         assert obj_ext.value in [
             Ext.PNG,
             Ext.JPEG,
+            Ext.MPEG,
+            Ext.TIFF,
+            Ext.TIF,
+            Ext.BMP,
+            Ext.JP2,
+            Ext.DIB,
+            Ext.PGM,
+            Ext.PPM,
+            Ext.PNM,
+            Ext.RAS,
+            Ext.HDR,
         ], "Invalid file extension for Image error"
         return Image(obj_ext=obj_ext, file_name=file_name)
 
