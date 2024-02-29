@@ -1,5 +1,3 @@
-import os
-
 import cv2
 import numpy as np
 from metadata import Inputs, Outputs, Params, func
@@ -21,29 +19,27 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     - Outputs: An object containing the converted image data.
     """
     type_to_object = {
+        "png": Ext.PNG,
+        "jpeg": Ext.JPEG,
         "jpg": Ext.JPG,
         "tiff": Ext.TIFF,
         "tif": Ext.TIF,
         "bmp": Ext.BMP,
         "jp2": Ext.JP2,
         "dib": Ext.DIB,
-        "pgm": Ext.PGM,
         "ppm": Ext.PPM,
         "pnm": Ext.PNM,
         "ras": Ext.RAS,
         "hdr": Ext.HDR,
+        "webp": Ext.WEBP,
     }
     image_np = np.frombuffer(inputs.input_image.get_data(), dtype=np.uint8)
     image = cv2.imdecode(image_np, flags=cv2.IMREAD_COLOR)
-    _, ext = os.path.splitext(inputs.input_image.get_name())
-    result_img_path = f"./image{ext.split('.')[-1]}.{params.target_type}"
-    success = cv2.imwrite(
-        result_img_path, cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-    )
+    success, encoded_image = cv2.imencode(f".{params.target_type.value}", image)
+    target_buffer = encoded_image.tobytes()
     if success:
-        result = cv2.imread(result_img_path)
         return Outputs(
-            image=Image.from_ndarray(
-                result, encoding=type_to_object[params.target_type]
+            image=Image(
+                val=target_buffer, obj_ext=type_to_object[params.target_type.value]
             )
         )
