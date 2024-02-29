@@ -131,6 +131,8 @@ class Image(HykoBaseType):
             Ext.PNM,
             Ext.RAS,
             Ext.HDR,
+            Ext.WEBP,
+            Ext.JPG,
         ], "Invalid file extension for Image error"
         return Image(obj_ext=obj_ext, file_name=file_name)
 
@@ -153,6 +155,8 @@ class Image(HykoBaseType):
             Ext.PNM,
             Ext.RAS,
             Ext.HDR,
+            Ext.WEBP,
+            Ext.JPG,
         ], "Invalid file extension for Image error"
         return Image(obj_ext=obj_ext, file_name=file_name)
 

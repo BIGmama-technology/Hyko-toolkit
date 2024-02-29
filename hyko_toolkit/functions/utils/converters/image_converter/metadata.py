@@ -17,7 +17,6 @@ class SupportedTypes(str, Enum):
     webp = "webp"
     jp2 = "jp2"
     dib = "dib"
-    pgm = "pgm"
     ppm = "ppm"
     pnm = "pnm"
     ras = "ras"

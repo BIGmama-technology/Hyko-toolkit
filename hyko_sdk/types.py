@@ -28,3 +28,4 @@ class Ext(str, Enum):
     PNM = "pnm"
     RAS = "ras"
     HDR = "hdr"
+    WEBP = "webp"
