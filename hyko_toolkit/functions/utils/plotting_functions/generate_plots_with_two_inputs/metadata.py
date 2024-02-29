@@ -11,9 +11,7 @@ class SupportedPlots(str, Enum):
     Heatmaps = "Heatmap"
     Bar_Plot = "Bar_Plot"
     Line_Plot = "Line_Plot"
-    Histogram = "Histogram"
     Box_Plot = "Box_Plot"
-    Pie_Chart = "Pie_Chart"
     Area_Plot = "Area_Plot"
     Violin_Plot = "Violin_Plot"
     Pair_Plot = "Pair_Plot"
@@ -21,7 +19,7 @@ class SupportedPlots(str, Enum):
 
 
 func = SDKFunction(
-    description="Perform mathematical operations on numbers",
+    description="Generate various types of plots with (X , Y) inputs.",
 )
 
 
@@ -33,7 +31,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    plot_type: SupportedPlots = Field(..., description="Select Plo Type.")
+    plot_type: SupportedPlots = Field(..., description="Select Plot Type.")
 
 
 @func.set_output
