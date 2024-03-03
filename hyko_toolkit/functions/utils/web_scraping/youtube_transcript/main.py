@@ -26,7 +26,8 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         video_transcript = " ".join(text_result)
         return Outputs(result=video_transcript)
     except Exception as e:
+        language = params.language.name.capitalize()
         raise HTTPException(
             status_code=500,
-            detail="Error retrieving transcript: This video has no transcript available.",
+            detail=f"Error retrieving transcript: This video has no {language} transcript available.",
         ) from e
