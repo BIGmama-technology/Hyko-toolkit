@@ -27,5 +27,5 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         top_k=params.top_k,
     )  # type: ignore
 
-    generated_text: str = res[0]["generated_text"]
+    generated_text: str = res[0]["generated_text"].replace(inputs.input_text, "")
     return Outputs(generated_text=generated_text)
