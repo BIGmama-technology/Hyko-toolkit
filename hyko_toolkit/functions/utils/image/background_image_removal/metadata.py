@@ -5,7 +5,7 @@ from hyko_sdk.io import Image
 from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
-    description="This function removes the background from the original input image .",
+    description="This function removes the background from the original input image.",
 )
 
 
