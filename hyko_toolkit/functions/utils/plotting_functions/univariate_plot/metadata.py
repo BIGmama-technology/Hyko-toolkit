@@ -24,7 +24,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    plot_type: SupportedPlots = Field(..., description="Select Plo Type.")
+    plot_type: SupportedPlots = Field(..., description="Select Plot Type.")
 
 
 @func.set_output
