@@ -5,22 +5,23 @@ from pydantic import Field
 from hyko_sdk.function import SDKFunction
 from hyko_sdk.io import Image
 from hyko_sdk.metadata import CoreModel
+from hyko_sdk.types import Ext
 
 
-class SupportedTypes(str, Enum):
-    png = "png"
-    jpg = "jpg"
-    jpeg = "jpeg"
-    tiff = "tiff"
-    tif = "tif"
-    bmp = "bmp"
-    webp = "webp"
-    jp2 = "jp2"
-    dib = "dib"
-    ppm = "ppm"
-    pnm = "pnm"
-    ras = "ras"
-    hdr = "hdr"
+class SupportedTypes(Enum):
+    png = Ext.PNG
+    jpeg = Ext.JPEG
+    jpg = Ext.JPG
+    tiff = Ext.TIFF
+    tif = Ext.TIF
+    bmp = Ext.BMP
+    jp2 = Ext.JP2
+    dib = Ext.DIB
+    ppm = Ext.PPM
+    pnm = Ext.PNM
+    ras = Ext.RAS
+    hdr = Ext.HDR
+    webp = Ext.WEBP
 
 
 func = SDKFunction(
