@@ -5,7 +5,6 @@ import cv2
 from metadata import Inputs, Outputs, Params, func
 
 from hyko_sdk.io import Video
-from hyko_sdk.types import Ext
 
 
 def convert_video(buffer, codec):
@@ -52,19 +51,10 @@ def convert_video(buffer, codec):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    type_to_object = {
-        "webm": Ext.WEBM,
-        "mp4": Ext.MP4,
-        "avi": Ext.AVI,
-        "mkv": Ext.MKV,
-        "mov": Ext.MOV,
-        "wmv": Ext.WMV,
-        "gif": Ext.GIF,
-    }
-    if params.target_type == "webm":
+    if params.target_type.name == "webm":
         video_buffer = convert_video(inputs.input_video.get_data(), codec="VP90")
     else:
         video_buffer = convert_video(inputs.input_video.get_data(), codec="mp4v")
     return Outputs(
-        output_video=Video(val=video_buffer, obj_ext=type_to_object[params.target_type])
+        output_video=Video(val=video_buffer, obj_ext=params.target_type.value)
     )
