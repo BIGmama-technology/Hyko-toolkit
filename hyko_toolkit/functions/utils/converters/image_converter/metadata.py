@@ -11,12 +11,9 @@ from hyko_sdk.types import Ext
 class SupportedTypes(Enum):
     png = Ext.PNG
     jpeg = Ext.JPEG
-    jpg = Ext.JPG
     tiff = Ext.TIFF
-    tif = Ext.TIF
     bmp = Ext.BMP
     jp2 = Ext.JP2
-    dib = Ext.DIB
     ppm = Ext.PPM
     pnm = Ext.PNM
     ras = Ext.RAS
