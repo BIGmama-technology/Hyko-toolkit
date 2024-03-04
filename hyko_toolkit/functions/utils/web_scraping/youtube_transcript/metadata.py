@@ -17,9 +17,9 @@ func = SDKFunction(description="Transcript extraction from youtube video.")
 
 @func.set_input
 class Inputs(CoreModel):
-    url: str = Field(
+    video_url: str = Field(
         ...,
-        description="Youtube URL. ",
+        description="Youtube Video Id.",
     )
 
 
@@ -27,14 +27,10 @@ class Inputs(CoreModel):
 class Params(CoreModel):
     language: SupportedLanguages = Field(
         ...,
-        description="Originale Language Id.",
-    )
-    translation: SupportedLanguages = Field(
-        ...,
-        description="Translation Language Id.",
+        description="Language Id.",
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: list[str] = Field(..., description="Result")
+    result: str = Field(..., description="Result")
