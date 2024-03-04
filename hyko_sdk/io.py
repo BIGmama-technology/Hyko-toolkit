@@ -121,6 +121,18 @@ class Image(HykoBaseType):
             Ext.PNG,
             Ext.JPEG,
             Ext.MPEG,
+            Ext.TIFF,
+            Ext.TIF,
+            Ext.BMP,
+            Ext.JP2,
+            Ext.DIB,
+            Ext.PGM,
+            Ext.PPM,
+            Ext.PNM,
+            Ext.RAS,
+            Ext.HDR,
+            Ext.WEBP,
+            Ext.JPG,
         ], "Invalid file extension for Image error"
         return Image(obj_ext=obj_ext, file_name=file_name)
 
@@ -132,6 +144,19 @@ class Image(HykoBaseType):
         assert obj_ext.value in [
             Ext.PNG,
             Ext.JPEG,
+            Ext.MPEG,
+            Ext.TIFF,
+            Ext.TIF,
+            Ext.BMP,
+            Ext.JP2,
+            Ext.DIB,
+            Ext.PGM,
+            Ext.PPM,
+            Ext.PNM,
+            Ext.RAS,
+            Ext.HDR,
+            Ext.WEBP,
+            Ext.JPG,
         ], "Invalid file extension for Image error"
         return Image(obj_ext=obj_ext, file_name=file_name)
 
@@ -255,6 +280,11 @@ class Video(HykoBaseType):
         assert obj_ext.value in [
             Ext.MP4,
             Ext.WEBM,
+            Ext.AVI,
+            Ext.MKV,
+            Ext.MOV,
+            Ext.WMV,
+            Ext.GIF,
         ], "Invalid file extension for Video error"
         return Video(obj_ext=obj_ext, file_name=file_name)
 
@@ -266,6 +296,11 @@ class Video(HykoBaseType):
         assert obj_ext.value in [
             Ext.MP4,
             Ext.WEBM,
+            Ext.AVI,
+            Ext.MKV,
+            Ext.MOV,
+            Ext.WMV,
+            Ext.GIF,
         ], "Invalid file extension for Video error"
         return Video(obj_ext=obj_ext, file_name=file_name)
 
