@@ -17,7 +17,7 @@ from hyko_sdk.metadata import Category, MetaData, MetaDataBase
 load_dotenv()
 
 SKIP_FOLDERS = ["__pycache__", "venv"]
-USERNAME, PASSWORD = os.getenv("USERNAME"), os.getenv("PASSWORD")
+USERNAME, PASSWORD = os.getenv("ADMIN_USERNAME"), os.getenv("ADMIN_PASSWORD")
 assert USERNAME and PASSWORD, "no username and password found in .env"
 
 
