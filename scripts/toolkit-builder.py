@@ -8,11 +8,18 @@ import sys
 from dataclasses import dataclass
 
 import httpx
+from dotenv import load_dotenv
 from pydantic import ValidationError
 
 from hyko_sdk.metadata import Category, MetaData, MetaDataBase
 
+# Load environment variables from .env file
+load_dotenv()
+
 SKIP_FOLDERS = ["__pycache__", "venv"]
+USERNAME, PASSWORD = os.getenv("USERNAME"), os.getenv("PASSWORD")
+print(USERNAME, PASSWORD)
+assert USERNAME and PASSWORD, "no username and password found in .env"
 
 
 @dataclass
@@ -113,6 +120,7 @@ def process_function_dir(path: str, dockerfile_path: str, host: str):
         response = httpx.post(
             f"https://api.{host}/toolkit/write",
             content=metadata.model_dump_json(),
+            auth=httpx.BasicAuth(username=USERNAME, password=PASSWORD),
             verify=False if host == "traefik.me" else True,
         )
 
