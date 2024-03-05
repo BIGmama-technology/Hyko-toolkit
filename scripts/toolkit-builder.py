@@ -18,7 +18,6 @@ load_dotenv()
 
 SKIP_FOLDERS = ["__pycache__", "venv"]
 USERNAME, PASSWORD = os.getenv("USERNAME"), os.getenv("PASSWORD")
-print(USERNAME, PASSWORD)
 assert USERNAME and PASSWORD, "no username and password found in .env"
 
 
