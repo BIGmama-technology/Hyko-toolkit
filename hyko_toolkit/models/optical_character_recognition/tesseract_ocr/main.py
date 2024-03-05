@@ -10,8 +10,8 @@ def extract_text_from_image_bytes_tesseract(image_bytes: bytes, language: str):
     Extracts text from an image using Tesseract OCR.
 
     Args:
-        image_bytes (Union[bytes, bytearray]): The image data in bytes.
-        language (str, optional): The language code (e.g., 'eng' for English, 'fra' for French). Defaults to 'eng'.
+        image_bytes bytes: The image data in bytes.
+        language (str, optional): The language code (e.g., 'eng' for English, 'fra' for French).
 
     Returns:
         str: Extracted text from the image.
