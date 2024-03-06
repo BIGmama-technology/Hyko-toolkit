@@ -25,7 +25,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    language: str = Field(..., description="Select PDF language.")
+    language: SupportedLanguages = Field(..., description="Select PDF language.")
 
 
 @func.set_output
