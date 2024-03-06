@@ -188,8 +188,13 @@ if __name__ == "__main__":
     directories = args.dir
     host = args.host
 
-    print("build hyko_sdk image")
+    print("login to registry")
+    subprocess.run(
+        f"docker login registry.{host} -u {USERNAME} -p {PASSWORD}".split(" "),
+        check=True,
+    )
 
+    print("build hyko_sdk image")
     subprocess.run(
         "docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
             " "
@@ -203,9 +208,9 @@ if __name__ == "__main__":
     successful_count = len(all_built_functions) - len(failed_functions)
 
     print(
-        "no built functions"
+        "No functions were built"
         if len(all_built_functions) == 0
         else f"Successfully built: {successful_count} function. Failed to build: {len(failed_functions)} function"
     )
     for fn in failed_functions:
-        print(f"ERROR WHILE BUILDING: {fn.function_name} REASON: {fn.reason}")
+        print(f"Error while building: {fn.function_name} reason: {fn.reason}")
