@@ -18,9 +18,7 @@ def show_mask(mask: np.ndarray, ax: plt.Axes, random_color: bool):
         color = np.array([30 / 255, 144 / 255, 255 / 255, 0.6])
     h, w = mask.shape[-2:]
     mask_image = mask.reshape(h, w, 1) * color.reshape(1, 1, -1)
-    ax.imshow(
-        mask_image
-    )  # I used imshow for writing mask_image on ax not for desplay .
+    ax.imshow(mask_image)  # I used imshow for writing mask_image on ax not for display.
     del mask
     gc.collect()
 
