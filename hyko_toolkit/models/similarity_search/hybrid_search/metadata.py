@@ -4,7 +4,7 @@ from hyko_sdk.function import SDKFunction
 from hyko_sdk.metadata import CoreModel
 
 func = SDKFunction(
-    description="Perform Hybrid Search on a list of documents based on a given query."
+    description="Executes simultaneous BM25 keyword matching and document similarity searches on input documents."
 )
 
 
