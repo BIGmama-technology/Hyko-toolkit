@@ -1,20 +1,6 @@
-import base64
-import json
 from typing import Type
 
 from pydantic import BaseModel
-
-from hyko_sdk.metadata import MetaData
-
-
-def metadata_to_docker_label(metadata: MetaData) -> str:
-    return base64.b64encode(
-        metadata.model_dump_json(exclude_unset=True, exclude_none=True).encode()
-    ).decode()
-
-
-def docker_label_to_metadata(label: str) -> MetaData:
-    return MetaData(**json.loads(base64.b64decode(label.encode()).decode()))
 
 
 def to_friendly_types(pydantic_model: Type[BaseModel]):
