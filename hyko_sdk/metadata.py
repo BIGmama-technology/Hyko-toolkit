@@ -36,38 +36,35 @@ class Property(BaseModel):
 
 
 class HykoJsonSchema(BaseModel):
-    properties: Dict[str, Property] = {}
+    properties: Dict[str, Property]
     defs: Optional[Dict[str, Property]] = Field(default=None, alias="$defs")
-    friendly_types: Dict[str, str] = {}
+    friendly_types: Dict[str, str]
 
     model_config = ConfigDict(populate_by_name=True)
-
-
-class MetaDataBase(BaseModel):
-    description: str
-    startup_params: HykoJsonSchema
-    params: HykoJsonSchema
-    inputs: HykoJsonSchema
-    outputs: HykoJsonSchema
 
 
 class Category(str, Enum):
     MODEL = "models"
     FUNCTION = "functions"
 
-    @classmethod
-    def get_enum_from_string(cls, input_string: str):
-        for enum_member in cls:
-            if input_string == enum_member.value:
-                return enum_member
-        raise ValueError("String does not match any enum value")
 
-
-class MetaData(MetaDataBase):
+class MetaDataBase(BaseModel):
     name: str
     task: str
-    image: str
-    category: Category
+    image: str = ""
+    description: str
+    params: Optional[HykoJsonSchema] = None
+    inputs: Optional[HykoJsonSchema] = None
+    outputs: Optional[HykoJsonSchema] = None
+
+
+class FunctionMetadata(MetaDataBase):
+    category: Category = Category.FUNCTION
+
+
+class ModelMetaData(MetaDataBase):
+    category: Category = Category.MODEL
+    startup_params: Optional[HykoJsonSchema] = None
 
 
 class CoreModel(BaseModel):
