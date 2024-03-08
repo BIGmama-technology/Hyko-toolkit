@@ -11,7 +11,6 @@ class IOPortType(str, Enum):
     STRING = "string"
     ARRAY = "array"
     OBJECT = "object"
-    NULL = "null"
 
 
 class HykoExtraTypes(str, Enum):
