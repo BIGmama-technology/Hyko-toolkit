@@ -1,9 +1,11 @@
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
+from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.metadata import CoreModel
 
-func = SDKFunction(
+func = ToolkitModel(
+    name="text_classification",
+    task="natural_language_processing",
     description="Hugging Face text classification",
 )
 
