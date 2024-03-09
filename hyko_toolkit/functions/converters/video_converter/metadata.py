@@ -4,8 +4,7 @@ from pydantic import Field
 
 from hyko_sdk.definitions import SDKFunction
 from hyko_sdk.io import Video
-from hyko_sdk.metadata import CoreModel
-from hyko_sdk.types import Ext
+from hyko_sdk.models import CoreModel, Ext
 
 func = SDKFunction(
     description="Convert a video from one format to another.",
