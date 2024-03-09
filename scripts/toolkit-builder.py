@@ -42,6 +42,7 @@ def walk_directory(path: str, host: str, dockerfile_path: str):
         deploy(path, dockerfile_path, host)
 
     else:
+        dockerfile_path = "../" + dockerfile_path
         for sub_folder in ls:
             sub_folder_path = os.path.join(path, sub_folder)
 
@@ -51,7 +52,6 @@ def walk_directory(path: str, host: str, dockerfile_path: str):
             if not os.path.isdir(sub_folder_path):
                 continue
 
-            dockerfile_path = "../" + dockerfile_path
             walk_directory(sub_folder_path, host, dockerfile_path)
 
 
