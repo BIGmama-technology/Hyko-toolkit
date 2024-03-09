@@ -1,6 +1,7 @@
 import transformers
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, StartupParams, func
+
+from .metadata import Inputs, Outputs, Params, StartupParams, func
 
 
 @func.on_startup
