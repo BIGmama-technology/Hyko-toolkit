@@ -1,10 +1,12 @@
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
+from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
 from hyko_sdk.metadata import CoreModel
 
-func = SDKFunction(
+func = ToolkitModel(
+    name="image_to_text",
+    task="multimodal",
     description="Hugging Face Image-To-Text Task",
 )
 

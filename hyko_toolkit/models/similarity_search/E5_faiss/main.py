@@ -1,7 +1,8 @@
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents.base import Document
-from metadata import Inputs, Outputs, Params, StartupParams, func
+
+from .metadata import Inputs, Outputs, Params, StartupParams, func
 
 
 @func.on_startup
