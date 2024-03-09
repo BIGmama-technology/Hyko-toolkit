@@ -1,8 +1,9 @@
-from metadata import Inputs, Outputs, Params, func
 from rembg import remove
 
 from hyko_sdk.io import Image
 from hyko_sdk.types import Ext
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_execute
