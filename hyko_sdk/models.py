@@ -4,6 +4,36 @@ from typing import Dict, List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class Ext(str, Enum):
+    TXT = "txt"
+    CSV = "csv"
+    PDF = "pdf"
+    PNG = "png"
+    JPEG = "jpeg"
+    MPEG = "mpeg"
+    WEBM = "webm"
+    WAV = "wav"
+    MP4 = "mp4"
+    MP3 = "mp3"
+    AVI = "avi"
+    MKV = "mkv"
+    MOV = "mov"
+    WMV = "wmv"
+    GIF = "gif"
+    JPG = "jpg"
+    TIFF = "tiff"
+    TIF = "tif"
+    BMP = "bmp"
+    JP2 = "jp2"
+    DIB = "dib"
+    PGM = "pgm"
+    PPM = "ppm"
+    PNM = "pnm"
+    RAS = "ras"
+    HDR = "hdr"
+    WEBP = "webp"
+
+
 class IOPortType(str, Enum):
     BOOLEAN = "boolean"
     NUMBER = "number"
