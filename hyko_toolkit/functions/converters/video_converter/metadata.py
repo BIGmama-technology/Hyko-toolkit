@@ -2,11 +2,13 @@ from enum import Enum
 
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel, Ext
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="video_converter",
+    task="converters",
     description="Convert a video from one format to another.",
 )
 
