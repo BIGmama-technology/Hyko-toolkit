@@ -22,7 +22,7 @@ def deploy(path: str, dockerfile_path: str, host: str):
         subprocess.run(
             "poetry run python -c".split(" ")
             + [
-                f"""from .metadata import func;func.deploy(host="{host}", username="{USERNAME}", password="{PASSWORD}", dockerfile_path="{dockerfile_path}")"""
+                f"""from metadata import func;func.deploy(host="{host}", username="{USERNAME}", password="{PASSWORD}", dockerfile_path="{dockerfile_path}")"""
             ],
             cwd=path,
             check=True,
