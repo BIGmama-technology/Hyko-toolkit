@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel
 
@@ -15,7 +15,11 @@ class Resolution(str, Enum):
     lowest = "lowest"
 
 
-func = SDKFunction(description="Download a video from YouTube.")
+func = ToolkitFunction(
+    name="youtube_downloader",
+    task="downloaders",
+    description="Download a video from YouTube.",
+)
 
 
 @func.set_input
