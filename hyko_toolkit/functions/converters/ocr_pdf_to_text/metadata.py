@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
 
@@ -13,7 +13,9 @@ class SupportedLanguages(str, Enum):
     french = "fra"
 
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="ocr_pdf_to_text",
+    task="converters",
     description="Perform OCR (Optical Character Recognition) on a PDF document",
 )
 
