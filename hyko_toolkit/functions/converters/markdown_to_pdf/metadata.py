@@ -1,10 +1,12 @@
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="markdown_to_pdf",
+    task="converters",
     description="Convert Markdown content to PDF format.",
 )
 

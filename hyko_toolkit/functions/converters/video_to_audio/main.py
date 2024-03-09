@@ -4,7 +4,7 @@ import subprocess
 from metadata import Inputs, Outputs, Params, func
 
 from hyko_sdk.io import Audio
-from hyko_sdk.types import Ext
+from hyko_sdk.models import Ext
 
 
 @func.on_execute

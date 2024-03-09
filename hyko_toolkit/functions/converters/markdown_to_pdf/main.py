@@ -10,7 +10,7 @@ from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
 
 from hyko_sdk.io import PDF
-from hyko_sdk.types import Ext
+from hyko_sdk.models import Ext
 
 
 def format_code_block(code: str, language: str):
