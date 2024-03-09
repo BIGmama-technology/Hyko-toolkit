@@ -4,7 +4,7 @@ from pydantic import Field
 
 from hyko_sdk.definitions import SDKFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.models import CoreModel
 
 func = SDKFunction(
     description="Resize an image by a factor",
