@@ -6,8 +6,7 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from hyko_sdk.exceptions import BuildError, PushError
-from hyko_sdk.metadata import (
+from hyko_sdk.models import (
     Category,
     HykoJsonSchema,
     MetaDataBase,
@@ -97,7 +96,7 @@ class ToolkitBase:
         )
 
         if response.status_code != 200:
-            raise BaseException("failed to write to hyko db.")
+            raise BaseException("Failed to write to hyko db.")
 
     def deploy(self, host: str, username: str, password: str, **kwargs: Any):
         self.write(host, username, password)
@@ -140,8 +139,7 @@ class ToolkitFunction(ToolkitBase, FastAPI):
                 check=True,
             )
         except subprocess.CalledProcessError as e:
-            raise BuildError(
-                self.name,
+            raise BaseException(
                 "Failed to build function docker image.",
             ) from e
 
@@ -152,8 +150,7 @@ class ToolkitFunction(ToolkitBase, FastAPI):
                 check=True,
             )
         except subprocess.CalledProcessError as e:
-            raise PushError(
-                self.name,
+            raise BaseException(
                 "Failed to push to docker registry.",
             ) from e
 
