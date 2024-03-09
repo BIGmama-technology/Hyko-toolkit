@@ -174,6 +174,7 @@ class ToolkitModel(ToolkitFunction):
         super().__init__(name=name, task=task, description=description)
         self.category = Category.MODEL
         self.started: bool = False
+        self.startup_params = None
 
     def set_startup_params(self, model: T) -> T:
         self.startup_params = HykoJsonSchema(
