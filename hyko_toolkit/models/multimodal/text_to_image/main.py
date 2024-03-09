@@ -1,7 +1,8 @@
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
-from metadata import Inputs, Outputs, Params, StartupParams, func
 
 from hyko_sdk.io import Image
+
+from .metadata import Inputs, Outputs, Params, StartupParams, func
 
 generator = None
 
