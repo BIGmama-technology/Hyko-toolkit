@@ -9,7 +9,7 @@ from metadata import (
 from pytube import YouTube
 
 from hyko_sdk.io import Video
-from hyko_sdk.types import Ext
+from hyko_sdk.models import Ext
 
 
 def download_video(url, resolution):
