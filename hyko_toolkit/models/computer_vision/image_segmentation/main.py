@@ -3,11 +3,12 @@ TODO handle the output of segmentation, now only one mask is supported and is
 returned as a PIL image.
 """
 import numpy as np
-from metadata import Inputs, Outputs, Params, StartupParams, func
 from PIL import Image as PILLImage
 from transformers import pipeline
 
 from hyko_sdk.io import Image
+
+from .metadata import Inputs, Outputs, Params, StartupParams, func
 
 segmenter = None
 
