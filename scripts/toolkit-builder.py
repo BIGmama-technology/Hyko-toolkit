@@ -19,11 +19,10 @@ failed_functions: list[str] = []
 
 def deploy(path: str, dockerfile_path: str, host: str):
     try:
-        print(dockerfile_path)
         subprocess.run(
             "poetry run python -c".split(" ")
             + [
-                f"""from metadata import func;func.deploy(host="{host}", username="{USERNAME}", password="{PASSWORD}", dockerfile_path="{dockerfile_path}")"""
+                f"""from .metadata import func;func.deploy(host="{host}", username="{USERNAME}", password="{PASSWORD}", dockerfile_path="{dockerfile_path}")"""
             ],
             cwd=path,
             check=True,
