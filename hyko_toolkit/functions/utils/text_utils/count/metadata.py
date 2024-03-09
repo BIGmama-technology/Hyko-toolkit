@@ -1,7 +1,7 @@
 from pydantic import Field
 
 from hyko_sdk.definitions import SDKFunction
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.models import CoreModel
 
 func = SDKFunction(
     description="Count the number of occurrences of a substring in a string",

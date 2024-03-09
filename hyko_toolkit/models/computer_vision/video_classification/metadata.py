@@ -2,7 +2,7 @@ from pydantic import Field
 
 from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Video
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.models import CoreModel
 
 func = ToolkitModel(
     name="video_classification",
