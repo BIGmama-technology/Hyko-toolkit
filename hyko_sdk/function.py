@@ -1,15 +1,17 @@
 import json
+import subprocess
 from typing import Any, Callable, Coroutine, Type, TypeVar
 
+import httpx
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from hyko_sdk.exceptions import BuildError, PushError
 from hyko_sdk.metadata import (
-    FunctionMetadata,
+    Category,
     HykoJsonSchema,
     MetaDataBase,
-    ModelMetaData,
 )
 from hyko_sdk.utils import to_friendly_types
 
@@ -29,9 +31,10 @@ class ToolkitBase:
         self,
         name: str,
         task: str,
-        description: str,
+        desc: str,
     ):
-        self.description = description
+        self.category: Category = Category.FUNCTION
+        self.desc = desc
         self.name = name
         self.task = task
         self.inputs = None
@@ -59,25 +62,44 @@ class ToolkitBase:
         )
         return model
 
-    def get_base_metadata(self) -> MetaDataBase:
+    def get_base_metadata(self):
         return MetaDataBase(
-            description=self.description,
+            category=self.category,
             name=self.name,
             task=self.task,
+            description=self.desc,
             inputs=self.inputs,
             params=self.params,
             outputs=self.outputs,
         )
 
-    def get_metadata(self) -> BaseModel:
+    def get_metadata(self) -> MetaDataBase:
         return self.get_base_metadata()
 
-    def dump_metadata(self) -> str:
-        return self.get_metadata().model_dump_json(
+    def dump_metadata(self, **kwargs: Any) -> str:
+        metadata = MetaDataBase(
+            **self.get_metadata().model_dump(exclude_none=True),
+            **kwargs,
+        )
+        return metadata.model_dump_json(
             exclude_none=True,
             exclude_defaults=True,
             by_alias=True,
         )
+
+    def write(self, host: str, username: str, password: str, **kwargs: Any):
+        response = httpx.post(
+            f"https://api.{host}/toolkit/write",
+            content=self.dump_metadata(**kwargs),
+            auth=httpx.BasicAuth(username, password),
+            verify=False if host == "traefik.me" else True,
+        )
+
+        if response.status_code != 200:
+            raise BaseException("failed to write to hyko db.")
+
+    def deploy(self, host: str, username: str, password: str, **kwargs: Any):
+        self.write(host, username, password)
 
 
 class ToolkitFunction(ToolkitBase, FastAPI):
@@ -86,10 +108,10 @@ class ToolkitFunction(ToolkitBase, FastAPI):
         name: str,
         task: str,
         description: str,
-        **kwargs: Any,
     ):
         ToolkitBase.__init__(self, name, task, description)
-        FastAPI.__init__(self, **kwargs)
+        FastAPI.__init__(self)
+        self.category = Category.FUNCTION
 
     def on_execute(self, f: OnExecuteFuncType[InputsType, ParamsType, OutputsType]):
         async def wrapper(
@@ -110,18 +132,53 @@ class ToolkitFunction(ToolkitBase, FastAPI):
 
         return self.post("/execute")(wrapper)
 
-    def get_metadata(self) -> BaseModel:
-        return FunctionMetadata(**self.get_base_metadata().model_dump())
+    def build(self, dockerfile_path: str, image_name: str):
+        try:
+            subprocess.run(
+                f"docker build -t {image_name} -f {dockerfile_path} .".split(" "),
+                check=True,
+            )
+        except subprocess.CalledProcessError as e:
+            raise BuildError(
+                self.name,
+                "Failed to build function docker image.",
+            ) from e
+
+    def push(self, image_name: str):
+        try:
+            subprocess.run(
+                f"docker push {image_name}".split(" "),
+                check=True,
+            )
+        except subprocess.CalledProcessError as e:
+            raise PushError(
+                self.name,
+                "Failed to push to docker registry.",
+            ) from e
+
+    def deploy(self, host: str, username: str, password: str, **kwargs: Any):
+        image_name = (
+            f"registry.{host}/{self.category.value}/{self.task}/{self.name}:latest"
+        )
+        dockerfile_path = kwargs.get("dockerfile_path")
+        assert dockerfile_path, "docker file path missing"
+
+        self.build(dockerfile_path, image_name)
+        self.push(image_name)
+        self.write(host, username, password, image=image_name)
 
 
 class ToolkitModel(ToolkitFunction):
-    def __init__(self, **kwargs: Any):
-        super().__init__(**kwargs)
-
+    def __init__(self, name: str, task: str, description: str):
+        super().__init__(name=name, task=task, description=description)
+        self.category = Category.MODEL
         self.started: bool = False
 
     def set_startup_params(self, model: T) -> T:
-        self.startup_params = model
+        self.startup_params = HykoJsonSchema(
+            **model.model_json_schema(),
+            friendly_types=to_friendly_types(model),
+        )
         return model
 
     def on_startup(self, f: OnStartupFuncType[ParamsType]):
@@ -142,14 +199,10 @@ class ToolkitModel(ToolkitFunction):
     def on_shutdown(self, f: OnShutdownFuncType) -> OnShutdownFuncType:
         return self.on_event("shutdown")(f)
 
-    def get_metadata(self) -> ModelMetaData:
+    def get_metadata(self):
         base_metadata = self.get_base_metadata()
-        startup_params_json_schema = self.startup_params.model_json_schema()
 
-        return ModelMetaData(
-            **base_metadata.model_dump(),
-            startup_params=HykoJsonSchema(
-                **startup_params_json_schema,
-                friendly_types=to_friendly_types(self.startup_params),
-            ),
+        return MetaDataBase(
+            **base_metadata.model_dump(exclude_none=True),
+            startup_params=self.startup_params,
         )
