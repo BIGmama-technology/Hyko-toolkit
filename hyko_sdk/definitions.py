@@ -2,7 +2,6 @@ import json
 import subprocess
 from typing import Any, Callable, Coroutine, Type, TypeVar
 
-import httpx
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -88,6 +87,8 @@ class ToolkitBase:
         )
 
     def write(self, host: str, username: str, password: str, **kwargs: Any):
+        import httpx
+
         response = httpx.post(
             f"https://api.{host}/toolkit/write",
             content=self.dump_metadata(**kwargs),
