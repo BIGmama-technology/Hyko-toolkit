@@ -4,8 +4,7 @@ from pydantic import Field
 
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-from hyko_sdk.types import Ext
+from hyko_sdk.models import CoreModel, Ext
 
 
 class SupportedTypes(Enum):
