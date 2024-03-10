@@ -88,11 +88,11 @@ class MetaDataBase(BaseModel):
     outputs: Optional[HykoJsonSchema] = None
 
 
-class FunctionMetaDate(MetaDataBase):
+class FunctionMetaData(MetaDataBase):
     image: Optional[str] = None
 
 
-class ModelMetaDate(FunctionMetaDate):
+class ModelMetaData(FunctionMetaData):
     startup_params: Optional[HykoJsonSchema] = None
 
 
