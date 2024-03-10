@@ -79,14 +79,20 @@ class Category(str, Enum):
 
 
 class MetaDataBase(BaseModel):
-    category: Category
+    category: Category = Category.FUNCTION
     name: str
     task: str
     description: str
-    image: Optional[str] = None
     params: Optional[HykoJsonSchema] = None
     inputs: Optional[HykoJsonSchema] = None
     outputs: Optional[HykoJsonSchema] = None
+
+
+class FunctionMetaDate(MetaDataBase):
+    image: Optional[str] = None
+
+
+class ModelMetaDate(FunctionMetaDate):
     startup_params: Optional[HykoJsonSchema] = None
 
 
