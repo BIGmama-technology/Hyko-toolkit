@@ -4,6 +4,8 @@ from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
 func = ToolkitFunction(
+    name="join",
+    task="text_utils",
     description="Join a list of strings with a specified delimiter",
 )
 

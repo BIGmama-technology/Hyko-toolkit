@@ -4,6 +4,8 @@ from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
 func = ToolkitFunction(
+    name="lowercase",
+    task="text_utils",
     description="Convert a given string to lowercase",
 )
 
