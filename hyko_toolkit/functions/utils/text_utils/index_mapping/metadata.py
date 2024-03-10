@@ -4,6 +4,8 @@ from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
 func = ToolkitFunction(
+    name="index_mapping",
+    task="text_utils",
     description="Map indexes to strings and return the corresponding strings",
 )
 
