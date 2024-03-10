@@ -3,13 +3,13 @@ from enum import Enum
 from pydantic import Field
 
 from hyko_sdk.definitions import ToolkitModel
-from hyko_sdk.io import Image
+from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel
 
 func = ToolkitModel(
-    name="ultralytics_image_object_detection",
+    name="ultralytics_video_object_detection",
     task="computer_vision",
-    description="UltraLytics Image Object Detection Using YOLO V8.",
+    description="UltraLytics Video Object Detection Using YOLO V8.",
 )
 
 
@@ -26,7 +26,7 @@ class StartupParams(CoreModel):
 
 @func.set_input
 class Inputs(CoreModel):
-    input_image: Image = Field(..., description="Input image.")
+    input_video: Video = Field(..., description="Input Video.")
 
 
 @func.set_param
@@ -43,4 +43,4 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    image: Image = Field(..., description="Labeled image.")
+    video: Video = Field(..., description="Labeled Video.")
