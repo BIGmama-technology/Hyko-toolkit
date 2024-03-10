@@ -4,6 +4,8 @@ from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
 func = ToolkitFunction(
+    name="slice",
+    task="text_utils",
     description="Create a slice of a given string of text",
 )
 

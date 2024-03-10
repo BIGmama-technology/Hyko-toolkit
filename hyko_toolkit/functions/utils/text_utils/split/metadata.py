@@ -4,6 +4,8 @@ from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
 func = ToolkitFunction(
+    name="split",
+    task="text_utils",
     description="Split a string to a list of strings based on delimiter",
 )
 
@@ -15,7 +17,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    delimeter: str = Field(
+    delimiter: str = Field(
         default=",", description="the string used to split the text by"
     )
 

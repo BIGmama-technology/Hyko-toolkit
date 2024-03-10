@@ -4,6 +4,8 @@ from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
 func = ToolkitFunction(
+    name="count",
+    task="text_utils",
     description="Count the number of occurrences of a substring in a string",
 )
 
