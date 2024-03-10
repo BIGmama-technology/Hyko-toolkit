@@ -5,7 +5,7 @@ import pandas as pd
 from metadata import Inputs, Outputs, Params, func
 
 from hyko_sdk.io import Image
-from hyko_sdk.types import Ext
+from hyko_sdk.models import Ext
 
 
 def generate_pie_chart(y: list[float]):

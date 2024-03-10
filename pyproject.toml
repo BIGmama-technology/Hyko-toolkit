@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hyko_sdk"
-version = "3.1.0"
+version = "4.0.2"
 description = "Hyko's Software Development Kit"
 authors = ["Ouassim Abdelmalek Ghribi <oag@big-mama.io>", 
         "Hachem Betrouni <hb@big-mama.io>", 
@@ -16,10 +16,10 @@ uvicorn = {extras = ["standard"], version = "^0.25.0"}
 pillow = "^10.2.0"
 
 [tool.poetry.group.dev.dependencies]
-httpx = "^0.27.0"
 pre-commit = "^3.6.0"
 ruff = "^0.1.9"
 gitlint = "^0.19.1"
+httpx = {version = "0.24.1", extras = ["h2"]}
 
 [tool.ruff]
 select = [

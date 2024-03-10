@@ -1,10 +1,12 @@
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
+from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
+func = ToolkitModel(
+    name="text_to_image",
+    task="multimodal",
     description="Hugging Face Text to Image Task",
 )
 
@@ -25,7 +27,7 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     num_inference_steps: int = Field(
-        default=15, description="The number of denoising steps."
+        default=15, description="The number of de-noising steps."
     )
     strength: float = Field(
         default=0.8,
