@@ -2,11 +2,13 @@ from enum import Enum
 
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="flip",
+    task="image_utils",
     description="Flip an image based on the specified axis",
 )
 

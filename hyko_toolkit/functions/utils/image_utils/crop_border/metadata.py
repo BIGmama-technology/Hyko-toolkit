@@ -1,10 +1,12 @@
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="corp_border",
+    task="image_utils",
     description="Remove a specified amount of pixels from all four borders of an image",
 )
 
