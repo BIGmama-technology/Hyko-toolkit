@@ -8,8 +8,10 @@ from pydantic import BaseModel
 
 from hyko_sdk.models import (
     Category,
+    FunctionMetaDate,
     HykoJsonSchema,
     MetaDataBase,
+    ModelMetaDate,
 )
 from hyko_sdk.utils import to_friendly_types
 
@@ -165,6 +167,13 @@ class ToolkitFunction(ToolkitBase, FastAPI):
         self.push(image_name)
         self.write(host, username, password, image=image_name)
 
+    def get_metadata(self) -> FunctionMetaDate:
+        base_metadata = self.get_base_metadata()
+
+        return FunctionMetaDate(
+            **base_metadata.model_dump(exclude_none=True),
+        )
+
 
 class ToolkitModel(ToolkitFunction):
     def __init__(self, name: str, task: str, description: str):
@@ -198,10 +207,10 @@ class ToolkitModel(ToolkitFunction):
     def on_shutdown(self, f: OnShutdownFuncType) -> OnShutdownFuncType:
         return self.on_event("shutdown")(f)
 
-    def get_metadata(self):
+    def get_metadata(self) -> ModelMetaDate:
         base_metadata = self.get_base_metadata()
 
-        return MetaDataBase(
+        return ModelMetaDate(
             **base_metadata.model_dump(exclude_none=True),
             startup_params=self.startup_params,
         )
