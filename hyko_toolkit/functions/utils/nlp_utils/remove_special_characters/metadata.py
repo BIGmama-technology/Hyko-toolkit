@@ -1,10 +1,12 @@
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
-    description="A function to remove special characters and punctuation from text."
+func = ToolkitFunction(
+    name="remove_special_characters",
+    task="nlp_utils",
+    description="A function to remove special characters and punctuation from text.",
 )
 
 
