@@ -2,10 +2,12 @@ from enum import Enum
 
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="padding",
+    task="text_utils",
     description="Pads text until it has a certain length",
 )
 

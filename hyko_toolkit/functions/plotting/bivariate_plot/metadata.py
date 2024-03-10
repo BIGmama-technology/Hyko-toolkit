@@ -2,9 +2,9 @@ from enum import Enum
 
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.models import CoreModel
 
 
 class SupportedPlots(str, Enum):
@@ -18,7 +18,9 @@ class SupportedPlots(str, Enum):
     Scatter_Plot = "Scatter_Plot"
 
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="bivariate_plot",
+    task="plotting",
     description="Generate various types of plots with (X , Y) inputs.",
 )
 

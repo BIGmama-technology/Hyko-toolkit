@@ -1,10 +1,12 @@
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.definitions import ToolkitModel
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
-    description="Tool for computing similarity scores based on a given threshold."
+func = ToolkitModel(
+    name="E5_faiss",
+    task="similarity_search",
+    description="Tool for computing similarity scores based on a given threshold.",
 )
 
 
