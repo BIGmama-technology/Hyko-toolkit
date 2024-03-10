@@ -1,11 +1,13 @@
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
+from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Audio
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
-    description="HuggingFace text to speech, run on cude may cause issues on cpu",
+func = ToolkitModel(
+    name="text_to_speech",
+    task="audio",
+    description="HuggingFace text to speech, run on cuda may cause issues on cpu",
 )
 
 
