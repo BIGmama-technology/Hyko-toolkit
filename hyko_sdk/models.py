@@ -1,7 +1,7 @@
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 
 class Ext(str, Enum):
@@ -76,6 +76,7 @@ class HykoJsonSchema(BaseModel):
 class Category(str, Enum):
     MODEL = "models"
     FUNCTION = "functions"
+    API = "apis"
 
 
 class MetaDataBase(BaseModel):
@@ -94,6 +95,26 @@ class FunctionMetaData(MetaDataBase):
 
 class ModelMetaData(FunctionMetaData):
     startup_params: Optional[HykoJsonSchema] = None
+
+
+class Method(str, Enum):
+    get = "GET"
+    post = "POST"
+    patch = "PATCH"
+    put = "PUT"
+    delete = "DELETE"
+
+
+class APIMetaData(MetaDataBase):
+    method: Method
+    url: str
+    headers: Optional[dict[str, str]] = None
+    body: Optional[dict[str, Any]] = None
+
+    @computed_field
+    @property
+    def image(self) -> str:
+        return self.method + self.url
 
 
 class CoreModel(BaseModel):
