@@ -1,10 +1,12 @@
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
-    description="Scrape HTML content from URLs and convert it to plain text"
+func = ToolkitFunction(
+    name="html2text_transformer",
+    task="web_scraping",
+    description="Scrape HTML content from URLs and convert it to plain text",
 )
 
 

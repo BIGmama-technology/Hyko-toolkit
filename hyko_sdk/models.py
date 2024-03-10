@@ -4,6 +4,36 @@ from typing import Dict, List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class Ext(str, Enum):
+    TXT = "txt"
+    CSV = "csv"
+    PDF = "pdf"
+    PNG = "png"
+    JPEG = "jpeg"
+    MPEG = "mpeg"
+    WEBM = "webm"
+    WAV = "wav"
+    MP4 = "mp4"
+    MP3 = "mp3"
+    AVI = "avi"
+    MKV = "mkv"
+    MOV = "mov"
+    WMV = "wmv"
+    GIF = "gif"
+    JPG = "jpg"
+    TIFF = "tiff"
+    TIF = "tif"
+    BMP = "bmp"
+    JP2 = "jp2"
+    DIB = "dib"
+    PGM = "pgm"
+    PPM = "ppm"
+    PNM = "pnm"
+    RAS = "ras"
+    HDR = "hdr"
+    WEBP = "webp"
+
+
 class IOPortType(str, Enum):
     BOOLEAN = "boolean"
     NUMBER = "number"
@@ -36,38 +66,34 @@ class Property(BaseModel):
 
 
 class HykoJsonSchema(BaseModel):
-    properties: Dict[str, Property] = {}
+    properties: Dict[str, Property]
     defs: Optional[Dict[str, Property]] = Field(default=None, alias="$defs")
-    friendly_types: Dict[str, str] = {}
+    friendly_types: Dict[str, str]
 
     model_config = ConfigDict(populate_by_name=True)
-
-
-class MetaDataBase(BaseModel):
-    description: str
-    startup_params: HykoJsonSchema
-    params: HykoJsonSchema
-    inputs: HykoJsonSchema
-    outputs: HykoJsonSchema
 
 
 class Category(str, Enum):
     MODEL = "models"
     FUNCTION = "functions"
 
-    @classmethod
-    def get_enum_from_string(cls, input_string: str):
-        for enum_member in cls:
-            if input_string == enum_member.value:
-                return enum_member
-        raise ValueError("String does not match any enum value")
 
-
-class MetaData(MetaDataBase):
+class MetaDataBase(BaseModel):
+    category: Category = Category.FUNCTION
     name: str
     task: str
-    image: str
-    category: Category
+    description: str
+    params: Optional[HykoJsonSchema] = None
+    inputs: Optional[HykoJsonSchema] = None
+    outputs: Optional[HykoJsonSchema] = None
+
+
+class FunctionMetaData(MetaDataBase):
+    image: Optional[str] = None
+
+
+class ModelMetaData(FunctionMetaData):
+    startup_params: Optional[HykoJsonSchema] = None
 
 
 class CoreModel(BaseModel):
