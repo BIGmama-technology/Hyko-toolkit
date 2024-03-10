@@ -1,9 +1,9 @@
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
+func = ToolkitFunction(
     description="Calculate the length of a string",
 )
 
