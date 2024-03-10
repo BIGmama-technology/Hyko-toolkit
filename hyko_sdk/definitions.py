@@ -8,10 +8,10 @@ from pydantic import BaseModel
 
 from hyko_sdk.models import (
     Category,
-    FunctionMetaDate,
+    FunctionMetaData,
     HykoJsonSchema,
     MetaDataBase,
-    ModelMetaDate,
+    ModelMetaData,
 )
 from hyko_sdk.utils import to_friendly_types
 
@@ -73,32 +73,31 @@ class ToolkitBase:
             outputs=self.outputs,
         )
 
-    def get_metadata(self) -> MetaDataBase:
-        return self.get_base_metadata()
-
-    def dump_metadata(self, **kwargs: Any) -> str:
+    def dump_metadata(
+        self,
+    ) -> str:
         metadata = MetaDataBase(
-            **self.get_metadata().model_dump(exclude_none=True),
-            **kwargs,
+            **self.get_base_metadata().model_dump(exclude_none=True),
         )
         return metadata.model_dump_json(
             exclude_none=True,
-            exclude_defaults=True,
             by_alias=True,
         )
 
-    def write(self, host: str, username: str, password: str, **kwargs: Any):
+    def write(self, host: str, username: str, password: str):
         import httpx
 
         response = httpx.post(
             f"https://api.{host}/toolkit/write",
-            content=self.dump_metadata(**kwargs),
+            content=self.dump_metadata(),
             auth=httpx.BasicAuth(username, password),
             verify=False if host == "traefik.me" else True,
         )
 
         if response.status_code != 200:
-            raise BaseException("Failed to write to hyko db.")
+            raise BaseException(
+                f"Failed to write to hyko db. Error code {response.status_code}"
+            )
 
     def deploy(self, host: str, username: str, password: str, **kwargs: Any):
         self.write(host, username, password)
@@ -134,10 +133,13 @@ class ToolkitFunction(ToolkitBase, FastAPI):
 
         return self.post("/execute")(wrapper)
 
-    def build(self, dockerfile_path: str, image_name: str):
+    def build(
+        self,
+        dockerfile_path: str,
+    ):
         try:
             subprocess.run(
-                f"docker build -t {image_name} -f {dockerfile_path} .".split(" "),
+                f"docker build -t {self.image_name} -f {dockerfile_path} .".split(" "),
                 check=True,
             )
         except subprocess.CalledProcessError as e:
@@ -145,10 +147,10 @@ class ToolkitFunction(ToolkitBase, FastAPI):
                 "Failed to build function docker image.",
             ) from e
 
-    def push(self, image_name: str):
+    def push(self):
         try:
             subprocess.run(
-                f"docker push {image_name}".split(" "),
+                f"docker push {self.image_name}".split(" "),
                 check=True,
             )
         except subprocess.CalledProcessError as e:
@@ -157,21 +159,25 @@ class ToolkitFunction(ToolkitBase, FastAPI):
             ) from e
 
     def deploy(self, host: str, username: str, password: str, **kwargs: Any):
-        image_name = (
+        self.image_name = (
             f"registry.{host}/{self.category.value}/{self.task}/{self.name}:latest"
         )
         dockerfile_path = kwargs.get("dockerfile_path")
         assert dockerfile_path, "docker file path missing"
 
-        self.build(dockerfile_path, image_name)
-        self.push(image_name)
-        self.write(host, username, password, image=image_name)
+        self.build(dockerfile_path)
+        self.push()
+        self.write(host, username, password)
 
-    def get_metadata(self) -> FunctionMetaDate:
+    def dump_metadata(self) -> str:
         base_metadata = self.get_base_metadata()
-
-        return FunctionMetaDate(
+        metadata = FunctionMetaData(
             **base_metadata.model_dump(exclude_none=True),
+            image=self.image_name,
+        )
+        return metadata.model_dump_json(
+            exclude_none=True,
+            by_alias=True,
         )
 
 
@@ -207,10 +213,14 @@ class ToolkitModel(ToolkitFunction):
     def on_shutdown(self, f: OnShutdownFuncType) -> OnShutdownFuncType:
         return self.on_event("shutdown")(f)
 
-    def get_metadata(self) -> ModelMetaDate:
+    def dump_metadata(self) -> str:
         base_metadata = self.get_base_metadata()
-
-        return ModelMetaDate(
+        metadata = ModelMetaData(
             **base_metadata.model_dump(exclude_none=True),
+            image=self.image_name,
             startup_params=self.startup_params,
+        )
+        return metadata.model_dump_json(
+            exclude_none=True,
+            by_alias=True,
         )
