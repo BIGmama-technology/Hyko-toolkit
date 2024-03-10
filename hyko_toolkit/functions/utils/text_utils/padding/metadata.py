@@ -6,6 +6,8 @@ from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
 func = ToolkitFunction(
+    name="padding",
+    task="text_utils",
     description="Pads text until it has a certain length",
 )
 

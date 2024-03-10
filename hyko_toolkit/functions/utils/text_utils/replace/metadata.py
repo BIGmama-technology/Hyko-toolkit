@@ -6,6 +6,8 @@ from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 
 func = ToolkitFunction(
+    name="replace",
+    task="text_utils",
     description="Replace occurrences of a substring in a string",
 )
 
