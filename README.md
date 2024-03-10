@@ -18,10 +18,12 @@ Make sure to enable build kit in your docker since we are using it to mount cach
 ```python
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="name_surname",
+    task="important_task",
     description="description of your function goes here",
 )
 
