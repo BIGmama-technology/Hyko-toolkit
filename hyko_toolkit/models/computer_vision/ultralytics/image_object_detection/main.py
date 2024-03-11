@@ -2,6 +2,7 @@ import math
 
 import cv2
 import cvzone
+from fastapi import HTTPException
 from metadata import Inputs, Outputs, Params, StartupParams, func
 from ultralytics import YOLO
 
@@ -11,15 +12,22 @@ from hyko_sdk.models import Ext
 
 @func.on_startup
 async def load(startup_params: StartupParams):
-    global model
+    global model, device_map
+    device_map = startup_params.device_map
     model = YOLO(f"{startup_params.model.name}.pt")
+    if device_map == "auto":
+        raise HTTPException(
+            status_code=500, detail="AUTO not available as device_map in this Tool."
+        )
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     image = inputs.input_image.to_ndarray()
     img = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-    results = model.predict(source=img, conf=params.threshold, iou=params.iou_threshold)
+    results = model.predict(
+        source=img, conf=params.threshold, iou=params.iou_threshold, device=device_map
+    )
     bboxs = results[0].boxes
     names = results[0].names
     for box in bboxs:
@@ -38,4 +46,5 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             scale=0.9,
             offset=3,
         )
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     return Outputs(image=Image.from_ndarray(img, encoding=Ext.PNG))  # type: ignore
