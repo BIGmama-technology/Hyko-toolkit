@@ -101,7 +101,7 @@ class ToolkitBase:
                 f"Failed to write to hyko db. Error code {response.status_code}"
             )
 
-    def deploy(self, host: str, username: str, password: str):
+    def deploy(self, host: str, username: str, password: str, **kwargs: Any):
         self.write(host, username, password)
 
 

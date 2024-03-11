@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 USERNAME, PASSWORD = os.getenv("ADMIN_USERNAME"), os.getenv("ADMIN_PASSWORD")
-assert USERNAME and PASSWORD, "no username and password found in .env"
+assert USERNAME and PASSWORD, "No username and password found in .env"
 
 
 SKIP_FOLDERS = ["__pycache__", "venv"]
@@ -17,7 +17,7 @@ all_built_functions: list[str] = []
 failed_functions: list[str] = []
 
 
-def deploy(path: str, dockerfile_path: str, host: str):
+def deploy(host: str, path: str, dockerfile_path: str):
     try:
         subprocess.run(
             "poetry run python -c".split(" ")
@@ -31,15 +31,15 @@ def deploy(path: str, dockerfile_path: str, host: str):
         failed_functions.append(path)
 
 
-def walk_directory(path: str, host: str, dockerfile_path: str):
+def walk_directory(host: str, path: str, dockerfile_path: str):
     ls = os.listdir(path)
 
     if "Dockerfile" in ls:
         dockerfile_path = "Dockerfile"
 
-    if all(f in ls for f in ["main.py", "metadata.py"]) and ".hykoignore" not in ls:
+    if "metadata.py" in ls and ".hykoignore" not in ls:
         all_built_functions.append(path)
-        deploy(path, dockerfile_path, host)
+        deploy(host, path, dockerfile_path)
 
     else:
         dockerfile_path = "../" + dockerfile_path
@@ -52,7 +52,7 @@ def walk_directory(path: str, host: str, dockerfile_path: str):
             if not os.path.isdir(sub_folder_path):
                 continue
 
-            walk_directory(sub_folder_path, host, dockerfile_path)
+            walk_directory(host, sub_folder_path, dockerfile_path)
 
 
 def parse_args(args: list[str]) -> argparse.Namespace:
@@ -96,7 +96,7 @@ if __name__ == "__main__":
     )
 
     for dir in directories:
-        walk_directory(dir, host, dockerfile_path=".")
+        walk_directory(host, dir, dockerfile_path=".")
 
     successful_count = len(all_built_functions) - len(failed_functions)
 
