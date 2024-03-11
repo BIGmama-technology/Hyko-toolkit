@@ -110,6 +110,7 @@ class APIMetaData(MetaDataBase):
     url: str
     headers: Optional[dict[str, str]] = None
     body: Optional[dict[str, Any]] = None
+    response: dict[str, Any]
 
     @computed_field
     @property

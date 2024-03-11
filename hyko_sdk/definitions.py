@@ -262,6 +262,7 @@ class ToolkitAPI(ToolkitBase):
         self,
         url: str,
         method: Method,
+        response: dict[str, Any],
         headers: Optional[dict[str, str]] = None,
         body: Optional[dict[str, Any]] = None,
     ):
@@ -269,6 +270,7 @@ class ToolkitAPI(ToolkitBase):
         self.url = url
         self.headers = headers
         self.body = body
+        self.response = response
 
     def dump_metadata(self) -> str:
         base_metadata = self.get_base_metadata()
@@ -279,4 +281,5 @@ class ToolkitAPI(ToolkitBase):
             url=self.url,
             headers=self.headers,
             body=self.body,
+            response=self.response,
         ).model_dump_json(exclude_none=True, by_alias=True)
