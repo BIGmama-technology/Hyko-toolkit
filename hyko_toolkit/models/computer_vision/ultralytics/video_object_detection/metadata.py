@@ -22,6 +22,7 @@ class SupportedModels(str, Enum):
 @func.set_startup_params
 class StartupParams(CoreModel):
     model: SupportedModels = Field(..., description="Yolo Models.")
+    device_map: str = Field(..., description="Device map (Auto, CPU or GPU).")
 
 
 @func.set_input
