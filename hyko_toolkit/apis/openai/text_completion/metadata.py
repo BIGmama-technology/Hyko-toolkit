@@ -1,39 +1,54 @@
 """
 You can deploy this api by running me.
 """
-import os
 
-from dotenv import load_dotenv
+from enum import Enum
+
+from pydantic import Field
 
 from hyko_sdk.definitions import ToolkitAPI
 from hyko_sdk.models import CoreModel, Method
 
-load_dotenv()
-
-USERNAME, PASSWORD = os.getenv("ADMIN_USERNAME"), os.getenv("ADMIN_PASSWORD")
-assert USERNAME and PASSWORD, "no username and password found in .env"
-
 func = ToolkitAPI(
     name="text_completion",
     task="openai",
-    description="Use chatgpt openai api for text completion.",
+    description="Use openai api for text completion.",
 )
+
+
+class OpenaiModel(str, Enum):
+    gpt_4 = "gpt-4"
+    chatgpt = "gpt-3.5-turbo"
 
 
 @func.set_input
 class Inputs(CoreModel):
-    prompt: str
+    system_prompt: str = Field(
+        default="You are a helpful assistant", description="generated text."
+    )
+    prompt: str = Field(..., description="Input prompt.")
 
 
 @func.set_param
 class Params(CoreModel):
-    system_prompt: str
-    api_key: str
+    api_key: str = Field(..., description="API key")
+    openai_model: OpenaiModel = Field(
+        default=OpenaiModel.chatgpt,
+        description="Openai model to use.",
+    )
+    max_tokens: int = Field(
+        default="1024",
+        description="The maximum number of tokens that can be generated in the chat completion.",
+    )
+    temperature: int = Field(
+        default=1,
+        description="What sampling temperature to use, between 0 and 2, defaults to 1.",
+    )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    pass
+    result: str = Field(..., description="generated text.")
 
 
 func.on_call(
@@ -44,12 +59,21 @@ func.on_call(
         "Authorization": f"Bearer {Params.api_key}",
     },
     body={
-        "model": "gpt-3.5-turbo",
+        "model": Params.openai_model,
+        "max_tokens": Params.max_tokens,
+        "temperature": Params.temperature,
         "messages": [
-            {"role": "system", "content": Params.system_prompt},
+            {"role": "system", "content": Inputs.system_prompt},
             {"role": "user", "content": Inputs.prompt},
         ],
     },
+    response={
+        "choices": [
+            {
+                "message": {
+                    "content": Outputs.result,
+                },
+            }
+        ],
+    },
 )
-
-func.deploy(host="traefik.me", username=USERNAME, password=PASSWORD)
