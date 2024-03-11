@@ -4,7 +4,7 @@ from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.models import CoreModel
 
 func = ToolkitModel(
-    name="E5_faiss",
+    name="e5_faiss",
     task="similarity_search",
     description="Tool for computing similarity scores based on a given threshold.",
 )
@@ -20,11 +20,6 @@ class Inputs(CoreModel):
         ...,
         description="Query or the Question to compare against the input text.",
     )
-
-
-@func.set_startup_params
-class StartupParams(CoreModel):
-    pass
 
 
 @func.set_param

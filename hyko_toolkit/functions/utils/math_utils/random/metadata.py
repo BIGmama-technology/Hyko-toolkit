@@ -10,11 +10,6 @@ func = ToolkitFunction(
 )
 
 
-@func.set_input
-class Inputs(CoreModel):
-    pass
-
-
 @func.set_param
 class Params(CoreModel):
     min_val: int = Field(..., description="Minimum value for random number generation")

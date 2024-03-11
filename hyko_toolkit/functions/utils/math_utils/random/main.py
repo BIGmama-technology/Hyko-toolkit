@@ -1,11 +1,13 @@
 from random import randint
 
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Outputs, Params, func
+
+from hyko_sdk.models import CoreModel
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: CoreModel, params: Params) -> Outputs:
     min_val = params.min_val
     max_val = params.max_val
     if min_val > max_val:

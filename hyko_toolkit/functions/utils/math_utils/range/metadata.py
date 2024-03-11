@@ -10,11 +10,6 @@ func = ToolkitFunction(
 )
 
 
-@func.set_input
-class Inputs(CoreModel):
-    pass
-
-
 @func.set_param
 class Params(CoreModel):
     start: int = Field(..., description="Start integer in the range")
