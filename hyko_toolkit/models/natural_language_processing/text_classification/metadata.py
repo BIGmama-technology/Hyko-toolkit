@@ -21,11 +21,6 @@ class Inputs(CoreModel):
     input_text: list[str] = Field(..., description="Text to classify.")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     label: list[str] = Field(..., description="Class labels")

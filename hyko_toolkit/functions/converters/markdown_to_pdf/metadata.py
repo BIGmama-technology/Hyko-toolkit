@@ -16,11 +16,6 @@ class Inputs(CoreModel):
     markdown_string: str = Field(..., description="The Markdown content to convert.")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     pdf: PDF = Field(..., description="PDF File .")

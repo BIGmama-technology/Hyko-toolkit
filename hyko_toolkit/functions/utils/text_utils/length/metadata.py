@@ -15,11 +15,6 @@ class Inputs(CoreModel):
     text: str = Field(..., description="Input text")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     length: int = Field(..., description="Length of the input string")

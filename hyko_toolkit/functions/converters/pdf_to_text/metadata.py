@@ -16,11 +16,6 @@ class Inputs(CoreModel):
     pdf_file: PDF = Field(..., description="User input pdf to be converted to text")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     text: str = Field(..., description="Extracted text from pdf")

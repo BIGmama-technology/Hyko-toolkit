@@ -16,11 +16,6 @@ class Inputs(CoreModel):
     video: Video = Field(..., description="User input video to be converted to audio")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     audio: Audio = Field(..., description="converted audio")

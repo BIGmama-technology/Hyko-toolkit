@@ -1,12 +1,12 @@
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, func
 from rembg import remove
 
 from hyko_sdk.io import Image
-from hyko_sdk.models import Ext
+from hyko_sdk.models import CoreModel, Ext
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     """
     This function removes the background from the original input image .
 

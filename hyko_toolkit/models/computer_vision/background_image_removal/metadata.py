@@ -16,11 +16,6 @@ class Inputs(CoreModel):
     input_image: Image = Field(..., description="Original image")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     image: Image = Field(..., description="Image without background")

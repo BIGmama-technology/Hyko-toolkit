@@ -16,11 +16,6 @@ class Inputs(CoreModel):
     image: Image = Field(..., description="Input image to get dimensions from")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     width: int = Field(..., description="Width of the image")

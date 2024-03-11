@@ -1,7 +1,8 @@
-from metadata import Inputs, Outputs, Params, StartupParams, func
+from metadata import Inputs, Outputs, StartupParams, func
 from transformers import pipeline
 
 from hyko_sdk.io import Image
+from hyko_sdk.models import CoreModel
 
 
 @func.on_startup
@@ -19,7 +20,7 @@ async def load(startup_params: StartupParams):
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     res = estimator(inputs.input_image.to_pil())
     depth_map = Image.from_pil(res["depth"])
 

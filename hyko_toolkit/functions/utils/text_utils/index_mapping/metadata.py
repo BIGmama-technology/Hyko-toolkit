@@ -16,11 +16,6 @@ class Inputs(CoreModel):
     indexes: list[int] = Field(..., description="list of indexes")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     output_strings: list[str] = Field(..., description="list of mapped output strings")

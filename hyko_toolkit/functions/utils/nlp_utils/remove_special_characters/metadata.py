@@ -18,11 +18,6 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     result: str = Field(

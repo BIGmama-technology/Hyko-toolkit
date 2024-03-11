@@ -17,11 +17,6 @@ class StartupParams(CoreModel):
     device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_input
 class Inputs(CoreModel):
     input_image: Image = Field(..., description="Input image")

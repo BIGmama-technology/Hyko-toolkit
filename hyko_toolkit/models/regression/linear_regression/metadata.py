@@ -19,11 +19,6 @@ class Inputs(CoreModel):
     historical_y: list[float] = Field(..., description="Historical data of Y axis")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     predict_y: float = Field(..., description="Predicted Y axis value")

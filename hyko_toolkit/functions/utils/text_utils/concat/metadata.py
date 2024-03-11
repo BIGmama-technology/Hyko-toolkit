@@ -16,11 +16,6 @@ class Inputs(CoreModel):
     second: str = Field(..., description="Second string")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     output: str = Field(..., description="Concatenated result")

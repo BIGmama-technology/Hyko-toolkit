@@ -15,11 +15,6 @@ class Inputs(CoreModel):
     text: str = Field(..., description="Input text")
 
 
-@func.set_param
-class Params(CoreModel):
-    pass
-
-
 @func.set_output
 class Outputs(CoreModel):
     lowercase_string: str = Field(
