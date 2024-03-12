@@ -19,6 +19,7 @@ class SupportedModels(str, Enum):
     yolov8m = "yolov8_Medium"
     yolov8l = "yolov8_Large"
     yolov8x = "yolov8_XLarge"
+    yolov8x_p6 = "yolov8_XP6"
 
 
 @func.set_startup_params
