@@ -9,7 +9,7 @@ from hyko_sdk.models import CoreModel
 func = ToolkitModel(
     name="ultralytics_video_object_detection",
     task="computer_vision",
-    description="UltraLytics Video Object Detection Using YOLO V8.",
+    description="UltraLytics Video Object Detection Using YOLO V8 and V9.",
 )
 
 
@@ -19,6 +19,8 @@ class SupportedModels(str, Enum):
     yolov8m = "yolov8_Medium"
     yolov8l = "yolov8_Large"
     yolov8x = "yolov8_XLarge"
+    yolov9c = "yolov9_compact"
+    yolov9e = "yolov9_largest"
 
 
 @func.set_startup_params
