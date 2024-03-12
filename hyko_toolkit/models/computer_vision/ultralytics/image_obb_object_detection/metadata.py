@@ -15,8 +15,10 @@ func = ToolkitModel(
 
 class SupportedModels(str, Enum):
     yolov8n = "yolov8_Nano"
+    yolov8s = "yolov8_Small"
     yolov8m = "yolov8_Medium"
     yolov8l = "yolov8_Large"
+    yolov8x = "yolov8_XLarge"
 
 
 @func.set_startup_params
