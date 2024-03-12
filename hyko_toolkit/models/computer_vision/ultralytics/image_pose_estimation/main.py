@@ -14,7 +14,10 @@ from hyko_sdk.models import Ext
 async def load(startup_params: StartupParams):
     global model, device_map
     device_map = startup_params.device_map
-    model = YOLO(f"{startup_params.model.name}-pose.pt")
+    if startup_params.model.name == "yolov8x_p6":
+        model = YOLO("yolov8x-pose-p6.pt")
+    else:
+        model = YOLO(f"{startup_params.model.name}-pose.pt")
     if device_map == "auto":
         raise HTTPException(
             status_code=500, detail="AUTO not available as device_map in this Tool."
