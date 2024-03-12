@@ -226,6 +226,7 @@ class ToolkitModel(ToolkitFunction):
             **base_metadata.model_dump(exclude_none=True),
             image=self.image_name,
             startup_params=self.startup_params,
+            size=self.size,
         )
         return metadata.model_dump_json(exclude_none=True, by_alias=True)
 
