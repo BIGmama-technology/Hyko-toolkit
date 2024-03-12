@@ -56,6 +56,7 @@ class Property(BaseModel):
     description: Optional[str] = None
     all_of: Optional[list[dict[str, str]]] = Field(default=None, alias="allOf")
     ref: Optional[str] = Field(default=None, alias="$ref")
+    default: Optional[Any] = None
 
     enum: Optional[list[str]] = None
     any_of: Optional[List["Property"]] = Field(default=None, alias="anyOf")

@@ -31,13 +31,13 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(..., description="API key")
+    api_key: str = Field(default="", description="API key")
     openai_model: OpenaiModel = Field(
         default=OpenaiModel.chatgpt,
         description="Openai model to use.",
     )
     max_tokens: int = Field(
-        default="1024",
+        default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
     )
     temperature: int = Field(
@@ -77,3 +77,6 @@ func.on_call(
         ],
     },
 )
+
+
+func.write(host="traefik.me", username="hyko", password="rabahhadji")
