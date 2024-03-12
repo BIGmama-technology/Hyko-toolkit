@@ -139,6 +139,8 @@ class ToolkitFunction(ToolkitBase, FastAPI):
         self,
         dockerfile_path: str,
     ):
+        import docker  # type: ignore
+
         try:
             subprocess.run(
                 f"docker build -t {self.image_name} -f {dockerfile_path} .".split(" "),
@@ -148,6 +150,10 @@ class ToolkitFunction(ToolkitBase, FastAPI):
             raise BaseException(
                 "Failed to build function docker image.",
             ) from e
+
+        client = docker.DockerClient(base_url="unix://var/run/docker.sock")
+        image = client.images.get(self.image_name)  # type: ignore
+        self.size: int = image.attrs["Size"]  # type: ignore
 
     def push(self):
         try:
@@ -174,6 +180,7 @@ class ToolkitFunction(ToolkitBase, FastAPI):
         metadata = FunctionMetaData(
             **base_metadata.model_dump(exclude_none=True),
             image=self.image_name,
+            size=self.size,
         )
         return metadata.model_dump_json(
             exclude_none=True,

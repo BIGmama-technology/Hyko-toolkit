@@ -91,6 +91,7 @@ class MetaDataBase(BaseModel):
 
 class FunctionMetaData(MetaDataBase):
     image: Optional[str] = None
+    size: int
 
 
 class ModelMetaData(FunctionMetaData):
