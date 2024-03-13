@@ -7,31 +7,6 @@
 
 Make sure to enable build kit in your docker since we are using it to mount cache for pip.
 
-## To publish
-
-Before publishing a new version of `hyko-sdk` make sure to update its version in `pyproject.toml`
-
-Follow this convetion by [npm](https://docs.npmjs.com/about-semantic-versioning)
-
-| Code status                            | Stage           | Rule                                                | Example version |
-|----------------------------------------|-----------------|-----------------------------------------------------|-----------------|
-| First release                          | New product     | Start with 1.0.0                                    | 1.0.0           |
-| Backward compatible bug fixes          | Patch release   | Increment the third digit                          | 1.0.1           |
-| Backward compatible new features       | Minor release   | Increment the middle digit and reset last digit to zero | 1.1.0           |
-| Changes that break backward compatibility | Major release | Increment the first digit and reset middle and last digits to zero | 2.0.0 |
-
-Generate a `pypi` token and add it to configure poetry to use it
-
-```bash
-poetry config pypi-token.pypi your-pypi-token
-```
-
-Now you can build and publish
-
-```bash
-poetry build
-poetry publish
-```
 
 ## How to add a new function
 
@@ -43,10 +18,12 @@ poetry publish
 ```python
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="name_surname",
+    task="important_task",
     description="description of your function goes here",
 )
 
