@@ -3,7 +3,6 @@ import io
 
 import matplotlib.pyplot as plt
 import numpy as np
-from fastapi import HTTPException
 from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import pipeline
 
@@ -78,17 +77,11 @@ async def load(startup_params: StartupParams):
 
     model = startup_params.hugging_face_model
     device_map = startup_params.device_map
-    try:
-        generator = pipeline(
-            "mask-generation",
-            model=model,
-            device_map=device_map,
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail="SamModel does not support device_map=auto",
-        ) from e
+    generator = pipeline(
+        "mask-generation",
+        model=model,
+        device_map=device_map,
+    )
 
 
 @func.on_execute
