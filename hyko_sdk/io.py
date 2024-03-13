@@ -15,7 +15,7 @@ from pydantic import (
 from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
 
-from hyko_sdk.models import Ext
+from .models import Ext
 
 GLOBAL_STORAGE_PATH = "/storage"
 

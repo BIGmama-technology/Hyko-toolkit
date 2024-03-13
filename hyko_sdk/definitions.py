@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from hyko_sdk.models import (
+from .models import (
     APIMetaData,
     Category,
     FunctionMetaData,
@@ -15,7 +15,7 @@ from hyko_sdk.models import (
     Method,
     ModelMetaData,
 )
-from hyko_sdk.utils import to_friendly_types
+from .utils import to_friendly_types
 
 InputsType = TypeVar("InputsType", bound="BaseModel")
 ParamsType = TypeVar("ParamsType", bound="BaseModel")
@@ -151,7 +151,7 @@ class ToolkitFunction(ToolkitBase, FastAPI):
                 "Failed to build function docker image.",
             ) from e
 
-        client = docker.DockerClient(base_url="unix://var/run/docker.sock")
+        client = docker.DockerClient(base_url="unix://var/run/docker.sock")  # type: ignore
         image = client.images.get(self.image_name)  # type: ignore
         self.size: int = image.attrs["Size"]  # type: ignore
 
