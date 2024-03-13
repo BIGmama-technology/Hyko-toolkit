@@ -8,7 +8,7 @@ from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import pipeline
 
 from hyko_sdk.io import Image
-from hyko_sdk.types import Ext
+from hyko_sdk.models import Ext
 
 
 def show_mask(mask: np.ndarray, ax: plt.Axes, random_color: bool):
