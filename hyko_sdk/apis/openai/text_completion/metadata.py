@@ -3,6 +3,7 @@ from enum import Enum
 import httpx
 from pydantic import Field
 
+from hyko_sdk.apis.exceptions import APICallError
 from hyko_sdk.definitions import ToolkitAPI
 from hyko_sdk.models import CoreModel, Method
 
@@ -82,5 +83,9 @@ async def call(inputs: Inputs, params: Params):
                 ],
             },
         )
-    response = Response(**res.json())
+    if res.is_success:
+        response = Response(**res.json())
+    else:
+        raise APICallError(status=res.status_code, detail=res.text)
+
     return Outputs(result=response.choices[0].content)
