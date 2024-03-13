@@ -235,5 +235,21 @@ class ToolkitAPI(ToolkitBase):
         super().__init__(name=name, task=task, desc=description)
         self.category = Category.API
 
+    def set_input(self, model: T) -> T:
+        self.inputs_model = model
+        self.inputs = HykoJsonSchema(
+            **model.model_json_schema(),
+            friendly_types=to_friendly_types(model),
+        )
+        return model
+
+    def set_param(self, model: T) -> T:
+        self.params_model = model
+        self.params = HykoJsonSchema(
+            **model.model_json_schema(),
+            friendly_types=to_friendly_types(model),
+        )
+        return model
+
     def on_call(self, f: OnCallType[InputsType, ParamsType, OutputsType]):
         self.call = f
