@@ -1,5 +1,6 @@
 from enum import Enum
 
+import httpx
 from pydantic import Field
 
 from hyko_sdk.definitions import ToolkitAPI
@@ -12,7 +13,7 @@ func = ToolkitAPI(
 )
 
 
-class OpenaiModel(str, Enum):
+class Model(str, Enum):
     gpt_4 = "gpt-4"
     chatgpt = "gpt-3.5-turbo"
 
@@ -28,8 +29,8 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     api_key: str = Field(default="", description="API key")
-    openai_model: OpenaiModel = Field(
-        default=OpenaiModel.chatgpt,
+    model: Model = Field(
+        default=Model.chatgpt,
         description="Openai model to use.",
     )
     max_tokens: int = Field(
@@ -42,34 +43,44 @@ class Params(CoreModel):
     )
 
 
+class Role(Enum):
+    system = "system"
+    assistant = "assistant"
+
+
+class Message(CoreModel):
+    role: Role
+    content: str
+
+
+class Response(CoreModel):
+    choices: list[Message]
+
+
 @func.set_output
 class Outputs(CoreModel):
     result: str = Field(..., description="generated text.")
 
 
-func.on_call(
-    method=Method.post,
-    url="https://api.openai.com/v1/chat/completions",
-    headers={
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {Params.api_key}",
-    },
-    body={
-        "model": Params.openai_model,
-        "max_tokens": Params.max_tokens,
-        "temperature": Params.temperature,
-        "messages": [
-            {"role": "system", "content": Inputs.system_prompt},
-            {"role": "user", "content": Inputs.prompt},
-        ],
-    },
-    response={
-        "choices": [
-            {
-                "message": {
-                    "content": Outputs.result,
-                },
-            }
-        ],
-    },
-)
+@func.on_call
+async def call(inputs: Inputs, params: Params):
+    async with httpx.AsyncClient() as client:
+        res = await client.request(
+            method=Method.post,
+            url="https://api.openai.com/v1/chat/completions",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {params.api_key}",
+            },
+            json={
+                "model": params.model,
+                "max_tokens": params.max_tokens,
+                "temperature": params.temperature,
+                "messages": [
+                    {"role": "system", "content": inputs.system_prompt},
+                    {"role": "user", "content": inputs.prompt},
+                ],
+            },
+        )
+    response = Response(**res.json())
+    return Outputs(result=response.choices[0].content)
