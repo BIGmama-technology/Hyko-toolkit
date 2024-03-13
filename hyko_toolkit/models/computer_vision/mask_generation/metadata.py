@@ -13,8 +13,10 @@ func = ToolkitModel(
 
 @func.set_startup_params
 class StartupParams(CoreModel):
-    hugging_face_model: str = Field(..., description="Model")
-    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+    hugging_face_model: str = Field(
+        default="facebook/sam-vit-base", description="Model"
+    )
+    device_map: str = Field(default="cpu", description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_param
