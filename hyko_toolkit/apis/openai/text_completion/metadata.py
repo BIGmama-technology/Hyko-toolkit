@@ -1,7 +1,3 @@
-"""
-You can deploy this api by running me.
-"""
-
 from enum import Enum
 
 from pydantic import Field
@@ -77,6 +73,3 @@ func.on_call(
         ],
     },
 )
-
-
-func.write(host="traefik.me", username="hyko", password="rabahhadji")
