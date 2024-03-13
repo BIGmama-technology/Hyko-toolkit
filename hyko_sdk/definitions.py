@@ -1,18 +1,16 @@
 import json
 import subprocess
-from typing import Any, Callable, Coroutine, Optional, Type, TypeVar
+from typing import Any, Callable, Coroutine, Type, TypeVar
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from .models import (
-    APIMetaData,
     Category,
     FunctionMetaData,
     HykoJsonSchema,
     MetaDataBase,
-    Method,
     ModelMetaData,
 )
 from .utils import to_friendly_types
@@ -24,6 +22,7 @@ OutputsType = TypeVar("OutputsType", bound="BaseModel")
 OnStartupFuncType = Callable[[ParamsType], Coroutine[Any, Any, None]]
 OnShutdownFuncType = Callable[[], Coroutine[Any, Any, None]]
 OnExecuteFuncType = Callable[[InputsType, ParamsType], Coroutine[Any, Any, OutputsType]]
+OnCallType = Callable[[InputsType, ParamsType], Coroutine[Any, Any, OutputsType]]
 
 T = TypeVar("T", bound=Type[BaseModel])
 
@@ -236,58 +235,5 @@ class ToolkitAPI(ToolkitBase):
         super().__init__(name=name, task=task, desc=description)
         self.category = Category.API
 
-    def modify_attributes(self, model: T) -> T:
-        for field_name, field_info in model.model_fields.items():
-            if hasattr(model, field_name):
-                delattr(model, field_name)
-            new_attr_value = field_info.alias if field_info.alias else field_name
-            new_attr_value = "$" + new_attr_value + "$"
-            setattr(model, field_name, new_attr_value)
-        return model
-
-    def set_input(self, model: T) -> T:
-        self.inputs = HykoJsonSchema(
-            **model.model_json_schema(),
-            friendly_types=to_friendly_types(model),
-        )
-        return self.modify_attributes(model)
-
-    def set_output(self, model: T) -> T:
-        self.outputs = HykoJsonSchema(
-            **model.model_json_schema(),
-            friendly_types=to_friendly_types(model),
-        )
-        return self.modify_attributes(model)
-
-    def set_param(self, model: T) -> T:
-        self.params = HykoJsonSchema(
-            **model.model_json_schema(),
-            friendly_types=to_friendly_types(model),
-        )
-        return self.modify_attributes(model)
-
-    def on_call(
-        self,
-        url: str,
-        method: Method,
-        response: dict[str, Any],
-        headers: Optional[dict[str, str]] = None,
-        body: Optional[dict[str, Any]] = None,
-    ):
-        self.method = method
-        self.url = url
-        self.headers = headers
-        self.body = body
-        self.response = response
-
-    def dump_metadata(self) -> str:
-        base_metadata = self.get_base_metadata()
-
-        return APIMetaData(
-            **base_metadata.model_dump(exclude_none=True),
-            method=self.method,
-            url=self.url,
-            headers=self.headers,
-            body=self.body,
-            response=self.response,
-        ).model_dump_json(exclude_none=True, by_alias=True)
+    def on_call(self, f: OnCallType[InputsType, ParamsType, OutputsType]):
+        self.call = f

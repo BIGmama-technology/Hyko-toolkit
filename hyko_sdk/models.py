@@ -81,7 +81,7 @@ class Category(str, Enum):
 
 
 class MetaDataBase(BaseModel):
-    category: Category = Category.FUNCTION
+    category: Category
     name: str
     task: str
     description: str
@@ -108,16 +108,10 @@ class Method(str, Enum):
 
 
 class APIMetaData(MetaDataBase):
-    method: Method
-    url: str
-    headers: Optional[dict[str, str]] = None
-    body: Optional[dict[str, Any]] = None
-    response: dict[str, Any]
-
     @computed_field
     @property
     def image(self) -> str:
-        return self.method + self.url
+        return self.task + "/" + self.name
 
 
 class CoreModel(BaseModel):
