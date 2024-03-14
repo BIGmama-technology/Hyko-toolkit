@@ -1,5 +1,6 @@
 import transformers
-from metadata import Inputs, Outputs, Params, StartupParams, func
+from hyko_sdk.models import CoreModel
+from metadata import Inputs, Outputs, StartupParams, func
 
 
 @func.on_startup
@@ -17,7 +18,7 @@ async def load(startup_params: StartupParams):
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     res = classifier(inputs.input_text, candidate_labels=inputs.candidate_labels)
 
     return Outputs(labels=res["labels"], scores=res["scores"])  # type: ignore

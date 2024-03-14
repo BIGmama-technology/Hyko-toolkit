@@ -1,8 +1,7 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitFunction(
     name="get_dimensions",
@@ -14,11 +13,6 @@ func = ToolkitFunction(
 @func.set_input
 class Inputs(CoreModel):
     image: Image = Field(..., description="Input image to get dimensions from")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output

@@ -1,7 +1,6 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitFunction(
     name="length",
@@ -13,11 +12,6 @@ func = ToolkitFunction(
 @func.set_input
 class Inputs(CoreModel):
     text: str = Field(..., description="Input text")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output
