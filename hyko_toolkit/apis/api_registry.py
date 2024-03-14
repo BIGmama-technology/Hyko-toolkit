@@ -6,8 +6,6 @@ class APIRegistry:
 
     @classmethod
     def register(cls, name: str, api: _ToolkitAPI):
-        if name in cls._registry:
-            raise KeyError(f"API handler '{name}' is already registered")
         cls._registry[name] = api
 
     @classmethod
