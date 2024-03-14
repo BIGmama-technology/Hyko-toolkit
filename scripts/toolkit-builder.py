@@ -87,13 +87,13 @@ if __name__ == "__main__":
         check=True,
     )
 
-    print("build hyko_sdk image")
-    subprocess.run(
-        "docker build -t hyko-sdk:latest -f common_dockerfiles/hyko-sdk.Dockerfile .".split(
-            " "
-        ),
-        check=True,
-    )
+    dockerfiles = os.listdir("./common_dockerfiles")
+    for file in dockerfiles:
+        image = file.removesuffix(".Dockerfile")
+        subprocess.run(
+            f"docker build -t {image}:latest -f common_dockerfiles/{file} .".split(" "),
+            check=True,
+        )
 
     for dir in directories:
         walk_directory(dir, host, dockerfile_path=".")
