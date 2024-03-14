@@ -29,7 +29,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(default="", description="API key")
+    api_key: str = Field(description="API key")
     model: Model = Field(
         default=Model.chatgpt,
         description="Openai model to use.",
