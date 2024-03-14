@@ -23,8 +23,8 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     top_k: int = Field(
-        ...,
-        description="Number of top results to consider.",
+        default=3,
+        description="Number of top results to consider (default=3).",
     )
 
 

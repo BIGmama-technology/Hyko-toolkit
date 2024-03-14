@@ -28,12 +28,12 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     bm25_k: int = Field(
-        ...,
-        description="Number of top results to consider in Best Matching Algorithm (BM25).",
+        default=3,
+        description="Number of top results to consider in Best Matching Algorithm (BM25) (default=3).",
     )
     faiss_k: int = Field(
-        ...,
-        description="Number of top results to consider in Similarity Search Algorithm.",
+        default=3,
+        description="Number of top results to consider in Similarity Search Algorithm (default=3).",
     )
 
 
