@@ -16,6 +16,9 @@ func = ToolkitAPI(
 
 class Model(str, Enum):
     ada_002 = "text-embedding-ada-002"
+    babbage_001 = "text-embedding-babbage-001"
+    curie_001 = "text-embedding-curie-001"
+    davinci_001 = "text-embedding-davinci-001"
 
 
 @func.set_input
