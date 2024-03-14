@@ -1,10 +1,11 @@
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
-from hyko_sdk.models import CoreModel
-
-func = SDKFunction(
-    description="Divides text recursively based on specified characters, ensuring semantic coherence."
+func = ToolkitFunction(
+    name="recursive_character_text_splitter",
+    task="nlp_utils",
+    description="Divides text recursively based on specified characters, ensuring semantic coherence.",
 )
 
 

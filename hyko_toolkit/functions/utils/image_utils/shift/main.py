@@ -1,9 +1,8 @@
 import cv2
 import numpy as np
 from fastapi import HTTPException
-from metadata import FillColor, Inputs, Outputs, Params, func
-
 from hyko_sdk.io import Image
+from metadata import FillColor, Inputs, Outputs, Params, func
 
 
 def get_h_w_c(image):
