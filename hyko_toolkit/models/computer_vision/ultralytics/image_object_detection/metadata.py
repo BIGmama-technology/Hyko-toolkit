@@ -25,7 +25,9 @@ class SupportedModels(str, Enum):
 
 @func.set_startup_params
 class StartupParams(CoreModel):
-    model: SupportedModels = Field(default="yolov8n", description="Yolo Models.")
+    model: SupportedModels = Field(
+        default=SupportedModels.yolov8n, description="Yolo Models."
+    )
     device_map: str = Field(default="cpu", description="Device map (Auto, CPU or GPU).")
 
 
