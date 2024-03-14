@@ -1,8 +1,7 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitFunction(
     name="markdown_to_pdf",
@@ -14,11 +13,6 @@ func = ToolkitFunction(
 @func.set_input
 class Inputs(CoreModel):
     markdown_string: str = Field(..., description="The Markdown content to convert.")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output

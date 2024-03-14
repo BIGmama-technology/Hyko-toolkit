@@ -1,8 +1,7 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitModel(
     name="background_image_removal",
@@ -14,11 +13,6 @@ func = ToolkitModel(
 @func.set_input
 class Inputs(CoreModel):
     input_image: Image = Field(..., description="Original image")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output

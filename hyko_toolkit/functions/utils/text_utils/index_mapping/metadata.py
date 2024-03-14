@@ -1,7 +1,6 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitFunction(
     name="index_mapping",
@@ -14,11 +13,6 @@ func = ToolkitFunction(
 class Inputs(CoreModel):
     input_strings: list[str] = Field(..., description="list of input strings")
     indexes: list[int] = Field(..., description="list of indexes")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output
