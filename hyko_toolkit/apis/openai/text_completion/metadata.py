@@ -1,14 +1,14 @@
 from enum import Enum
 
 import httpx
-from hyko_sdk.definitions import ToolkitAPI
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
 
+from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitAPI(
-    name="text_completion",
+text_completion_api = ToolkitAPI(
+    name="openai_text_completion",
     task="openai",
     description="Use openai api for text completion.",
 )
@@ -19,7 +19,7 @@ class Model(str, Enum):
     chatgpt = "gpt-3.5-turbo"
 
 
-@func.set_input
+@text_completion_api.set_input
 class Inputs(CoreModel):
     system_prompt: str = Field(
         default="You are a helpful assistant", description="generated text."
@@ -27,7 +27,7 @@ class Inputs(CoreModel):
     prompt: str = Field(..., description="Input prompt.")
 
 
-@func.set_param
+@text_completion_api.set_param
 class Params(CoreModel):
     api_key: str = Field(description="API key")
     model: Model = Field(
@@ -44,7 +44,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@text_completion_api.set_output
 class Outputs(CoreModel):
     result: str = Field(..., description="generated text.")
 
@@ -73,7 +73,7 @@ class Response(CoreModel):
     usage: Usage
 
 
-@func.on_call
+@text_completion_api.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

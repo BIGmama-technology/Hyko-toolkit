@@ -1,14 +1,14 @@
 from enum import Enum
 
 import httpx
-from hyko_sdk.definitions import ToolkitAPI
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
 
+from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitAPI(
-    name="text_embedding",
+text_embedding_api = ToolkitAPI(
+    name="openai_text_embedding",
     task="openai",
     description="Use openai api for text embedding.",
 )
@@ -20,12 +20,12 @@ class Model(str, Enum):
     small_3 = "text-embedding-3-small"
 
 
-@func.set_input
+@text_embedding_api.set_input
 class Inputs(CoreModel):
     text: str = Field(..., description="Text to embed.")
 
 
-@func.set_param
+@text_embedding_api.set_param
 class Params(CoreModel):
     api_key: str = Field(description="API key")
     model: Model = Field(
@@ -34,7 +34,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@text_embedding_api.set_output
 class Outputs(CoreModel):
     embedding: list[float] = Field(..., description="text embedding.")
 
@@ -54,7 +54,7 @@ class Response(CoreModel):
     usage: Usage
 
 
-@func.on_call
+@text_embedding_api.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
