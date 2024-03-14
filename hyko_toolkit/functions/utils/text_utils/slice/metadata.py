@@ -1,9 +1,10 @@
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
-from hyko_sdk.models import CoreModel
-
-func = SDKFunction(
+func = ToolkitFunction(
+    name="slice",
+    task="text_utils",
     description="Create a slice of a given string of text",
 )
 
