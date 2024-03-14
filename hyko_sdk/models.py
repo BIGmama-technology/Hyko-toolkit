@@ -21,16 +21,7 @@ class Ext(str, Enum):
     WMV = "wmv"
     GIF = "gif"
     JPG = "jpg"
-    TIFF = "tiff"
-    TIF = "tif"
     BMP = "bmp"
-    JP2 = "jp2"
-    DIB = "dib"
-    PGM = "pgm"
-    PPM = "ppm"
-    PNM = "pnm"
-    RAS = "ras"
-    HDR = "hdr"
     WEBP = "webp"
 
 
