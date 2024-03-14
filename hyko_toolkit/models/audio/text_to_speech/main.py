@@ -1,7 +1,6 @@
+from hyko_sdk.io import Audio
 from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import pipeline
-
-from hyko_sdk.io import Audio
 
 synthesizer = None
 

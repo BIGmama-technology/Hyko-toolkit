@@ -1,5 +1,7 @@
 import io
 
+from hyko_sdk.io import Video
+from hyko_sdk.models import Ext
 from metadata import (
     Inputs,
     Outputs,
@@ -7,9 +9,6 @@ from metadata import (
     func,
 )
 from pytube import YouTube
-
-from hyko_sdk.io import Video
-from hyko_sdk.models import Ext
 
 
 def download_video(url, resolution):

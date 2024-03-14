@@ -1,9 +1,8 @@
 import cv2
 import numpy as np
 from fastapi import HTTPException
-from metadata import Inputs, Orientation, Outputs, Params, func
-
 from hyko_sdk.io import Image
+from metadata import Inputs, Orientation, Outputs, Params, func
 
 
 @func.on_execute

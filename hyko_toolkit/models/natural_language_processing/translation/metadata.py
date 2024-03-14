@@ -1,9 +1,8 @@
 from enum import Enum
 
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitModel(
     name="translation",
