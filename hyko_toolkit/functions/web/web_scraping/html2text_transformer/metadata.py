@@ -1,7 +1,6 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitFunction(
     name="html2text_transformer",
@@ -16,11 +15,6 @@ class Inputs(CoreModel):
         ...,
         description="A list of URLs to scrape. Protocol must be either 'http' or 'https'.",
     )
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output

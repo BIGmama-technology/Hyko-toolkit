@@ -1,8 +1,7 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Audio, Video
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitFunction(
     name="video_to_audio",
@@ -14,11 +13,6 @@ func = ToolkitFunction(
 @func.set_input
 class Inputs(CoreModel):
     video: Video = Field(..., description="User input video to be converted to audio")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output

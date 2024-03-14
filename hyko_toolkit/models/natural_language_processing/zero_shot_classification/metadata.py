@@ -1,7 +1,6 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitModel(
     name="zero_shot_classification",
@@ -22,11 +21,6 @@ class Inputs(CoreModel):
     candidate_labels: list[str] = Field(
         ..., description="Candidate labels to use for classification"
     )
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output
