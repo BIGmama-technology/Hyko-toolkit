@@ -20,11 +20,6 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_startup_params
-class StartupParams(CoreModel):
-    pass
-
-
 @func.set_param
 class Params(CoreModel):
     top_k: int = Field(
