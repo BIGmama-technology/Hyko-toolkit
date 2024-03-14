@@ -2,6 +2,8 @@ import json
 import subprocess
 from typing import Any, Callable, Coroutine, Type, TypeVar
 
+import docker  # type: ignore
+import httpx
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -86,8 +88,6 @@ class ToolkitBase:
         )
 
     def write(self, host: str, username: str, password: str):
-        import httpx
-
         response = httpx.post(
             f"https://api.{host}/toolkit/write",
             content=self.dump_metadata(),
@@ -138,8 +138,6 @@ class ToolkitFunction(ToolkitBase, FastAPI):
         self,
         dockerfile_path: str,
     ):
-        import docker  # type: ignore
-
         try:
             subprocess.run(
                 f"docker build -t {self.image_name} -f {dockerfile_path} .".split(" "),
