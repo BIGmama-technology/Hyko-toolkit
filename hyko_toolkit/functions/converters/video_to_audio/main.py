@@ -1,14 +1,13 @@
 import os
 import subprocess
 
-from metadata import Inputs, Outputs, Params, func
-
 from hyko_sdk.io import Audio
-from hyko_sdk.models import Ext
+from hyko_sdk.models import CoreModel, Ext
+from metadata import Inputs, Outputs, func
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     _, ext = os.path.splitext(inputs.video.get_name())
 
     with open(f"/app/video.{ext}", "wb") as f:

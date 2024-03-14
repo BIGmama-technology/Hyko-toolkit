@@ -1,16 +1,12 @@
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.definitions import SDKFunction
-from hyko_sdk.models import CoreModel
-
-func = SDKFunction(
+func = ToolkitFunction(
+    name="range",
+    task="math_utils",
     description="Generate a range of integers",
 )
-
-
-@func.set_input
-class Inputs(CoreModel):
-    pass
 
 
 @func.set_param

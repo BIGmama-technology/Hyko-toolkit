@@ -4,13 +4,12 @@ from io import BytesIO
 import markdown
 import pygments
 from fpdf import FPDF
-from metadata import Inputs, Outputs, Params, func
+from hyko_sdk.io import PDF
+from hyko_sdk.models import CoreModel, Ext
+from metadata import Inputs, Outputs, func
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
-
-from hyko_sdk.io import PDF
-from hyko_sdk.models import Ext
 
 
 def format_code_block(code: str, language: str):
@@ -128,6 +127,6 @@ def convert_markdown_to_pdf(markdown_string: str):
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     buff = convert_markdown_to_pdf(inputs.markdown_string)
     return Outputs(pdf=PDF(val=buff, obj_ext=Ext.PDF))
