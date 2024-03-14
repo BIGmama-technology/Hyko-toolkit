@@ -1,18 +1,12 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitFunction(
     name="random",
     task="math_utils",
     description="Generate a random integer",
 )
-
-
-@func.set_input
-class Inputs(CoreModel):
-    pass
 
 
 @func.set_param
