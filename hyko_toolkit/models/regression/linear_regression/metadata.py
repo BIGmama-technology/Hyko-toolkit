@@ -1,7 +1,6 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitModel(
     name="linear_regression",
@@ -17,11 +16,6 @@ class Inputs(CoreModel):
     )
     historical_x: list[float] = Field(..., description="Historical data of X axis")
     historical_y: list[float] = Field(..., description="Historical data of Y axis")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output

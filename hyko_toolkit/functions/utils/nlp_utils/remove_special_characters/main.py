@@ -1,10 +1,11 @@
 import re
 
-from metadata import Inputs, Outputs, Params, func
+from hyko_sdk.models import CoreModel
+from metadata import Inputs, Outputs, func
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     """
     Remove special characters and punctuation from the text, keeping only alphanumeric characters and spaces.
 

@@ -1,10 +1,11 @@
-from pydantic import Field
-
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="brightness_and_contrast",
+    task="image_utils",
     description="Adjust brightness and contrast of an image",
 )
 

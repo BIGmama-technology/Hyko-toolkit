@@ -1,8 +1,7 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitFunction(
     name="pdf_to_text",
@@ -14,11 +13,6 @@ func = ToolkitFunction(
 @func.set_input
 class Inputs(CoreModel):
     pdf_file: PDF = Field(..., description="User input pdf to be converted to text")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output

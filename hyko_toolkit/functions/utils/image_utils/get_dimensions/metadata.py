@@ -1,10 +1,11 @@
-from pydantic import Field
-
-from hyko_sdk.definitions import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="get_dimensions",
+    task="image_utils",
     description="Get the Height, Width, and number of Channels from an image",
 )
 
@@ -12,11 +13,6 @@ func = SDKFunction(
 @func.set_input
 class Inputs(CoreModel):
     image: Image = Field(..., description="Input image to get dimensions from")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output
