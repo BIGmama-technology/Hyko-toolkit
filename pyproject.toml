@@ -9,17 +9,20 @@ authors = ["Ouassim Abdelmalek Ghribi <oag@big-mama.io>",
 [tool.poetry.dependencies]
 python = "^3.11.6"
 fastapi = "^0.100.1"
-soundfile = "^0.12.1"
-numpy = "1.25.2"
 pydantic = "^2.5.3"
 uvicorn = {extras = ["standard"], version = "^0.25.0"}
-pillow = "^10.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
 ruff = "^0.1.9"
 gitlint = "^0.19.1"
 httpx = {version = "0.24.1", extras = ["h2"]}
+
+
+[tool.poetry.group.io.dependencies]
+numpy = "^1.26.4"
+pillow = "^10.2.0"
+soundfile = "^0.12.1"
 
 [tool.ruff]
 select = [
