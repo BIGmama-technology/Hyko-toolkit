@@ -1,4 +1,3 @@
-import numpy as np
 from hyko_sdk.io import Image as HykoImage
 from metadata import Inputs, Outputs, Params, func
 from PIL import Image, ImageEnhance
@@ -16,9 +15,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     enhancer = ImageEnhance.Contrast(img_pil_bright)
     img_pil_contrast = enhancer.enhance(params.contrast)
 
-    # Convert to ndarray for compatibility with hyko_sdk.io.Image
-    img_np_final = np.array(img_pil_contrast)
-
-    image = HykoImage.from_ndarray(img_np_final)
+    image = HykoImage.from_pil(img_pil_contrast)
 
     return Outputs(adjusted_image=image)
