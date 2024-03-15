@@ -17,7 +17,10 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    amount: PositiveInt = Field(
+    cropped_width: PositiveInt = Field(
+        default=0, description="Number of pixels to drop from all four borders"
+    )
+    cropped_hight: PositiveInt = Field(
         default=0, description="Number of pixels to drop from all four borders"
     )
 
