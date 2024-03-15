@@ -1,22 +1,20 @@
 [tool.poetry]
-name = "hyko_sdk"
-version = "4.0.2"
-description = "Hyko's Software Development Kit"
-authors = ["Ouassim Abdelmalek Ghribi <oag@big-mama.io>", 
-        "Hachem Betrouni <hb@big-mama.io>", 
-        "Yousra Anfel Boucetta <jab@big-mama.io>"]
+name = "hyko_toolkit"
+version = "0.1.0"
+authors = []
+description = "Collection of Models/Functions/APIs in hyko"
 
 [tool.poetry.dependencies]
 python = "^3.11.6"
-fastapi = "^0.100.1"
 pydantic = "^2.5.3"
-uvicorn = {extras = ["standard"], version = "^0.25.0"}
+httpx = "0.24.1"
+hyko_sdk = {git = "https://github.com/BIGmama-technology/Hyko-sdk.git", branch = "56-api-support"}
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
 ruff = "^0.1.9"
 gitlint = "^0.19.1"
-httpx = {version = "0.24.1", extras = ["h2"]}
+
 
 
 [tool.poetry.group.io.dependencies]
