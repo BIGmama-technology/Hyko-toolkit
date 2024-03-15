@@ -3,11 +3,10 @@ import io
 
 import matplotlib.pyplot as plt
 import numpy as np
-from metadata import Inputs, Outputs, Params, StartupParams, func
-from transformers import pipeline
-
 from hyko_sdk.io import Image
 from hyko_sdk.models import Ext
+from metadata import Inputs, Outputs, Params, StartupParams, func
+from transformers import pipeline
 
 
 def show_mask(mask: np.ndarray, ax: plt.Axes, random_color: bool):
