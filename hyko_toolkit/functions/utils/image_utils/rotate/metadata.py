@@ -17,7 +17,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    rotation_angle: int = Field(..., description="Rotation angle in degrees")
+    rotation_angle: int = Field(default=30, description="Rotation angle in degrees")
 
 
 @func.set_output

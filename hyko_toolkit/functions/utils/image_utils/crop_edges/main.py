@@ -1,4 +1,3 @@
-import numpy as np
 from fastapi import HTTPException
 from hyko_sdk.io import Image as HykoImage
 from metadata import Inputs, Outputs, Params, func
@@ -19,7 +18,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             status_code=500, detail="Cropped area resulted in an empty image"
         )
 
-    cropped_image = np.array(cropped_image)
-    cropped_image_output = HykoImage.from_ndarray(cropped_image)
+    cropped_image_output = HykoImage.from_pil(cropped_image)
 
     return Outputs(cropped_image=cropped_image_output)
