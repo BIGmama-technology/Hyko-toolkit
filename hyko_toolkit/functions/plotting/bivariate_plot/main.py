@@ -4,10 +4,9 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from metadata import Inputs, Outputs, Params, func
-
 from hyko_sdk.io import Image
 from hyko_sdk.models import Ext
+from metadata import Inputs, Outputs, Params, func
 
 
 def generate_violin_plot(x: list[float], y: list[float]):

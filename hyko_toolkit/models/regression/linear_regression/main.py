@@ -1,13 +1,13 @@
 import numpy as np
 from fastapi.exceptions import HTTPException
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, func
 from sklearn.linear_model import LinearRegression
 
 linear_regression = LinearRegression()
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs) -> Outputs:
     if len(inputs.historical_x) != len(inputs.historical_y):
         raise HTTPException(
             status_code=500,
