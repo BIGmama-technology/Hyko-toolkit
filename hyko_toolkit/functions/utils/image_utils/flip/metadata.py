@@ -26,7 +26,8 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     flip_axis: FlipAxis = Field(
-        ..., description="Flip axis: horizontal, vertical, both, or none"
+        default=FlipAxis.horizontal,
+        description="Flip axis: horizontal, vertical, both, or none",
     )
 
 
