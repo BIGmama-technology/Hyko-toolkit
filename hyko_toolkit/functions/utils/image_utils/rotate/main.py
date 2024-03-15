@@ -2,10 +2,9 @@ import os
 
 import cv2
 import numpy as np
+from hyko_sdk.io import Image
 from metadata import Inputs, Outputs, Params, func
 from PIL import Image as PIL_Image
-
-from hyko_sdk.io import Image
 
 
 @func.on_execute
