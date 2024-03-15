@@ -1,10 +1,9 @@
 import os
 from io import BytesIO
 
+from hyko_sdk.io import Image
 from metadata import Inputs, Outputs, Params, func
 from PIL import Image as PILImage
-
-from hyko_sdk.io import Image
 
 
 @func.on_execute

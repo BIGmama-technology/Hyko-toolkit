@@ -1,7 +1,6 @@
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitFunction(
     name="concat",
@@ -14,11 +13,6 @@ func = ToolkitFunction(
 class Inputs(CoreModel):
     first: str = Field(..., description="First string")
     second: str = Field(..., description="Second string")
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output
