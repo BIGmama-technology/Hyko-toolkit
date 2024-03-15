@@ -26,7 +26,8 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     orientation: Orientation = Field(
-        ..., description="Stacking orientation (HORIZONTAL or VERTICAL)"
+        default=Orientation.HORIZONTAL,
+        description="Stacking orientation (HORIZONTAL or VERTICAL)",
     )
 
 
