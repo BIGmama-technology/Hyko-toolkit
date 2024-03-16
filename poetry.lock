@@ -489,8 +489,8 @@ uvicorn = {version = "^0.25.0", extras = ["standard"]}
 [package.source]
 type = "git"
 url = "https://github.com/BIGmama-technology/Hyko-sdk.git"
-reference = "56-api-support"
-resolved_reference = "a881f23ea55f661de9f2e469c6eec1e0f6a97929"
+reference = "development"
+resolved_reference = "7baae8411d4a33dba37e23d9fa458ec27659862a"
 
 [[package]]
 name = "identify"
@@ -1359,4 +1359,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11.6"
-content-hash = "1aed4346d98d33a3ec560758cbb19603092bf8c973d1ab68b442fe4a9fbd6b93"
+content-hash = "6b1114fa930034518d38df5e8036a067346f0c10998dce724472f1bf1836a314"
