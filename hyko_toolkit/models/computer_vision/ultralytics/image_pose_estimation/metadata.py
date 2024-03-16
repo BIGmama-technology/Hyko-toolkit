@@ -1,10 +1,9 @@
 from enum import Enum
 
-from pydantic import Field
-
 from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 func = ToolkitModel(
     name="ultralytics_image_pose_estimation",

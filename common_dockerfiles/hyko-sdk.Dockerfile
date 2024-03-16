@@ -14,10 +14,6 @@ COPY pyproject.toml poetry.lock ./
 # Cache poetry dependencies to speed up builds
 RUN poetry install --without dev --no-root --no-cache
 
-# Copy the application code
-WORKDIR /hyko_sdk
-COPY hyko_sdk .
-
 # Install project dependencies excluding the dev dependencies
 RUN poetry install --without dev --no-cache
 
@@ -31,7 +27,6 @@ RUN apt update && \
 
 # Copy the virtual environment from the builder stage
 COPY --from=poetry-builder /.venv /.venv
-COPY --from=poetry-builder /hyko_sdk /hyko_sdk
 WORKDIR /app
 
 # Activate the virtual environment
