@@ -1,14 +1,14 @@
 from enum import Enum
 
 import httpx
-from hyko_sdk.definitions import ToolkitAPI
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
 
+from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitAPI(
-    name="text_completion",
+    name="openai_text_completion",
     task="openai",
     description="Use openai api for text completion.",
 )
@@ -29,7 +29,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(default="", description="API key")
+    api_key: str = Field(description="API key")
     model: Model = Field(
         default=Model.chatgpt,
         description="Openai model to use.",

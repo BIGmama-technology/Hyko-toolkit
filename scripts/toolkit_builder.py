@@ -37,7 +37,7 @@ def walk_directory(path: str, host: str, dockerfile_path: str):
     if "Dockerfile" in ls:
         dockerfile_path = "Dockerfile"
 
-    if all(f in ls for f in ["main.py", "metadata.py"]) and ".hykoignore" not in ls:
+    if "metadata.py" in ls and ".hykoignore" not in ls:
         all_built_functions.append(path)
         deploy(path, dockerfile_path, host)
 
