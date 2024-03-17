@@ -24,7 +24,9 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    operation: RoundOperation = Field(..., description="Rounding operation")
+    operation: RoundOperation = Field(
+        default=RoundOperation.ROUND, description="Rounding operation"
+    )
 
 
 @func.set_output
