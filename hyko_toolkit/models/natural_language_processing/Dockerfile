@@ -1,7 +1,6 @@
 FROM hyko-sdk-tiny:latest
 
-RUN --mount=type=cache,target=/root/.cache/pip pip install torch
-RUN --mount=type=cache,target=/root/.cache/pip pip install transformers
+RUN --mount=type=cache,target=/root/.cache/pip pip install transformers[torch]
 RUN --mount=type=cache,target=/root/.cache/pip pip install accelerate 
 RUN --mount=type=cache,target=/root/.cache/pip pip install sentencepiece
 
