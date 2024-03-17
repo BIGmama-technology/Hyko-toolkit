@@ -26,7 +26,8 @@ class Params(CoreModel):
     old_substring: str = Field(..., description="Substring to replace")
     new_substring: str = Field(..., description="Replacement string")
     replace_mode: ReplaceMode = Field(
-        ..., description="Replace mode: replaceAll or replaceFirst"
+        default=ReplaceMode.replace_all,
+        description="Replace mode: replaceAll or replaceFirst",
     )
 
 
