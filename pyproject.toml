@@ -8,7 +8,7 @@ description = "Collection of Models/Functions/APIs in hyko"
 python = "^3.11.6"
 pydantic = "^2.5.3"
 httpx = "0.24.1"
-hyko_sdk = {git = "https://github.com/BIGmama-technology/Hyko-sdk.git", branch = "56-api-support"}
+hyko_sdk = {git = "https://github.com/BIGmama-technology/Hyko-sdk.git", branch = "development"}
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
