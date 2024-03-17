@@ -1,16 +1,13 @@
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
-    description="Executes simultaneous BM25 keyword matching and document similarity searches on input documents."
+func = ToolkitFunction(
+    name="hybrid_search",
+    task="similarity_search",
+    description="Executes simultaneous BM25 keyword matching and document similarity searches on input documents.",
 )
-
-
-@func.set_startup_params
-class StartupParams(CoreModel):
-    pass
 
 
 @func.set_input

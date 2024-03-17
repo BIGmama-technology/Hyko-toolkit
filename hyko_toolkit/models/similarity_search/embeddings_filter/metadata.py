@@ -1,10 +1,12 @@
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
-    description="Document compressor that uses embeddings to drop documents unrelated to the query."
+func = ToolkitFunction(
+    name="embeddings_filter",
+    task="similarity_search",
+    description="Document compressor that uses embeddings to drop documents unrelated to the query.",
 )
 
 
@@ -20,16 +22,12 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_startup_params
-class StartupParams(CoreModel):
+@func.set_param
+class Params(CoreModel):
     embeddings_similarity_threshold: float = Field(
         default=0.6,
         description="Threshold for determining when two documents are similar enough to be considered redundant (default=0.6).",
     )
-
-
-@func.set_param
-class Params(CoreModel):
     top_k: int = Field(
         default=5,
         description="Number of top results to consider (default=5).",

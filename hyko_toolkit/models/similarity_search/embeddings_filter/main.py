@@ -3,17 +3,15 @@ from langchain.retrievers.document_compressors import EmbeddingsFilter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents.base import Document
-from metadata import Inputs, Outputs, Params, StartupParams, func
+from metadata import Inputs, Outputs, Params, func
+
+from hyko_sdk.models import CoreModel
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
-    global embeddings, embeddings_filter
+async def load(startup_params: CoreModel):
+    global embeddings
     embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-small")
-    embeddings_filter = EmbeddingsFilter(
-        embeddings=embeddings,
-        similarity_threshold=startup_params.embeddings_similarity_threshold,
-    )
 
 
 @func.on_execute
@@ -30,6 +28,10 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         result (list[str]): Top K results
     """
     docs = inputs.docs
+    embeddings_filter = EmbeddingsFilter(
+        embeddings=embeddings,
+        similarity_threshold=params.embeddings_similarity_threshold,
+    )
     lang_docs = [Document(page_content=i) for i in docs]
     db = FAISS.from_documents(documents=lang_docs, embedding=embeddings)
     retriever = db.as_retriever(

@@ -2,11 +2,13 @@ from langchain.retrievers import BM25Retriever, EnsembleRetriever
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents.base import Document
-from metadata import Inputs, Outputs, Params, StartupParams, func
+from metadata import Inputs, Outputs, Params, func
+
+from hyko_sdk.models import CoreModel
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
+async def load(startup_params: CoreModel):
     global embeddings
     embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-small")
 

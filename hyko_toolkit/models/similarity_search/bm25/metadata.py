@@ -1,10 +1,12 @@
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
-    description="Perform BM25 retrieval on a list of documents based on a given query."
+func = ToolkitFunction(
+    name="bm25",
+    task="similarity_search",
+    description="Perform BM25 retrieval on a list of documents based on a given query.",
 )
 
 
