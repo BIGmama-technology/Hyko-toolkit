@@ -1,9 +1,8 @@
 import numpy as np
+from hyko_sdk.io import Image
 from metadata import CaptionColor, CaptionPosition, Inputs, Outputs, Params, func
 from PIL import Image as PIL_Image
 from PIL import ImageDraw, ImageFont
-
-from hyko_sdk.io import Image
 
 
 def add_caption(
