@@ -12,7 +12,7 @@ RUN pip install poetry
 COPY pyproject.toml poetry.lock ./
 
 # Cache poetry dependencies to speed up builds
-RUN poetry install --without=dev,io --no-root --no-cache
+RUN poetry install --without=dev --no-root --no-cache
 
 # Stage 2: Application stage for running the application using the venv
 FROM python:3.11.6-alpine as app-runner

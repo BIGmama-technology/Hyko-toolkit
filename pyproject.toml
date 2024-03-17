@@ -6,19 +6,12 @@ description = "Collection of Models/Functions/APIs in hyko"
 
 [tool.poetry.dependencies]
 python = "^3.11.6"
-pydantic = "^2.5.3"
-httpx = "0.24.1"
 hyko_sdk = {git = "https://github.com/BIGmama-technology/Hyko-sdk.git", branch = "development"}
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
 ruff = "^0.1.9"
 gitlint = "^0.19.1"
-
-[tool.poetry.group.io.dependencies]
-numpy = "^1.25.2"
-pillow = "^10.2.0"
-soundfile = "^0.12.1"
 
 [tool.ruff]
 select = [
