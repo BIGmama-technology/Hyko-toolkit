@@ -1,5 +1,4 @@
 import numpy as np
-from fastapi.exceptions import HTTPException
 from metadata import CaptionColor, CaptionPosition, Inputs, Outputs, Params, func
 from PIL import Image as PIL_Image
 from PIL import ImageDraw, ImageFont
@@ -8,17 +7,12 @@ from hyko_sdk.io import Image
 
 
 def add_caption(
-    img: PIL_Image,
+    img: PIL_Image.Image,
     caption: str,
     size: int,
     position: CaptionPosition,
     color: CaptionColor,
-) -> PIL_Image:
-    if size < 0:
-        raise HTTPException(
-            status_code=500, detail="Caption size must be a non-negative integer"
-        )
-
+) -> PIL_Image.Image:
     if color == CaptionColor.BLACK:
         font_color = (0, 0, 0)
     else:
@@ -31,7 +25,7 @@ def add_caption(
     font_path = "arial.ttf"
     font = ImageFont.truetype(font_path, size)
     draw = ImageDraw.Draw(img)
-    draw.text(text_position, caption, font=font, fill=font_color)
+    draw.text(text_position, caption, font=font, fill=font_color)  # type: ignore
 
     return img
 
@@ -39,9 +33,9 @@ def add_caption(
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     img_np = inputs.input_image.to_ndarray()
-    img_pil = PIL_Image.fromarray(img_np)
+    img_pil = PIL_Image.fromarray(img_np)  # type: ignore
 
-    caption = params.caption
+    caption = inputs.caption
     size = params.caption_size
     position = params.position
     color = params.caption_color

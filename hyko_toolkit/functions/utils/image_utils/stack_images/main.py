@@ -1,12 +1,13 @@
-from hyko_sdk.io import Image as HykoImage
 from metadata import Inputs, Orientation, Outputs, Params, func
 from PIL import Image
+
+from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image1_pil = Image.fromarray(inputs.image1.to_ndarray())
-    image2_pil = Image.fromarray(inputs.image2.to_ndarray())
+    image1_pil = Image.fromarray(inputs.image1.to_ndarray())  # type: ignore
+    image2_pil = Image.fromarray(inputs.image2.to_ndarray())  # type: ignore
     orientation = params.orientation
 
     if orientation == Orientation.HORIZONTAL:

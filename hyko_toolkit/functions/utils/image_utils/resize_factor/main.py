@@ -1,11 +1,12 @@
-from hyko_sdk.io import Image as HykoImage
 from metadata import Inputs, Outputs, Params, func
 from PIL import Image
+
+from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    pil_image = Image.fromarray(inputs.image.to_ndarray())
+    pil_image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
 
     original_width, original_height = pil_image.size
     new_width = max(round(original_width * (params.scale_factor / 100)), 1)

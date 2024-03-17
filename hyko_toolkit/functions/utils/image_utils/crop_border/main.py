@@ -1,12 +1,13 @@
 from fastapi import HTTPException
-from hyko_sdk.io import Image as HykoImage
 from metadata import Inputs, Outputs, Params, func
 from PIL import Image
+
+from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image = Image.fromarray(inputs.image.to_ndarray())
+    image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
 
     width, height = image.size
     cropped_image = image.crop(
