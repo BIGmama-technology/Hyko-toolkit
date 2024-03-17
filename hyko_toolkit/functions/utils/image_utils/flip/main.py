@@ -1,11 +1,12 @@
-from hyko_sdk.io import Image as HykoImage
 from metadata import FlipAxis, Inputs, Outputs, Params, func
 from PIL import Image
+
+from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image = Image.fromarray(inputs.image.to_ndarray())
+    image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
 
     flip_axis = params.flip_axis
     if flip_axis == FlipAxis.horizontal:

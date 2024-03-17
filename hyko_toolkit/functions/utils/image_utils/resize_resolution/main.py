@@ -1,11 +1,12 @@
-from hyko_sdk.io import Image as HykoImage
 from metadata import Inputs, Outputs, Params, func
 from PIL import Image
+
+from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    pil_image = Image.fromarray(inputs.image.to_ndarray())
+    pil_image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
 
     resize_methods = {
         "area": Image.Resampling.LANCZOS,
