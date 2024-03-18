@@ -1,10 +1,9 @@
 from enum import Enum
 
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
+from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.models import CoreModel
+from pydantic import Field
 
 
 class SupportedLanguages(str, Enum):
@@ -14,7 +13,9 @@ class SupportedLanguages(str, Enum):
     spanish = "es"
 
 
-func = SDKFunction(
+func = ToolkitModel(
+    name="surya_ocr",
+    task="optical_character_recognition",
     description="Extracts text from an image using Surya-OCR.",
 )
 
@@ -31,7 +32,9 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    language: SupportedLanguages = Field(..., description="Select your language.")
+    language: SupportedLanguages = Field(
+        default=SupportedLanguages.english.value, description="Select your language."
+    )
 
 
 @func.set_output
