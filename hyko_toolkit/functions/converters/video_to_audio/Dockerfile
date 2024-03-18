@@ -1,4 +1,8 @@
-FROM hyko-sdk:latest
+FROM hyko-sdk-medium:latest
+
+RUN apt-get install -y \
+ffmpeg && \
+rm -rf /var/lib/apt/lists/*
 
 COPY . .
 

@@ -26,7 +26,9 @@ class Inputs(CoreModel):
 class Params(CoreModel):
     width: int = Field(..., description="Width of the padded text")
     padding: str = Field(..., description="Padding character")
-    alignment: PaddingAlignment = Field(..., description="Padding alignment")
+    alignment: PaddingAlignment = Field(
+        default=PaddingAlignment.START, description="Padding alignment"
+    )
 
 
 @func.set_output

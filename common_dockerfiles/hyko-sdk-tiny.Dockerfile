@@ -1,5 +1,5 @@
 # Stage 1: Build stage for creating a venv with Poetry
-FROM python:3.11.6-slim as poetry-builder
+FROM python:3.11.6-alpine as poetry-builder
 
 # Set poetry environment variables
 ENV POETRY_NO_INTERACTION=1 \
@@ -12,19 +12,15 @@ RUN pip install poetry
 COPY pyproject.toml poetry.lock ./
 
 # Cache poetry dependencies to speed up builds
-RUN poetry install --without dev --no-root --no-cache
+RUN poetry install --without=dev --no-root --no-cache
 
 # Stage 2: Application stage for running the application using the venv
-FROM python:3.11.6-slim as app-runner
+FROM python:3.11.6-alpine as app-runner
 
-RUN apt update && \
-    apt install -y --no-install-recommends build-essential libgl1-mesa-glx libglib2.0-0 ffmpeg && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk update
 
 # Copy the virtual environment from the builder stage
 COPY --from=poetry-builder /.venv /.venv
-
 WORKDIR /app
 
 # Activate the virtual environment

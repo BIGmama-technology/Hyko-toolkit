@@ -17,14 +17,10 @@ RUN poetry install --without dev --no-root --no-cache
 # Stage 2: Application stage for running the application using the venv
 FROM python:3.11.6-slim as app-runner
 
-RUN apt update && \
-    apt install -y --no-install-recommends build-essential libgl1-mesa-glx libglib2.0-0 ffmpeg && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt update
 
 # Copy the virtual environment from the builder stage
 COPY --from=poetry-builder /.venv /.venv
-
 WORKDIR /app
 
 # Activate the virtual environment

@@ -3,7 +3,7 @@ from enum import Enum
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from pydantic import Field, PositiveFloat
 
 func = ToolkitFunction(
     name="resize_factor",
@@ -27,9 +27,11 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    scale_factor: float = Field(..., description="Scaling factor for resizing")
+    scale_factor: PositiveFloat = Field(
+        default=0, description="Scaling factor for resizing"
+    )
     interpolation: InterpolationMethod = Field(
-        ..., description="Interpolation method for resizing"
+        InterpolationMethod.Lanczos, description="Interpolation method for resizing"
     )
 
 

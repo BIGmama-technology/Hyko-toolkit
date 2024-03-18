@@ -9,13 +9,7 @@ from pydantic import Field
 class SupportedTypes(Enum):
     png = Ext.PNG
     jpeg = Ext.JPEG
-    tiff = Ext.TIFF
     bmp = Ext.BMP
-    jp2 = Ext.JP2
-    ppm = Ext.PPM
-    pnm = Ext.PNM
-    ras = Ext.RAS
-    hdr = Ext.HDR
     webp = Ext.WEBP
 
 
