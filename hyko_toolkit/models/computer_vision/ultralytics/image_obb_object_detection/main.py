@@ -41,4 +41,8 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     annotated_image = label_annotator.annotate(
         scene=annotated_frame, detections=detections, labels=labels
     )
-    return Outputs(image=Image.from_ndarray(annotated_image, encoding=Ext.PNG))
+    return Outputs(
+        image=Image.from_ndarray(
+            cv2.cvtColor(annotated_image, cv2.COLOR_RGB2BGR), encoding=Ext.PNG
+        )
+    )
