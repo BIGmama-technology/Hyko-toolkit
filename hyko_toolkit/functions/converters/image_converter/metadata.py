@@ -1,27 +1,21 @@
 from enum import Enum
 
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-from hyko_sdk.types import Ext
+from hyko_sdk.models import CoreModel, Ext
+from pydantic import Field
 
 
 class SupportedTypes(Enum):
     png = Ext.PNG
     jpeg = Ext.JPEG
-    tiff = Ext.TIFF
     bmp = Ext.BMP
-    jp2 = Ext.JP2
-    ppm = Ext.PPM
-    pnm = Ext.PNM
-    ras = Ext.RAS
-    hdr = Ext.HDR
     webp = Ext.WEBP
 
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="image_converter",
+    task="converters",
     description="Convert an input image to a specified target image type.",
 )
 

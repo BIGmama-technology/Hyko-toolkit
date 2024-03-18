@@ -1,11 +1,14 @@
 from enum import Enum
 
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(description="A function to remove stopwords from text.")
+func = ToolkitFunction(
+    name="remove_stopwords",
+    task="nlp_utils",
+    description="A function to remove stopwords from text.",
+)
 
 
 class SupportedLanguages(str, Enum):
@@ -20,11 +23,6 @@ class Inputs(CoreModel):
         ...,
         description="The input text from which stopwords are to be removed.",
     )
-
-
-@func.set_startup_params
-class StartupParams(CoreModel):
-    pass
 
 
 @func.set_param
