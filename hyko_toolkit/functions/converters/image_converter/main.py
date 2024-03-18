@@ -1,7 +1,9 @@
-import cv2
-import numpy as np
+import os
+from io import BytesIO
+
 from hyko_sdk.io import Image
 from metadata import Inputs, Outputs, Params, func
+from PIL import Image as PILImage
 
 
 @func.on_execute
@@ -16,9 +18,12 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     Returns:
     - Outputs: An object containing the converted image data.
     """
-    image_np = np.frombuffer(inputs.input_image.get_data(), dtype=np.uint8)
-    image = cv2.imdecode(image_np, flags=cv2.IMREAD_COLOR)
-    success, encoded_image = cv2.imencode(f".{params.target_type.name}", image)
-    target_buffer = encoded_image.tobytes()
-    if success:
-        return Outputs(image=Image(val=target_buffer, obj_ext=params.target_type.value))
+    image = PILImage.open(BytesIO(inputs.input_image.get_data()))
+
+    image.save(f"converted-image.{params.target_type.name}")
+    with open(f"converted-image.{params.target_type.name}", "rb") as file:
+        val = file.read()
+
+    os.remove(f"converted-image.{params.target_type.name}")
+
+    return Outputs(image=Image(val=val, obj_ext=params.target_type.value))

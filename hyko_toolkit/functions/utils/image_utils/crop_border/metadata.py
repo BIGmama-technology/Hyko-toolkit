@@ -1,7 +1,7 @@
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from pydantic import Field, PositiveInt
 
 func = ToolkitFunction(
     name="corp_border",
@@ -17,8 +17,11 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    amount: int = Field(
-        ..., description="Number of pixels to drop from all four borders"
+    cropped_width: PositiveInt = Field(
+        default=0, description="Number of pixels to drop from all four borders"
+    )
+    cropped_hight: PositiveInt = Field(
+        default=0, description="Number of pixels to drop from all four borders"
     )
 
 

@@ -1,7 +1,7 @@
-FROM hyko-sdk:latest
+FROM hyko-sdk-medium:latest
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install transformers[torch]
-RUN --mount=type=cache,target=/root/.cache/pip pip install diffusers[torch]
+RUN --mount=type=cache,target=/root/.cache/pip pip install diffusers
 
 COPY . .
 

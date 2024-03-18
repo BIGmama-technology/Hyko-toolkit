@@ -20,10 +20,10 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     brightness: float = Field(
-        ..., description="Brightness adjustment factor (e.g., 1.0 for no change)"
+        default=1, description="Brightness adjustment factor (e.g., 1.0 for no change)"
     )
     contrast: float = Field(
-        ..., description="Contrast adjustment factor (e.g., 1.0 for no change)"
+        default=1, description="Contrast adjustment factor (e.g., 1.0 for no change)"
     )
 
 

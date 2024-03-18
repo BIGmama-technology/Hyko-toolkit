@@ -26,13 +26,15 @@ class MathOperation(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    a: int = Field(..., description="Operand a")
-    b: int = Field(..., description="Operand b")
+    a: float = Field(..., description="Operand a")
+    b: float = Field(..., description="Operand b")
 
 
 @func.set_param
 class Params(CoreModel):
-    operation: MathOperation = Field(..., description="Mathematical operation")
+    operation: MathOperation = Field(
+        default=MathOperation.ADD, description="Mathematical operation"
+    )
 
 
 @func.set_output

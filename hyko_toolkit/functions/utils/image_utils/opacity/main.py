@@ -1,60 +1,22 @@
-import os
-
-import cv2
-import numpy as np
-from fastapi.exceptions import HTTPException
-from hyko_sdk.io import Image
 from metadata import Inputs, Outputs, Params, func
-from PIL import Image as PIL_Image
+from PIL import Image
 
-
-def convert_to_bgra(image: np.ndarray, num_channels: int) -> np.ndarray:
-    if num_channels == 3:
-        return cv2.cvtColor(image, cv2.COLOR_BGR2BGRA)
-    elif num_channels == 4:
-        return image
-    else:
-        raise HTTPException(
-            status_code=500,
-            detail="Invalid number of input channels. Only 3 or 4 channels are supported.",
-        )
-
-
-def opacity(img: np.ndarray, opacity: float) -> np.ndarray:
-    h, w, c = img.shape
-    if opacity == 100 and c == 4:
-        return img
-    imgout = convert_to_bgra(img, c)
-    opacity /= 100
-
-    imgout[:, :, 3] *= opacity
-
-    return imgout
+from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    file, ext = os.path.splitext(inputs.image.get_name())
-    with open(f"./image{ext}", "wb") as f:
-        f.write(inputs.image.get_data())
+    image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
 
-    img_np = np.array(PIL_Image.open(f"./image{ext}"))
+    # Create an alpha layer with the same dimensions as the image, filled with the desired opacity
+    alpha = Image.new("L", image.size, color=int(params.opacity * 255 / 100))
+    if image.mode != "RGBA":
+        image = image.convert("RGBA")
 
-    opacity = params.opacity
-    if not (0 <= opacity <= 100):
-        raise HTTPException(
-            status_code=500, detail="Opacity must be a percentage between 0 and 100."
-        )
+    # Split the image into its components and combine them with the new alpha layer
+    r, g, b, _ = image.split()
+    image_with_opacity = Image.merge("RGBA", (r, g, b, alpha))
 
-    h, w, c = img_np.shape
-    if opacity == 100 and c == 4:
-        adjusted_img_np = img_np
-    else:
-        imgout = convert_to_bgra(img_np, c)
-        opacity /= 100
-        imgout[:, :, 3] = (imgout[:, :, 3] * opacity).astype(np.uint8)
-        adjusted_img_np = imgout
+    adjusted_image_output = HykoImage.from_pil(image_with_opacity)
 
-    adjusted_image = Image.from_ndarray(adjusted_img_np)
-
-    return Outputs(adjusted_image=adjusted_image)
+    return Outputs(adjusted_image=adjusted_image_output)
