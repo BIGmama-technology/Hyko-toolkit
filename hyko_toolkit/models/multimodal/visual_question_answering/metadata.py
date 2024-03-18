@@ -1,10 +1,11 @@
+from hyko_sdk.definitions import ToolkitModel
+from hyko_sdk.io import Image
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
+func = ToolkitModel(
+    name="visual_question_answering",
+    task="multimodal",
     description="Hugging Face Image-To-Text Task",
 )
 
@@ -29,4 +30,4 @@ class Params(CoreModel):
 @func.set_output
 class Outputs(CoreModel):
     answer: list[str] = Field(..., description="Generated answer")
-    score: list[float] = Field(..., description="Confidance score")
+    score: list[float] = Field(..., description="Confidence score")

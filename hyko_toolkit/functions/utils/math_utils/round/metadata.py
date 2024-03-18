@@ -1,11 +1,12 @@
 from enum import Enum
 
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
+func = ToolkitFunction(
+    name="round",
+    task="math_utils",
     description="Round an input number",
 )
 
@@ -23,7 +24,9 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    operation: RoundOperation = Field(..., description="Rounding operation")
+    operation: RoundOperation = Field(
+        default=RoundOperation.ROUND, description="Rounding operation"
+    )
 
 
 @func.set_output

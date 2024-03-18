@@ -1,9 +1,8 @@
 from enum import Enum
 
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
 
 
 class SupportedLanguages(str, Enum):
@@ -12,7 +11,11 @@ class SupportedLanguages(str, Enum):
     french = "fr"
 
 
-func = SDKFunction(description="Search wikipedia summaries.")
+func = ToolkitFunction(
+    name="wikipedia_search",
+    task="web_search",
+    description="Search wikipedia summaries.",
+)
 
 
 @func.set_input

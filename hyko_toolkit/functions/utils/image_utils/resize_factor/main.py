@@ -1,46 +1,30 @@
-import os
-
-import cv2
-import numpy as np
-from fastapi.exceptions import HTTPException
 from metadata import Inputs, Outputs, Params, func
-from PIL import Image as PIL_Image
+from PIL import Image
 
-from hyko_sdk.io import Image
+from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    if params.scale_factor <= 0:
-        raise HTTPException(
-            status_code=500, detail="Scale factor must be a positive value"
-        )
+    pil_image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
 
-    file, ext = os.path.splitext(inputs.image.get_name())
-    with open(f"./image{ext}", "wb") as f:
-        f.write(inputs.image.get_data())
-
-    image_pil = PIL_Image.open(f"./image{ext}")
-    image_cv2 = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
+    original_width, original_height = pil_image.size
+    new_width = max(round(original_width * (params.scale_factor / 100)), 1)
+    new_height = max(round(original_height * (params.scale_factor / 100)), 1)
 
     interpolation_methods = {
-        "area": cv2.INTER_AREA,
-        "linear": cv2.INTER_LINEAR,
-        "lanczos": cv2.INTER_LANCZOS4,
-        "nearest-neighbor": cv2.INTER_NEAREST,
-        "cubic": cv2.INTER_CUBIC,
+        "area": Image.Resampling.BOX,
+        "linear": Image.Resampling.BILINEAR,
+        "lanczos": Image.Resampling.LANCZOS,
+        "nearest-neighbor": Image.Resampling.NEAREST,
+        "cubic": Image.Resampling.BICUBIC,
     }
-    interpolation = interpolation_methods.get(params.interpolation, cv2.INTER_AREA)
 
-    h, w, _ = image_cv2.shape
-    out_dims = (
-        max(round(w * (params.scale_factor / 100)), 1),
-        max(round(h * (params.scale_factor / 100)), 1),
+    interpolation = interpolation_methods.get(
+        params.interpolation, Image.Resampling.BOX
     )
 
-    resized_image_cv2 = cv2.resize(image_cv2, out_dims, interpolation=interpolation)
-    resized_image = cv2.cvtColor(resized_image_cv2, cv2.COLOR_BGR2RGB)
+    resized_pil_image = pil_image.resize((new_width, new_height), interpolation)
+    resized_image = HykoImage.from_pil(resized_pil_image)
 
-    image_resized = Image.from_ndarray(resized_image)
-
-    return Outputs(resized_image=image_resized)
+    return Outputs(resized_image=resized_image)
