@@ -1,10 +1,11 @@
+from hyko_sdk.models import CoreModel
 from langchain_community.document_loaders import AsyncHtmlLoader
 from langchain_community.document_transformers import Html2TextTransformer
-from metadata import Inputs, Outputs, Params, func
+from metadata import Inputs, Outputs, func
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:
+async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     """Scrapes HTML content from the given URLs and converts it to plain text.
 
     Args:

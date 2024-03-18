@@ -1,12 +1,13 @@
 from enum import Enum
 
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.io import Image
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
+func = ToolkitFunction(
+    name="flip",
+    task="image_utils",
     description="Flip an image based on the specified axis",
 )
 
@@ -25,7 +26,8 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     flip_axis: FlipAxis = Field(
-        ..., description="Flip axis: horizontal, vertical, both, or none"
+        default=FlipAxis.horizontal,
+        description="Flip axis: horizontal, vertical, both, or none",
     )
 
 
