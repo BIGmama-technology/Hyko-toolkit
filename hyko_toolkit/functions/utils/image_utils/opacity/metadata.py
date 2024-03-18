@@ -1,7 +1,7 @@
 from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from pydantic import Field, PositiveFloat
 
 func = ToolkitFunction(
     name="opacity",
@@ -17,7 +17,9 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    opacity: float = Field(..., description="Opacity value (0-100)")
+    opacity: PositiveFloat = Field(
+        default=50, le=100, description="Opacity value (0-100)"
+    )
 
 
 @func.set_output

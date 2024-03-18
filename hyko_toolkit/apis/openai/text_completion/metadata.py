@@ -1,9 +1,9 @@
 from enum import Enum
 
 import httpx
-from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
 
+from hyko_sdk.models import CoreModel, Method
 from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 

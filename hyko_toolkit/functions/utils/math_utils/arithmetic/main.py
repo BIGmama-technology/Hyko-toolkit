@@ -1,46 +1,35 @@
 import math
+from typing import Callable
 
 from fastapi import HTTPException
 from metadata import Inputs, MathOperation, Outputs, Params, func
 
 
 @func.on_execute
-async def main(inputs: Inputs, params: Params) -> Outputs:  # noqa: C901
+async def main(inputs: Inputs, params: Params) -> Outputs:
     a = inputs.a
     op = params.operation
     b = inputs.b
 
-    if op == MathOperation.ADD:
-        result = a + b
-    elif op == MathOperation.SUBTRACT:
-        result = a - b
-    elif op == MathOperation.MULTIPLY:
-        result = a * b
-    elif op == MathOperation.DIVIDE:
-        if b == 0:
-            raise HTTPException(
-                status_code=500, detail="Division by zero is not allowed"
-            )
-        result = a / b
-    elif op == MathOperation.POWER:
-        result = a**b
-    elif op == MathOperation.LOG:
-        if a <= 0 or b <= 0:
-            raise HTTPException(
-                status_code=500,
-                detail="Both base and value must be positive for logarithm",
-            )
+    operations: dict[MathOperation, Callable[[float, float], float]] = {
+        MathOperation.ADD: lambda a, b: a + b,
+        MathOperation.SUBTRACT: lambda a, b: a - b,
+        MathOperation.MULTIPLY: lambda a, b: a * b,
+        MathOperation.DIVIDE: lambda a, b: a / b,
+        MathOperation.POWER: lambda a, b: a**b,
+        MathOperation.LOG: lambda a, b: math.log(a, b),
+        MathOperation.MAXIMUM: lambda a, b: max(a, b),
+        MathOperation.MINIMUM: lambda a, b: min(a, b),
+        MathOperation.MODULO: lambda a, b: a % b,
+        MathOperation.PERCENT: lambda a, b: a * 100 / b,
+    }
 
-        result = math.log(b, a)
-    elif op == MathOperation.MAXIMUM:
-        result = max(a, b)
-    elif op == MathOperation.MINIMUM:
-        result = min(a, b)
-    elif op == MathOperation.MODULO:
-        result = a % b
-    elif op == MathOperation.PERCENT:
-        result = a * b / 100
-    else:
-        raise HTTPException(status_code=500, detail=f"Unknown operator {op}")
-
-    return Outputs(result=result)
+    try:
+        result = operations[op](a, b)
+        return Outputs(result=result)
+    except (ValueError, ZeroDivisionError) as exc:
+        raise HTTPException(
+            status_code=500, detail=f"Something went wrong with the function: {exc}"
+        ) from exc
+    except KeyError as exc:
+        raise HTTPException(status_code=500, detail=f"Unknown operator {op}") from exc
