@@ -1,4 +1,4 @@
-FROM hyko-sdk:latest
+FROM hyko-sdk-medium:latest
 
 WORKDIR /app
 
