@@ -1,12 +1,14 @@
 from enum import Enum
 
-from pydantic import Field
+from pydantic import Field, PositiveInt
 
-from hyko_sdk.function import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.models import CoreModel
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="caption",
+    task="image_utils",
     description="Add caption to an image",
 )
 
@@ -24,16 +26,18 @@ class CaptionPosition(str, Enum):
 @func.set_input
 class Inputs(CoreModel):
     input_image: Image = Field(..., description="Input image to add a caption to")
+    caption: str = Field(..., description="Caption text to be added")
 
 
 @func.set_param
 class Params(CoreModel):
-    caption: str = Field(..., description="Caption text to be added")
-    caption_size: int = Field(..., description="Caption size in pixels")
+    caption_size: PositiveInt = Field(default=12, description="Caption size in pixels")
     caption_color: CaptionColor = Field(
-        ..., description="Caption color: white or black"
+        default=CaptionColor.BLACK, description="Caption color: white or black"
     )
-    position: CaptionPosition = Field(..., description="Position to add the caption")
+    position: CaptionPosition = Field(
+        default=CaptionPosition.TOP, description="Position to add the caption"
+    )
 
 
 @func.set_output

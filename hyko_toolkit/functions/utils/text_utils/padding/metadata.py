@@ -1,11 +1,12 @@
 from enum import Enum
 
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
+func = ToolkitFunction(
+    name="padding",
+    task="text_utils",
     description="Pads text until it has a certain length",
 )
 
@@ -25,7 +26,9 @@ class Inputs(CoreModel):
 class Params(CoreModel):
     width: int = Field(..., description="Width of the padded text")
     padding: str = Field(..., description="Padding character")
-    alignment: PaddingAlignment = Field(..., description="Padding alignment")
+    alignment: PaddingAlignment = Field(
+        default=PaddingAlignment.START, description="Padding alignment"
+    )
 
 
 @func.set_output

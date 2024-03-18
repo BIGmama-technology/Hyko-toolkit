@@ -1,12 +1,13 @@
 from enum import Enum
 
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.io import Image
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
+func = ToolkitFunction(
+    name="stack_images",
+    task="image_utils",
     description="Stack images horizontally or vertically",
 )
 
@@ -25,7 +26,8 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     orientation: Orientation = Field(
-        ..., description="Stacking orientation (HORIZONTAL or VERTICAL)"
+        default=Orientation.HORIZONTAL,
+        description="Stacking orientation (HORIZONTAL or VERTICAL)",
     )
 
 

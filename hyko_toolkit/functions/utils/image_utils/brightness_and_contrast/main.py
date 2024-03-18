@@ -1,21 +1,21 @@
-import cv2
-import numpy as np
 from metadata import Inputs, Outputs, Params, func
+from PIL import Image, ImageEnhance
 
-from hyko_sdk.io import Image
+from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    img_np = inputs.image.to_ndarray()
+    img_pil = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
 
-    image_cv2 = cv2.cvtColor(np.array(img_np), cv2.COLOR_RGB2BGR)
+    # Adjusting brightness
+    enhancer = ImageEnhance.Brightness(img_pil)
+    img_pil_bright = enhancer.enhance(params.brightness)
 
-    adjusted_image = cv2.convertScaleAbs(
-        image_cv2, alpha=params.contrast, beta=params.brightness
-    )
-    adjusted_rgb_image = cv2.cvtColor(adjusted_image, cv2.COLOR_BGR2RGB)
+    # Adjusting contrast
+    enhancer = ImageEnhance.Contrast(img_pil_bright)
+    img_pil_contrast = enhancer.enhance(params.contrast)
 
-    image = Image.from_ndarray(adjusted_rgb_image)
+    image = HykoImage.from_pil(img_pil_contrast)
 
     return Outputs(adjusted_image=image)

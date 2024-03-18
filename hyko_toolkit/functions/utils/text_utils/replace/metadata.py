@@ -1,11 +1,12 @@
 from enum import Enum
 
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
+func = ToolkitFunction(
+    name="replace",
+    task="text_utils",
     description="Replace occurrences of a substring in a string",
 )
 
@@ -25,7 +26,8 @@ class Params(CoreModel):
     old_substring: str = Field(..., description="Substring to replace")
     new_substring: str = Field(..., description="Replacement string")
     replace_mode: ReplaceMode = Field(
-        ..., description="Replace mode: replaceAll or replaceFirst"
+        default=ReplaceMode.replace_all,
+        description="Replace mode: replaceAll or replaceFirst",
     )
 
 

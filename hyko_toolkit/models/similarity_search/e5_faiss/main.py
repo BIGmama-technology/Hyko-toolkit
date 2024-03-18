@@ -1,9 +1,8 @@
+from hyko_sdk.models import CoreModel
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents.base import Document
 from metadata import Inputs, Outputs, Params, func
-
-from hyko_sdk.models import CoreModel
 
 
 @func.on_startup
