@@ -1,0 +1,14 @@
+import requests
+from hyko_sdk.io import PDF
+from hyko_sdk.models import CoreModel, Ext
+from metadata import Inputs, Outputs, func
+
+
+@func.on_execute
+async def main(inputs: Inputs, params: CoreModel) -> Outputs:
+    # Send a GET request to the url
+    response = requests.get(inputs.url)
+    response.raise_for_status()
+    # If the GET request is successful, add the content to the list
+    data = response.content
+    return Outputs(pdf=PDF(val=data, obj_ext=Ext.PDF))
