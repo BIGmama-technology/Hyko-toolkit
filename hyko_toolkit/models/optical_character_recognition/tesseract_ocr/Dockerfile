@@ -1,4 +1,4 @@
-FROM hyko-sdk:latest
+FROM hyko-sdk-medium:latest
 
 ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata
 

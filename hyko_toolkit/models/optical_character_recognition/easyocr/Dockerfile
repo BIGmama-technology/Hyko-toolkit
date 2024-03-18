@@ -1,4 +1,4 @@
-FROM hyko-sdk:latest
+FROM hyko-sdk-medium:latest
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install easyocr
 
