@@ -1,9 +1,10 @@
+from hyko_sdk.definitions import ToolkitModel
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
+func = ToolkitModel(
+    name="zero_shot_classification",
+    task="natural_language_processing",
     description="Hugging Face Zero Shot Classification Task",
 )
 
@@ -20,11 +21,6 @@ class Inputs(CoreModel):
     candidate_labels: list[str] = Field(
         ..., description="Candidate labels to use for classification"
     )
-
-
-@func.set_param
-class Params(CoreModel):
-    pass
 
 
 @func.set_output

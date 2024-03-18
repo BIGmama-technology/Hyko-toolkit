@@ -1,10 +1,11 @@
-from pydantic import Field
-
-from hyko_sdk.function import SDKFunction
+from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
-from hyko_sdk.metadata import CoreModel
+from hyko_sdk.models import CoreModel
+from pydantic import Field, PositiveInt
 
-func = SDKFunction(
+func = ToolkitFunction(
+    name="crop_edges",
+    task="image_utils",
     description="Crop an image from the specified edges",
 )
 
@@ -16,10 +17,22 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    top: int = Field(..., description="Number of pixels to crop from the top")
-    left: int = Field(..., description="Number of pixels to crop from the left")
-    right: int = Field(..., description="Number of pixels to crop from the right")
-    bottom: int = Field(..., description="Number of pixels to crop from the bottom")
+    top: PositiveInt = Field(
+        default=0,
+        description="Number of pixels to crop from the top",
+    )
+    left: PositiveInt = Field(
+        default=0,
+        description="Number of pixels to crop from the left",
+    )
+    right: PositiveInt = Field(
+        default=0,
+        description="Number of pixels to crop from the right",
+    )
+    bottom: PositiveInt = Field(
+        default=0,
+        description="Number of pixels to crop from the bottom",
+    )
 
 
 @func.set_output
