@@ -24,12 +24,12 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     top_k: int = Field(
-        ...,
-        description="Number of top results to consider.",
+        default=3,
+        description="Number of top results to consider (default=3).",
     )
     score_threshold: float = Field(
-        ...,
-        description="Threshold score to filter similarity results.",
+        default=0.4,
+        description="Threshold score to filter similarity results (default=0.4).",
     )
 
 
