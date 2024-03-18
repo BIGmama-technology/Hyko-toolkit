@@ -1,6 +1,4 @@
-FROM hyko-sdk:latest
-
-RUN --mount=type=cache,target=/root/.cache/pip pip install opencv-python
+FROM hyko-sdk-medium:latest
 
 COPY . .
 

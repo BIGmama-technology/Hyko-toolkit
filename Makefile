@@ -1,13 +1,13 @@
-.PHONY: setup build_sdk remove_containers remove_registry_images lint format
+.PHONY: setup build remove_containers remove_registry_images lint format
 
 dir ?= hyko_toolkit
-registry ?= registry.traefik.me
+host ?= traefik.me
 
 setup:
 	./scripts/setup.sh
 
 build:
-	python scripts/sdk-builder.py --dir $(dir) --registry $(registry)
+	python scripts/toolkit_builder.py --dir $(dir) --host $(host)
 
 remove_containers:
 	docker rm -f $$(docker ps -a | grep hyko_sdk | awk '{print $$1}')

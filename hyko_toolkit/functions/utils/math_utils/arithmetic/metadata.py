@@ -1,11 +1,12 @@
 from enum import Enum
 
+from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_sdk.function import SDKFunction
-from hyko_sdk.metadata import CoreModel
-
-func = SDKFunction(
+func = ToolkitFunction(
+    name="arithmetic",
+    task="math_utils",
     description="Perform mathematical operations on numbers",
 )
 
@@ -25,13 +26,15 @@ class MathOperation(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    a: int = Field(..., description="Operand a")
-    b: int = Field(..., description="Operand b")
+    a: float = Field(..., description="Operand a")
+    b: float = Field(..., description="Operand b")
 
 
 @func.set_param
 class Params(CoreModel):
-    operation: MathOperation = Field(..., description="Mathematical operation")
+    operation: MathOperation = Field(
+        default=MathOperation.ADD, description="Mathematical operation"
+    )
 
 
 @func.set_output
