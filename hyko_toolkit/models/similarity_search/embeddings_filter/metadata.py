@@ -1,9 +1,9 @@
 from pydantic import Field
 
-from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.models import CoreModel
 
-func = ToolkitFunction(
+func = ToolkitModel(
     name="embeddings_filter",
     task="similarity_search",
     description="Document compressor that uses embeddings to drop documents unrelated to the query.",

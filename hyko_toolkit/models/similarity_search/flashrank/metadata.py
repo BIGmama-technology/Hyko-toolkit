@@ -1,9 +1,9 @@
 from pydantic import Field
 
-from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.models import CoreModel
 
-func = ToolkitFunction(
+func = ToolkitModel(
     name="flashrank",
     task="similarity_search",
     description="A tool employing Flashrank re-ranking capabilities for enhancing search and retrieval pipelines, leveraging state-of-the-art cross-encoders.",
