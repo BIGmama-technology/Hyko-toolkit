@@ -1,0 +1,88 @@
+from enum import Enum
+from typing import List
+
+import httpx
+from hyko_sdk.models import CoreModel, Method
+from pydantic import Field
+
+from hyko_toolkit.apis.api_registry import ToolkitAPI
+from hyko_toolkit.exceptions import APICallError
+
+func = ToolkitAPI(
+    name="cohere_chat_api",
+    task="cohere",
+    description="Use cohere api for text generation.",
+)
+
+
+class Model(str, Enum):
+    command = "command"
+
+
+@func.set_input
+class Inputs(CoreModel):
+    system_prompt: str = Field(
+        default="You are a helpful assistant", description="system prompt."
+    )
+    prompt: str = Field(..., description="Input prompt.")
+
+
+@func.set_param
+class Params(CoreModel):
+    model: Model = Field(
+        default=Model.command,
+        description="Cohere model to use.",
+    )
+    user_access_token: str = Field(description="API key")
+    max_tokens: int = Field(
+        default=1024,
+        description="The maximum number of tokens that can be generated in the chat completion.",
+    )
+    temperature: float = Field(
+        default=1.0,
+        description="What sampling temperature to use, between 0 and 2, defaults to 1.",
+    )
+
+
+@func.set_output
+class Outputs(CoreModel):
+    result: str = Field(..., description="generated text.")
+
+
+class ChatHistoryItem(CoreModel):
+    message: str
+    response_id: str
+    generation_id: str
+    role: str
+
+
+class CohereResponse(CoreModel):
+    chat_history: List[ChatHistoryItem]
+
+
+@func.on_call
+async def call(inputs: Inputs, params: Params):
+    async with httpx.AsyncClient() as client:
+        res = await client.request(
+            method=Method.post,
+            url="https://api.cohere.ai/v1/chat",
+            headers={
+                "accept": "application/json",
+                "content-type": "application/json",
+                "Authorization": f"bearer {params.user_access_token}",
+            },
+            json={
+                "chat_history": [
+                    {"role": "SYSTEM", "message": f"{inputs.system_prompt}"}
+                ],
+                "message": f"{inputs.prompt}",
+                "temperature": params.temperature,
+            },
+            timeout=60 * 10,
+        )
+    if res.is_success:
+        response = CohereResponse(**res.json())
+    else:
+        raise APICallError(status=res.status_code, detail=res.text)
+
+    return Outputs(result=response.chat_history[-1].message)
