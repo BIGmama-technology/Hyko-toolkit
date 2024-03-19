@@ -5,7 +5,7 @@ from pydantic import Field
 
 func = ToolkitFunction(
     name="pdf_downloader",
-    task="web_scraping",
+    task="downloaders",
     description="This function downloads content from a URL and returns it as a PDF object.",
 )
 
