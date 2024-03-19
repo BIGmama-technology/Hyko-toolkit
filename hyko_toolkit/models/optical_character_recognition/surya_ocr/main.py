@@ -1,6 +1,7 @@
 import io
 
-from metadata import Inputs, Outputs, Params, StartupParams, func
+from hyko_sdk.models import CoreModel
+from metadata import Inputs, Outputs, Params, func
 from PIL import Image
 from surya.model.detection.segformer import load_model as load_det_model
 from surya.model.detection.segformer import load_processor as load_det_processor
@@ -10,7 +11,7 @@ from surya.ocr import run_ocr
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
+async def load(startup_params: CoreModel):
     global det_processor, det_model, rec_model, rec_processor
 
     det_processor, det_model = load_det_processor(), load_det_model()
