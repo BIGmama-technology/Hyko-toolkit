@@ -20,11 +20,6 @@ func = ToolkitModel(
 )
 
 
-@func.set_startup_params
-class StartupParams(CoreModel):
-    pass
-
-
 @func.set_input
 class Inputs(CoreModel):
     image: Image = Field(..., description="Input image.")
