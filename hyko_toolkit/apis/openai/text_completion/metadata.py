@@ -1,9 +1,9 @@
 from enum import Enum
 
 import httpx
+from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
 
-from hyko_sdk.models import CoreModel, Method
 from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
@@ -38,8 +38,8 @@ class Params(CoreModel):
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
     )
-    temperature: int = Field(
-        default=1,
+    temperature: float = Field(
+        default=1.0,
         description="What sampling temperature to use, between 0 and 2, defaults to 1.",
     )
 
