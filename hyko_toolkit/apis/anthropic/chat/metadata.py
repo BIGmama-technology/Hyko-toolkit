@@ -16,6 +16,8 @@ func = ToolkitAPI(
 
 class Model(str, Enum):
     claude3_opus = "claude-3-opus-20240229"
+    claude3_sonnet = "claude-3-sonnet-20240229"
+    claude3_haiku = "claude-3-haiku-20240307"
 
 
 @func.set_input
