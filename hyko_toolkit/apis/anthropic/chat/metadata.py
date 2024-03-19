@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List
 
 import httpx
 from hyko_sdk.models import CoreModel, Method
@@ -9,20 +8,20 @@ from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitAPI(
-    name="cohere_chat_api",
-    task="cohere",
-    description="Use cohere api for text generation.",
+    name="anthropic_chat_api",
+    task="anthropic",
+    description="Use anthropic api for text generation.",
 )
 
 
 class Model(str, Enum):
-    command = "command"
+    claude3_opus = "claude-3-opus-20240229"
 
 
 @func.set_input
 class Inputs(CoreModel):
     system_prompt: str = Field(
-        default="You are a helpful assistant", description="system prompt."
+        default="You are a helpful assistant.", description="system prompt."
     )
     prompt: str = Field(..., description="Input prompt.")
 
@@ -30,7 +29,7 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     model: Model = Field(
-        default=Model.command,
+        default=Model.claude3_opus,
         description="Cohere model to use.",
     )
     user_access_token: str = Field(description="API key")
@@ -49,15 +48,12 @@ class Outputs(CoreModel):
     result: str = Field(..., description="generated text.")
 
 
-class ChatHistoryItem(CoreModel):
-    message: str
-    response_id: str
-    generation_id: str
-    role: str
+class Content(CoreModel):
+    text: str
 
 
-class CohereResponse(CoreModel):
-    chat_history: List[ChatHistoryItem]
+class AnthropicResponse(CoreModel):
+    content: list[Content]
 
 
 @func.on_call
@@ -65,25 +61,24 @@ async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url="https://api.cohere.ai/v1/chat",
+            url="https://api.anthropic.com/v1/messages",
             headers={
-                "accept": "application/json",
+                "x-api-key": f"{params.user_access_token}",
+                "anthropic-version": "2023-06-01",
                 "content-type": "application/json",
-                "Authorization": f"bearer {params.user_access_token}",
             },
             json={
-                "chat_history": [
-                    {"role": "SYSTEM", "message": f"{inputs.system_prompt}"}
-                ],
                 "model": f"{params.model.value}",
-                "message": f"{inputs.prompt}",
+                "system": f"{inputs.system_prompt}",
+                "messages": [{"role": "user", "content": f"{inputs.prompt}"}],
                 "temperature": params.temperature,
+                "max_tokens": params.max_tokens,
             },
             timeout=60 * 10,
         )
     if res.is_success:
-        response = CohereResponse(**res.json())
+        response = AnthropicResponse(**res.json())
     else:
         raise APICallError(status=res.status_code, detail=res.text)
 
-    return Outputs(result=response.chat_history[-1].message)
+    return Outputs(result=response.content[0].text)
