@@ -8,9 +8,9 @@ from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitAPI(
-    name="gemini_text_embedding",
+    name="google_text_embedding",
     task="gemini",
-    description="Use gemini api for text embedding.",
+    description="Use google api for text embedding.",
 )
 
 
@@ -41,7 +41,7 @@ class Embedding(CoreModel):
     values: list[float]
 
 
-class GeminiResponse(CoreModel):
+class GoogleResponse(CoreModel):
     embedding: Embedding
 
 
@@ -61,7 +61,7 @@ async def call(inputs: Inputs, params: Params):
             timeout=60 * 10,
         )
     if res.is_success:
-        response = GeminiResponse(**res.json())
+        response = GoogleResponse(**res.json())
     else:
         raise APICallError(status=res.status_code, detail=res.text)
 
