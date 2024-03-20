@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List
 
 import httpx
 from hyko_sdk.models import CoreModel, Method
@@ -9,14 +8,16 @@ from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitAPI(
-    name="cohere_chat_api",
-    task="cohere",
-    description="Use cohere api for text generation.",
+    name="groq_chat_api",
+    task="groq",
+    description="Use Groq api for text generation.",
 )
 
 
 class Model(str, Enum):
-    command = "command"
+    mixtral8x7b = "mixtral-8x7b-32768"
+    llama270b = "llama2-70b-4096"
+    gemma7bit = "gemma-7b-it"
 
 
 @func.set_input
@@ -30,8 +31,8 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     model: Model = Field(
-        default=Model.command,
-        description="Cohere model to use.",
+        default=Model.mixtral8x7b,
+        description="Groq model to use.",
     )
     user_access_token: str = Field(description="API key")
     max_tokens: int = Field(
@@ -49,15 +50,17 @@ class Outputs(CoreModel):
     result: str = Field(..., description="generated text.")
 
 
-class ChatHistoryItem(CoreModel):
-    message: str
-    response_id: str
-    generation_id: str
-    role: str
+class Message(CoreModel):
+    content: str
 
 
-class CohereResponse(CoreModel):
-    chat_history: List[ChatHistoryItem]
+class Choice(CoreModel):
+    message: Message
+
+
+class GroqResponse(CoreModel):
+    model: str
+    choices: list[Choice]
 
 
 @func.on_call
@@ -65,23 +68,25 @@ async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url="https://api.cohere.ai/v1/chat",
+            url="https://api.groq.com/openai/v1/chat/completions",
             headers={
-                "accept": "application/json",
-                "content-type": "application/json",
-                "Authorization": f"bearer {params.user_access_token}",
+                "Authorization": f"Bearer {params.user_access_token}",
+                "Content-Type": "application/json",
             },
             json={
-                "chat_history": [{"role": "SYSTEM", "message": inputs.system_prompt}],
+                "messages": [
+                    {"role": "system", "content": inputs.system_prompt},
+                    {"role": "user", "content": inputs.prompt},
+                ],
                 "model": params.model.value,
-                "message": inputs.prompt,
                 "temperature": params.temperature,
+                "max_tokens": params.max_tokens,
             },
             timeout=60 * 10,
         )
     if res.is_success:
-        response = CohereResponse(**res.json())
+        response = GroqResponse.parse_obj(res.json())
     else:
         raise APICallError(status=res.status_code, detail=res.text)
 
-    return Outputs(result=response.chat_history[-1].message)
+    return Outputs(result=response.choices[0].message.content)
