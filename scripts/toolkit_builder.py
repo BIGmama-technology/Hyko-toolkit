@@ -81,12 +81,6 @@ if __name__ == "__main__":
     directories = args.dir
     host = args.host
 
-    print("login to registry")
-    subprocess.run(
-        f"docker login registry.{host} -u {USERNAME} -p {PASSWORD}".split(" "),
-        check=True,
-    )
-
     dockerfiles = os.listdir("./common_dockerfiles")
     for file in dockerfiles:
         image = file.removesuffix(".Dockerfile")
