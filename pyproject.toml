@@ -6,7 +6,7 @@ description = "Collection of Models/Functions/APIs in hyko"
 
 [tool.poetry.dependencies]
 python = "^3.11.6"
-hyko_sdk = {git = "https://github.com/BIGmama-technology/Hyko-sdk.git", branch = "main"}
+hyko_sdk = {git = "https://github.com/BIGmama-technology/Hyko-sdk.git", branch = "62-purge-registry"}
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
