@@ -17,12 +17,12 @@ all_built_functions: list[str] = []
 failed_functions: list[str] = []
 
 
-def deploy(path: str, dockerfile_path: str, host: str):
+def deploy(path: str, dockerfile_path: str, absolute_dockerfile_path: str, host: str):
     try:
         subprocess.run(
             "poetry run python -c".split(" ")
             + [
-                f"""from metadata import func;func.deploy(host="{host}", username="{USERNAME}", password="{PASSWORD}", dockerfile_path="{dockerfile_path}")"""
+                f"""from metadata import func;func.deploy(host="{host}", username="{USERNAME}", password="{PASSWORD}", dockerfile_path="{dockerfile_path}", docker_context="{path.lstrip(".")}", absolute_dockerfile_path="{absolute_dockerfile_path.lstrip(".")}")"""
             ],
             cwd=path,
             check=True,
@@ -39,7 +39,20 @@ def walk_directory(path: str, host: str, dockerfile_path: str):
 
     if "metadata.py" in ls and ".hykoignore" not in ls:
         all_built_functions.append(path)
-        deploy(path, dockerfile_path, host)
+        absolute_dockerfile_path = path
+
+        for _ in dockerfile_path.split("../")[:-1]:
+            absolute_dockerfile_path = "/".join(
+                absolute_dockerfile_path.split("/")[:-1]
+            )
+        absolute_dockerfile_path = absolute_dockerfile_path + "/Dockerfile"
+
+        deploy(
+            path,
+            dockerfile_path,
+            absolute_dockerfile_path,
+            host,
+        )
 
     else:
         dockerfile_path = "../" + dockerfile_path
