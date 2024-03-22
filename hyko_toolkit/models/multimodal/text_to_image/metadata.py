@@ -19,8 +19,8 @@ class StartupParams(CoreModel):
 @func.set_input
 class Inputs(CoreModel):
     prompt: str = Field(..., description="Input text")
-    image: Image = Field(..., description="Input Image")
-    negative_prompt: str = Field(..., description="Input text")
+    image: Image = Field(default=None, description="Input Image")
+    negative_prompt: str = Field(default=None, description="Input text")
 
 
 @func.set_param
