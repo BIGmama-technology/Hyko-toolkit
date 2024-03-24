@@ -60,8 +60,8 @@ async def call(inputs: Inputs, params: Params):
             timeout=60 * 5,
         )
     if res.is_success:
-        response = ArxivPaper(text=extract(res.text))
+        response = ArxivPaper(text=res.text)
     else:
         raise APICallError(status=res.status_code, detail=res.text)
 
-    return Outputs(result=response.text)
+    return Outputs(result=extract(response.text))
