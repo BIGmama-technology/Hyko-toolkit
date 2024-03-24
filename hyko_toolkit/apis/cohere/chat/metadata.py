@@ -29,10 +29,6 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    model: Model = Field(
-        default=Model.command,
-        description="Cohere model to use.",
-    )
     user_access_token: str = Field(description="API key")
     max_tokens: int = Field(
         default=1024,
@@ -73,7 +69,7 @@ async def call(inputs: Inputs, params: Params):
             },
             json={
                 "chat_history": [{"role": "SYSTEM", "message": inputs.system_prompt}],
-                "model": params.model.value,
+                "model": "command",
                 "message": inputs.prompt,
                 "temperature": params.temperature,
             },
