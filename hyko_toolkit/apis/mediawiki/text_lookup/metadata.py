@@ -46,7 +46,6 @@ class Outputs(CoreModel):
 
 
 class QueryPage(CoreModel):
-    pageid: int
     title: str
     extract: str
 
