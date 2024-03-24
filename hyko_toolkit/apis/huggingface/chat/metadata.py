@@ -51,12 +51,8 @@ class Outputs(CoreModel):
     result: str = Field(..., description="generated text.")
 
 
-class GeneratedText(CoreModel):
+class ResponseModel(CoreModel):
     generated_text: str
-
-
-class MistralResponse(CoreModel):
-    result: list[GeneratedText]
 
 
 @func.on_call
@@ -77,8 +73,8 @@ async def call(inputs: Inputs, params: Params):
             timeout=60 * 10,
         )
     if res.is_success:
-        response = MistralResponse.parse_obj({"result": res.json()})
+        response = ResponseModel(**res.json()[0])
     else:
         raise APICallError(status=res.status_code, detail=res.text)
 
-    return Outputs(result=response.result[0].generated_text)
+    return Outputs(result=response.generated_text)
