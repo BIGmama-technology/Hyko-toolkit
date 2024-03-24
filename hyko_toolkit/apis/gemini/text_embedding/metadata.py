@@ -1,5 +1,3 @@
-from enum import Enum
-
 import httpx
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
@@ -14,10 +12,6 @@ func = ToolkitAPI(
 )
 
 
-class Model(str, Enum):
-    embedding001 = "models/embedding-001"
-
-
 @func.set_input
 class Inputs(CoreModel):
     text: str = Field(..., description="Text to embed.")
@@ -26,10 +20,6 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     user_access_token: str = Field(description="API key")
-    model: Model = Field(
-        default=Model.embedding001.value,
-        description="gemini model to use.",
-    )
 
 
 @func.set_output
@@ -50,12 +40,12 @@ async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url=f"https://generativelanguage.googleapis.com/v1beta/{params.model}:embedContent?key={params.user_access_token}",
+            url=f"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key={params.user_access_token}",
             headers={
                 "Content-Type": "application/json",
             },
             json={
-                "model": params.model,
+                "model": "models/embedding-001",
                 "content": {"parts": [{"text": inputs.text}]},
             },
             timeout=60 * 10,
