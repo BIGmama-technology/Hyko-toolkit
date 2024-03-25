@@ -1,4 +1,4 @@
-name: SDK CI/CD
+name: housekeeping
 
 on:
   push:
@@ -38,6 +38,6 @@ jobs:
       - name: Check Formatting
         run: ruff format --check
 
-      - name: Build SDK package
+      - name: Build toolkit package
         if: github.event.pull_request.merged == true
         run: poetry build
