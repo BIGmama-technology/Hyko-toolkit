@@ -8,32 +8,33 @@ from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitAPI(
-    name="openai_text_completion",
-    task="openai",
-    description="Use openai api for text completion.",
+    name="groq_chat_api",
+    task="groq",
+    description="Use Groq api for text generation.",
 )
 
 
 class Model(str, Enum):
-    gpt_4 = "gpt-4"
-    chatgpt = "gpt-3.5-turbo"
+    mixtral8x7b = "mixtral-8x7b-32768"
+    llama270b = "llama2-70b-4096"
+    gemma7bit = "gemma-7b-it"
 
 
 @func.set_input
 class Inputs(CoreModel):
     system_prompt: str = Field(
-        default="You are a helpful assistant", description="generated text."
+        default="You are a helpful assistant", description="system prompt."
     )
     prompt: str = Field(..., description="Input prompt.")
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
     model: Model = Field(
-        default=Model.chatgpt,
-        description="Openai model to use.",
+        default=Model.mixtral8x7b,
+        description="Groq model to use.",
     )
+    api_key: str = Field(description="API key")
     max_tokens: int = Field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
@@ -50,27 +51,16 @@ class Outputs(CoreModel):
 
 
 class Message(CoreModel):
-    role: str
     content: str
 
 
 class Choice(CoreModel):
-    index: int
     message: Message
-    finish_reason: str
 
 
-class Usage(CoreModel):
-    prompt_tokens: int
-    completion_tokens: int
-    total_tokens: int
-
-
-class Response(CoreModel):
-    created: int
+class GroqResponse(CoreModel):
     model: str
     choices: list[Choice]
-    usage: Usage
 
 
 @func.on_call
@@ -78,24 +68,24 @@ async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url="https://api.openai.com/v1/chat/completions",
+            url="https://api.groq.com/openai/v1/chat/completions",
             headers={
-                "Content-Type": "application/json",
                 "Authorization": f"Bearer {params.api_key}",
+                "Content-Type": "application/json",
             },
             json={
-                "model": params.model,
-                "max_tokens": params.max_tokens,
-                "temperature": params.temperature,
                 "messages": [
                     {"role": "system", "content": inputs.system_prompt},
                     {"role": "user", "content": inputs.prompt},
                 ],
+                "model": params.model.value,
+                "temperature": params.temperature,
+                "max_tokens": params.max_tokens,
             },
-            timeout=60 * 5,
+            timeout=60 * 10,
         )
     if res.is_success:
-        response = Response(**res.json())
+        response = GroqResponse(**res.json())
     else:
         raise APICallError(status=res.status_code, detail=res.text)
 
