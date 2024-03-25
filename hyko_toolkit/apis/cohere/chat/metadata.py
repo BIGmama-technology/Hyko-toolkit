@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import List
 
 import httpx
@@ -13,10 +12,6 @@ func = ToolkitAPI(
     task="cohere",
     description="Use cohere api for text generation.",
 )
-
-
-class Model(str, Enum):
-    command = "command"
 
 
 @func.set_input
