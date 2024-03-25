@@ -49,7 +49,7 @@ class Params(CoreModel):
         default=Model.nous_capybara_7b,
         description="openrouter model to use.",
     )
-    user_access_token: str = Field(description="API key")
+    api_key: str = Field(description="API key")
     max_tokens: int = Field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
@@ -84,7 +84,7 @@ async def call(inputs: Inputs, params: Params):
             method=Method.post,
             url="https://openrouter.ai/api/v1/chat/completions",
             headers={
-                "Authorization": f"Bearer {params.user_access_token}",
+                "Authorization": f"Bearer {params.api_key}",
                 "Content-Type": "application/json",
             },
             json={

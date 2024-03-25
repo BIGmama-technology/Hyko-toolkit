@@ -35,7 +35,7 @@ class Params(CoreModel):
         default=Model.Mistral7B_Instruct_v02,
         description="Huggingface model to use.",
     )
-    user_access_token: str = Field(description="API key")
+    api_key: str = Field(description="API key")
     max_new_tokens: int = Field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
@@ -63,7 +63,7 @@ async def call(inputs: Inputs, params: Params):
             url=f"https://api-inference.huggingface.co/models/{params.model.value}",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {params.user_access_token}",
+                "Authorization": f"Bearer {params.api_key}",
             },
             json={
                 "inputs": inputs.prompt,
