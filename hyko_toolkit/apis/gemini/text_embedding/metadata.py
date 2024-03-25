@@ -19,7 +19,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    user_access_token: str = Field(description="API key")
+    api_key: str = Field(description="API key")
 
 
 @func.set_output
@@ -40,7 +40,7 @@ async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url=f"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key={params.user_access_token}",
+            url=f"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key={params.api_key}",
             headers={
                 "Content-Type": "application/json",
             },

@@ -22,7 +22,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    user_access_token: str = Field(description="API key")
+    api_key: str = Field(description="API key")
     max_tokens: int = Field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
@@ -57,7 +57,7 @@ async def call(inputs: Inputs, params: Params):
             headers={
                 "accept": "application/json",
                 "content-type": "application/json",
-                "Authorization": f"bearer {params.user_access_token}",
+                "Authorization": f"bearer {params.api_key}",
             },
             json={
                 "chat_history": [

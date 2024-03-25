@@ -26,7 +26,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    user_access_token: str = Field(description="API key")
+    api_key: str = Field(description="API key")
     model: Model = Field(
         default=Model.embed_multilingual.value,
         description="Cohere model to use.",
@@ -51,7 +51,7 @@ async def call(inputs: Inputs, params: Params):
             headers={
                 "accept": "application/json",
                 "content-type": "application/json",
-                "Authorization": f"bearer {params.user_access_token}",
+                "Authorization": f"bearer {params.api_key}",
             },
             json={
                 "texts": [inputs.text],

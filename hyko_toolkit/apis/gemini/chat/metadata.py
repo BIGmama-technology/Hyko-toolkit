@@ -31,7 +31,7 @@ class Params(CoreModel):
         default=Model.gemini_pro,
         description="Gemini model to use.",
     )
-    user_access_token: str = Field(description="API key")
+    api_key: str = Field(description="API key")
     max_tokens: int = Field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
@@ -68,7 +68,7 @@ async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url=f"https://generativelanguage.googleapis.com/v1beta/models/{params.model.value}:generateContent?key={params.user_access_token}",
+            url=f"https://generativelanguage.googleapis.com/v1beta/models/{params.model.value}:generateContent?key={params.api_key}",
             headers={
                 "Content-Type": "application/json",
             },

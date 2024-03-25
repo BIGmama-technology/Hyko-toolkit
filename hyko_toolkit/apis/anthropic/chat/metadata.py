@@ -34,7 +34,7 @@ class Params(CoreModel):
         default=Model.claude3_opus,
         description="Cohere model to use.",
     )
-    user_access_token: str = Field(description="API key")
+    api_key: str = Field(description="API key")
     max_tokens: int = Field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
@@ -65,7 +65,7 @@ async def call(inputs: Inputs, params: Params):
             method=Method.post,
             url="https://api.anthropic.com/v1/messages",
             headers={
-                "x-api-key": f"{params.user_access_token}",
+                "x-api-key": f"{params.api_key}",
                 "anthropic-version": "2023-06-01",
                 "content-type": "application/json",
             },
