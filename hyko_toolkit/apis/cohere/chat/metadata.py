@@ -1,5 +1,3 @@
-from typing import List
-
 import httpx
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
@@ -41,14 +39,13 @@ class Outputs(CoreModel):
 
 
 class ChatHistoryItem(CoreModel):
-    message: str
-    response_id: str
-    generation_id: str
     role: str
+    message: str
 
 
 class CohereResponse(CoreModel):
-    chat_history: List[ChatHistoryItem]
+    text: str
+    chat_history: list[ChatHistoryItem]
 
 
 @func.on_call
@@ -63,7 +60,9 @@ async def call(inputs: Inputs, params: Params):
                 "Authorization": f"bearer {params.user_access_token}",
             },
             json={
-                "chat_history": [{"role": "SYSTEM", "message": inputs.system_prompt}],
+                "chat_history": [
+                    {"role": "SYSTEM", "message": inputs.system_prompt},
+                ],
                 "model": "command",
                 "message": inputs.prompt,
                 "temperature": params.temperature,
