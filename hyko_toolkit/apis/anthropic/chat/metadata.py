@@ -8,32 +8,33 @@ from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitAPI(
-    name="openai_text_completion",
-    task="openai",
-    description="Use openai api for text completion.",
+    name="anthropic_chat_api",
+    task="anthropic",
+    description="Use anthropic api for text generation.",
 )
 
 
 class Model(str, Enum):
-    gpt_4 = "gpt-4"
-    chatgpt = "gpt-3.5-turbo"
+    claude3_opus = "claude-3-opus-20240229"
+    claude3_sonnet = "claude-3-sonnet-20240229"
+    claude3_haiku = "claude-3-haiku-20240307"
 
 
 @func.set_input
 class Inputs(CoreModel):
     system_prompt: str = Field(
-        default="You are a helpful assistant", description="generated text."
+        default="You are a helpful assistant.", description="system prompt."
     )
     prompt: str = Field(..., description="Input prompt.")
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
     model: Model = Field(
-        default=Model.chatgpt,
-        description="Openai model to use.",
+        default=Model.claude3_opus,
+        description="Cohere model to use.",
     )
+    api_key: str = Field(description="API key")
     max_tokens: int = Field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
@@ -49,28 +50,12 @@ class Outputs(CoreModel):
     result: str = Field(..., description="generated text.")
 
 
-class Message(CoreModel):
-    role: str
-    content: str
+class Content(CoreModel):
+    text: str
 
 
-class Choice(CoreModel):
-    index: int
-    message: Message
-    finish_reason: str
-
-
-class Usage(CoreModel):
-    prompt_tokens: int
-    completion_tokens: int
-    total_tokens: int
-
-
-class Response(CoreModel):
-    created: int
-    model: str
-    choices: list[Choice]
-    usage: Usage
+class AnthropicResponse(CoreModel):
+    content: list[Content]
 
 
 @func.on_call
@@ -78,25 +63,24 @@ async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url="https://api.openai.com/v1/chat/completions",
+            url="https://api.anthropic.com/v1/messages",
             headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {params.api_key}",
+                "x-api-key": f"{params.api_key}",
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
             },
             json={
-                "model": params.model,
-                "max_tokens": params.max_tokens,
+                "model": f"{params.model.value}",
+                "system": f"{inputs.system_prompt}",
+                "messages": [{"role": "user", "content": f"{inputs.prompt}"}],
                 "temperature": params.temperature,
-                "messages": [
-                    {"role": "system", "content": inputs.system_prompt},
-                    {"role": "user", "content": inputs.prompt},
-                ],
+                "max_tokens": params.max_tokens,
             },
-            timeout=60 * 5,
+            timeout=60 * 10,
         )
     if res.is_success:
-        response = Response(**res.json())
+        response = AnthropicResponse(**res.json())
     else:
         raise APICallError(status=res.status_code, detail=res.text)
 
-    return Outputs(result=response.choices[0].message.content)
+    return Outputs(result=response.content[0].text)
