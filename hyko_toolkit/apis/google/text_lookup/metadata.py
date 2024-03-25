@@ -32,7 +32,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="The concatenated results.")
+    result: list[str] = Field(..., description="The concatenated results.")
 
 
 class SearchResultItem(CoreModel):
@@ -61,13 +61,6 @@ async def call(inputs: Inputs, params: Params):
         )
     if res.is_success:
         result = GoogleSearchResponse(**res.json())
-        formatted_results = "\n".join(
-            [
-                f"Title : {item.title}\n\nURL : {item.link}\n\nSnippet : {item.snippet}\n\n"
-                for item in result.items
-            ]
-        )
-
     else:
         raise APICallError(status=res.status_code, detail=res.text)
-    return Outputs(result=formatted_results)
+    return Outputs(result=[item.link for item in result.items])
