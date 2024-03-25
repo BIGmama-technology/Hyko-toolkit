@@ -99,7 +99,7 @@ async def call(inputs: Inputs, params: Params):
             timeout=60 * 10,
         )
     if res.is_success:
-        response = OpenrouterResponse.parse_obj(res.json())
+        response = OpenrouterResponse(**res.json())
     else:
         raise APICallError(status=res.status_code, detail=res.text)
 
