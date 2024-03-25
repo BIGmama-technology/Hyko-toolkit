@@ -6,9 +6,9 @@ from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitAPI(
-    name="bing_search",
+    name="duckduckgo_search",
     task="serpapi",
-    description="Use Bing API for Search.",
+    description="Use duckduckgo API for Search.",
 )
 
 
@@ -23,10 +23,9 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     api_key: str = Field(description="API key")
-    country: str = Field(default="us", description="Country code")
-    first: int = Field(
-        default=1,
-        description="Controls the offset of the organic results.",
+    region: str = Field(
+        default="us-en",
+        description="Defines the region to use for the DuckDuckGo search (default : us-en)",
     )
 
 
@@ -53,9 +52,8 @@ async def call(inputs: Inputs, params: Params):
             url="https://serpapi.com/search",
             params={
                 "api_key": params.api_key,
-                "cc": params.country,
+                "kl": params.region,
                 "q": inputs.query,
-                "first": params.first,
             },
             timeout=60 * 5,
         )
