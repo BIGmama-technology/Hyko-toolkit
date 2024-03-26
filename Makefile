@@ -1,22 +1,30 @@
+include .env
 .PHONY: setup build remove_containers remove_registry_images lint format
 
 dir ?= hyko_toolkit
 host ?= traefik.me
 
 setup:
-	./scripts/setup.sh
+	@./scripts/setup.sh
 
 build:
-	python scripts/toolkit_builder.py --dir $(dir) --host $(host)
+	@python scripts/toolkit_builder.py --dir $(dir) --host $(host)
 
-remove_containers:
-	docker rm -f $$(docker ps -a | grep hyko_sdk | awk '{print $$1}')
+build-push-base:
+	@python scripts/toolkit_builder.py --base
+	@docker login -u $$ADMIN_USERNAME -p $$ADMIN_PASSWORD
+	@python scripts/toolkit_builder.py --base --push 
 
-remove_registry_images:
-	docker images | grep '^registry' | awk '{print $$3}' | xargs docker rmi -f
+
+remove_toolkit_containers:
+	@docker rm -f $$(docker ps -a | grep hyko_toolkit | awk '{print $$1}')
+
+remove_toolkit_images:
+	@docker images | grep '^functions' | awk '{print $$3}' | xargs docker rmi -f
+	@docker images | grep '^models' | awk '{print $$3}' | xargs docker rmi -f
 
 lint:
-	ruff check .
+	@ruff check .
 
 format:
-	ruff format .
+	@ruff format .
