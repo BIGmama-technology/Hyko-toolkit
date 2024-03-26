@@ -1,7 +1,6 @@
 import httpx
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
-from pydantic_core import Url
 
 from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
@@ -32,7 +31,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: list[Url] = Field(..., description="List of urls.")
+    result: list[str] = Field(..., description="The concatenated results.")
 
 
 class SearchResultItem(CoreModel):
