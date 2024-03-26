@@ -9,7 +9,7 @@ from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitAPI(
     name="wikipedia_text_lookup",
-    task="mediawiki",
+    task="wikimedia",
     description="Use WikiPedia API for Search.",
 )
 
