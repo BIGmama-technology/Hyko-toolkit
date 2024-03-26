@@ -27,12 +27,6 @@ class AspectRatio(str, Enum):
     RATIO_9_21 = "9:21"
 
 
-class OutputFormat(str, Enum):
-    webp = "webp"
-    jpeg = "jpeg"
-    png = "png"
-
-
 @func.set_input
 class Inputs(CoreModel):
     prompt: str = Field(..., description="What you wish to see in the output image.")
@@ -43,9 +37,6 @@ class Params(CoreModel):
     api_key: str = Field(description="API key")
     negative_prompt: str = Field(
         default="", description="What you do not wish to see in the output image.."
-    )
-    output_format: OutputFormat = Field(
-        default=OutputFormat.png, description="Output format"
     )
     seed: int = Field(default=0, description="Seed")
     aspect_ratio: AspectRatio = Field(
@@ -73,7 +64,7 @@ async def call(inputs: Inputs, params: Params):
             data={
                 "prompt": inputs.prompt,
                 "negative_prompt": params.negative_prompt,
-                "output_format": params.output_format.value,
+                "output_format": "png",
                 "seed": params.seed,
                 "aspect_ratio": params.aspect_ratio.value,
             },
