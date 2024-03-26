@@ -1,7 +1,6 @@
+from hyko_sdk.models import CoreModel
 from metadata import Inputs, Outputs, func
 from PIL import Image
-
-from hyko_sdk.models import CoreModel
 
 
 @func.on_execute

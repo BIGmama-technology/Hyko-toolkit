@@ -1,7 +1,6 @@
+from hyko_sdk.io import Image as HykoImage
 from metadata import Inputs, Orientation, Outputs, Params, func
 from PIL import Image
-
-from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
