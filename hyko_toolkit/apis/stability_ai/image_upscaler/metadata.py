@@ -1,5 +1,3 @@
-from enum import Enum
-
 import httpx
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel, Ext, Method
@@ -13,12 +11,6 @@ func = ToolkitAPI(
     task="stability_ai",
     description="Use Stability.ai API for Image upscaling.",
 )
-
-
-class OutputFormat(str, Enum):
-    webp = "webp"
-    jpeg = "jpeg"
-    png = "png"
 
 
 @func.set_input
@@ -36,9 +28,6 @@ class Params(CoreModel):
     creativity: float = Field(
         default=0,
         description="How creative the model should be when upscaling an image.",
-    )
-    output_format: OutputFormat = Field(
-        default=OutputFormat.png, description="Output format"
     )
     seed: int = Field(default=0, description="Seed")
 
@@ -63,7 +52,7 @@ async def call(inputs: Inputs, params: Params):
             data={
                 "prompt": inputs.prompt,
                 "negative_prompt": params.negative_prompt,
-                "output_format": params.output_format.value,
+                "output_format": "png",
                 "creativity": params.creativity,
                 "seed": params.seed,
             },
