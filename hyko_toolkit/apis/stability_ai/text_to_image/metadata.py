@@ -48,6 +48,9 @@ class Params(CoreModel):
         default=OutputFormat.png, description="Output format"
     )
     seed: int = Field(default=0, description="Seed")
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_1_1, description="Aspect Ratio"
+    )
 
 
 @func.set_output
@@ -67,11 +70,12 @@ async def call(inputs: Inputs, params: Params):
             url="https://api.stability.ai/v2beta/stable-image/generate/core",
             headers={"authorization": f"Bearer {params.api_key}", "accept": "image/*"},
             files={"none": ""},
-            json={
+            data={
                 "prompt": inputs.prompt,
                 "negative_prompt": params.negative_prompt,
                 "output_format": params.output_format.value,
                 "seed": params.seed,
+                "aspect_ratio": params.aspect_ratio.value,
             },
             timeout=60 * 5,
         )
