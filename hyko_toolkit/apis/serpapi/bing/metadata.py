@@ -1,3 +1,5 @@
+from enum import Enum
+
 import httpx
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
@@ -12,6 +14,22 @@ func = ToolkitAPI(
 )
 
 
+class Country(str, Enum):
+    dz = "dz"
+    us = "us"
+    ca = "ca"
+    au = "au"
+    br = "br"
+    cl = "cl"
+    fr = "fr"
+    de = "de"
+    it = "it"
+    jp = "jp"
+    mx = "mx"
+    nl = "nl"
+    nz = "nz"
+
+
 @func.set_input
 class Inputs(CoreModel):
     query: str = Field(
@@ -23,7 +41,7 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     api_key: str = Field(description="API key")
-    country: str = Field(default="us", description="Country code")
+    country: Country = Field(default=Country.dz, description="Country code")
     first: int = Field(
         default=1,
         description="Controls the offset of the organic results.",
@@ -32,7 +50,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: list[str] = Field(..., description="The concatenated results.")
+    result: list[str] = Field(..., description="List of urls.")
 
 
 class SearchResultItem(CoreModel):
