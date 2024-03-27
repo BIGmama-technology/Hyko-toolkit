@@ -4,7 +4,7 @@ from hyko_sdk.models import CoreModel
 from pydantic import Field, PositiveInt
 
 func = ToolkitFunction(
-    name="corp_border",
+    name="crop_border",
     task="image_utils",
     description="Remove a specified amount of pixels from all four borders of an image",
 )
