@@ -1,8 +1,7 @@
 from fastapi import HTTPException
+from hyko_sdk.io import Image as HykoImage
 from metadata import Inputs, Outputs, Params, func
 from PIL import Image
-
-from hyko_sdk.io import Image as HykoImage
 
 
 @func.on_execute
