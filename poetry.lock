@@ -489,8 +489,8 @@ uvicorn = {version = "^0.25.0", extras = ["standard"]}
 [package.source]
 type = "git"
 url = "https://github.com/BIGmama-technology/Hyko-sdk.git"
-reference = "62-purge-registry"
-resolved_reference = "efc7c7e3c12bf960c668ac602d3e169514d03a94"
+reference = "development"
+resolved_reference = "ac6815cf45af68369113158ca76fc9be40cabe42"
 
 [[package]]
 name = "identify"
@@ -1359,4 +1359,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11.6"
-content-hash = "ccf2fb9a16d0d83284246740596212238af50b2fd311b6df60d8362c5e155f92"
+content-hash = "28e10a6a9fe31ed9b326a182f902d752ca01935d0e89e3b6ab6e56cc68123bf0"
