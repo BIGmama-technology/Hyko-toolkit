@@ -25,7 +25,7 @@ def deploy(path: str, dockerfile_path: str, absolute_dockerfile_path: str, host:
         subprocess.run(
             "poetry run python -c".split(" ")
             + [
-                f"""from metadata import func;func.deploy(host="{host}", username="{ADMIN_USERNAME}", password="{ADMIN_PASSWORD}", dockerfile_path="{dockerfile_path}", docker_context="{path.lstrip(".")}", absolute_dockerfile_path="{absolute_dockerfile_path.lstrip(".")}")"""
+                f"""from metadata import func;func.deploy(host="{host}", username="{ADMIN_USERNAME}", password="{ADMIN_PASSWORD}", dockerfile_path="{dockerfile_path}", docker_context="{path}", absolute_dockerfile_path="{absolute_dockerfile_path}")"""
             ],
             cwd=path,
             check=True,
@@ -87,6 +87,7 @@ def parse_args(args: list[str]) -> argparse.Namespace:
         default="traefik.me",
         help="Set a custom host name",
         type=str,
+        choices=["traefik.me", "stage.hyko.ai", "hyko.ai"],
     )
     parser.add_argument(
         "--base",
