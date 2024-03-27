@@ -1,4 +1,4 @@
-FROM hyko-sdk-tiny:latest
+FROM hykoai/hyko-sdk-tiny:latest
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install langchain
 
