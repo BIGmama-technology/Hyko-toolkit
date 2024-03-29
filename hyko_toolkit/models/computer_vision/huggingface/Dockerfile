@@ -1,4 +1,4 @@
-FROM hyko-sdk:latest
+FROM hykoai/hyko-sdk:latest
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install transformers[torch]
 RUN --mount=type=cache,target=/root/.cache/pip pip install accelerate
