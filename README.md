@@ -4,40 +4,21 @@
 
 # Hyko toolkit
 
-A collection of functions, APIs and AI models that are available on Hyko.
+## Table of contents
+- [Description](#description)
+- [Toolkit components](#toolkit-components)
+    - [Functions and Models](#functions-and-models)
+    - [APIs](#apis)
 
-## Getting Started
-### Requirements
-- [Poetry](https://python-poetry.org/docs/#installation)
-- [Pyenv](https://github.com/pyenv/pyenv)
+## Description
 
-1. Clone the Github repository
+[Hyko](https://hyko.ai) Toolkit stands as a robust repository housing a diverse collection of tools. From a curated selection of functions and APIs to state-of-the-art AI models, each component has been meticulously crafted to empower developers in constructing versatile blueprints effortlessly.
 
-```bash
-git clone git@github.com:BIGmama-technology/Hyko-toolkit.git toolkit
-```
-2. Change directory into the cloned repo
 
-```bash
-cd toolkit
-```
-3. Copy the `.env.example` file to `.env`
+## Toolkit components.
 
-```bash
-cp .env.example .env
-```
+The Hyko Toolkit consists of three primary categories of components: **_functions_**, **_models_**, and **_APIs_**. Let's delve into functions and models first, as they share many similarities.
 
-> Make sure to put the right values in the `.env` file.
+- <span id="functions-and-models">**_Functions_** and **_Models_**</span>: These are essentially FastAPI applications that define a specific set of inputs, parameters, and outputs. This metadata is crucial for both the Hyko frontend and backend to effectively utilize these functions and models. After defining the metadata, the FastAPI application is packaged and bundled into a Docker image. When executing a task involving a particular function or model, this Docker image is built on the local machine.
 
-4. Setup the toolkit locally
-
-```bash
-make setup
-```
-
-## To Build 
-`./scripts/sdk_builder.py` allows you to deploy tools to hyko.
-
-```bash
-make build dir=path/to/dir host=hyko.ai 
-```
+- <span id="apis">**_APIs_**</span>: Similar to functions and models, APIs also require inputs, parameters, and outputs to extract metadata. However, APIs differ in that they do not necessitate local execution on a computer. Therefore, there's no need for a Docker image or a FastAPI application. Instead, the Hyko backend makes requests to these external APIs. These APIs can range from OpenAI and Hugging Face inference APIs to OpenRouter APIs, and beyond.
