@@ -1,4 +1,4 @@
-FROM hyko-sdk-tiny:latest
+FROM hykoai/hyko-sdk-medium:latest
 
 COPY . .
 

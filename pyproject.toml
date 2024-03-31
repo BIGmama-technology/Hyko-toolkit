@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "hyko_toolkit"
-version = "2.0.0"
+version = "2.1.0"
 authors = []
 description = "Collection of Models/Functions/APIs in hyko"
 
 [tool.poetry.dependencies]
 python = "^3.11.6"
-hyko_sdk = {git = "https://github.com/BIGmama-technology/Hyko-sdk.git", branch = "main"}
+hyko_sdk = {git = "https://github.com/BIGmama-technology/Hyko-sdk.git", branch = "development"}
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.6.0"
