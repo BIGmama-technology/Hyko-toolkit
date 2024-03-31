@@ -11,6 +11,8 @@
     - [APIs](#apis)
 - [Adding new function/model to the toolkit](#adding-new-functionmodel-to-the-toolkit)
 - [Adding new api to the toolkit](#adding-new-api-to-the-toolkit)
+- [The toolkit_builder script](#the-toolkit_builderpy-script)
+- [Building the toolkit](#building-the-toolkit)
 
 ## Description
 
