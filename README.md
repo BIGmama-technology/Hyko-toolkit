@@ -10,6 +10,7 @@
     - [Functions and Models](#functions-and-models)
     - [APIs](#apis)
 - [Adding new function/model to the toolkit](#adding-new-functionmodel-to-the-toolkit)
+- [Adding new api to the toolkit](#adding-new-api-to-the-toolkit)
 
 ## Description
 
@@ -50,3 +51,20 @@ All components of the Hyko Toolkit functions, models, and APIs—are centralized
     - `hyko-sdk`: used by the rest of the tools.
 
     > **Note**: You may notice some tools within the `hyko_toolkit` directory lacking a Dockerfile. This is because the toolkit-builder.py script, which we'll cover later, identifies the closest Dockerfile in the parent directory for such tools during its directory traversal process.
+
+
+## Adding new api to the toolkit
+
+Adding an API to the Hyko Toolkit is a streamlined process compared to functions and models, requiring only one file: the `metadata.py` file. In this file, we follow a similar approach as with functions and models, documenting essential metadata such as inputs, parameters, outputs, name, description, and task. However, for APIs, we include an additional step: making the call to the API using httpx while adhering to the API specification.
+
+Here's a breakdown of the steps involved:
+
+1. **Create metadata.py File**:
+
+    - Develop a metadata.py file within the designated category directory (e.g., apis).
+    - Document key metadata for the API, including inputs, parameters, outputs, name, description, and task.
+
+2. **API Call Implementation**:
+
+    - Incorporate the API call within the metadata.py file, utilizing httpx.
+    - Ensure that the API call conforms to the specifications outlined by the respective API.
