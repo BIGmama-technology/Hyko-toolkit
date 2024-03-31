@@ -68,3 +68,53 @@ Here's a breakdown of the steps involved:
 
     - Incorporate the API call within the metadata.py file, utilizing httpx.
     - Ensure that the API call conforms to the specifications outlined by the respective API.
+
+
+## The `toolkit_builder.py` script
+
+The toolkit_builder script, written in Python, serves as a crucial tool for the Hyko Toolkit, facilitating two primary functions:
+
+1. **Docker Image Building**: For functions and models found within the `hyko_toolkit` directory, the script first builds the Docker image specific to each tool.
+
+2. **Metadata Extraction and Database Writing**: Subsequently, the script traverses through all categories (functions, models, and APIs), extracting metadata for each tool. This includes JSON schema information for inputs, parameters, and outputs defined in the metadata.py file. The extracted metadata is then written to the Hyko database, utilizing credentials specified in the `.env` file.
+
+## Building the toolkit
+
+Follow these steps to set up and build the Hyko Toolkit:
+
+1. Ensure you have Poetry and pyenv installed on your system. You can refer to the following links for installation guidance:
+
+- [Poetry](https://python-poetry.org/docs/#installation)
+- [Pyenv](https://github.com/pyenv/pyenv)
+
+2. Clone the repository:
+
+    ```bash
+    git clone https://github.com/BIGmama-technology/Hyko-toolkit.git toolkit
+    ```
+
+    ```bash
+    cd toolkit
+    ```
+
+3. Execute the setup script to install the Python version used with the Hyko Toolkit (3.11.6) and install the required dependencies using Poetry. This script also activates the new virtual environment.
+
+    ```bash
+    make setup
+    ```
+
+4. Copy the `.env.example` file and rename it to `.env`.
+
+    ```bash
+    cp .env.example .env
+    ```
+
+5. Build the toolkit: Use the build command to execute the `toolkit_builder.py` script. You can specify optional parameters:
+
+    **`dir`** (default: hyko_toolkit): the directory you want the `toolkit_builder.py` script to go through (Make sure to only specify directories that have `Dockerfile` in them since the script right now can't go backwards when traversing the tree, only down.)
+
+    **`host`** (default: traefik.me): this is used to specify which running backend to write to it the toolkit metadata (At this point you should have your credentials in the `.env` file else the api will return a 401 response).
+
+    ```bash
+    make build dir=hyko_toolkit/functions/utils host=stage.hyko.ai
+    ```
