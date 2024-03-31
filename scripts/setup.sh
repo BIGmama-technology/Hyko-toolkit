@@ -8,5 +8,3 @@ poetry install
 
 poetry run pre-commit install
 poetry run gitlint install-hook
-
-poetry shell

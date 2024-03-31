@@ -1,22 +1,14 @@
-name: housekeeping
-
 on:
   push:
-    branches-ignore:    
-      - 'main'
-  pull_request:
     branches:
       - main
-    types:
-      - closed
 
 jobs:
-  lint-and-format:
+  build-push-toolkit-base:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -31,9 +23,10 @@ jobs:
 
       - name: Install dependencies
         run: poetry install
+        
+      - name: Build and push base toolkit images
+        run: |
+          echo '${{ secrets.ENV }}' > .env
+          make build-push-base
 
-      - name: Check Linting
-        run: ruff check
-
-      - name: Check Formatting
-        run: ruff format --check
+        
