@@ -1,9 +1,7 @@
 import os
-from io import BytesIO
 
 from hyko_sdk.io import Image
 from metadata import Inputs, Outputs, Params, func
-from PIL import Image as PILImage
 
 
 @func.on_execute
@@ -18,7 +16,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     Returns:
     - Outputs: An object containing the converted image data.
     """
-    image = PILImage.open(BytesIO(inputs.input_image.get_data()))
+    image = (await inputs.input_image,)
 
     image.save(f"converted-image.{params.target_type.name}")
     with open(f"converted-image.{params.target_type.name}", "rb") as file:

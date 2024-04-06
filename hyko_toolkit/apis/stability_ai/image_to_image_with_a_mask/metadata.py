@@ -87,8 +87,8 @@ async def call(inputs: Inputs, params: Params):
             url="https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image/masking",
             headers={"authorization": f"Bearer {params.api_key}", "accept": "image/*"},
             files={
-                "image": inputs.init_image.get_data(),
-                "mask_image": inputs.mask_image.get_data(),
+                "image": await inputs.init_image.get_data(),
+                "mask_image": await inputs.mask_image.get_data(),
             },
             data={
                 "image_strength": params.image_strength,
@@ -109,4 +109,10 @@ async def call(inputs: Inputs, params: Params):
         ]
     else:
         raise APICallError(status=res.status_code, detail=res.text)
-    return Outputs(result=Image(val=decoded_images[0], obj_ext=Ext.PNG))
+    return Outputs(
+        result=await Image(
+            obj_ext=Ext.PNG,
+        ).init_from_val(
+            val=decoded_images[0],
+        )
+    )

@@ -23,7 +23,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     _, ext = os.path.splitext(inputs.input_video.get_name())
 
     with open(f"/app/video.{ext}", "wb") as f:
-        f.write(inputs.input_video.get_data())
+        f.write(await inputs.input_video.get_data())
 
     res = segmenter(
         f"/app/video.{ext}",

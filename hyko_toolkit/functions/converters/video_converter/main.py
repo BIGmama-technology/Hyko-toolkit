@@ -51,9 +51,13 @@ def convert_video(buffer, codec):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     if params.target_type.name == "webm":
-        video_buffer = convert_video(inputs.input_video.get_data(), codec="VP90")
+        video_buffer = convert_video(await inputs.input_video.get_data(), codec="VP90")
     else:
-        video_buffer = convert_video(inputs.input_video.get_data(), codec="mp4v")
+        video_buffer = convert_video(await inputs.input_video.get_data(), codec="mp4v")
     return Outputs(
-        output_video=Video(val=video_buffer, obj_ext=params.target_type.value)
+        output_video=await Video(
+            obj_ext=params.target_type.value,
+        ).init_from_val(
+            val=video_buffer,
+        )
     )

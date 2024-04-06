@@ -27,7 +27,7 @@ async def load(startup_params: StartupParams):
 async def main(inputs: Inputs, params: Params) -> Outputs:
     # Create a TEMP file to store the input video data
     with tempfile.NamedTemporaryFile(delete=False) as input_v:
-        input_v.write(inputs.input_video.get_data())
+        input_v.write(await inputs.input_video.get_data())
         input_temp_file_path = input_v.name
     # Create a TEMP file to store the output video data with an 'mp4 suffix'
     with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as out_v:
@@ -111,4 +111,10 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     # Remove the temporary files
     os.unlink(out_temp_file_path)
     os.unlink(input_temp_file_path)
-    return Outputs(video=Video(val=video_buffer, obj_ext=Ext.MP4))
+    return Outputs(
+        video=await Video(
+            obj_ext=Ext.MP4,
+        ).init_from_val(
+            val=video_buffer,
+        )
+    )
