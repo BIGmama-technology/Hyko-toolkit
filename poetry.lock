@@ -474,7 +474,7 @@ description = "Hyko python SDK."
 optional = false
 python-versions = "^3.11.6"
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 docker = "^7.0.0"
@@ -487,8 +487,10 @@ soundfile = "^0.12.1"
 uvicorn = {version = "^0.25.0", extras = ["standard"]}
 
 [package.source]
-type = "directory"
-url = "../sdk"
+type = "git"
+url = "https://github.com/BIGmama-technology/Hyko-sdk.git"
+reference = "71-support-media-apis"
+resolved_reference = "c425ed4afb8d773b553ce6e0d9d11c7ef162eabd"
 
 [[package]]
 name = "identify"
@@ -1357,4 +1359,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11.6"
-content-hash = "73ed00c9bfef5b4bd6a50072346c23e3b9125b9695f023e4f8bed0638b95ce06"
+content-hash = "03c6d154132e7db35235298dede2558198c24ba5845805766b069b271365cd21"
