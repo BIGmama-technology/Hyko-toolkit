@@ -74,4 +74,5 @@ async def call(inputs: Inputs, params: Params):
         response = Response(image=res.content)
     else:
         raise APICallError(status=res.status_code, detail=res.text)
-    return Outputs(result=Image(val=response.image, obj_ext=Ext.PNG))
+    result = await Image(obj_ext=Ext.PNG).init_from_val(response.image)
+    return Outputs(result=result)
