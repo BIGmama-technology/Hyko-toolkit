@@ -44,7 +44,7 @@ All components of the Hyko Toolkit functions, models, and APIs—are centralized
 
     `main.py`: Here, encapsulate the core logic of your tool—the sequence of operations that occur upon execution of the function or model.
 
-- **Add a Dockerfile for your tool**:
+- **Add a Dockerfile for your function/model**:
 
     `Dockerfile`: After finishing up with `metadata.py` and `main.py` file, the fastapi app needs to be packaged inside a docker image, all of the toolkit tools use one of the these three base docker images:
 
@@ -70,6 +70,10 @@ Here's a breakdown of the steps involved:
 
     - Incorporate the API call within the metadata.py file, utilizing httpx.
     - Ensure that the API call conforms to the specifications outlined by the respective API.
+
+3. **Import your API in `__init__.py`**
+
+    - By importing the API in the `__init__.py` it will be registered and discoverable by the backend.  
 
 
 ## The `toolkit_builder.py` script
