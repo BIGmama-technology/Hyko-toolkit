@@ -15,11 +15,6 @@ setup: ## - Setup the repository
 build:
 	@python scripts/toolkit_builder.py --dir $(dir) --host $(host)
 
-build-push-base:
-	@python scripts/toolkit_builder.py --base
-	@docker login -u $$ADMIN_USERNAME -p $$ADMIN_PASSWORD
-	@python scripts/toolkit_builder.py --base --push 
-
 remove_toolkit_containers:
 	@docker rm -f $$(docker ps -a | grep hyko_toolkit | awk '{print $$1}')
 
