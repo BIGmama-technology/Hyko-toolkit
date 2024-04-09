@@ -1,16 +1,16 @@
 {
-    "packages": {
-      ".": {
-        "release-type": "simple",
-        "prerelease": false,
-        "extra-files": [
-          {
-            "type": "toml",
-            "path": "pyproject.toml",
-            "jsonpath": "$.tool.poetry.version"
-          }, 
-          "README.md"
-        ]
-      }
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "prerelease": false,
+      "extra-files": [
+        {
+          "type": "toml",
+          "path": "pyproject.toml",
+          "jsonpath": "$.tool.poetry.version"
+        },
+        "README.md"
+      ]
     }
   }
+}
