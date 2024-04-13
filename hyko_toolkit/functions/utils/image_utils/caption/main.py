@@ -31,8 +31,8 @@ def add_caption(
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    img_np = inputs.input_image.to_ndarray()
-    img_pil = PIL_Image.fromarray(img_np)  # type: ignore
+    img_np = await inputs.input_image.to_ndarray()
+    img_pil = PIL_Image.fromarray(img_np)
 
     caption = inputs.caption
     size = params.caption_size

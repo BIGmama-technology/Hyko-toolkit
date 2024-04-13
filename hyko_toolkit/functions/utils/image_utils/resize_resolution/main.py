@@ -5,7 +5,7 @@ from PIL import Image
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    pil_image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
+    pil_image = Image.fromarray(await inputs.image.to_ndarray())
 
     resize_methods = {
         "area": Image.Resampling.LANCZOS,

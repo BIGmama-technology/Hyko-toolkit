@@ -5,7 +5,7 @@ from PIL import Image
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    pil_image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
+    pil_image = Image.fromarray(await inputs.image.to_ndarray())
 
     original_width, original_height = pil_image.size
     new_width = max(round(original_width * (params.scale_factor / 100)), 1)

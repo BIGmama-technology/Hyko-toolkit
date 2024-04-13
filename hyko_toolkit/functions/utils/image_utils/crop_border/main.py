@@ -6,7 +6,7 @@ from PIL import Image
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
+    image = Image.fromarray(await inputs.image.to_ndarray())
 
     width, height = image.size
     cropped_image = image.crop(

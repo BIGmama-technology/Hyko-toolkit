@@ -6,7 +6,7 @@ from PIL import Image as PILImage
 
 @func.on_execute
 async def add_padding(inputs: Inputs, params: Params) -> Outputs:
-    img = PILImage.fromarray(inputs.image.to_ndarray())  # type: ignore
+    img = PILImage.fromarray(await inputs.image.to_ndarray())
     right_value = params.right
     left_value = params.left
     top_value = params.top

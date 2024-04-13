@@ -5,8 +5,8 @@ from PIL import Image
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image1_pil = Image.fromarray(inputs.image1.to_ndarray())  # type: ignore
-    image2_pil = Image.fromarray(inputs.image2.to_ndarray())  # type: ignore
+    image1_pil = Image.fromarray(await inputs.image1.to_ndarray())
+    image2_pil = Image.fromarray(await inputs.image2.to_ndarray())
     orientation = params.orientation
 
     if orientation == Orientation.HORIZONTAL:

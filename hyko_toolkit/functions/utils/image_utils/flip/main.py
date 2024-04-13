@@ -5,7 +5,7 @@ from PIL import Image
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
+    image = Image.fromarray(await inputs.image.to_ndarray())
 
     flip_axis = params.flip_axis
     if flip_axis == FlipAxis.horizontal:
