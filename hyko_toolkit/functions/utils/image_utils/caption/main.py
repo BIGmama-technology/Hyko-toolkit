@@ -41,6 +41,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
 
     captioned_img_pil = add_caption(img_pil, caption, size, position, color)
 
-    captioned_image = Image.from_ndarray(np.array(captioned_img_pil))
+    captioned_image = await Image.from_ndarray(np.array(captioned_img_pil))
 
     return Outputs(captioned_image=captioned_image)

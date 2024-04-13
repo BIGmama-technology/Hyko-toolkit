@@ -16,6 +16,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     r, g, b, _ = image.split()
     image_with_opacity = Image.merge("RGBA", (r, g, b, alpha))
 
-    adjusted_image_output = HykoImage.from_pil(image_with_opacity)
+    adjusted_image_output = await HykoImage.from_pil(image_with_opacity)
 
     return Outputs(adjusted_image=adjusted_image_output)

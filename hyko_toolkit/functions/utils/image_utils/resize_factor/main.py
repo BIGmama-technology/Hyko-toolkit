@@ -24,6 +24,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     )
 
     resized_pil_image = pil_image.resize((new_width, new_height), interpolation)
-    resized_image = HykoImage.from_pil(resized_pil_image)
+    resized_image = await HykoImage.from_pil(resized_pil_image)
 
     return Outputs(resized_image=resized_image)

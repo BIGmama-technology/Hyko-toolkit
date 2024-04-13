@@ -15,6 +15,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     enhancer = ImageEnhance.Contrast(img_pil_bright)
     img_pil_contrast = enhancer.enhance(params.contrast)
 
-    image = HykoImage.from_pil(img_pil_contrast)
+    image = await HykoImage.from_pil(img_pil_contrast)
 
     return Outputs(adjusted_image=image)

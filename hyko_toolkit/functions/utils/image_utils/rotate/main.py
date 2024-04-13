@@ -7,6 +7,6 @@ from PIL import Image
 async def main(inputs: Inputs, params: Params) -> Outputs:
     pil_image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
     rotated_image = pil_image.rotate(-params.rotation_angle, expand=True)
-    rotated_image = HykoImage.from_pil(rotated_image)
+    rotated_image = await HykoImage.from_pil(rotated_image)
 
     return Outputs(rotated_image=rotated_image)

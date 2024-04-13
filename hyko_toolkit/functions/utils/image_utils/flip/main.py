@@ -15,6 +15,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     elif flip_axis == FlipAxis.both:
         image = image.transpose(Image.FLIP_LEFT_RIGHT).transpose(Image.FLIP_TOP_BOTTOM)
 
-    flipped_image_output = HykoImage.from_pil(image)
+    flipped_image_output = await HykoImage.from_pil(image)
 
     return Outputs(flipped_image=flipped_image_output)

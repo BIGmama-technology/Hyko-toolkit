@@ -44,6 +44,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     else:
         combined_image = image1_pil
 
-    stacked_image = HykoImage.from_pil(combined_image)
+    stacked_image = await HykoImage.from_pil(combined_image)
 
     return Outputs(stacked_image=stacked_image)

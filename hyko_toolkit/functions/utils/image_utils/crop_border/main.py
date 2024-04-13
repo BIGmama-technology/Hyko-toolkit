@@ -23,6 +23,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             status_code=500, detail="Cropped area resulted in an empty image"
         )
 
-    cropped_image_output = HykoImage.from_pil(cropped_image)
+    cropped_image_output = await HykoImage.from_pil(cropped_image)
 
     return Outputs(cropped_image=cropped_image_output)
