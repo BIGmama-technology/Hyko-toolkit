@@ -469,12 +469,12 @@ socks = ["socksio (==1.*)"]
 
 [[package]]
 name = "hyko-sdk"
-version = "4.0.2"
+version = "4.3.0"
 description = "Hyko python SDK."
 optional = false
 python-versions = "^3.11.6"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 docker = "^7.0.0"
@@ -487,10 +487,8 @@ soundfile = "^0.12.1"
 uvicorn = {version = "^0.25.0", extras = ["standard"]}
 
 [package.source]
-type = "git"
-url = "https://github.com/BIGmama-technology/Hyko-sdk.git"
-reference = "development"
-resolved_reference = "ac6815cf45af68369113158ca76fc9be40cabe42"
+type = "directory"
+url = "../sdk"
 
 [[package]]
 name = "identify"
@@ -1359,4 +1357,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11.6"
-content-hash = "28e10a6a9fe31ed9b326a182f902d752ca01935d0e89e3b6ab6e56cc68123bf0"
+content-hash = "2dc547449f5c101aa104d9faef16af4bb21239e31e830eeda9f758814920c435"
