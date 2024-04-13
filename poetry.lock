@@ -469,7 +469,7 @@ socks = ["socksio (==1.*)"]
 
 [[package]]
 name = "hyko-sdk"
-version = "4.0.2"
+version = "4.3.0"
 description = "Hyko python SDK."
 optional = false
 python-versions = "^3.11.6"
@@ -1357,4 +1357,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11.6"
-content-hash = "73ed00c9bfef5b4bd6a50072346c23e3b9125b9695f023e4f8bed0638b95ce06"
+content-hash = "2dc547449f5c101aa104d9faef16af4bb21239e31e830eeda9f758814920c435"
