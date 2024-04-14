@@ -22,7 +22,7 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    img = inputs.input_image.to_ndarray()
+    img = await inputs.input_image.to_ndarray()
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     # Use the model to predict the objects in the image
     res = model.predict(source=img, conf=params.threshold, device=device_map)
@@ -64,4 +64,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         )
     # Blend the original image with the overlay image to highlight the detected objects
     masked_image = cv2.addWeighted(orig_img, 0.7, overlay, 0.3, 0)
-    return Outputs(image=Image.from_ndarray(masked_image[:, :, ::-1]))
+    return Outputs(image=await Image.from_ndarray(masked_image[:, :, ::-1]))
