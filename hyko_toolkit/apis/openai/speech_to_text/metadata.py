@@ -41,12 +41,10 @@ async def call(inputs: Inputs, params: Params):
             headers={
                 "Authorization": f"Bearer {params.api_key}",
             },
-            json={
-                "model": "whisper-1",
-            },
             files={
-                "file": await inputs.audio.get_data(),
+                "file": (inputs.audio.file_name, await inputs.audio.get_data(), None),
             },
+            data={"model": "whisper-1"},
             timeout=60 * 5,
         )
     if res.is_success:
