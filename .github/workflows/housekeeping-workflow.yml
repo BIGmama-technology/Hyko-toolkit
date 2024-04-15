@@ -30,14 +30,10 @@ jobs:
           virtualenvs-create: false
 
       - name: Install dependencies
-        run: poetry install
+        run: poetry install --without=sdk
 
       - name: Check Linting
         run: ruff check
 
       - name: Check Formatting
         run: ruff format --check
-
-      - name: Build toolkit package
-        if: github.event.pull_request.merged == true
-        run: poetry build
