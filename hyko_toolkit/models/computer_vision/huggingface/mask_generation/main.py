@@ -85,7 +85,9 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image = inputs.input_image.to_pil().convert("RGB")
+    image = await inputs.input_image.to_pil()
+    image = image.convert("RGB")
+
     outputs = generator(
         image,
         mask_threshold=params.mask_threshold,
@@ -99,6 +101,12 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     box_image_buffer = show_boxes_on_image(image, bounding_boxes)
     masks_image_buffer = show_masks_on_image(image, masks)
     return Outputs(
-        bbox_img=Image(val=box_image_buffer.getvalue(), obj_ext=Ext.PNG),
-        mask_img=Image(val=masks_image_buffer.getvalue(), obj_ext=Ext.PNG),
+        bbox_img=await Image(
+            obj_ext=Ext.PNG,
+        ).init_from_val(val=box_image_buffer.getvalue()),
+        mask_img=await Image(
+            obj_ext=Ext.PNG,
+        ).init_from_val(
+            val=masks_image_buffer.getvalue(),
+        ),
     )

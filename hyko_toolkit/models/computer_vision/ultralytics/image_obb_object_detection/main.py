@@ -20,7 +20,7 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image = inputs.input_image.to_ndarray()
+    image = await inputs.input_image.to_ndarray()
     # Convert the input image from RGB to BGR format
     img = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     # predict the objects in the image
@@ -42,7 +42,8 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         scene=annotated_frame, detections=detections, labels=labels
     )
     return Outputs(
-        image=Image.from_ndarray(
-            cv2.cvtColor(annotated_image, cv2.COLOR_RGB2BGR), encoding=Ext.PNG
+        image=await Image.from_ndarray(
+            cv2.cvtColor(annotated_image, cv2.COLOR_RGB2BGR),
+            encoding=Ext.PNG,
         )
     )

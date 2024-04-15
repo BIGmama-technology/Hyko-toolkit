@@ -14,6 +14,12 @@ async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     Returns:
         Outputs: An object containing the processed image data without the background.
     """
-    image_buffer = inputs.input_image.get_data()
+    image_buffer = await inputs.input_image.get_data()
     output = remove(image_buffer)
-    return Outputs(image=Image(val=output, obj_ext=Ext.PNG))
+    return Outputs(
+        image=await Image(
+            obj_ext=Ext.PNG,
+        ).init_from_val(
+            val=output,
+        )
+    )

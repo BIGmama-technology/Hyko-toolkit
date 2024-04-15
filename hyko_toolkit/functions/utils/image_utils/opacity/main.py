@@ -5,7 +5,7 @@ from PIL import Image
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
+    image = Image.fromarray(await inputs.image.to_ndarray())
 
     # Create an alpha layer with the same dimensions as the image, filled with the desired opacity
     alpha = Image.new("L", image.size, color=int(params.opacity * 255 / 100))
@@ -16,6 +16,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     r, g, b, _ = image.split()
     image_with_opacity = Image.merge("RGBA", (r, g, b, alpha))
 
-    adjusted_image_output = HykoImage.from_pil(image_with_opacity)
+    adjusted_image_output = await HykoImage.from_pil(image_with_opacity)
 
     return Outputs(adjusted_image=adjusted_image_output)

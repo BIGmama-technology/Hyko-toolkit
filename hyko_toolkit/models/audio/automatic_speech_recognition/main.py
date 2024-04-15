@@ -25,7 +25,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     if recognizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")
 
-    audio_array, sample_rate = inputs.speech.to_ndarray()
+    audio_array, sample_rate = await inputs.speech.to_ndarray()
     audio_array = audio_array[:, 0]  # take only one channel
     # divide audio array to 30s chunks and recognize each chunk
     segment_duration = 30  # ms

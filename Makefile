@@ -1,4 +1,3 @@
-include .env
 .PHONY: setup
 
 .PHONY: setup
