@@ -18,7 +18,7 @@ async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     Returns:
         Outputs: Extracted text content from the PDF file.
     """
-    pdf_bytes_io = BytesIO(inputs.pdf_file.get_data())
+    pdf_bytes_io = BytesIO(await inputs.pdf_file.get_data())
     with open("file.pdf", "wb") as file:
         file.write(pdf_bytes_io.getbuffer())
     loader = PyPDFLoader("file.pdf", extract_images=False)  # type: ignore

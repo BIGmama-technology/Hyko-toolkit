@@ -19,7 +19,7 @@ async def load(startup_params: StartupParams):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     res = captioner(
-        inputs.image.to_pil(),
+        await inputs.image.to_pil(),
         generate_kwargs={
             "do_sample": True,
             "top_k": params.top_k,

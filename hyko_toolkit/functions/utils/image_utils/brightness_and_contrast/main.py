@@ -5,7 +5,7 @@ from PIL import Image, ImageEnhance
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    img_pil = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
+    img_pil = Image.fromarray(await inputs.image.to_ndarray())
 
     # Adjusting brightness
     enhancer = ImageEnhance.Brightness(img_pil)
@@ -15,6 +15,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     enhancer = ImageEnhance.Contrast(img_pil_bright)
     img_pil_contrast = enhancer.enhance(params.contrast)
 
-    image = HykoImage.from_pil(img_pil_contrast)
+    image = await HykoImage.from_pil(img_pil_contrast)
 
     return Outputs(adjusted_image=image)

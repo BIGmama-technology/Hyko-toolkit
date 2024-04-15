@@ -26,8 +26,9 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             "temperature": params.temperature,
         },
     )  # type: ignore
-    result_audio = Audio.from_ndarray(
-        result_audio["audio"], sampling_rate=result_audio["sampling_rate"]
+    result_audio = await Audio.from_ndarray(
+        result_audio["audio"],
+        sampling_rate=result_audio["sampling_rate"],
     )
 
     return Outputs(speech=result_audio)  # type: ignore

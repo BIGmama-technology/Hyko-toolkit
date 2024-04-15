@@ -11,7 +11,7 @@ async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     _, ext = os.path.splitext(inputs.video.get_name())
 
     with open(f"/app/video.{ext}", "wb") as f:
-        f.write(inputs.video.get_data())
+        f.write(await inputs.video.get_data())
     # user video.{ext} instead of filename directly to avoid errors with names that has space in it
     subprocess.run(f"ffmpeg -i /app/video.{ext} -ac 1 /app/audio.mp3 -y".split(" "))
 
@@ -19,5 +19,9 @@ async def main(inputs: Inputs, params: CoreModel) -> Outputs:
         data = f.read()
     os.remove("audio.mp3")
 
-    audio = Audio(val=data, obj_ext=Ext.MP3)
+    audio = await Audio(
+        obj_ext=Ext.MP3,
+    ).init_from_val(
+        val=data,
+    )
     return Outputs(audio=audio)

@@ -22,7 +22,7 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    img = inputs.input_image.to_pil()
+    img = await inputs.input_image.to_pil()
     res = detector(img, threshold=params.threshold)
     image = np.array(img.convert("RGB"))
     for result in res:
@@ -40,5 +40,5 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             2,
         )
     final_img = PILLImage.fromarray(image)
-    final = Image.from_pil(final_img)
+    final = await Image.from_pil(final_img)
     return Outputs(final=final)  # type: ignore

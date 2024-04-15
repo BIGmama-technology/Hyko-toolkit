@@ -19,7 +19,9 @@ async def load(startup_params: StartupParams):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     res = vqa_pipeline(
-        image=inputs.image.to_pil(), question=inputs.question, top_k=params.top_k
+        image=await inputs.image.to_pil(),
+        question=inputs.question,
+        top_k=params.top_k,
     )
     answer = [prediction["answer"] for prediction in res]
     scores = [prediction["score"] for prediction in res]

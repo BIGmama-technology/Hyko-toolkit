@@ -5,7 +5,7 @@ from PIL import Image
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    pil_image = Image.fromarray(inputs.image.to_ndarray())  # type: ignore
+    pil_image = Image.fromarray(await inputs.image.to_ndarray())
 
     resize_methods = {
         "area": Image.Resampling.LANCZOS,
@@ -19,6 +19,6 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     image_resized = pil_image.resize(
         (params.width, params.height), resample=interpolation
     )
-    hyko_image = HykoImage.from_pil(image_resized)
+    hyko_image = await HykoImage.from_pil(image_resized)
 
     return Outputs(resized_image=hyko_image)

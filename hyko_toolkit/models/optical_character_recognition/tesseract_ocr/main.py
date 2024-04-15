@@ -25,6 +25,7 @@ def extract_text_from_image_bytes_tesseract(image_bytes: bytes, language: str):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     generated_text = extract_text_from_image_bytes_tesseract(
-        image_bytes=inputs.image.get_data(), language=params.language.value
+        image_bytes=await inputs.image.get_data(),
+        language=params.language.value,
     )
     return Outputs(generated_text=generated_text)
