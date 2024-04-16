@@ -22,7 +22,7 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    image = inputs.input_image.to_ndarray()
+    image = await inputs.input_image.to_ndarray()
     img = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     results = model.predict(
         source=img, conf=params.threshold, iou=params.iou_threshold, device=device_map
@@ -46,4 +46,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
             offset=3,
         )
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    return Outputs(image=Image.from_ndarray(img, encoding=Ext.PNG))  # type: ignore
+    return Outputs(image=await Image.from_ndarray(img, encoding=Ext.PNG))  # type: ignore

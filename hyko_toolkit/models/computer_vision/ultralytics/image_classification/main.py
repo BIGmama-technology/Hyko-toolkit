@@ -17,7 +17,7 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    img = inputs.input_image.to_ndarray()
+    img = await inputs.input_image.to_ndarray()
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     # predict on an image
     results = model.predict(source=img, conf=params.threshold, device=device_map)

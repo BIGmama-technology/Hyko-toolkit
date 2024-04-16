@@ -53,8 +53,17 @@ async def call(inputs: Inputs, params: Params):
         res = await client.request(
             method=Method.post,
             url="https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image",
-            headers={"authorization": f"Bearer {params.api_key}", "accept": "image/*"},
-            files={"image": inputs.init_image.get_data()},
+            headers={
+                "authorization": f"Bearer {params.api_key}",
+                "Accept": "application/json",
+            },
+            files={
+                "init_image": (
+                    inputs.init_image.file_name,
+                    await inputs.init_image.get_data(),
+                    None,
+                )
+            },
             data={
                 "image_strength": params.image_strength,
                 "init_image_mode": "IMAGE_STRENGTH",
@@ -72,4 +81,8 @@ async def call(inputs: Inputs, params: Params):
         ]
     else:
         raise APICallError(status=res.status_code, detail=res.text)
-    return Outputs(result=Image(val=decoded_images[0], obj_ext=Ext.PNG))
+    return Outputs(
+        result=await Image(
+            obj_ext=Ext.PNG,
+        ).init_from_val(val=decoded_images[0])
+    )

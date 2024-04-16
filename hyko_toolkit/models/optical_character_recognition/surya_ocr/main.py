@@ -42,5 +42,8 @@ def ocr_surya(image_bytes: bytes, language: str):
 
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
-    generated_text = ocr_surya(inputs.image.get_data(), language=params.language.value)
+    generated_text = ocr_surya(
+        await inputs.image.get_data(),
+        language=params.language.value,
+    )
     return Outputs(generated_text=generated_text)

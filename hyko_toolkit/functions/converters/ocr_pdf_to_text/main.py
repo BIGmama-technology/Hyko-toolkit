@@ -19,7 +19,7 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     Returns:
         str: The extracted text from the PDF document.
     """
-    pdf_bytes_io = BytesIO(inputs.pdf_file.get_data())
+    pdf_bytes_io = BytesIO(await inputs.pdf_file.get_data())
     with open("file.pdf", "wb") as file:
         file.write(pdf_bytes_io.getbuffer())
     text_list = []

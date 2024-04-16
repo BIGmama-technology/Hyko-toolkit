@@ -20,7 +20,7 @@ async def load(startup_params: StartupParams):
 
 @func.on_execute
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
-    res = estimator(inputs.input_image.to_pil())
-    depth_map = Image.from_pil(res["depth"])
+    res = estimator(await inputs.input_image.to_pil())
+    depth_map = await Image.from_pil(res["depth"])
 
     return Outputs(depth_map=depth_map)  # type: ignore

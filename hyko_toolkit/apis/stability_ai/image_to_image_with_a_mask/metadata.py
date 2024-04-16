@@ -52,10 +52,6 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     api_key: str = Field(description="API key")
-    image_strength: float = Field(
-        default=0.35,
-        description="How much influence the init_image has on the diffusion process.",
-    )
     style_preset: ArtStyle = Field(
         default=ArtStyle.CINEMATIC,
         description="Style preset to use for the image generation (default : cinematic).",
@@ -85,13 +81,23 @@ async def call(inputs: Inputs, params: Params):
         res = await client.request(
             method=Method.post,
             url="https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image/masking",
-            headers={"authorization": f"Bearer {params.api_key}", "accept": "image/*"},
+            headers={
+                "authorization": f"Bearer {params.api_key}",
+                "accept": "application/json",
+            },
             files={
-                "image": inputs.init_image.get_data(),
-                "mask_image": inputs.mask_image.get_data(),
+                "init_image": (
+                    inputs.init_image.file_name,
+                    await inputs.init_image.get_data(),
+                    None,
+                ),
+                "mask_image": (
+                    inputs.mask_image.file_name,
+                    await inputs.mask_image.get_data(),
+                    None,
+                ),
             },
             data={
-                "image_strength": params.image_strength,
                 "text_prompts[0][text]": inputs.prompt,
                 "style_preset": params.style_preset.value,
                 "steps": params.steps,
@@ -109,4 +115,10 @@ async def call(inputs: Inputs, params: Params):
         ]
     else:
         raise APICallError(status=res.status_code, detail=res.text)
-    return Outputs(result=Image(val=decoded_images[0], obj_ext=Ext.PNG))
+    return Outputs(
+        result=await Image(
+            obj_ext=Ext.PNG,
+        ).init_from_val(
+            val=decoded_images[0],
+        )
+    )

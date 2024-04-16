@@ -30,4 +30,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         strength=params.strength,
         guidance_scale=params.guidance_scale,
     )
-    return Outputs(generated_image=Image.from_pil(res.images[0]))  # type: ignore
+    return Outputs(generated_image=await Image.from_pil(res.images[0]))  # type: ignore

@@ -19,7 +19,7 @@ async def load(startup_params: StartupParams):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     res = classifier(
-        inputs.input_image.to_pil(),
+        await inputs.input_image.to_pil(),
         candidate_labels=inputs.labels,
         hypothesis_template=params.hypothesis_template,
     )
