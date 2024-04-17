@@ -1,4 +1,17 @@
 """register all utility functions"""
+from .image_utils.brightness_and_contrast.metadata import func as func  # noqa: F811
+from .image_utils.caption.metadata import func as func  # noqa: F811
+from .image_utils.converter.metadata import func as func  # noqa: F811
+from .image_utils.crop_border.metadata import func as func  # noqa: F811  # noqa: F811
+from .image_utils.crop_edges.metadata import func as func  # noqa: F811  # noqa: F811
+from .image_utils.flip.metadata import func as func  # noqa: F811
+from .image_utils.get_dimensions.metadata import func as func  # noqa: F811
+from .image_utils.opacity.metadata import func as func  # noqa: F811  # noqa: F811
+from .image_utils.padding.metadata import func as func  # noqa: F811
+from .image_utils.resize_factor.metadata import func as func  # noqa: F811  # noqa: F811
+from .image_utils.resize_resolution.metadata import func as func  # noqa: F811
+from .image_utils.retate.metadata import func as func  # noqa: F811
+from .image_utils.stack_images.metadata import func as func  # noqa: F811
 from .list_utils.any.metadata import func as func  # noqa: F811
 from .list_utils.append.metadata import func as func  # noqa: F811
 from .list_utils.count.metadata import func as func  # noqa: F811
