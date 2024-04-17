@@ -14,3 +14,16 @@ from .list_utils.reverse.metadata import func as func  # noqa: F811
 from .list_utils.slice.metadata import func as func  # noqa: F811
 from .list_utils.sort.metadata import func as func  # noqa: F811
 from .list_utils.sum.metadata import func as func  # noqa: F811
+from .nlp_utils.remove_special_characters.metadata import func as func  # noqa: F811
+from .text_utils.concat.metadata import func as func  # noqa: F811
+from .text_utils.count.metadata import func as func  # noqa: F811
+from .text_utils.index_mapping.metadata import func as func  # noqa: F811
+from .text_utils.join.metadata import func as func  # noqa: F811
+from .text_utils.length.metadata import func as func  # noqa: F811
+from .text_utils.lowercase.metadata import func as func  # noqa: F811
+from .text_utils.padding.metadata import func as func  # noqa: F811
+from .text_utils.replace.metadata import func as func  # noqa: F811
+from .text_utils.reverse.metadata import func as func  # noqa: F811
+from .text_utils.slice.metadata import func as func  # noqa: F811
+from .text_utils.split.metadata import func as func  # noqa: F811
+from .text_utils.uppercase.metadata import func as func  # noqa: F811
