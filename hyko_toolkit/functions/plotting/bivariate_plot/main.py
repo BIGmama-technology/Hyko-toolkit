@@ -117,4 +117,8 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     buffer = generate_plot_with_two_params(
         params.plot_type.value, x=inputs.x, y=inputs.y
     )
-    return Outputs(image=Image(val=buffer.getvalue(), obj_ext=Ext.PNG))
+    assert buffer, "error while generating plot."
+
+    return Outputs(
+        image=await Image(obj_ext=Ext.PNG).init_from_val(val=buffer.getvalue())
+    )

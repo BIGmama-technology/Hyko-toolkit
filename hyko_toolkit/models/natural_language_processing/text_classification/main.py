@@ -23,4 +23,4 @@ async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     labels = [prediction["label"] for prediction in res]
     scores = [prediction["score"] for prediction in res]
 
-    return Outputs(label=labels, score=scores)  # type: ignore
+    return Outputs(label=labels, score=scores)

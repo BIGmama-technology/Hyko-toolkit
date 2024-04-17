@@ -11,4 +11,4 @@ async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     response.raise_for_status()
     # If the GET request is successful, add the content to the list
     data = response.content
-    return Outputs(pdf=PDF(val=data, obj_ext=Ext.PDF))
+    return Outputs(pdf=await PDF(obj_ext=Ext.PDF).init_from_val(val=data))
