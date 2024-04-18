@@ -47,7 +47,7 @@ class Outputs(CoreModel):
 
 @func.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
-    image = await inputs.image.to_ndarray()
+    image = await inputs.image.to_pil()
     flip_axis = params.flip_axis
     if flip_axis == FlipAxis.horizontal:
         image = image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
@@ -57,5 +57,5 @@ async def call(inputs: Inputs, params: Params) -> Outputs:
         image = image.transpose(Image.Transpose.FLIP_LEFT_RIGHT).transpose(
             Image.Transpose.FLIP_TOP_BOTTOM
         )
-    flipped_image_output = await HykoImage.from_ndarray(image)
+    flipped_image_output = await HykoImage.from_pil(image)
     return Outputs(flipped_image=flipped_image_output)
