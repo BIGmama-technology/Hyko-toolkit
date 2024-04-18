@@ -19,4 +19,7 @@ class ToolkitUtils(_ToolkitUtils):
     def __init__(self, name: str, task: str, description: str):
         # Automatically register the instance upon creation
         super().__init__(name=name, task=task, description=description)
-        UtilsRegistry.register(name, self)
+        UtilsRegistry.register(
+            self.get_base_metadata().image,
+            self,
+        )
