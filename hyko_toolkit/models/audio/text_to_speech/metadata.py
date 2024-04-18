@@ -8,6 +8,8 @@ func = ToolkitModel(
     name="text_to_speech",
     task="audio",
     description="HuggingFace text to speech, run on cuda may cause issues on cpu",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/audio/text_to_speech/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/audio/text_to_speech",
 )
 
 
