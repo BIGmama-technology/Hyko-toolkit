@@ -52,4 +52,7 @@ def generate_plot_with_one_param(plot_type: str, y: list[float]):
 @func.on_execute
 async def main(inputs: Inputs, params: Params) -> Outputs:
     buffer = generate_plot_with_one_param(params.plot_type.value, y=inputs.y)
-    return Outputs(image=Image(val=buffer.getvalue(), obj_ext=Ext.PNG))
+    assert buffer, "something went wrong while generating plot."
+    return Outputs(
+        image=await Image(obj_ext=Ext.PNG).init_from_val(val=buffer.getvalue())
+    )

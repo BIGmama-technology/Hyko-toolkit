@@ -24,4 +24,10 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
 
     os.remove(f"converted-image.{params.target_type.name}")
 
-    return Outputs(image=Image(val=val, obj_ext=params.target_type.value))
+    return Outputs(
+        image=await Image(
+            obj_ext=params.target_type.value,
+        ).init_from_val(
+            val=val,
+        )
+    )

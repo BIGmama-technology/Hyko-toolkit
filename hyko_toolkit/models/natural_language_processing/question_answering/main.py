@@ -26,8 +26,8 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     )  # type: ignore
 
     return Outputs(
-        answer=res["answer"],  # type: ignore
-        start=res["start"],  # type: ignore
-        end=res["end"],  # type: ignore
-        score=res["score"],  # type: ignore
+        answer=res["answer"],
+        start=res["start"],
+        end=res["end"],
+        score=res["score"],
     )
