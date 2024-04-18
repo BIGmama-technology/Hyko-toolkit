@@ -4,6 +4,7 @@ from .anthropic.chat.metadata import func as func
 from .arxiv.articles_lookup.metadata import func as func  # noqa: F811
 from .cohere.chat.metadata import func as func  # noqa: F811
 from .cohere.text_embedding.metadata import func as func  # noqa: F811
+from .elevenlabs.text_to_speech.metadata import func as func  # noqa: F811
 from .gemini.chat.metadata import func as func  # noqa: F811
 from .gemini.text_embedding.metadata import func as func  # noqa: F811
 from .gemini.vision.metadata import func as func  # noqa: F811
