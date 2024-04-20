@@ -85,4 +85,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
     # Remove the temporary files
     os.unlink(out_temp_file_path)
     os.unlink(input_temp_file_path)
-    return Outputs(video=Video(val=video_buffer, obj_ext=Ext.MP4))
+    return Outputs(video=await Video(obj_ext=Ext.MP4).init_from_val(val=video_buffer))

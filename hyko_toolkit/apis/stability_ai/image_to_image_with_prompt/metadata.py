@@ -57,7 +57,13 @@ async def call(inputs: Inputs, params: Params):
                 "authorization": f"Bearer {params.api_key}",
                 "Accept": "application/json",
             },
-            files={"init_image": await inputs.init_image.get_data()},
+            files={
+                "init_image": (
+                    inputs.init_image.file_name,
+                    await inputs.init_image.get_data(),
+                    None,
+                )
+            },
             data={
                 "image_strength": params.image_strength,
                 "init_image_mode": "IMAGE_STRENGTH",
