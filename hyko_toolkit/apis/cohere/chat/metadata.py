@@ -1,3 +1,5 @@
+from enum import Enum
+
 import httpx
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
@@ -12,6 +14,15 @@ func = ToolkitAPI(
 )
 
 
+class Model(str, Enum):
+    command = "command"
+    command_r = "command-r"
+    command_light = "command-light"
+    command_light_nightly = "command-light-nightly"
+    command_nightly = "command-nightly"
+    command_r_plus = "command-r-plus"
+
+
 @func.set_input
 class Inputs(CoreModel):
     system_prompt: str = Field(
@@ -23,6 +34,10 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     api_key: str = Field(description="API key")
+    model: Model = Field(
+        default=Model.command,
+        description="The selected model to use.",
+    )
     max_tokens: int = Field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
@@ -63,7 +78,7 @@ async def call(inputs: Inputs, params: Params):
                 "chat_history": [
                     {"role": "SYSTEM", "message": inputs.system_prompt},
                 ],
-                "model": "command",
+                "model": params.model.value,
                 "message": inputs.prompt,
                 "temperature": params.temperature,
             },
