@@ -1,12 +1,15 @@
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="video_classification",
     task="computer_vision",
     description="HuggingFace video classification",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/video_classification/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/video_classification",
 )
 
 

@@ -9,7 +9,7 @@ from .image_utils.opacity.metadata import func as func  # noqa: F811  # noqa: F8
 from .image_utils.padding.metadata import func as func  # noqa: F811
 from .image_utils.resize_factor.metadata import func as func  # noqa: F811  # noqa: F811
 from .image_utils.resize_resolution.metadata import func as func  # noqa: F811
-from .image_utils.retate.metadata import func as func  # noqa: F811
+from .image_utils.rotate.metadata import func as func  # noqa: F811
 from .image_utils.stack_images.metadata import func as func  # noqa: F811
 from .list_utils.any.metadata import func as func  # noqa: F811
 from .list_utils.append.metadata import func as func  # noqa: F811

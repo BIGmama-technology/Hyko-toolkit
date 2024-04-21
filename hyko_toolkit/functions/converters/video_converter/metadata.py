@@ -1,14 +1,17 @@
 from enum import Enum
 
-from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel, Ext
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitFunction
 
 func = ToolkitFunction(
     name="video_converter",
     task="converters",
     description="Convert a video from one format to another.",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/converters/video_converter/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/functions/converters/video_converter",
 )
 
 
@@ -29,10 +32,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    target_type: SupportedTypes = Field(
-        ...,
-        description="The Target Type.",
-    )
+    target_type: SupportedTypes = Field(..., description="The Target Type.")
 
 
 @func.set_output

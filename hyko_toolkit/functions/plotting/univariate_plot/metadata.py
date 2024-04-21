@@ -1,9 +1,10 @@
 from enum import Enum
 
-from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitFunction
 
 
 class SupportedPlots(str, Enum):
@@ -15,6 +16,8 @@ func = ToolkitFunction(
     name="univariate_plot",
     task="plotting",
     description="Generate various types of plots with Y input.",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/plotting/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/functions/plotting/univariate_plot",
 )
 
 

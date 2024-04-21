@@ -1,14 +1,17 @@
 from enum import Enum
 
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="ultralytics_image_object_detection",
     task="computer_vision",
     description="UltraLytics Image Object Detection Using YOLO V8 and V9.",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/image_object_detection",
 )
 
 

@@ -5,7 +5,7 @@ from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel, Ext
 from pydantic import Field
 
-from hyko_toolkit.utils.utils_registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="image_converter",

@@ -6,8 +6,8 @@ from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel, Ext, Method
 from pydantic import Field
 
-from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
+from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
     name="image_to_image_with_a_mask",
