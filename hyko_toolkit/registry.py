@@ -1,44 +1,39 @@
+from typing import Union
+
 from hyko_sdk.definitions import ToolkitAPI as _ToolkitAPI
 from hyko_sdk.definitions import ToolkitFunction as _ToolkitFunction
 from hyko_sdk.definitions import ToolkitModel as _ToolkitModel
 
+Definition = Union[
+    _ToolkitAPI,
+    _ToolkitFunction,
+    _ToolkitModel,
+]
 
-class APIRegistry:
-    _registry: dict[str, _ToolkitAPI] = {}
+
+class Registry:
+    _registry: dict[str, Definition] = {}
 
     @classmethod
-    def register(cls, name: str, api: _ToolkitAPI):
-        cls._registry[name] = api
+    def register(cls, name: str, definition: Definition):
+        cls._registry[name] = definition
 
     @classmethod
-    def get_handler(cls, name: str) -> _ToolkitAPI:
+    def get_handler(cls, name: str) -> Definition:
         if name not in cls._registry:
-            raise ValueError(f"API handler '{name}' not found")
+            raise ValueError(f"handler '{name}' not found")
         return cls._registry[name]
 
     @classmethod
-    def get_apis(cls):
+    def get_all_metadata(cls):
         return [api.get_metadata() for api in cls._registry.values()]
 
 
 class ToolkitAPI(_ToolkitAPI):
     def __init__(self, name: str, task: str, description: str):
-        # Automatically register the instance upon creation
         super().__init__(name=name, task=task, description=description)
-        APIRegistry.register(name, self)
-
-
-#############################################
-class ModelRegistry:
-    _registry: dict[str, _ToolkitModel] = {}
-
-    @classmethod
-    def register(cls, name: str, api: _ToolkitModel):
-        cls._registry[name] = api
-
-    @classmethod
-    def get_models(cls):
-        return [model.get_metadata() for model in cls._registry.values()]
+        # Automatically register the instance upon creation
+        Registry.register(name, self)
 
 
 class ToolkitModel(_ToolkitModel):
@@ -50,7 +45,6 @@ class ToolkitModel(_ToolkitModel):
         absolute_dockerfile_path: str,
         docker_context: str,
     ):
-        # Automatically register the instance upon creation
         super().__init__(
             name=name,
             task=task,
@@ -58,22 +52,8 @@ class ToolkitModel(_ToolkitModel):
             docker_context=docker_context,
             absolute_dockerfile_path=absolute_dockerfile_path,
         )
-        ModelRegistry.register(name, self)
-
-
-##################################
-
-
-class FunctionRegistry:
-    _registry: dict[str, _ToolkitFunction] = {}
-
-    @classmethod
-    def register(cls, name: str, api: _ToolkitFunction):
-        cls._registry[name] = api
-
-    @classmethod
-    def get_functions(cls):
-        return [function.get_metadata() for function in cls._registry.values()]
+        # Automatically register the instance upon creation
+        Registry.register(name, self)
 
 
 class ToolkitFunction(_ToolkitFunction):
@@ -85,7 +65,6 @@ class ToolkitFunction(_ToolkitFunction):
         absolute_dockerfile_path: str,
         docker_context: str,
     ):
-        # Automatically register the instance upon creation
         super().__init__(
             name=name,
             task=task,
@@ -93,4 +72,5 @@ class ToolkitFunction(_ToolkitFunction):
             docker_context=docker_context,
             absolute_dockerfile_path=absolute_dockerfile_path,
         )
-        FunctionRegistry.register(name, self)
+        # Automatically register the instance upon creation
+        Registry.register(name, self)
