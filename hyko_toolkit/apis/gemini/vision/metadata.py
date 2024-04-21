@@ -5,8 +5,8 @@ from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
 
-from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
+from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
     name="gemini_vision_api",
@@ -69,7 +69,7 @@ async def call(inputs: Inputs, params: Params):
                 "contents": [
                     {
                         "parts": [
-                            {"text": "What’s in this image?"},
+                            {"text": inputs.prompt},
                             {
                                 "inlineData": {
                                     "mimeType": "image/png",
