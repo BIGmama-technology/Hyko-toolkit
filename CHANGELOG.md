@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.2.0](https://github.com/BIGmama-technology/Hyko-toolkit/compare/v2.1.0...v2.2.0) (2024-04-15)
+
+
+### Features
+
+* add mistral text embedding  api ([8057144](https://github.com/BIGmama-technology/Hyko-toolkit/commit/8057144333bc66a93074506d19aba5eca25e2f23))
+* add mistral text generation api ([b3479dd](https://github.com/BIGmama-technology/Hyko-toolkit/commit/b3479dd065de53883ce9437ee3838125f895c074))
+* add openai_speech_to_text ([c7000fc](https://github.com/BIGmama-technology/Hyko-toolkit/commit/c7000fc4f9a5c1a55114e2c8f3c4125b487f2f07))
+* add openai_text_to_speech ([c5268c5](https://github.com/BIGmama-technology/Hyko-toolkit/commit/c5268c5c7e131324d9b5eeb900d11899a7012b7e))
+
+
+### Bug Fixes
+
+* added await to image utils and remove unnecessary type ignore ([b858d86](https://github.com/BIGmama-technology/Hyko-toolkit/commit/b858d861cd3c76f0d94b18fcce8f0e37c3d31893))
+* await async read and write, to_pil ... ([f30948b](https://github.com/BIGmama-technology/Hyko-toolkit/commit/f30948b5b2aff3a80b39f626bbcc97f35a37904d))
+* await get data and init from val ([390bc6b](https://github.com/BIGmama-technology/Hyko-toolkit/commit/390bc6b1d45f10c8e7a51825b95e0f3b743d5d45))
+* await get_data() ([b7ad2c3](https://github.com/BIGmama-technology/Hyko-toolkit/commit/b7ad2c3ffb41d9eba5d558d625325f5fcc5518a8))
+* fixed housekeeping action ([2cc32b5](https://github.com/BIGmama-technology/Hyko-toolkit/commit/2cc32b5d730b3f84a5fa63712b7debdca53df990))
+* remove .env from makefile ([f9f459f](https://github.com/BIGmama-technology/Hyko-toolkit/commit/f9f459f050f77c0c132e2a337a30f5d0d7d710f1))
+* stability ai apis file handling and request ([b304827](https://github.com/BIGmama-technology/Hyko-toolkit/commit/b304827934fbe138bf986294b179e3e32b7923aa))
+
 ## [2.1.0](https://github.com/BIGmama-technology/Hyko-toolkit/compare/2.0.0...v2.1.0) (2024-03-27)
 
 

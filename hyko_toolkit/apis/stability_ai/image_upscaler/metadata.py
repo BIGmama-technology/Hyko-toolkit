@@ -48,7 +48,13 @@ async def call(inputs: Inputs, params: Params):
             method=Method.post,
             url="https://api.stability.ai/v2beta/stable-image/upscale/creative",
             headers={"authorization": f"Bearer {params.api_key}", "accept": "image/*"},
-            files={"image": await inputs.input_image.get_data()},
+            files={
+                "image": (
+                    inputs.input_image.file_name,
+                    await inputs.input_image.get_data(),
+                    None,
+                )
+            },
             data={
                 "prompt": inputs.prompt,
                 "negative_prompt": params.negative_prompt,

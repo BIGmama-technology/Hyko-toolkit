@@ -41,4 +41,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         )
     final_img = PILLImage.fromarray(image)
     final = await Image.from_pil(final_img)
-    return Outputs(final=final)  # type: ignore
+    return Outputs(final=final)

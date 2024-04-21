@@ -19,4 +19,7 @@ class ToolkitAPI(_ToolkitAPI):
     def __init__(self, name: str, task: str, description: str):
         # Automatically register the instance upon creation
         super().__init__(name=name, task=task, description=description)
-        APIRegistry.register(name, self)
+        APIRegistry.register(
+            self.get_base_metadata().image,
+            self,
+        )
