@@ -1,4 +1,4 @@
-FROM hykoai/hyko-sdk:latest
+FROM hykoai/toolkit-base:latest
  
 RUN apt-get update && \
     apt-get install -y curl sudo xvfb libatk-bridge2.0-0 libgtk-3-0 libnss3 libx11-xcb1 libxcb-dri3-0 libdrm2 libxshmfence1 libgbm1 && \

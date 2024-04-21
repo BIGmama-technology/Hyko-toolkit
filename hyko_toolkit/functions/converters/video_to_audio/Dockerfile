@@ -1,4 +1,4 @@
-FROM hykoai/hyko-sdk-medium:latest
+FROM hykoai/toolkit-base:latest
 
 RUN apt-get install -y \
 ffmpeg && \
