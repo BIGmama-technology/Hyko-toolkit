@@ -28,7 +28,7 @@ class Registry:
 
     @classmethod
     def get_all_metadata(cls):
-        return [api.get_metadata() for api in cls._registry.values()]
+        return [definition.get_metadata() for definition in cls._registry.values()]
 
 
 class ToolkitAPI(_ToolkitAPI):
