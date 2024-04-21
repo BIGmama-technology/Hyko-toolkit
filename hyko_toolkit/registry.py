@@ -3,6 +3,7 @@ from typing import Union
 from hyko_sdk.definitions import ToolkitAPI as _ToolkitAPI
 from hyko_sdk.definitions import ToolkitFunction as _ToolkitFunction
 from hyko_sdk.definitions import ToolkitModel as _ToolkitModel
+from hyko_sdk.definitions import ToolkitUtils as _ToolkitUtils
 
 Definition = Union[
     _ToolkitAPI,
@@ -36,7 +37,7 @@ class ToolkitAPI(_ToolkitAPI):
         Registry.register(name, self)
 
 
-class ToolkitUtils(ToolkitAPI):
+class ToolkitUtils(_ToolkitUtils, ToolkitAPI):
     pass
 
 
@@ -60,5 +61,5 @@ class ToolkitFunction(_ToolkitFunction):
         Registry.register(name, self)
 
 
-class ToolkitModel(ToolkitFunction):
+class ToolkitModel(_ToolkitModel, ToolkitFunction):
     pass
