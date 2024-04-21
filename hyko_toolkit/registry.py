@@ -36,24 +36,8 @@ class ToolkitAPI(_ToolkitAPI):
         Registry.register(name, self)
 
 
-class ToolkitModel(_ToolkitModel):
-    def __init__(
-        self,
-        name: str,
-        task: str,
-        description: str,
-        absolute_dockerfile_path: str,
-        docker_context: str,
-    ):
-        super().__init__(
-            name=name,
-            task=task,
-            description=description,
-            docker_context=docker_context,
-            absolute_dockerfile_path=absolute_dockerfile_path,
-        )
-        # Automatically register the instance upon creation
-        Registry.register(name, self)
+class ToolkitUtils(ToolkitAPI):
+    pass
 
 
 class ToolkitFunction(_ToolkitFunction):
@@ -74,3 +58,7 @@ class ToolkitFunction(_ToolkitFunction):
         )
         # Automatically register the instance upon creation
         Registry.register(name, self)
+
+
+class ToolkitModel(ToolkitFunction):
+    pass
