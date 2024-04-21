@@ -1,12 +1,15 @@
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Audio
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="automatic_speech_recognition",
     task="audio",
     description="HuggingFace automatic speech recognition",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/audio/automatic_speech_recognition/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/audio/automatic_speech_recognition",
 )
 
 

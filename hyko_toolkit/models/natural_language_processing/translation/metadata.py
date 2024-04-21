@@ -1,13 +1,16 @@
 from enum import Enum
 
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="translation",
     task="natural_language_processing",
     description="Hugging Face translation task",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/natural_language_processing/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/natural_language_processing/translation",
 )
 
 
@@ -47,12 +50,10 @@ class Params(CoreModel):
         default=0.5, description="Focus high-probability words (diversity control)"
     )
     src_lang: SupportedLanguages = Field(
-        default=None,
-        description="The source Language.",
+        default=None, description="The source Language."
     )
     tgt_lang: SupportedLanguages = Field(
-        default=None,
-        description="The target Language.",
+        default=None, description="The target Language."
     )
 
 

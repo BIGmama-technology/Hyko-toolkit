@@ -1,11 +1,14 @@
-from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitFunction
 
 func = ToolkitFunction(
     name="beautifulsoup_transformer",
     task="web_scraping",
     description="Scrape HTML content from URLs and convert it to plain text",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_scraping/beautifulsoup_transformer/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/functions/web/web_scraping/beautifulsoup_transformer",
 )
 
 
@@ -20,8 +23,7 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     tags_to_extract: str = Field(
-        ...,
-        description="Specify HTML tags for extraction, separated by commas.",
+        ..., description="Specify HTML tags for extraction, separated by commas."
     )
 
 

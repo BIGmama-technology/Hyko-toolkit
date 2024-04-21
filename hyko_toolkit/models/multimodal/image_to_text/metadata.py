@@ -1,12 +1,15 @@
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="image_to_text",
     task="multimodal",
     description="Hugging Face Image-To-Text Task",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/multimodal/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/multimodal/image_to_text",
 )
 
 

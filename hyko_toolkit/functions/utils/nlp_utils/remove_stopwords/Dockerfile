@@ -1,4 +1,4 @@
-FROM hykoai/hyko-sdk-tiny:latest
+FROM hykoai/toolkit-base:latest
  
 RUN --mount=type=cache,target=/root/.cache/pip pip install nltk
 

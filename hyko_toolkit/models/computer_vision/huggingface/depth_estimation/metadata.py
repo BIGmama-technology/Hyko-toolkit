@@ -1,12 +1,15 @@
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="depth_estimation",
     task="computer_vision",
     description="HuggingFace depth estimation",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/depth_estimation",
 )
 
 

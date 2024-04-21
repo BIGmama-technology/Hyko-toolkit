@@ -1,11 +1,14 @@
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="zero_shot_classification",
     task="natural_language_processing",
     description="Hugging Face Zero Shot Classification Task",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/natural_language_processing/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/natural_language_processing/zero_shot_classification",
 )
 
 
