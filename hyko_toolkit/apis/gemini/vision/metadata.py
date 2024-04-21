@@ -73,16 +73,18 @@ async def call(inputs: Inputs, params: Params):
                             {
                                 "inlineData": {
                                     "mimeType": "image/png",
-                                    "data": {
-                                        base64.b64encode(
-                                            await inputs.input_image.get_data()
-                                        ).decode("utf-8")
-                                    },
+                                    "data": base64.b64encode(
+                                        await inputs.input_image.get_data()
+                                    ).decode("utf-8"),
                                 }
                             },
-                        ]
+                        ],
                     }
-                ]
+                ],
+                "generationConfig": {
+                    "temperature": params.temperature,
+                    "maxOutputTokens": params.max_tokens,
+                },
             },
             timeout=60 * 5,
         )
