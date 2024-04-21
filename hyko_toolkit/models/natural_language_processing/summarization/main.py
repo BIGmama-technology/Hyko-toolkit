@@ -28,4 +28,4 @@ async def main(inputs: Inputs, params: Params) -> Outputs:
         top_k=params.top_k,
     )
 
-    return Outputs(summary_text=res[0]["summary_text"])  # type: ignore
+    return Outputs(summary_text=res[0]["summary_text"])
