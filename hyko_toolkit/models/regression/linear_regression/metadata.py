@@ -1,11 +1,14 @@
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="linear_regression",
     task="regression",
     description="Predicts a future value based on historical data",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/regression/linear_regression/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/regression/linear_regression",
 )
 
 

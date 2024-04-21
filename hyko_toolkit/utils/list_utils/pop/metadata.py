@@ -3,7 +3,7 @@ from typing import Any
 from hyko_sdk.models import CoreModel
 from pydantic import Field
 
-from hyko_toolkit.utils.utils_registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="pop_element",

@@ -1,12 +1,15 @@
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="zero_shot_image_classification",
     task="computer_vision",
     description="Hugging Face image classification",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/zero_shot_image_classification",
 )
 
 

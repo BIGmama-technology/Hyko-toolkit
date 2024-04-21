@@ -1,14 +1,17 @@
 from enum import Enum
 
-from hyko_sdk.definitions import ToolkitModel
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from pydantic import Field
+
+from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
     name="ultralytics_image_instance_segmentation",
     task="computer_vision",
     description="UltraLytics Instance Segmentation Using YOLO segmentation V8.",
+    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/Dockerfile",
+    docker_context="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/image_instance_segmentation",
 )
 
 

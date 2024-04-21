@@ -4,8 +4,8 @@ import httpx
 from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
 
-from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
+from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
     name="bing_search",
