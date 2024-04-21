@@ -6,9 +6,10 @@ from hyko_sdk.definitions import ToolkitModel as _ToolkitModel
 from hyko_sdk.definitions import ToolkitUtils as _ToolkitUtils
 
 Definition = Union[
-    _ToolkitAPI,
-    _ToolkitFunction,
-    _ToolkitModel,
+    "ToolkitAPI",
+    "ToolkitFunction",
+    "ToolkitModel",
+    "ToolkitUtils",
 ]
 
 
@@ -34,11 +35,14 @@ class ToolkitAPI(_ToolkitAPI):
     def __init__(self, name: str, task: str, description: str):
         super().__init__(name=name, task=task, description=description)
         # Automatically register the instance upon creation
-        Registry.register(name, self)
+        Registry.register(self.get_metadata().image, self)
 
 
-class ToolkitUtils(_ToolkitUtils, ToolkitAPI):
-    pass
+class ToolkitUtils(_ToolkitUtils):
+    def __init__(self, name: str, task: str, description: str):
+        super().__init__(name=name, task=task, description=description)
+        # Automatically register the instance upon creation
+        Registry.register(self.get_metadata().image, self)
 
 
 class ToolkitFunction(_ToolkitFunction):
@@ -58,8 +62,24 @@ class ToolkitFunction(_ToolkitFunction):
             absolute_dockerfile_path=absolute_dockerfile_path,
         )
         # Automatically register the instance upon creation
-        Registry.register(name, self)
+        Registry.register(self.get_metadata().image, self)
 
 
-class ToolkitModel(_ToolkitModel, ToolkitFunction):
-    pass
+class ToolkitModel(_ToolkitModel):
+    def __init__(
+        self,
+        name: str,
+        task: str,
+        description: str,
+        absolute_dockerfile_path: str,
+        docker_context: str,
+    ):
+        super().__init__(
+            name=name,
+            task=task,
+            description=description,
+            docker_context=docker_context,
+            absolute_dockerfile_path=absolute_dockerfile_path,
+        )
+        # Automatically register the instance upon creation
+        Registry.register(self.get_metadata().image, self)
