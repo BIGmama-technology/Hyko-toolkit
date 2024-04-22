@@ -27,6 +27,11 @@ class AspectRatio(str, Enum):
     RATIO_9_21 = "9:21"
 
 
+class Model(str, Enum):
+    STABLE_DIFFUSION_3 = "stable-diffusion-3"
+    STABLE_DIFFUSION_2 = "stable-diffusion-2"
+
+
 @func.set_input
 class Inputs(CoreModel):
     prompt: str = Field(..., description="What you wish to see in the output image.")
@@ -35,6 +40,10 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     api_key: str = Field(description="API key")
+    model: Model = Field(
+        default=Model.STABLE_DIFFUSION_3,
+        description="Which Stability.ai model to use.",
+    )
     negative_prompt: str = Field(
         default="", description="What you do not wish to see in the output image.."
     )
@@ -55,10 +64,14 @@ class Response(CoreModel):
 
 @func.on_call
 async def call(inputs: Inputs, params: Params):
+    urls = {
+        "stable-diffusion-3": "https://api.stability.ai/v2beta/stable-image/generate/sd3",
+        "stable-diffusion-2": "https://api.stability.ai/v2beta/stable-image/generate/core",
+    }
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url="https://api.stability.ai/v2beta/stable-image/generate/core",
+            url=urls[params.model.value],
             headers={"authorization": f"Bearer {params.api_key}", "accept": "image/*"},
             files={"none": ""},
             data={

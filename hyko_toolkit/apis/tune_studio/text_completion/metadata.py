@@ -8,19 +8,19 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="cohere_chat_api",
-    task="cohere",
-    description="Use cohere api for text generation.",
+    name="tune_studio_text_completion",
+    task="tune_studio",
+    description="Use Tune Studio api for text completion.",
 )
 
 
 class Model(str, Enum):
-    command = "command"
-    command_r = "command-r"
-    command_light = "command-light"
-    command_light_nightly = "command-light-nightly"
-    command_nightly = "command-nightly"
-    command_r_plus = "command-r-plus"
+    Llama_3_8B = "rohan/Meta-Llama-3-8B-Instruct"
+    Llama_3_70B = "rohan/Meta-Llama-3-70B-Instruct"
+    Tune_blob = "kaushikaakash04/tune-blob"
+    Mixtral_x7b_inst_v01_32k = "rohan/mixtral-8x7b-inst-v0-1-32k"
+    Openhermes_2_5_m7b_8k = "rohan/openhermes-2-5-m7b-8k"
+    Tune_wizardlm_2_8x22b = "rohan/tune-wizardlm-2-8x22b"
 
 
 @func.set_input
@@ -35,7 +35,7 @@ class Inputs(CoreModel):
 class Params(CoreModel):
     api_key: str = Field(description="API key")
     model: Model = Field(
-        default=Model.command,
+        default=Model.Llama_3_8B,
         description="The selected model to use.",
     )
     max_tokens: int = Field(
@@ -53,14 +53,16 @@ class Outputs(CoreModel):
     result: str = Field(..., description="generated text.")
 
 
-class ChatHistoryItem(CoreModel):
-    role: str
-    message: str
+class Message(CoreModel):
+    content: str
 
 
-class CohereResponse(CoreModel):
-    text: str
-    chat_history: list[ChatHistoryItem]
+class Choices(CoreModel):
+    message: Message
+
+
+class ChatCompletionResponse(CoreModel):
+    choices: list[Choices]
 
 
 @func.on_call
@@ -68,25 +70,26 @@ async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url="https://api.cohere.ai/v1/chat",
+            url="https://proxy.tune.app/chat/completions",
             headers={
-                "accept": "application/json",
-                "content-type": "application/json",
-                "Authorization": f"bearer {params.api_key}",
+                "Content-Type": "application/json",
+                "Authorization": params.api_key,
             },
             json={
-                "chat_history": [
-                    {"role": "SYSTEM", "message": inputs.system_prompt},
-                ],
+                "stream": False,
                 "model": params.model.value,
-                "message": inputs.prompt,
+                "max_tokens": params.max_tokens,
                 "temperature": params.temperature,
+                "messages": [
+                    {"role": "system", "content": inputs.system_prompt},
+                    {"role": "user", "content": inputs.prompt},
+                ],
             },
-            timeout=60 * 10,
+            timeout=60 * 5,
         )
     if res.is_success:
-        response = CohereResponse(**res.json())
+        response = ChatCompletionResponse(**res.json())
     else:
         raise APICallError(status=res.status_code, detail=res.text)
 
-    return Outputs(result=response.chat_history[-1].message)
+    return Outputs(result=response.choices[0].message.content)
