@@ -1,4 +1,5 @@
 import base64
+from enum import Enum
 
 import httpx
 from hyko_sdk.io import Image
@@ -24,12 +25,24 @@ class Inputs(CoreModel):
     )
 
 
+class Model(str, Enum):
+    STABLE_DIFFUSION_3 = "stable-diffusion-3"
+    STABLE_DIFFUSION_2 = "stable-diffusion-2"
+
+
 @func.set_param
 class Params(CoreModel):
     api_key: str = Field(description="API key")
+    model: Model = Field(
+        default=Model.STABLE_DIFFUSION_3,
+        description="Which Stability.ai model to use.",
+    )
     image_strength: float = Field(
         default=0.35,
         description="How much influence the init_image has on the diffusion process.",
+    )
+    negative_prompt: str = Field(
+        default="", description="What you do not wish to see in the output image.."
     )
     seed: int = Field(default=0, description="Seed")
 
@@ -49,10 +62,34 @@ class Response(CoreModel):
 
 @func.on_call
 async def call(inputs: Inputs, params: Params):
+    urls = {
+        "stable-diffusion-3": "https://api.stability.ai/v2beta/stable-image/generate/sd3",
+        "stable-diffusion-2": "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image",
+    }
+    json_data = {
+        "stable-diffusion-3": {
+            "mode": "image-to-image",
+            "prompt": inputs.prompt,
+            "negative_prompt": params.negative_prompt,
+            "model": "sd3",
+            "seed": 0,
+            "output_format": "png",
+            "strength": params.image_strength,
+        },
+        "stable-diffusion-2": {
+            "image_strength": params.image_strength,
+            "init_image_mode": "IMAGE_STRENGTH",
+            "text_prompts[0][text]": inputs.prompt,
+            "negative_prompt": params.negative_prompt,
+            "cfg_scale": 7,
+            "samples": 1,
+            "steps": 30,
+        },
+    }
     async with httpx.AsyncClient() as client:
         res = await client.request(
             method=Method.post,
-            url="https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image",
+            url=urls[params.model],
             headers={
                 "authorization": f"Bearer {params.api_key}",
                 "Accept": "application/json",
@@ -64,14 +101,7 @@ async def call(inputs: Inputs, params: Params):
                     None,
                 )
             },
-            data={
-                "image_strength": params.image_strength,
-                "init_image_mode": "IMAGE_STRENGTH",
-                "text_prompts[0][text]": inputs.prompt,
-                "cfg_scale": 7,
-                "samples": 1,
-                "steps": 30,
-            },
+            data=json_data[params.model],
             timeout=60 * 5,
         )
     if res.is_success:
