@@ -20,6 +20,7 @@ from .openai.text_embedding.metadata import func as func  # noqa: F811
 from .openai.text_to_speech.metadata import func as func  # noqa: F811
 from .openai.vision.metadata import func as func  # noqa: F811
 from .openrouter.chat.metadata import func as func  # noqa: F811
+from .replicate.upscale_images.metadata import func as func  # noqa: F811
 from .replicate.vision_models.metadata import func as func  # noqa: F811
 from .serpapi.bing.metadata import func as func  # noqa: F811
 from .serpapi.duckduckgo.metadata import func as func  # noqa: F811
