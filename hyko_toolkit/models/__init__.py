@@ -63,6 +63,9 @@ from .natural_language_processing.summarization.metadata import (
 from .natural_language_processing.text_classification.metadata import (
     func as func,  # noqa: F811  # noqa: F811
 )
+from .natural_language_processing.text_generation.metadata import (
+    func as func,  # noqa: F811
+)
 from .natural_language_processing.translation.metadata import func as func  # noqa: F811
 from .natural_language_processing.zero_shot_classification.metadata import (
     func as func,  # noqa: F811
