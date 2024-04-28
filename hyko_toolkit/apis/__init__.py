@@ -21,6 +21,7 @@ from .openai.text_to_speech.metadata import func as func  # noqa: F811
 from .openai.vision.metadata import func as func  # noqa: F811
 from .openrouter.chat.metadata import func as func  # noqa: F811
 from .replicate.image_restoration.metadata import func as func  # noqa: F811
+from .replicate.text_to_video.metadata import func as func  # noqa: F811
 from .replicate.transcribe_speech.metadata import func as func  # noqa: F811
 from .replicate.upscale_images.metadata import func as func  # noqa: F811
 from .replicate.vision_models.metadata import func as func  # noqa: F811
