@@ -6,8 +6,8 @@ import cv2
 import cvzone
 import numpy as np
 from fastapi import HTTPException
+from hyko_sdk.components import Ext
 from hyko_sdk.io import Video
-from hyko_sdk.models import Ext
 from metadata import Inputs, Outputs, Params, StartupParams, func
 from ultralytics import YOLO
 

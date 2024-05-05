@@ -2,8 +2,8 @@ from io import BytesIO
 
 import matplotlib.pyplot as plt
 import pandas as pd
+from hyko_sdk.components import Ext
 from hyko_sdk.io import Image
-from hyko_sdk.models import Ext
 from metadata import Inputs, Outputs, Params, func
 
 

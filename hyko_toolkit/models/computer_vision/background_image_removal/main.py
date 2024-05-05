@@ -1,5 +1,6 @@
+from hyko_sdk.components import Ext
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel, Ext
+from hyko_sdk.models import CoreModel
 from metadata import Inputs, Outputs, func
 from rembg import remove
 

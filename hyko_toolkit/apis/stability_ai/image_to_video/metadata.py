@@ -1,6 +1,7 @@
 import httpx
+from hyko_sdk.components import Ext
 from hyko_sdk.io import Image, Video
-from hyko_sdk.models import CoreModel, Ext, Method
+from hyko_sdk.models import CoreModel, Method
 from pydantic import Field
 
 from hyko_toolkit.exceptions import APICallError

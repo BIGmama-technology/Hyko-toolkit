@@ -1,8 +1,8 @@
 import cv2
 import supervision as sv
 from fastapi import HTTPException
+from hyko_sdk.components import Ext
 from hyko_sdk.io import Image
-from hyko_sdk.models import Ext
 from metadata import Inputs, Outputs, Params, StartupParams, func
 from ultralytics import YOLO
 

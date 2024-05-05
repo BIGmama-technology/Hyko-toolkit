@@ -4,8 +4,9 @@ from io import BytesIO
 import markdown
 import pygments
 from fpdf import FPDF
+from hyko_sdk.components import Ext
 from hyko_sdk.io import PDF
-from hyko_sdk.models import CoreModel, Ext
+from hyko_sdk.models import CoreModel
 from metadata import Inputs, Outputs, func
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
