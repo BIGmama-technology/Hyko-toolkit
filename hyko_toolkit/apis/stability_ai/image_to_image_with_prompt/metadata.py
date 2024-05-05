@@ -71,7 +71,6 @@ async def call(inputs: Inputs, params: Params):
             "mode": "image-to-image",
             "prompt": inputs.prompt,
             "negative_prompt": params.negative_prompt,
-            "model": "sd3",
             "seed": 0,
             "output_format": "png",
             "strength": params.image_strength,
@@ -80,10 +79,25 @@ async def call(inputs: Inputs, params: Params):
             "image_strength": params.image_strength,
             "init_image_mode": "IMAGE_STRENGTH",
             "text_prompts[0][text]": inputs.prompt,
-            "negative_prompt": params.negative_prompt,
             "cfg_scale": 7,
             "samples": 1,
             "steps": 30,
+        },
+    }
+    files = {
+        "stable-diffusion-3": {
+            "image": (
+                inputs.init_image.file_name,
+                await inputs.init_image.get_data(),
+                None,
+            )
+        },
+        "stable-diffusion-2": {
+            "init_image": (
+                inputs.init_image.file_name,
+                await inputs.init_image.get_data(),
+                None,
+            )
         },
     }
     async with httpx.AsyncClient() as client:
@@ -94,13 +108,7 @@ async def call(inputs: Inputs, params: Params):
                 "authorization": f"Bearer {params.api_key}",
                 "Accept": "application/json",
             },
-            files={
-                "init_image": (
-                    inputs.init_image.file_name,
-                    await inputs.init_image.get_data(),
-                    None,
-                )
-            },
+            files=files[params.model],
             data=json_data[params.model],
             timeout=60 * 5,
         )
