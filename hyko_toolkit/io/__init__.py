@@ -1,2 +1,16 @@
-from .image.metadata import input_node as input_node
-from .image.metadata import output_node as output_node
+from .audio.metadata import input_node as input_node  # noqa: F811
+from .audio.metadata import output_node as output_node  # noqa: F811
+from .image.metadata import input_node as input_node  # noqa: F811
+from .image.metadata import output_node as output_node  # noqa: F811
+from .list.number_metadata import input_node as input_node  # noqa: F811
+from .list.number_metadata import output_node as output_node  # noqa: F811
+from .list.text_metadata import input_node as input_node  # noqa: F811
+from .list.text_metadata import output_node as output_node  # noqa: F811
+from .number.metadata import input_node as input_node  # noqa: F811
+from .number.metadata import output_node as output_node  # noqa: F811
+from .pdf.metadata import input_node as input_node  # noqa: F811
+from .pdf.metadata import output_node as output_node  # noqa: F811
+from .text.metadata import input_node as input_node  # noqa: F811
+from .text.metadata import output_node as output_node  # noqa: F811
+from .video.metadata import input_node as input_node  # noqa: F811
+from .video.metadata import output_node as output_node  # noqa: F811

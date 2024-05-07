@@ -33,6 +33,3 @@ class Input(CoreModel):
         description="Uploaded pdf",
         component=PDFPreview(),
     )
-
-
-print(output_node.dump_metadata())

@@ -33,6 +33,3 @@ class Input(CoreModel):
         description="Uploaded image",
         component=ImagePreview(),
     )
-
-
-print(output_node.dump_metadata())

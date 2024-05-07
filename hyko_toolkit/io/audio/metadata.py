@@ -1,23 +1,25 @@
-from hyko_sdk.components import Ext, StorageSelect, VideoPreview
-from hyko_sdk.io import Video
+from hyko_sdk.components import AudioPreview, Ext, StorageSelect
+from hyko_sdk.io import Audio
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitIO
 
 input_node = ToolkitIO(
-    name="Video",
+    name="Audio",
     task="inputs",
-    description="Upload video.",
+    description="Upload audio.",
 )
 
 
 @input_node.set_output
 class Output(CoreModel):
-    output_video: Video = field(
-        description="Uploaded video",
+    output_audio: Audio = field(
+        description="Uploaded audio",
         component=StorageSelect(
             supported_ext=[
+                Ext.WAV,
+                Ext.MP3,
                 Ext.MPEG,
                 Ext.WEBM,
                 Ext.MP4,
@@ -31,15 +33,15 @@ class Output(CoreModel):
 
 
 output_node = ToolkitIO(
-    name="Video",
+    name="Audio",
     task="outputs",
-    description="Upload video.",
+    description="Upload audio.",
 )
 
 
 @output_node.set_input
 class Input(CoreModel):
-    output_video: Video = field(
-        description="Uploaded video",
-        component=VideoPreview(),
+    output_audio: Audio = field(
+        description="Uploaded audio",
+        component=AudioPreview(),
     )
