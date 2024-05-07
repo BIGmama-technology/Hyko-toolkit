@@ -1,4 +1,4 @@
-from hyko_sdk.components import NumberField, NumberPreview
+from hyko_sdk.components import NumberField
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
@@ -29,5 +29,8 @@ output_node = ToolkitIO(
 class Input(CoreModel):
     output_number: float = field(
         description="Output number",
-        component=NumberPreview(),
+        component=NumberField(
+            placeholder="output number",
+            freezed=True,
+        ),
     )
