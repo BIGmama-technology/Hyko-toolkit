@@ -3,7 +3,7 @@
 from .audio.automatic_speech_recognition.metadata import func as func  # noqa: F811
 from .audio.text_to_speech.metadata import func as func  # noqa: F811
 from .computer_vision.background_image_removal.metadata import (
-    func as func,  # noqa: F811  # noqa: F811
+    func as func,  # noqa: F811
 )
 from .computer_vision.huggingface.depth_estimation.metadata import (
     func as func,  # noqa: F811
