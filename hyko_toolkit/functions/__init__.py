@@ -19,6 +19,7 @@ from .web.web_scraping.beautifulsoup_transformer.metadata import (
     func as func,  # noqa: F811
 )
 from .web.web_scraping.html2text_transformer.metadata import func as func  # noqa: F811
+from .web.web_scraping.scrapy_crawler.metadata import func as func  # noqa: F811
 from .web.web_scraping.youtube_transcript.metadata import func as func  # noqa: F811
 from .web.web_search.duckduckgo_search.metadata import (
     func as func,  # noqa: F811
