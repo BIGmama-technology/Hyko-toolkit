@@ -1,4 +1,4 @@
-from hyko_sdk.components import Ext, PDFPreview, StorageSelect
+from hyko_sdk.components.components import Ext, PDFPreview, StorageSelect
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field

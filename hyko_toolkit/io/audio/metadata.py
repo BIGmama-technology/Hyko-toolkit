@@ -1,4 +1,4 @@
-from hyko_sdk.components import AudioPreview, Ext, StorageSelect
+from hyko_sdk.components.components import AudioPreview, Ext, StorageSelect
 from hyko_sdk.io import Audio
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field

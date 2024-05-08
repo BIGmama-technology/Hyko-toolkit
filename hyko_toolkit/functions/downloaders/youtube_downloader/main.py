@@ -1,6 +1,6 @@
 import io
 
-from hyko_sdk.components import Ext
+from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Video
 from metadata import (
     Inputs,

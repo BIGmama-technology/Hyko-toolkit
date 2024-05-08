@@ -2,7 +2,7 @@ from io import BytesIO
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from hyko_sdk.components import Ext
+from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
 from metadata import Inputs, Outputs, Params, func
 

@@ -1,4 +1,4 @@
-from hyko_sdk.components import Ext, StorageSelect, VideoPreview
+from hyko_sdk.components.components import Ext, StorageSelect, VideoPreview
 from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field

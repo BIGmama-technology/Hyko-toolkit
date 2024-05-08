@@ -1,4 +1,4 @@
-from hyko_sdk.components import TextField, TextPreview
+from hyko_sdk.components.components import TextField, TextPreview
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
