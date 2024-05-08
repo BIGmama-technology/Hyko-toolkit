@@ -16,7 +16,7 @@ class CrawlerSpider(CrawlSpider):
     def __init__(
         self, start_urls: str, stop_urls: str, allowed_domains: str, *args, **kwargs
     ):
-        super(CrawlerSpider, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.start_urls = start_urls
         self.stop_urls = stop_urls
         self.allowed_domains = allowed_domains
