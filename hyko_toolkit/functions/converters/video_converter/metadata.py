@@ -1,7 +1,8 @@
 from enum import Enum
 
+from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Video
-from hyko_sdk.models import CoreModel, Ext
+from hyko_sdk.models import CoreModel
 from pydantic import Field
 
 from hyko_toolkit.registry import ToolkitFunction
