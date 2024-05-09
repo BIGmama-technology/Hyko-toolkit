@@ -43,3 +43,4 @@ from .text_utils.reverse.metadata import func as func  # noqa: F811
 from .text_utils.slice.metadata import func as func  # noqa: F811
 from .text_utils.split.metadata import func as func  # noqa: F811
 from .text_utils.uppercase.metadata import func as func  # noqa: F811
+from .http_utils.post.metadata import func as func  # noqa: F811
