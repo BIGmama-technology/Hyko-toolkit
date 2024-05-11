@@ -14,11 +14,11 @@ func = ToolkitFunction(
 
 @func.set_input
 class Inputs(CoreModel):
-    start_urls: str = Field(
+    start_url: str = Field(
         ...,
         description="A starting url to crawl. Protocol must be either 'http' or 'https'.",
     )
-    stop_urls: str = Field(
+    stop_url: str = Field(
         ...,
         description="A list of urls to stop crawling. Protocol must be either 'http' or 'https'.",
     )
@@ -26,7 +26,7 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    allowed_domains: str = Field(..., description="A domain to crawl.")
+    allowed_domain: str = Field(..., description="A domain to crawl.")
 
 
 @func.set_output
