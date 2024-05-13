@@ -1,8 +1,9 @@
 from enum import Enum
 
+from hyko_sdk.components.components import Slider
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitModel
 
@@ -25,26 +26,27 @@ class SupportedModels(str, Enum):
 
 @func.set_startup_params
 class StartupParams(CoreModel):
-    model: SupportedModels = Field(
+    model: SupportedModels = field(
         default=SupportedModels.yolov8n, description="Yolo Models."
     )
-    device_map: str = Field(default="cpu", description="Device map (Auto, CPU or GPU).")
+    device_map: str = field(default="cpu", description="Device map (Auto, CPU or GPU).")
 
 
 @func.set_input
 class Inputs(CoreModel):
-    input_image: Image = Field(..., description="Input image.")
+    input_image: Image = field(description="Input image.")
 
 
 @func.set_param
 class Params(CoreModel):
-    threshold: float = Field(
+    threshold: float = field(
         default=0.5,
         description="The probability necessary to make a prediction (default: 0.5).",
+        component=Slider(leq=0, geq=1, step=0.01),
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    top5_class_names: list[str] = Field(..., description="Top 5 Class names.")
-    top5_conf: list[float] = Field(..., description="Top 5 confidence values.")
+    top5_class_names: list[str] = field(description="Top 5 Class names.")
+    top5_conf: list[float] = field(description="Top 5 confidence values.")
