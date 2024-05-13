@@ -1,7 +1,8 @@
 from enum import Enum
 
+from hyko_sdk.components.components import TextField
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitFunction
 
@@ -22,18 +23,17 @@ class SupportedLanguages(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    text: str = Field(
-        ..., description="The input text from which stopwords are to be removed."
+    text: str = field(
+        description="The input text from which stopwords are to be removed.",
+        component=TextField(placeholder="Entre your text here", multiline=True),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    language: SupportedLanguages = Field(
-        ..., description="The language of the stopwords."
-    )
+    language: SupportedLanguages = field(description="The language of the stopwords.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="The text with stopwords removed.")
+    result: str = field(description="The text with stopwords removed.")
