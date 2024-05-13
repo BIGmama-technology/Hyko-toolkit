@@ -1,5 +1,6 @@
+from hyko_sdk.components.components import TextField
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -12,17 +13,20 @@ func = ToolkitUtils(
 
 @func.set_input
 class Inputs(CoreModel):
-    text: str = Field(..., description="Input text")
+    text: str = field(
+        description="Your text to count",
+        component=TextField(placeholder="Enter your text here"),
+    )
 
 
 @func.set_param
 class Params(CoreModel):
-    substring: str = Field(..., description="The substring to count")
+    substring: str = field(description="The substring to count")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    count: int = Field(..., description="Number of occurrences of the substring")
+    count: int = field(description="Number of occurrences of the substring")
 
 
 @func.on_call

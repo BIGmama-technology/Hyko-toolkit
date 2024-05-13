@@ -1,5 +1,6 @@
+from hyko_sdk.components.components import TextField
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -12,8 +13,14 @@ func = ToolkitUtils(
 
 @func.set_input
 class Inputs(CoreModel):
-    first: str = Field(..., description="First string")
-    second: str = Field(..., description="Second string")
+    first: str = field(
+        description="First string",
+        component=TextField(placeholder="Enter your first string here"),
+    )
+    second: str = field(
+        description="Second string",
+        component=TextField(placeholder="Enter your second string here"),
+    )
 
 
 @func.set_param
@@ -23,7 +30,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    output: str = Field(..., description="Concatenated result")
+    output: str = field(description="Concatenated result")
 
 
 @func.on_call

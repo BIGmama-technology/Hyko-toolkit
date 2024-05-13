@@ -1,8 +1,9 @@
 from enum import Enum
 
 from fastapi import HTTPException
+from hyko_sdk.components.components import TextField
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -15,7 +16,10 @@ func = ToolkitUtils(
 
 @func.set_input
 class Inputs(CoreModel):
-    text: str = Field(..., description="Text to be padded")
+    text: str = field(
+        description="Text to be padded",
+        component=TextField(placeholder="Enter your text here", multiline=True),
+    )
 
 
 class PaddingAlignment(str, Enum):
@@ -26,16 +30,16 @@ class PaddingAlignment(str, Enum):
 
 @func.set_param
 class Params(CoreModel):
-    width: int = Field(..., description="Width of the padded text")
-    padding: str = Field(..., description="Padding character")
-    alignment: PaddingAlignment = Field(
+    width: int = field(description="Width of the padded text")
+    padding: str = field(description="Padding character")
+    alignment: PaddingAlignment = field(
         default=PaddingAlignment.START, description="Padding alignment"
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    output_text: str = Field(..., description="Padded text result")
+    output_text: str = field(description="Padded text result")
 
 
 @func.on_call
