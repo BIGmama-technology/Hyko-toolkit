@@ -1,8 +1,9 @@
 from enum import Enum
 
+from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Video
-from hyko_sdk.models import CoreModel, Ext
-from pydantic import Field
+from hyko_sdk.models import CoreModel
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitFunction
 
@@ -27,14 +28,14 @@ class SupportedTypes(Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    input_video: Video = Field(..., description="Input Video.")
+    input_video: Video = field(description="Input Video.")
 
 
 @func.set_param
 class Params(CoreModel):
-    target_type: SupportedTypes = Field(..., description="The Target Type.")
+    target_type: SupportedTypes = field(description="The Target Type.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    output_video: Video = Field(..., description="Converted Video.")
+    output_video: Video = field(description="Converted Video.")

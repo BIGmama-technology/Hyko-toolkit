@@ -1,6 +1,7 @@
+from hyko_sdk.components.components import TextField
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitFunction
 
@@ -15,9 +16,12 @@ func = ToolkitFunction(
 
 @func.set_input
 class Inputs(CoreModel):
-    markdown_string: str = Field(..., description="The Markdown content to convert.")
+    markdown_string: str = field(
+        description="Markdown String",
+        component=TextField(placeholder="Entre your markdown here", multiline=True),
+    )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    pdf: PDF = Field(..., description="PDF File .")
+    pdf: PDF = field(description="PDF File .")

@@ -2,7 +2,7 @@ from enum import Enum
 
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitFunction
 
@@ -24,14 +24,14 @@ func = ToolkitFunction(
 
 @func.set_input
 class Inputs(CoreModel):
-    pdf_file: PDF = Field(..., description="User input pdf to be converted to text")
+    pdf_file: PDF = field(description="User input pdf to be converted to text")
 
 
 @func.set_param
 class Params(CoreModel):
-    language: SupportedLanguages = Field(..., description="Select PDF language.")
+    language: SupportedLanguages = field(description="Select PDF language.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    text: str = Field(..., description="Extracted text from pdf .")
+    text: str = field(description="Extracted text from pdf .")
