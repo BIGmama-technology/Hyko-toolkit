@@ -2,7 +2,7 @@ from enum import Enum
 
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitModel
 
@@ -25,16 +25,17 @@ func = ToolkitModel(
 
 @func.set_input
 class Inputs(CoreModel):
-    image: Image = Field(..., description="Input image.")
+    image: Image = field(description="Your input image.")
 
 
 @func.set_param
 class Params(CoreModel):
-    language: SupportedLanguages = Field(
-        SupportedLanguages.english.value, description="Select your language."
+    language: SupportedLanguages = field(
+        default=SupportedLanguages.english.value,
+        description="The language of the input image (default: en).",
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    generated_text: str = Field(..., description="Extracted text.")
+    generated_text: str = field(description="The Extracted text.")
