@@ -1,6 +1,7 @@
+from hyko_sdk.components.components import Slider
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitModel
 
@@ -15,22 +16,26 @@ func = ToolkitModel(
 
 @func.set_startup_params
 class StartupParams(CoreModel):
-    hugging_face_model: str = Field(..., description="Model")
-    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+    hugging_face_model: str = field(description="Model")
+    device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_input
 class Inputs(CoreModel):
-    image: Image = Field(..., description="Input image")
-    question: str = Field(..., description="Input question")
+    image: Image = field(description="Input image")
+    question: str = field(description="Input question")
 
 
 @func.set_param
 class Params(CoreModel):
-    top_k: int = Field(default=1, description="Top K")
+    top_k: int = field(
+        default=2,
+        description="Number of top predictions to return (default: 2).",
+        component=Slider(leq=1, geq=5, step=1),
+    )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    answer: list[str] = Field(..., description="Generated answer")
-    score: list[float] = Field(..., description="Confidence score")
+    answer: list[str] = field(description="Generated answer")
+    score: list[float] = field(description="Confidence score")
