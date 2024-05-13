@@ -1,7 +1,8 @@
 from enum import Enum
 
+from hyko_sdk.components.components import TextField
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitFunction
 
@@ -23,15 +24,18 @@ func = ToolkitFunction(
 
 @func.set_input
 class Inputs(CoreModel):
-    query: str = Field(..., description="The search query.")
+    query: str = field(
+        description="The search query.",
+        component=TextField(placeholder="Enter your query here"),
+    )
 
 
 @func.set_param
 class Params(CoreModel):
-    num_results: int = Field(..., description="Number of search results to return.")
-    language: SupportedLanguages = Field(..., description="The search Language.")
+    num_results: int = field(description="Number of search results to return.")
+    language: SupportedLanguages = field(description="The search Language.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="The concatenated titles and summaries.")
+    result: str = field(description="The concatenated titles and summaries.")
