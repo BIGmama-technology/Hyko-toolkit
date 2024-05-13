@@ -1,6 +1,7 @@
+from hyko_sdk.components.components import TextField
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitFunction
 
@@ -15,9 +16,12 @@ func = ToolkitFunction(
 
 @func.set_input
 class Inputs(CoreModel):
-    url: str = Field(..., description="Your Target PDF URL.")
+    url: str = field(
+        description="Your Target PDF URL.",
+        component=TextField(placeholder="Entre your URL here"),
+    )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    pdf: PDF = Field(..., description="The Downloaded PDF.")
+    pdf: PDF = field(description="The Downloaded PDF.")

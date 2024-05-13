@@ -1,8 +1,9 @@
 from enum import Enum
 
+from hyko_sdk.components.components import TextField
 from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitFunction
 
@@ -26,16 +27,17 @@ func = ToolkitFunction(
 
 @func.set_input
 class Inputs(CoreModel):
-    video_url: str = Field(..., description="The URL of the YouTube video to download.")
+    video_url: str = field(
+        description="The URL of the YouTube video to download.",
+        component=TextField(placeholder="Entre your URL here"),
+    )
 
 
 @func.set_param
 class Params(CoreModel):
-    resolution: Resolution = Field(
-        ..., description="The desired resolution of the video."
-    )
+    resolution: Resolution = field(description="The desired resolution of the video.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    output_video: Video = Field(..., description="Output Video.")
+    output_video: Video = field(description="Output Video.")
