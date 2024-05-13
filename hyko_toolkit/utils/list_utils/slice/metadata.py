@@ -1,7 +1,7 @@
 from typing import Any
 
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -14,20 +14,20 @@ func = ToolkitUtils(
 
 @func.set_input
 class Inputs(CoreModel):
-    original_list: list[Any] = Field(..., description="The original list.")
+    original_list: list[Any] = field(description="The original list.")
 
 
 @func.set_param
 class Params(CoreModel):
-    start: int = Field(
+    start: int = field(
         default=0,
         description="The start index of the slice.",
     )
-    stop: int = Field(
+    stop: int = field(
         default=None,
         description="The stop index of the slice.",
     )
-    step: int = Field(
+    step: int = field(
         default=1,
         description="The step of the slice.",
     )
@@ -35,8 +35,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    output: Any = Field(
-        ...,
+    output: Any = field(
         description="Final list.",
     )
 

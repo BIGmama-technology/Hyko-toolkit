@@ -1,7 +1,7 @@
 from typing import Any
 
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -14,28 +14,24 @@ func = ToolkitUtils(
 
 @func.set_input
 class Inputs(CoreModel):
-    original_list: list[Any] = Field(
-        ...,
+    original_list: list[Any] = field(
         description="The list to be extended.",
     )
-    element: Any = Field(
-        ...,
+    element: Any = field(
         description="The element to be inserted into the list.",
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    index: int = Field(
-        ...,
+    index: int = field(
         description="The index of the element to be inserted.",
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    output: Any = Field(
-        ...,
+    output: Any = field(
         description="Final list.",
     )
 
