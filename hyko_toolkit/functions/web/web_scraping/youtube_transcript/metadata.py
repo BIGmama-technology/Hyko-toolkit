@@ -1,7 +1,8 @@
 from enum import Enum
 
+from hyko_sdk.components.components import TextField
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitFunction
 
@@ -23,14 +24,17 @@ func = ToolkitFunction(
 
 @func.set_input
 class Inputs(CoreModel):
-    video_url: str = Field(..., description="Youtube Video Id.")
+    video_url: str = field(
+        description="Youtube Video Id.",
+        component=TextField(placeholder="Enter your video url here"),
+    )
 
 
 @func.set_param
 class Params(CoreModel):
-    language: SupportedLanguages = Field(..., description="Language Id.")
+    language: SupportedLanguages = field(description="Language Id.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="Result")
+    result: str = field(description="Result")
