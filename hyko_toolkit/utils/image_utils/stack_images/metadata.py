@@ -2,8 +2,8 @@ from enum import Enum
 
 from hyko_sdk.io import Image as HykoImage
 from hyko_sdk.models import CoreModel
+from hyko_sdk.utils import field
 from PIL import Image
-from pydantic import Field
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -21,13 +21,13 @@ class Orientation(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    image1: HykoImage = Field(..., description="First image to stack")
-    image2: HykoImage = Field(..., description="Second image to stack")
+    image1: HykoImage = field(description="First image to stack")
+    image2: HykoImage = field(description="Second image to stack")
 
 
 @func.set_param
 class Params(CoreModel):
-    orientation: Orientation = Field(
+    orientation: Orientation = field(
         default=Orientation.HORIZONTAL,
         description="Stacking orientation (HORIZONTAL or VERTICAL)",
     )
@@ -35,7 +35,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    stacked_image: HykoImage = Field(..., description="Stacked image")
+    stacked_image: HykoImage = field(description="Stacked image")
 
 
 @func.on_call

@@ -1,7 +1,8 @@
 from fastapi import HTTPException
 from hyko_sdk.io import Image as HykoImage
 from hyko_sdk.models import CoreModel
-from pydantic import Field, PositiveInt
+from hyko_sdk.utils import field
+from pydantic import PositiveInt
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -14,22 +15,22 @@ func = ToolkitUtils(
 
 @func.set_input
 class Inputs(CoreModel):
-    image: HykoImage = Field(..., description="Input image")
+    image: HykoImage = field(description="Input image")
 
 
 @func.set_param
 class Params(CoreModel):
-    cropped_width: PositiveInt = Field(
+    cropped_width: PositiveInt = field(
         default=0, description="Number of pixels to drop from all four borders"
     )
-    cropped_hight: PositiveInt = Field(
+    cropped_hight: PositiveInt = field(
         default=0, description="Number of pixels to drop from all four borders"
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    cropped_image: HykoImage = Field(..., description="Output image")
+    cropped_image: HykoImage = field(description="Output image")
 
 
 @func.on_call

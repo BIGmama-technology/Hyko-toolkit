@@ -2,8 +2,9 @@ from enum import Enum
 
 from hyko_sdk.io import Image as HykoImage
 from hyko_sdk.models import CoreModel
+from hyko_sdk.utils import field
 from PIL import Image
-from pydantic import Field, PositiveFloat
+from pydantic import PositiveFloat
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -24,22 +25,23 @@ class InterpolationMethod(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    image: HykoImage = Field(..., description="Input image to resize")
+    image: HykoImage = field(description="Input image to resize")
 
 
 @func.set_param
 class Params(CoreModel):
-    scale_factor: PositiveFloat = Field(
+    scale_factor: PositiveFloat = field(
         default=0, description="Scaling factor for resizing"
     )
-    interpolation: InterpolationMethod = Field(
-        InterpolationMethod.Lanczos, description="Interpolation method for resizing"
+    interpolation: InterpolationMethod = field(
+        default=InterpolationMethod.Lanczos,
+        description="Interpolation method for resizing",
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    resized_image: HykoImage = Field(..., description="Resized image")
+    resized_image: HykoImage = field(description="Resized image")
 
 
 @func.on_call
