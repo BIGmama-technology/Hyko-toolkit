@@ -3,9 +3,10 @@ import time
 from enum import Enum
 
 import httpx
+from hyko_sdk.components.components import Ext, Slider, TextField
 from hyko_sdk.io import Video
-from hyko_sdk.models import CoreModel, Ext, Method
-from pydantic import Field
+from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -24,26 +25,37 @@ class Model(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    prompt: str = Field(..., description="Input prompt.")
+    prompt: str = field(
+        description="Input prompt.",
+        component=TextField(placeholder="Enter your prompt here", multiline=True),
+    )
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    model: Model = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    model: Model = field(
         default=Model.damo_text_to_video,
         description="generation model to use.",
     )
-    num_inference_steps: int = Field(
-        default=50, description="Number of inference steps."
+    num_inference_steps: int = field(
+        default=50,
+        description="Number of inference steps.",
+        component=Slider(leq=10, geq=200, step=10),
     )
-    fps: int = Field(default=25, description="Frames per second.")
-    seed: int = Field(default=0, description="Random seed.")
+    fps: int = field(
+        default=25,
+        description="Frames per second.",
+        component=Slider(leq=1, geq=100, step=1),
+    )
+    seed: int = field(default=0, description="Random seed.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: Video = Field(..., description="Generated video.")
+    result: Video = field(description="Generated video.")
 
 
 class URLs(CoreModel):

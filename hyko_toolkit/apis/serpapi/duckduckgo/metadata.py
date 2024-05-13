@@ -1,8 +1,9 @@
 from enum import Enum
 
 import httpx
+from hyko_sdk.components.components import TextField
 from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -28,16 +29,18 @@ class Region(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    query: str = Field(
-        ...,
+    query: str = field(
         description="The search query.",
+        component=TextField(placeholder="Search query"),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    region: Region = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    region: Region = field(
         default=Region.us_en,
         description="Defines the region to use for the DuckDuckGo search (default : us-en)",
     )
@@ -45,7 +48,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: list[str] = Field(..., description="List of urls.")
+    result: list[str] = field(description="List of urls.")
 
 
 class SearchResultItem(CoreModel):

@@ -1,8 +1,9 @@
 from enum import Enum
 
 import httpx
+from hyko_sdk.components.components import Slider, TextField
 from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -25,32 +26,40 @@ class Model(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    system_prompt: str = Field(
-        default="You are a helpful assistant", description="system prompt."
+    system_prompt: str = field(
+        default="You are a helpful assistant",
+        description="system prompt.",
+        component=TextField(placeholder="Enter your system prompt here"),
     )
-    prompt: str = Field(..., description="Input prompt.")
+    prompt: str = field(
+        description="Input prompt.",
+        component=TextField(placeholder="Enter your prompt here", multiline=True),
+    )
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    model: Model = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    model: Model = field(
         default=Model.command,
         description="The selected model to use.",
     )
-    max_tokens: int = Field(
+    max_tokens: int = field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
     )
-    temperature: float = Field(
+    temperature: float = field(
         default=1.0,
         description="What sampling temperature to use, between 0 and 2, defaults to 1.",
+        component=Slider(leq=0, geq=2, step=0.1),
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="generated text.")
+    result: str = field(description="generated text.")
 
 
 class ChatHistoryItem(CoreModel):

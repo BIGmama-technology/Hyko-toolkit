@@ -1,6 +1,7 @@
 import httpx
+from hyko_sdk.components.components import TextField
 from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -14,17 +15,22 @@ func = ToolkitAPI(
 
 @func.set_input
 class Inputs(CoreModel):
-    text: str = Field(..., description="Input text.")
+    text: str = field(
+        description="Input text.",
+        component=TextField(placeholder="Enter your text here", multiline=True),
+    )
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: list[float] = Field(..., description="generated text.")
+    result: list[float] = field(description="generated text.")
 
 
 class Embedding(CoreModel):

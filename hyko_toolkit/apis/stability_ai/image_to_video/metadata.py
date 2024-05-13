@@ -1,7 +1,8 @@
 import httpx
+from hyko_sdk.components.components import Ext, TextField
 from hyko_sdk.io import Image, Video
-from hyko_sdk.models import CoreModel, Ext, Method
-from pydantic import Field
+from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -15,18 +16,20 @@ func = ToolkitAPI(
 
 @func.set_input
 class Inputs(CoreModel):
-    input_image: Image = Field(..., description="The image to be used as the input.")
+    input_image: Image = field(description="The image to be used as the input.")
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key.")
-    seed: int = Field(default=0, description="Random seed.")
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    seed: int = field(default=0, description="Random seed.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: Video = Field(..., description="Generated video.")
+    result: Video = field(description="Generated video.")
 
 
 class Response(CoreModel):
