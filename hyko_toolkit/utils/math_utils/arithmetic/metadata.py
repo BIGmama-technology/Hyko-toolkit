@@ -4,7 +4,7 @@ from typing import Callable
 
 from fastapi import HTTPException
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -30,20 +30,20 @@ class MathOperation(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    a: float = Field(..., description="Operand a")
-    b: float = Field(..., description="Operand b")
+    a: float = field(description="Operand a")
+    b: float = field(description="Operand b")
 
 
 @func.set_param
 class Params(CoreModel):
-    operation: MathOperation = Field(
+    operation: MathOperation = field(
         default=MathOperation.ADD, description="Mathematical operation"
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: float = Field(..., description="Mathematical operation result")
+    result: float = field(description="Mathematical operation result")
 
 
 @func.on_call

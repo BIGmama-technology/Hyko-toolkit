@@ -2,7 +2,7 @@ from random import randint
 
 from fastapi import HTTPException
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
@@ -20,13 +20,13 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    min_val: int = Field(..., description="Minimum value for random number generation")
-    max_val: int = Field(..., description="Maximum value for random number generation")
+    min_val: int = field(description="Minimum value for random number generation")
+    max_val: int = field(description="Maximum value for random number generation")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: int = Field(..., description="Generated random number")
+    result: int = field(description="Generated random number")
 
 
 @func.on_call
