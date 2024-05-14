@@ -11,6 +11,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="arxiv_articles_lookup",
     task="arxiv",
+    cost=1,
     description="Use Arxiv API for articles Search.",
 )
 

@@ -10,6 +10,7 @@ func = ToolkitAPI(
     name="google_search",
     task="google",
     description="Use Google API for Search.",
+    cost=100,
 )
 
 

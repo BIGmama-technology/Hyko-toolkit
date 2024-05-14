@@ -14,6 +14,7 @@ func = ToolkitAPI(
     name="image_to_image_with_a_mask",
     task="stability_ai",
     description="Selectively modify portions of an image using a mask Using Stability.ai API .",
+    cost=8,
 )
 
 

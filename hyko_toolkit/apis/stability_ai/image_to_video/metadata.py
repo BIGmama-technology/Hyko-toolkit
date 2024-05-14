@@ -11,6 +11,7 @@ func = ToolkitAPI(
     name="image_to_video",
     task="stability_ai",
     description="Use Stability.ai API for Video generation from an existing image.",
+    cost=3,
 )
 
 

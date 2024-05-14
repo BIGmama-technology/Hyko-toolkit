@@ -15,6 +15,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="replicate_vision_models",
     task="replicate",
+    cost=3,
     description="Vision models process and interpret visual information from images and videos.",
 )
 

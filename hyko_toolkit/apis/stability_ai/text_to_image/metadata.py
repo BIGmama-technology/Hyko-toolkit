@@ -13,6 +13,7 @@ func = ToolkitAPI(
     name="text_to_image",
     task="stability_ai",
     description="Use Stability.ai API for Image generation.",
+    cost=8,
 )
 
 

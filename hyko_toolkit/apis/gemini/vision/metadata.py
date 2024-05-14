@@ -12,6 +12,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="gemini_vision_api",
     task="gemini",
+    cost=1,
     description="Use google gemini vision api to understand images.",
 )
 

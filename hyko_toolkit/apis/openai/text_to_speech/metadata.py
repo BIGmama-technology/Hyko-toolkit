@@ -13,6 +13,7 @@ func = ToolkitAPI(
     name="openai_text_to_speech",
     task="openai",
     description="Use openai api to turn text into lifelike spoken audio.",
+    cost=3000,
 )
 
 

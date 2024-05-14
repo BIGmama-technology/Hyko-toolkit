@@ -12,6 +12,7 @@ func = ToolkitAPI(
     name="openai_text_embedding",
     task="openai",
     description="Use openai api for text embedding.",
+    cost=4,
 )
 
 

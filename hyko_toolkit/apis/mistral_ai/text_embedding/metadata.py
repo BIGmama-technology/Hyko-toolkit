@@ -10,6 +10,7 @@ func = ToolkitAPI(
     name="mistral_ai_text_embedding",
     task="mistral_ai",
     description="Use mistral ai api for text embedding.",
+    cost=1,
 )
 
 

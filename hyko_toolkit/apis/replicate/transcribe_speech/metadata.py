@@ -15,6 +15,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="replicate_transcribe-speech",
     task="replicate",
+    cost=3,
     description="Transcribe audio to text in multiple languages.",
 )
 

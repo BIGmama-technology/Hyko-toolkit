@@ -13,6 +13,7 @@ func = ToolkitAPI(
     name="elevenlabs_speech_to_speech",
     task="elevenlabs",
     description="Use elevenlabs api for speech to speech.",
+    cost=100,
 )
 
 

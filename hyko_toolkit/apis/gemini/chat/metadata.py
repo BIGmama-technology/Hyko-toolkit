@@ -11,6 +11,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="gemini_text_generation_api",
     task="gemini",
+    cost=1,
     description="Use gemini api for text generation.",
 )
 

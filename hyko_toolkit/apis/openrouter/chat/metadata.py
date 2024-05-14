@@ -12,6 +12,7 @@ func = ToolkitAPI(
     name="openrouter_chat_api",
     task="openrouter",
     description="Use OpenRouter api for text generation.",
+    cost=54,
 )
 
 

@@ -15,6 +15,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="replicate_upscale_images",
     task="replicate",
+    cost=3,
     description="These models increase image resolution and quality.",
 )
 

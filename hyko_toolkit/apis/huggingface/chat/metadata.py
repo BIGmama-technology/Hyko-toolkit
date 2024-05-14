@@ -12,6 +12,7 @@ func = ToolkitAPI(
     name="huggingface_chat_api",
     task="huggingface",
     description="Use huggingface api for text generation.",
+    cost=5,
 )
 
 

@@ -11,6 +11,7 @@ func = ToolkitAPI(
     name="image_upscaler",
     task="stability_ai",
     description="Use Stability.ai API for Image upscaling.",
+    cost=3,
 )
 
 

@@ -11,6 +11,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="openai_text_completion",
     task="openai",
+    cost=256,
     description="Use openai api for text completion.",
 )
 

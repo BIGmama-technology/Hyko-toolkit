@@ -12,6 +12,7 @@ func = ToolkitAPI(
     name="bing_search",
     task="serpapi",
     description="Use Bing API for Search.",
+    cost=2,
 )
 
 

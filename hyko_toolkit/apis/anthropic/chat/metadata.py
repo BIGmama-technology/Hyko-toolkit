@@ -12,6 +12,7 @@ func = ToolkitAPI(
     name="anthropic_chat_api",
     task="anthropic",
     description="Use anthropic api for text generation.",
+    cost=600,
 )
 
 

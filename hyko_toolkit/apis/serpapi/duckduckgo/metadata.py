@@ -12,6 +12,7 @@ func = ToolkitAPI(
     name="duckduckgo_search",
     task="serpapi",
     description="Use duckduckgo API for Search.",
+    cost=2,
 )
 
 

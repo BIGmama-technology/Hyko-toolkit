@@ -13,6 +13,7 @@ func = ToolkitAPI(
     name="elevenlabs_text_to_speech",
     task="elevenlabs",
     description="Use elevenlabs api to turn text into lifelike spoken audio.",
+    cost=100,
 )
 
 

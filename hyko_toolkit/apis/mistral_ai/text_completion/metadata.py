@@ -12,6 +12,7 @@ func = ToolkitAPI(
     name="mistral_ai_text_completion",
     task="mistral_ai",
     description="Use mistral ai api for text completion.",
+    cost=150,
 )
 
 

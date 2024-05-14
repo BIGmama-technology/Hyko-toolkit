@@ -11,6 +11,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="cohere_text_embedding",
     task="cohere",
+    cost=1,
     description="Use cohere api for text embedding.",
 )
 

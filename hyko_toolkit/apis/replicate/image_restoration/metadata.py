@@ -15,6 +15,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="replicate_restore_images",
     task="replicate",
+    cost=3,
     description="These models restore and improve images by fixing defects like blur, noise, and low resolution.",
 )
 

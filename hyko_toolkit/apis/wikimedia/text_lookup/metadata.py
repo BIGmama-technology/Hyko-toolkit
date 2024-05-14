@@ -11,6 +11,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="wikipedia_text_lookup",
     task="wikimedia",
+    cost=1,
     description="Use WikiPedia API for Search.",
 )
 

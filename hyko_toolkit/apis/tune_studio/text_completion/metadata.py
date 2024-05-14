@@ -12,6 +12,7 @@ func = ToolkitAPI(
     name="tune_studio_text_completion",
     task="tune_studio",
     description="Use Tune Studio api for text completion.",
+    cost=10,
 )
 
 

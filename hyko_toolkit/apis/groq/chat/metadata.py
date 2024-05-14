@@ -12,6 +12,7 @@ func = ToolkitAPI(
     name="groq_chat_api",
     task="groq",
     description="Use Groq api for text generation.",
+    cost=138,
 )
 
 
