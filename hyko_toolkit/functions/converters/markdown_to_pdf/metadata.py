@@ -8,6 +8,7 @@ from hyko_toolkit.registry import ToolkitFunction
 func = ToolkitFunction(
     name="markdown_to_pdf",
     task="converters",
+    cost=3,
     description="Convert Markdown content to PDF format.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/converters/markdown_to_pdf/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/converters/markdown_to_pdf",

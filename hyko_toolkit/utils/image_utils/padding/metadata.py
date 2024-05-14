@@ -10,6 +10,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="padding",
     task="image_utils",
+    cost=0,
     description="Adds padding to an image by a given amount from the left, right, top and bottom",
 )
 

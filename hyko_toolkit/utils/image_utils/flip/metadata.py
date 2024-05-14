@@ -11,6 +11,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="flip",
     task="image_utils",
+    cost=0,
     description="Flip an image based on the specified axis",
 )
 

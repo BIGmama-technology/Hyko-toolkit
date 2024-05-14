@@ -7,6 +7,7 @@ from hyko_toolkit.registry import ToolkitFunction
 func = ToolkitFunction(
     name="pdf_to_text",
     task="converters",
+    cost=3,
     description="Extracts text from pdf.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/converters/pdf_to_text/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/converters/pdf_to_text",

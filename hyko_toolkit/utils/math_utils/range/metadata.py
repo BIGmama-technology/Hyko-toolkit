@@ -7,6 +7,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="range",
     task="math_utils",
+    cost=0,
     description="Generate a range of integers",
 )
 

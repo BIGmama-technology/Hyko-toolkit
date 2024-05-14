@@ -8,6 +8,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="extend_list",
     task="list_utils",
+    cost=0,
     description="Extends a list with another list.",
 )
 

@@ -10,6 +10,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="ultralytics_image_obb_object_detection",
     task="computer_vision",
+    cost=0,
     description="UltraLytics Image Oriented Bounding Boxes Object Detection Using YOLO V8.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/image_obb_object_detection",

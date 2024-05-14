@@ -9,6 +9,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="crop_edges",
     task="image_utils",
+    cost=0,
     description="Crop an image from the specified edges",
 )
 

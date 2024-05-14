@@ -8,6 +8,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="image_classification",
     task="computer_vision",
+    cost=0,
     description="Hugging Face image classification",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/image_classification",

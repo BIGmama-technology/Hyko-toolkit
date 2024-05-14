@@ -10,6 +10,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="replace",
     task="text_utils",
+    cost=0,
     description="Replace occurrences of a substring in a string",
 )
 

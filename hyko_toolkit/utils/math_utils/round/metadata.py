@@ -10,6 +10,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="round",
     task="math_utils",
+    cost=0,
     description="Round an input number",
 )
 

@@ -8,6 +8,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="any_value",
     task="list_utils",
+    cost=0,
     description="Returns True if any element of the list is equal a certain value.",
 )
 

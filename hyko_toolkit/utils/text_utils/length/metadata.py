@@ -7,6 +7,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="length",
     task="text_utils",
+    cost=0,
     description="Calculate the length of a string",
 )
 

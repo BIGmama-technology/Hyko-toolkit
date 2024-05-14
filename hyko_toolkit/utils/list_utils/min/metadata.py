@@ -6,6 +6,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="min_list",
     task="list_utils",
+    cost=0,
     description="Gets the minimum value of a list of numbers.",
 )
 

@@ -17,6 +17,7 @@ class SupportedLanguages(str, Enum):
 func = ToolkitModel(
     name="surya_ocr",
     task="optical_character_recognition",
+    cost=0,
     description="Extracts text from an image using Surya-OCR.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/optical_character_recognition/surya_ocr/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/optical_character_recognition/surya_ocr",

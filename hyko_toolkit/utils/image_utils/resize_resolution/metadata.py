@@ -11,6 +11,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="resize_resolution",
     task="image_utils",
+    cost=0,
     description="Resize an image to an exact resolution",
 )
 

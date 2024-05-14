@@ -16,6 +16,7 @@ class SupportedLanguages(str, Enum):
 func = ToolkitFunction(
     name="ocr_pdf_to_text",
     task="converters",
+    cost=3,
     description="Perform OCR (Optical Character Recognition) on a PDF document",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/converters/ocr_pdf_to_text/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/converters/ocr_pdf_to_text",

@@ -7,6 +7,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="get_dimensions",
     task="image_utils",
+    cost=0,
     description="Get the Height, Width, and number of Channels from an image",
 )
 

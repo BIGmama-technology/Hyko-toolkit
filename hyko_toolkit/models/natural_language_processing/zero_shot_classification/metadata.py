@@ -7,6 +7,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="zero_shot_classification",
     task="natural_language_processing",
+    cost=0,
     description="Hugging Face Zero Shot Classification Task",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/natural_language_processing/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/natural_language_processing/zero_shot_classification",

@@ -16,6 +16,7 @@ class SupportedLanguages(str, Enum):
 func = ToolkitFunction(
     name="youtube_transcript",
     task="web_scraping",
+    cost=5,
     description="Transcript extraction from youtube video.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_scraping/youtube_transcript/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/web/web_scraping/youtube_transcript",

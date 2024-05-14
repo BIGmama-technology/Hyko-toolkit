@@ -8,6 +8,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="mask_generation",
     task="computer_vision",
+    cost=0,
     description="HuggingFace mask generation.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/mask_generation/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/mask_generation",

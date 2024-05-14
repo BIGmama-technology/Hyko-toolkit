@@ -10,6 +10,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="ultralytics_video_object_detection",
     task="computer_vision",
+    cost=0,
     description="UltraLytics Video Object Detection Using YOLO V8 and V9.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/video_object_detection",

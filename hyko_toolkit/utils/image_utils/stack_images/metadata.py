@@ -10,6 +10,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="stack_images",
     task="image_utils",
+    cost=0,
     description="Stack images horizontally or vertically",
 )
 

@@ -19,6 +19,7 @@ class Resolution(str, Enum):
 func = ToolkitFunction(
     name="youtube_downloader",
     task="downloaders",
+    cost=2,
     description="Download a video from YouTube.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/downloaders/youtube_downloader/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/downloaders/youtube_downloader",

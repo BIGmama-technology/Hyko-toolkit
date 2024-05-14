@@ -7,6 +7,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="hybrid_search",
     task="similarity_search",
+    cost=0,
     description="Executes simultaneous BM25 keyword matching and document similarity searches on input documents.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/similarity_search/hybrid_search/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/similarity_search/hybrid_search",

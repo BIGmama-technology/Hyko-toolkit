@@ -7,6 +7,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="lowercase",
     task="text_utils",
+    cost=0,
     description="Convert a given string to lowercase",
 )
 

@@ -16,6 +16,7 @@ class SupportedLanguages(str, Enum):
 func = ToolkitFunction(
     name="wikipedia_search",
     task="web_search",
+    cost=5,
     description="Search wikipedia summaries.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_search/wikipedia_search/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/web/web_search/wikipedia_search",

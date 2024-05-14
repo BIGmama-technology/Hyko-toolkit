@@ -10,6 +10,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="opacity",
     task="image_utils",
+    cost=0,
     description="Adjusts the opacity of an image",
 )
 

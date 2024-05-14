@@ -8,6 +8,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="slice_list",
     task="list_utils",
+    cost=0,
     description="Slices a list.",
 )
 

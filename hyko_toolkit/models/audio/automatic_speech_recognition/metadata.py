@@ -8,6 +8,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="automatic_speech_recognition",
     task="audio",
+    cost=0,
     description="HuggingFace automatic speech recognition",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/audio/automatic_speech_recognition/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/audio/automatic_speech_recognition",

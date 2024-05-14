@@ -9,6 +9,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="random",
     task="math_utils",
+    cost=0,
     description="Generate a random integer",
 )
 

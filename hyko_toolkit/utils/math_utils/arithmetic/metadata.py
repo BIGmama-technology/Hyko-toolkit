@@ -11,6 +11,7 @@ from hyko_toolkit.registry import ToolkitUtils
 func = ToolkitUtils(
     name="arithmetic",
     task="math_utils",
+    cost=0,
     description="Perform mathematical operations on numbers",
 )
 

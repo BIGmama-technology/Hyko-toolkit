@@ -8,6 +8,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="text_to_image",
     task="multimodal",
+    cost=0,
     description="Hugging Face Text to Image Task",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/multimodal/text_to_image/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/multimodal/text_to_image",

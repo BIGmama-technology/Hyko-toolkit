@@ -7,6 +7,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="depth_estimation",
     task="computer_vision",
+    cost=0,
     description="HuggingFace depth estimation",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/depth_estimation",
