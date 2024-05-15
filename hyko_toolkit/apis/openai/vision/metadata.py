@@ -13,6 +13,7 @@ func = ToolkitAPI(
     name="gpt4_vision",
     task="openai",
     description="Use openai GPT4 api to understand images.",
+    cost=600,
 )
 
 
