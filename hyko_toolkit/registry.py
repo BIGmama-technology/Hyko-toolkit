@@ -32,15 +32,15 @@ class Registry:
 
 
 class ToolkitAPI(_ToolkitAPI):
-    def __init__(self, name: str, task: str, description: str):
-        super().__init__(name=name, task=task, description=description)
+    def __init__(self, name: str, task: str, description: str, cost: int):
+        super().__init__(name=name, task=task, description=description, cost=cost)
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)
 
 
 class ToolkitUtils(_ToolkitUtils):
-    def __init__(self, name: str, task: str, description: str):
-        super().__init__(name=name, task=task, description=description)
+    def __init__(self, name: str, task: str, description: str, cost: int):
+        super().__init__(name=name, task=task, description=description, cost=cost)
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)
 
@@ -53,10 +53,12 @@ class ToolkitFunction(_ToolkitFunction):
         description: str,
         absolute_dockerfile_path: str,
         docker_context: str,
+        cost: int,
     ):
         super().__init__(
             name=name,
             task=task,
+            cost=cost,
             description=description,
             docker_context=docker_context,
             absolute_dockerfile_path=absolute_dockerfile_path,
@@ -73,6 +75,7 @@ class ToolkitModel(_ToolkitModel):
         description: str,
         absolute_dockerfile_path: str,
         docker_context: str,
+        cost: int,
     ):
         super().__init__(
             name=name,
@@ -80,6 +83,7 @@ class ToolkitModel(_ToolkitModel):
             description=description,
             docker_context=docker_context,
             absolute_dockerfile_path=absolute_dockerfile_path,
+            cost=cost,
         )
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)
