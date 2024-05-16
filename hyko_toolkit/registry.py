@@ -40,17 +40,16 @@ class Registry:
     @classmethod
     def get_callback(cls, id: str):
         if id not in cls._callbacks_registry:
-            raise ValueError(f"callback '{id}' not found")
+            raise ValueError(f"callback {id} not found")
         return cls._callbacks_registry[id]
 
 
 class AllowCallback(ToolkitBase):
-    def callback(self, trigger: str, id: str):
-        field = self.params.get(trigger)
-
-        assert field, "trigger field not found in params"
-
-        field.callback_id = id
+    def callback(self, triggers: list[str], id: str):
+        for trigger in triggers:
+            field = self.params.get(trigger)
+            assert field, "trigger field not found in params"
+            field.callback_id = id
 
         def warper(
             callback: Callable[..., Coroutine[Any, Any, MetaData]],
