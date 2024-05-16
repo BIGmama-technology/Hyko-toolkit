@@ -61,8 +61,14 @@ class AllowCallback(ToolkitBase):
 
 
 class ToolkitIO(_ToolkitIO, AllowCallback):
-    def __init__(self, name: str, task: str, description: str):
-        super().__init__(name=name, task=task, description=description)
+    def __init__(
+        self,
+        name: str,
+        task: str,
+        description: str,
+        cost: int = 0,
+    ):
+        super().__init__(name=name, task=task, description=description, cost=cost)
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)
 
