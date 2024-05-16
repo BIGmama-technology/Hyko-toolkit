@@ -31,7 +31,7 @@ class Params(CoreModel):
     top_k: int = field(
         default=1,
         description="The number of top labels that will be returned by the pipeline.",
-        component=Slider(leq=0, geq=5, step=1),
+        component=Slider(leq=5, geq=0, step=1),
     )
     frame_sampling_rate: int = field(
         default=1, description="The sampling rate used to select frames from the video."

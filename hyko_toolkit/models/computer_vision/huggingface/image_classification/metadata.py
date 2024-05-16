@@ -31,7 +31,7 @@ class Params(CoreModel):
     top_k: int = field(
         default=2,
         description="Number of top predictions to return (default: 2).",
-        component=Slider(leq=0, geq=5, step=1),
+        component=Slider(leq=5, geq=0, step=1),
     )
 
 

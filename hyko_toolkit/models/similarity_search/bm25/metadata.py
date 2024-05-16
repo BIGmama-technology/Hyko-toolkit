@@ -35,7 +35,7 @@ class Params(CoreModel):
     top_k: int = field(
         default=3,
         description="Number of top results to consider (default=3).",
-        component=Slider(leq=1, geq=20, step=1),
+        component=Slider(leq=20, geq=1, step=1),
     )
 
 

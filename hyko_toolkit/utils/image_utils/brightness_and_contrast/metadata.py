@@ -26,12 +26,12 @@ class Params(CoreModel):
     brightness: float = field(
         default=1.0,
         description="Brightness adjustment factor (e.g., 1.0 for no change)",
-        component=Slider(leq=0, geq=3, step=0.01),
+        component=Slider(leq=3, geq=0, step=0.01),
     )
     contrast: float = field(
         default=1.0,
         description="Contrast adjustment factor (e.g., 1.0 for no change)",
-        component=Slider(leq=0, geq=3, step=0.01),
+        component=Slider(leq=3, geq=0, step=0.01),
     )
 
 

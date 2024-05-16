@@ -64,7 +64,7 @@ class Params(CoreModel):
     steps: int = field(
         default=30,
         description="Number of steps to run the diffusion process for (max : 50)",
-        component=Slider(leq=10, geq=200, step=10),
+        component=Slider(leq=200, geq=10, step=10),
     )
 
 

@@ -33,12 +33,12 @@ class Params(CoreModel):
     num_inference_steps: int = field(
         default=16,
         description="The number of de-noising steps.",
-        component=Slider(leq=16, geq=128, step=8),
+        component=Slider(leq=128, geq=16, step=8),
     )
     strength: float = field(
         default=0.8,
         description="Indicates extent to transform the reference image (between 0 and 1).",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
     guidance_scale: float = field(
         default=7.5, description="Guidance scale influences image-text coherence.(> 1)"

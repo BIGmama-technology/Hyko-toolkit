@@ -28,17 +28,17 @@ class Params(CoreModel):
     mask_threshold: float = field(
         default=0.0,
         description="Threshold to use when turning the predicted masks into binary values.",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
     points_per_batch: int = field(
         default=128,
         description="Sets the number of points run simultaneously by the model.",
-        component=Slider(leq=64, geq=128, step=16),
+        component=Slider(leq=128, geq=64, step=16),
     )
     pred_iou_thresh: float = field(
         default=0.95,
         description="A filtering threshold in [0,1] applied on the model's predicted mask quality.",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
 
 

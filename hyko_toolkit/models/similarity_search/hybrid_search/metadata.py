@@ -35,12 +35,12 @@ class Params(CoreModel):
     bm25_k: int = field(
         default=3,
         description="Number of top results to consider in Best Matching Algorithm (BM25) (default=3).",
-        component=Slider(leq=1, geq=20, step=1),
+        component=Slider(leq=20, geq=1, step=1),
     )
     faiss_k: int = field(
         default=3,
         description="Number of top results to consider in Similarity Search Algorithm (default=3).",
-        component=Slider(leq=1, geq=20, step=1),
+        component=Slider(leq=20, geq=1, step=1),
     )
 
 

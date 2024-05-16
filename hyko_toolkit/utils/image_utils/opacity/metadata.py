@@ -25,7 +25,7 @@ class Params(CoreModel):
     opacity: PositiveFloat = field(
         default=50,
         description="Opacity value (0-100)",
-        component=Slider(leq=0, geq=100, step=1.0),
+        component=Slider(leq=100, geq=0, step=1.0),
     )
 
 

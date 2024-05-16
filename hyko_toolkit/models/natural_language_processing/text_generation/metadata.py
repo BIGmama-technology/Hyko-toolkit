@@ -36,17 +36,17 @@ class Params(CoreModel):
     top_k: int = field(
         default=2,
         description="Number of top predictions to return (default: 2).",
-        component=Slider(leq=0, geq=5, step=1),
+        component=Slider(leq=5, geq=0, step=1),
     )
     temperature: float = field(
         default=0.5,
         description="Randomness (fluency vs. creativity)",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
     top_p: float = field(
         default=0.5,
         description="Focus high-probability words (diversity control)",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
 
 

@@ -31,7 +31,7 @@ class Params(CoreModel):
     threshold: float = field(
         default=0.7,
         description="The probability necessary to make a prediction.",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
 
 

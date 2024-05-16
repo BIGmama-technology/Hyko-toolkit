@@ -54,7 +54,7 @@ class Params(CoreModel):
     temperature: float = field(
         default=1.0,
         description="What sampling temperature to use, between 0 and 2, defaults to 1.",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
 
 

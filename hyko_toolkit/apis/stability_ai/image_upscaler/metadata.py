@@ -36,7 +36,7 @@ class Params(CoreModel):
     creativity: float = field(
         default=0.3,
         description="How creative the model should be when upscaling an image.",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
 
 

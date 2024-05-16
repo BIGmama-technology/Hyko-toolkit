@@ -50,7 +50,7 @@ class Params(CoreModel):
     image_strength: float = field(
         default=0.35,
         description="How much influence the init_image has on the diffusion process.",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
 
 

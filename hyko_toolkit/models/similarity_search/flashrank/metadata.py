@@ -28,12 +28,12 @@ class Params(CoreModel):
     top_k: int = field(
         default=5,
         description="Number of top results to consider (default=5).",
-        component=Slider(leq=1, geq=20, step=1),
+        component=Slider(leq=20, geq=1, step=1),
     )
     score_threshold: float = field(
         default=0.5,
         description="Threshold score to filter similarity results (default=0.5).",
-        component=Slider(leq=0, geq=1, step=0.01),
+        component=Slider(leq=1, geq=0, step=0.01),
     )
 
 

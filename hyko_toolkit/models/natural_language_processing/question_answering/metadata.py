@@ -37,7 +37,7 @@ class Params(CoreModel):
     top_k: int = field(
         default=1,
         description="Keep best k options (default:1).",
-        component=Slider(leq=1, geq=5, step=1),
+        component=Slider(leq=5, geq=1, step=1),
     )
     doc_stride: int = field(
         default=128,

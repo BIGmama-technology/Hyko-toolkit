@@ -44,12 +44,12 @@ class Params(CoreModel):
     num_inference_steps: int = field(
         default=50,
         description="Number of inference steps.",
-        component=Slider(leq=10, geq=200, step=10),
+        component=Slider(leq=200, geq=10, step=10),
     )
     fps: int = field(
         default=25,
         description="Frames per second.",
-        component=Slider(leq=1, geq=100, step=1),
+        component=Slider(leq=100, geq=1, step=1),
     )
     seed: int = field(default=0, description="Random seed.")
 
