@@ -100,7 +100,7 @@ class ToolkitFunction(_ToolkitFunction):
         Registry.register(self.get_metadata().image, self)
 
 
-class ToolkitModel(_ToolkitModel):
+class ToolkitModel(_ToolkitModel, AllowCallback):
     def __init__(
         self,
         name: str,
