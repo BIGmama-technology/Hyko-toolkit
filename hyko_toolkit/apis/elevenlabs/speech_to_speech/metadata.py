@@ -1,10 +1,10 @@
 from enum import Enum
 
 import httpx
-from hyko_sdk.components.components import Ext
+from hyko_sdk.components.components import Ext, TextField
 from hyko_sdk.io import Audio
 from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -13,6 +13,7 @@ func = ToolkitAPI(
     name="elevenlabs_speech_to_speech",
     task="elevenlabs",
     description="Use elevenlabs api for speech to speech.",
+    cost=100,
 )
 
 
@@ -29,13 +30,15 @@ class VoiceIds(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    audio_input: Audio = Field(..., description="The original audio to convert.")
+    audio_input: Audio = field(description="The original audio to convert.")
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    voice_id: VoiceIds = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    voice_id: VoiceIds = field(
         default=VoiceIds.Harry,
         description="Voice id to convert to.",
     )
@@ -43,7 +46,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    output_audio: Audio = Field(..., description="Generated Audio.")
+    output_audio: Audio = field(description="Generated Audio.")
 
 
 class Voice(CoreModel):

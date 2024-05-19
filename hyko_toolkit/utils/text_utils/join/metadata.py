@@ -1,32 +1,37 @@
+from hyko_sdk.components.components import ListComponent, TextField
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="join",
     task="text_utils",
+    cost=0,
     description="Join a list of strings with a specified delimiter",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    strings: list[str] = Field(..., description="List of strings to join")
+    strings: list[str] = field(
+        description="List of strings to join",
+        component=ListComponent(
+            item_component=TextField(placeholder="Enter your text here", multiline=True)
+        ),
+    )
 
 
 @func.set_param
 class Params(CoreModel):
-    delimiter: str = Field(
+    delimiter: str = field(
         default=" ", description="Delimiter used to join the strings"
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    joined_string: str = Field(
-        ..., description="String joined with the specified delimiter"
-    )
+    joined_string: str = field(description="String joined with the specified delimiter")
 
 
 @func.on_call

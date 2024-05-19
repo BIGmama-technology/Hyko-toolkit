@@ -1,25 +1,24 @@
 from typing import Any
 
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="any_value",
     task="list_utils",
+    cost=0,
     description="Returns True if any element of the list is equal a certain value.",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    original_list: list[Any] = Field(
-        ...,
+    original_list: list[Any] = field(
         description="The original list.",
     )
-    value: Any = Field(
-        ...,
+    value: Any = field(
         description="The value to be checked.",
     )
 
@@ -31,8 +30,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    output: bool = Field(
-        ...,
+    output: bool = field(
         description="Final list.",
     )
 

@@ -26,7 +26,7 @@ output_node = ToolkitIO(
 )
 
 
-@output_node.set_output
+@output_node.set_input
 class Input(CoreModel):
     input_text: str = field(
         description="output text",

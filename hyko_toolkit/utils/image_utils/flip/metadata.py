@@ -3,14 +3,15 @@ from enum import Enum
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image as HykoImage
 from hyko_sdk.models import CoreModel
+from hyko_sdk.utils import field
 from PIL import Image
-from pydantic import Field
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="flip",
     task="image_utils",
+    cost=0,
     description="Flip an image based on the specified axis",
 )
 
@@ -30,12 +31,12 @@ class SupportedTypes(Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    image: HykoImage = Field(..., description="Input image")
+    image: HykoImage = field(description="Input image")
 
 
 @func.set_param
 class Params(CoreModel):
-    flip_axis: FlipAxis = Field(
+    flip_axis: FlipAxis = field(
         default=FlipAxis.horizontal,
         description="Flip axis: horizontal, vertical, both, or none",
     )
@@ -43,7 +44,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    flipped_image: HykoImage = Field(..., description="Output image")
+    flipped_image: HykoImage = field(description="Output image")
 
 
 @func.on_call

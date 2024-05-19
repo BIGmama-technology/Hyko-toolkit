@@ -2,14 +2,15 @@ from enum import Enum
 
 from hyko_sdk.io import Image as HykoImage
 from hyko_sdk.models import CoreModel
+from hyko_sdk.utils import field
 from PIL import Image as PILImage
-from pydantic import Field
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="padding",
     task="image_utils",
+    cost=0,
     description="Adds padding to an image by a given amount from the left, right, top and bottom",
 )
 
@@ -33,23 +34,23 @@ class FillColor(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    image: HykoImage = Field(..., description="Input image to be padded")
+    image: HykoImage = field(description="Input image to be padded")
 
 
 @func.set_param
 class Params(CoreModel):
-    right: int = Field(default=10, description="Padding amount from the right")
-    left: int = Field(default=10, description="Padding amount from the left")
-    top: int = Field(default=10, description="Padding from the top")
-    bottom: int = Field(default=10, description="Padding from the bottom")
-    negative_space_fill: FillColor = Field(
-        FillColor.WHITE, description="Fill color for padded area"
+    right: int = field(default=10, description="Padding amount from the right")
+    left: int = field(default=10, description="Padding amount from the left")
+    top: int = field(default=10, description="Padding from the top")
+    bottom: int = field(default=10, description="Padding from the bottom")
+    negative_space_fill: FillColor = field(
+        default=FillColor.WHITE, description="Fill color for padded area"
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    shifted_image: HykoImage = Field(..., description="Padded image")
+    shifted_image: HykoImage = field(description="Padded image")
 
 
 @func.on_call

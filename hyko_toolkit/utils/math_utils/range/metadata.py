@@ -1,12 +1,13 @@
 from fastapi import HTTPException
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="range",
     task="math_utils",
+    cost=0,
     description="Generate a range of integers",
 )
 
@@ -18,13 +19,13 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    start: int = Field(..., description="Start integer in the range")
-    end: int = Field(..., description="End integer (not included in the range)")
+    start: int = field(description="Start integer in the range")
+    end: int = field(description="End integer (not included in the range)")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: list[int] = Field(..., description="Output range")
+    result: list[int] = field(description="Output range")
 
 
 @func.on_call

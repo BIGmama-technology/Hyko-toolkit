@@ -3,13 +3,14 @@ from enum import Enum
 
 from fastapi import HTTPException
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="round",
     task="math_utils",
+    cost=0,
     description="Round an input number",
 )
 
@@ -22,19 +23,19 @@ class RoundOperation(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    a: float = Field(..., description="Input number")
+    a: float = field(description="Input number")
 
 
 @func.set_param
 class Params(CoreModel):
-    operation: RoundOperation = Field(
+    operation: RoundOperation = field(
         default=RoundOperation.ROUND, description="Rounding operation"
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: float = Field(..., description="Rounded number result")
+    result: float = field(description="Rounded number result")
 
 
 def round_half_up(x: float) -> float:

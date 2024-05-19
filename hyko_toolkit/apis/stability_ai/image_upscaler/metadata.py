@@ -1,8 +1,8 @@
 import httpx
-from hyko_sdk.components.components import Ext
+from hyko_sdk.components.components import Ext, Slider, TextField
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -11,31 +11,38 @@ func = ToolkitAPI(
     name="image_upscaler",
     task="stability_ai",
     description="Use Stability.ai API for Image upscaling.",
+    cost=3,
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    prompt: str = Field(..., description="What you wish to see in the output image.")
-    input_image: Image = Field(..., description="The image you wish to upscale.")
+    prompt: str = field(
+        description="What you wish to see in the output image.",
+        component=TextField(placeholder="Entre your prompt here"),
+    )
+    input_image: Image = field(description="The image you wish to upscale.")
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    negative_prompt: str = Field(
+    api_key: str = field(
+        description="API KEY", component=TextField(placeholder="API KEY", secret=True)
+    )
+    negative_prompt: str = field(
         default="", description="What you do not wish to see in the output image."
     )
-    creativity: float = Field(
-        default=0,
+    seed: int = field(default=0, description="Seed")
+    creativity: float = field(
+        default=0.3,
         description="How creative the model should be when upscaling an image.",
+        component=Slider(leq=1, geq=0, step=0.01),
     )
-    seed: int = Field(default=0, description="Seed")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: Image = Field(..., description="Generated Image.")
+    result: Image = field(description="Generated Image.")
 
 
 class Response(CoreModel):

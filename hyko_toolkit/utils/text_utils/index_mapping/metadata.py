@@ -1,20 +1,32 @@
 from fastapi import HTTPException
+from hyko_sdk.components.components import ListComponent, NumberField, TextField
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="index_mapping",
     task="text_utils",
+    cost=0,
     description="Map indexes to strings and return the corresponding strings",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    input_strings: list[str] = Field(..., description="list of input strings")
-    indexes: list[int] = Field(..., description="list of indexes")
+    input_strings: list[str] = field(
+        description="list of input strings",
+        component=ListComponent(
+            item_component=TextField(placeholder="Enter your text here", multiline=True)
+        ),
+    )
+    indexes: list[int] = field(
+        description="list of indexes",
+        component=ListComponent(
+            item_component=NumberField(placeholder="Enter your text here")
+        ),
+    )
 
 
 @func.set_param
@@ -24,7 +36,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    output_strings: list[str] = Field(..., description="list of mapped output strings")
+    output_strings: list[str] = field(description="list of mapped output strings")
 
 
 @func.on_call

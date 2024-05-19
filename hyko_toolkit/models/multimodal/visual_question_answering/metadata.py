@@ -1,8 +1,7 @@
-from hyko_sdk.components.components import Search
+from hyko_sdk.components.components import Search, Slider
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel, ModelMetaData
 from hyko_sdk.utils import field
-from pydantic import Field
 
 from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
@@ -10,6 +9,7 @@ from hyko_toolkit.registry import ToolkitModel
 func = ToolkitModel(
     name="visual-question-answering",
     task="multimodal",
+    cost=0,
     description="Hugging Face Image-To-Text Task",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/multimodal/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/multimodal/visual_question_answering",
@@ -22,24 +22,28 @@ class StartupParams(CoreModel):
         description="Model",
         component=Search(placeholder="Search visual question answering model"),
     )
-    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+    device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_input
 class Inputs(CoreModel):
-    image: Image = Field(..., description="Input image")
-    question: str = Field(..., description="Input question")
+    image: Image = field(description="Input image")
+    question: str = field(description="Input question")
 
 
 @func.set_param
 class Params(CoreModel):
-    top_k: int = Field(default=1, description="Top K")
+    top_k: int = field(
+        default=2,
+        description="Number of top predictions to return (default: 2).",
+        component=Slider(leq=5, geq=1, step=1),
+    )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    answer: list[str] = Field(..., description="Generated answer")
-    score: list[float] = Field(..., description="Confidence score")
+    answer: list[str] = field(description="Generated answer")
+    score: list[float] = field(description="Confidence score")
 
 
 @func.callback(triggers=["hugging_face_model"], id="visual_question_answering_search")
