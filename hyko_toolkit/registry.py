@@ -59,6 +59,21 @@ class AllowCallback(ToolkitBase):
         return warper
 
 
+class AllowCallbackModel(_ToolkitModel):
+    def callback(self, triggers: list[str], id: str):
+        for trigger in triggers:
+            field = self.startup_params.get(trigger)
+            assert field, "trigger field not found in startup params"
+            field.callback_id = id
+
+        def warper(
+            callback: Callable[..., Coroutine[Any, Any, MetaData]],
+        ):
+            Registry.register_callback(id, callback)
+
+        return warper
+
+
 class ToolkitIO(_ToolkitIO, AllowCallback):
     def __init__(self, name: str, task: str, description: str):
         super().__init__(name=name, task=task, description=description)
@@ -100,7 +115,7 @@ class ToolkitFunction(_ToolkitFunction):
         Registry.register(self.get_metadata().image, self)
 
 
-class ToolkitModel(_ToolkitModel, AllowCallback):
+class ToolkitModel(AllowCallbackModel):
     def __init__(
         self,
         name: str,
