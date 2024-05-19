@@ -14,7 +14,8 @@ input_node = ToolkitIO(
 @input_node.set_output
 class Output(CoreModel):
     output_number: float = field(
-        description=" Input number", component=NumberField(placeholder="help")
+        description=" Input number",
+        component=NumberField(placeholder="your input number"),
     )
 
 
