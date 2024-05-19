@@ -1,7 +1,10 @@
+from hyko_sdk.components.components import Search
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import CoreModel, ModelMetaData
+from hyko_sdk.utils import field
 from pydantic import Field
 
+from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
@@ -15,7 +18,10 @@ func = ToolkitModel(
 
 @func.set_startup_params
 class StartupParams(CoreModel):
-    hugging_face_model: str = Field(..., description="Model")
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search text to image model"),
+    )
     device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
 
 
@@ -43,3 +49,10 @@ class Params(CoreModel):
 @func.set_output
 class Outputs(CoreModel):
     generated_image: Image = Field(..., description="Generated image")
+
+
+@func.callback(triggers=["hugging_face_model"], id="text_to_image_search")
+async def add_search_results(
+    metadata: ModelMetaData, access_token: str, refresh_token: str
+) -> ModelMetaData:
+    return await huggingface_models_search(metadata)
