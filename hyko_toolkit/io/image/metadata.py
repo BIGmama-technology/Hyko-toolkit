@@ -27,7 +27,7 @@ output_node = ToolkitIO(
 )
 
 
-@output_node.set_output
+@output_node.set_input
 class Input(CoreModel):
     input_image: Image = field(
         description="Uploaded image",
