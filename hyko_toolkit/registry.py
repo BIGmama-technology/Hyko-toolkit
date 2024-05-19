@@ -9,7 +9,11 @@ from hyko_sdk.definitions import ToolkitUtils as _ToolkitUtils
 from hyko_sdk.models import MetaData
 
 Definition = Union[
-    "ToolkitAPI", "ToolkitFunction", "ToolkitModel", "ToolkitUtils", "ToolkitIO"
+    "ToolkitAPI",
+    "ToolkitFunction",
+    "ToolkitModel",
+    "ToolkitUtils",
+    "ToolkitIO",
 ]
 
 
