@@ -62,7 +62,7 @@ class AllowCallback(ToolkitBase):
 class AllowCallbackModel(_ToolkitModel):
     def callback(self, triggers: list[str], id: str):
         for trigger in triggers:
-            field = self.startup_params.get(trigger)
+            field = self.startup_params.get(trigger) or self.params.get(trigger)
             assert field, "trigger field not found in startup params"
             field.callback_id = id
 

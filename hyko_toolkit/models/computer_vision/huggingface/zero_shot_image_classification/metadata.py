@@ -8,7 +8,7 @@ from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="zero_shot_image_classification",
+    name="zero-shot-image-classification",
     task="computer_vision",
     description="Hugging Face image classification",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",

@@ -8,7 +8,7 @@ from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="object_detection",
+    name="object-detection",
     task="computer_vision",
     description="Hugging face object detection",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/object_detection/Dockerfile",

@@ -7,7 +7,7 @@ from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="text_generation",
+    name="text-generation",
     task="natural_language_processing",
     description="Hugging Face text generation",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/natural_language_processing/Dockerfile",

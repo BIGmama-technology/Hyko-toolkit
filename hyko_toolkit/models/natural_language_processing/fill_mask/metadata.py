@@ -7,7 +7,7 @@ from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="fill_mask",
+    name="fill-mask",
     task="natural_language_processing",
     description="Hugging Face fill mask task",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/natural_language_processing/Dockerfile",

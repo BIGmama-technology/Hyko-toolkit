@@ -8,7 +8,7 @@ from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="image_segmentation",
+    name="image-segmentation",
     task="computer_vision",
     description="HuggingFace image segmentation",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",

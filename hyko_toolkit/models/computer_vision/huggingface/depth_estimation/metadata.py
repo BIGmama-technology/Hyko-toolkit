@@ -12,7 +12,7 @@ from hyko_toolkit.registry import ToolkitModel
 ModelsAdapter = TypeAdapter(list[dict[str, Any]])
 
 func = ToolkitModel(
-    name="depth_estimation",
+    name="depth-estimation",
     task="computer_vision",
     description="HuggingFace depth estimation",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",

@@ -8,7 +8,7 @@ from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="mask_generation",
+    name="mask-generation",
     task="computer_vision",
     description="HuggingFace mask generation.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/mask_generation/Dockerfile",

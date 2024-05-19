@@ -8,7 +8,7 @@ from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="visual_question_answering",
+    name="visual-question-answering",
     task="multimodal",
     description="Hugging Face Image-To-Text Task",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/multimodal/Dockerfile",

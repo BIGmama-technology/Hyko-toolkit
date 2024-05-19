@@ -11,10 +11,9 @@ ModelsAdapter = TypeAdapter(list[dict[str, Any]])
 
 async def huggingface_models_search(metadata: ModelMetaData) -> ModelMetaData:
     search = metadata.startup_params["hugging_face_model"].value
-    name = metadata.name.replace("_", "-")
     async with httpx.AsyncClient() as client:
         url = "https://huggingface.co/api/models"
-        url += f"?pipeline_tag={name}"
+        url += f"?pipeline_tag={metadata.name}"
         url += f"&search={search}"
         url += "&sort=downloads"
         url += "&direction=-1"
