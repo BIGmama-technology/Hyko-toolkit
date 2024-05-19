@@ -1,32 +1,37 @@
+from hyko_sdk.components.components import Slider
 from hyko_sdk.io import Image as HykoImage
 from hyko_sdk.models import CoreModel
+from hyko_sdk.utils import field
 from PIL import Image
-from pydantic import Field, PositiveFloat
+from pydantic import PositiveFloat
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="opacity",
     task="image_utils",
+    cost=0,
     description="Adjusts the opacity of an image",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    image: HykoImage = Field(..., description="Input image to adjust opacity")
+    image: HykoImage = field(description="Input image to adjust opacity")
 
 
 @func.set_param
 class Params(CoreModel):
-    opacity: PositiveFloat = Field(
-        default=50, le=100, description="Opacity value (0-100)"
+    opacity: PositiveFloat = field(
+        default=50,
+        description="Opacity value (0-100)",
+        component=Slider(leq=100, geq=0, step=1.0),
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    adjusted_image: HykoImage = Field(..., description="Image with adjusted opacity")
+    adjusted_image: HykoImage = field(description="Image with adjusted opacity")
 
 
 @func.on_call

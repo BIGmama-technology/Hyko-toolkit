@@ -4,9 +4,10 @@ import time
 from enum import Enum
 
 import httpx
+from hyko_sdk.components.components import TextField
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -14,6 +15,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="replicate_vision_models",
     task="replicate",
+    cost=3,
     description="Vision models process and interpret visual information from images and videos.",
 )
 
@@ -25,14 +27,19 @@ class Model(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    prompt: str = Field(..., description="Input prompt.")
-    image: Image = Field(..., description="Input image.")
+    prompt: str = field(
+        description="The prompt to be used for the model.",
+        component=TextField(placeholder="Enter your prompt here", multiline=True),
+    )
+    image: Image = field(description="Input image.")
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    model: Model = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    model: Model = field(
         default=Model.llava_13b,
         description="vision model to use.",
     )
@@ -40,7 +47,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="generated text.")
+    result: str = field(description="generated text.")
 
 
 class URLs(CoreModel):

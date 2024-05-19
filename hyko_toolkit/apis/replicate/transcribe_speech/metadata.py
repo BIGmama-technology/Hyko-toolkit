@@ -4,9 +4,10 @@ import time
 from enum import Enum
 
 import httpx
+from hyko_sdk.components.components import TextField
 from hyko_sdk.io import Audio
 from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -14,6 +15,7 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="replicate_transcribe-speech",
     task="replicate",
+    cost=3,
     description="Transcribe audio to text in multiple languages.",
 )
 
@@ -25,13 +27,15 @@ class Model(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    audio: Audio = Field(..., description="Input Audio.")
+    audio: Audio = field(description="Input Audio.")
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    model: Model = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    model: Model = field(
         default=Model.incredibly_fast_whisper,
         description="Transcription model to use.",
     )
@@ -39,7 +43,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="Generated text.")
+    result: str = field(description="Generated text.")
 
 
 class URLs(CoreModel):

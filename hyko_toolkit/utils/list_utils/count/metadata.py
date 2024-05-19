@@ -1,25 +1,24 @@
 from typing import Any
 
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="count_element",
     task="list_utils",
+    cost=0,
     description="Counts the number of occurrences of an element in a list.",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    original_list: list[Any] = Field(
-        ...,
+    original_list: list[Any] = field(
         description="The original list.",
     )
-    element: Any = Field(
-        ...,
+    element: Any = field(
         description="The element to be counted in the list.",
     )
 
@@ -31,8 +30,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    output: int = Field(
-        ...,
+    output: int = field(
         description="Final list.",
     )
 

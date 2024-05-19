@@ -1,8 +1,9 @@
 import re
 
 import httpx
+from hyko_sdk.components.components import TextField
 from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
@@ -10,21 +11,22 @@ from hyko_toolkit.registry import ToolkitAPI
 func = ToolkitAPI(
     name="arxiv_articles_lookup",
     task="arxiv",
+    cost=1,
     description="Use Arxiv API for articles Search.",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    query: str = Field(
-        ...,
+    query: str = field(
         description="The search query.",
+        component=TextField(placeholder="Enter your query here"),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    max_results: int = Field(
+    max_results: int = field(
         default=5,
         description="Maximum number of search.",
     )
@@ -32,7 +34,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="The concatenated titles and summaries.")
+    result: str = field(description="The concatenated titles and summaries.")
 
 
 def extract(text: str):

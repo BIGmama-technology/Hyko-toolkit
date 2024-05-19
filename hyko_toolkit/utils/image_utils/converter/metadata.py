@@ -1,15 +1,17 @@
 import os
 from enum import Enum
 
+from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel, Ext
-from pydantic import Field
+from hyko_sdk.models import CoreModel
+from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
     name="image_converter",
     task="image_utils",
+    cost=0,
     description="Convert an input image to a specified target image type.",
 )
 
@@ -23,24 +25,21 @@ class SupportedTypes(Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    original_image: Image = Field(
-        ...,
+    original_image: Image = field(
         description="The original image.",
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    target_type: SupportedTypes = Field(
-        ...,
+    target_type: SupportedTypes = field(
         description="The Target Type.",
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    output: Image = Field(
-        ...,
+    output: Image = field(
         description="Converted image.",
     )
 
