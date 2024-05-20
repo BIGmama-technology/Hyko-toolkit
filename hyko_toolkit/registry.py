@@ -6,7 +6,7 @@ from hyko_sdk.definitions import ToolkitFunction as _ToolkitFunction
 from hyko_sdk.definitions import ToolkitIO as _ToolkitIO
 from hyko_sdk.definitions import ToolkitModel as _ToolkitModel
 from hyko_sdk.definitions import ToolkitUtils as _ToolkitUtils
-from hyko_sdk.models import MetaData
+from hyko_sdk.models import MetaDataBase
 
 Definition = Union[
     "ToolkitAPI",
@@ -19,7 +19,9 @@ Definition = Union[
 
 class Registry:
     _registry: dict[str, Definition] = {}
-    _callbacks_registry: dict[str, Callable[..., Coroutine[Any, Any, MetaData]]] = {}
+    _callbacks_registry: dict[
+        str, Callable[..., Coroutine[Any, Any, MetaDataBase]]
+    ] = {}
 
     @classmethod
     def register(cls, name: str, definition: Definition):
@@ -37,7 +39,7 @@ class Registry:
 
     @classmethod
     def register_callback(
-        cls, id: str, callback: Callable[..., Coroutine[Any, Any, MetaData]]
+        cls, id: str, callback: Callable[..., Coroutine[Any, Any, MetaDataBase]]
     ):
         cls._callbacks_registry[id] = callback
 
@@ -57,7 +59,7 @@ class AllowCallback(ToolkitBase):
         field.callback_id = id
 
         def warper(
-            callback: Callable[..., Coroutine[Any, Any, MetaData]],
+            callback: Callable[..., Coroutine[Any, Any, MetaDataBase]],
         ):
             Registry.register_callback(id, callback)
 
@@ -106,8 +108,6 @@ class ToolkitFunction(_ToolkitFunction):
             task=task,
             cost=cost,
             description=description,
-            docker_context=docker_context,
-            absolute_dockerfile_path=absolute_dockerfile_path,
         )
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)
@@ -119,16 +119,12 @@ class ToolkitModel(_ToolkitModel):
         name: str,
         task: str,
         description: str,
-        absolute_dockerfile_path: str,
-        docker_context: str,
         cost: int,
     ):
         super().__init__(
             name=name,
             task=task,
             description=description,
-            docker_context=docker_context,
-            absolute_dockerfile_path=absolute_dockerfile_path,
             cost=cost,
         )
         # Automatically register the instance upon creation
