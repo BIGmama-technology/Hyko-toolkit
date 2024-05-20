@@ -1,5 +1,5 @@
 from hyko_sdk.components.components import ListComponent, Search, TextField
-from hyko_sdk.models import CoreModel, ModelMetaData
+from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 from hyko_toolkit.callbacks_utils import huggingface_models_search
@@ -44,8 +44,6 @@ class Outputs(CoreModel):
     scores: list[float] = field(description="Respective classification scores")
 
 
-@func.callback(triggers=["hugging_face_model"], id="zero_shot_classification_search")
-async def add_search_results(
-    metadata: ModelMetaData, access_token: str, refresh_token: str
-) -> ModelMetaData:
-    return await huggingface_models_search(metadata)
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

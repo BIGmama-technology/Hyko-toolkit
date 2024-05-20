@@ -9,7 +9,13 @@ from pydantic import TypeAdapter
 ModelsAdapter = TypeAdapter(list[dict[str, Any]])
 
 
-async def huggingface_models_search(metadata: ModelMetaData) -> ModelMetaData:
+async def huggingface_models_search(
+    metadata: ModelMetaData,
+    *args: Any,
+) -> ModelMetaData:
+    """common huggingface search callback.
+
+    `*args` is used here to allow for access_token and refresh token to be passed by the callback route"""
     search = metadata.startup_params["hugging_face_model"].value
     async with httpx.AsyncClient() as client:
         url = "https://huggingface.co/api/models"

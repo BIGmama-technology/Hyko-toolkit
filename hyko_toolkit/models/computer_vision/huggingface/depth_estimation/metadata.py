@@ -2,7 +2,7 @@ from typing import Any
 
 from hyko_sdk.components.components import Search
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel, ModelMetaData
+from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 from pydantic import TypeAdapter
 
@@ -40,8 +40,6 @@ class Outputs(CoreModel):
     depth_map: Image = field(description="Output depth map")
 
 
-@func.callback(triggers=["hugging_face_model"], id="depth_estimation_search")
-async def add_search_results(
-    metadata: ModelMetaData, access_token: str, refresh_token: str
-) -> ModelMetaData:
-    return await huggingface_models_search(metadata)
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

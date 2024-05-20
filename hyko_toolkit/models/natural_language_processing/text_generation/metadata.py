@@ -1,5 +1,5 @@
 from hyko_sdk.components.components import Search, Slider, TextField
-from hyko_sdk.models import CoreModel, ModelMetaData
+from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 from hyko_toolkit.callbacks_utils import huggingface_models_search
@@ -59,8 +59,6 @@ class Outputs(CoreModel):
     generated_text: str = field(description="Completion text")
 
 
-@func.callback(triggers=["hugging_face_model"], id="text_generation_search")
-async def add_search_results(
-    metadata: ModelMetaData, access_token: str, refresh_token: str
-) -> ModelMetaData:
-    return await huggingface_models_search(metadata)
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)
