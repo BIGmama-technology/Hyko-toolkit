@@ -1,17 +1,16 @@
 from hyko_sdk.components.components import TextField
 from hyko_sdk.io import PDF
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import Toolkit
 
-func = ToolkitFunction(
+func = Toolkit(
+    category=Category.FUNCTION,
     name="markdown_to_pdf",
     task="converters",
     cost=3,
     description="Convert Markdown content to PDF format.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/converters/markdown_to_pdf/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/converters/markdown_to_pdf",
 )
 
 

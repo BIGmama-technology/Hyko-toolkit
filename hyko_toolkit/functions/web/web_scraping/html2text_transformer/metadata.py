@@ -1,16 +1,15 @@
 from hyko_sdk.components.components import ListComponent, TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import Toolkit
 
-func = ToolkitFunction(
+func = Toolkit(
+    category=Category.FUNCTION,
     name="html2text_transformer",
     task="web_scraping",
     cost=5,
     description="Scrape HTML content from URLs and convert it to plain text",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_scraping/html2text_transformer/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/web/web_scraping/html2text_transformer",
 )
 
 
