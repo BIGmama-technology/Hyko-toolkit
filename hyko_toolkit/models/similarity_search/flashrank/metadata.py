@@ -9,8 +9,6 @@ func = ToolkitModel(
     task="similarity_search",
     cost=0,
     description="A tool employing Flashrank re-ranking capabilities for enhancing search and retrieval pipelines, leveraging state-of-the-art cross-encoders.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/similarity_search/flashrank/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/similarity_search/flashrank",
 )
 
 

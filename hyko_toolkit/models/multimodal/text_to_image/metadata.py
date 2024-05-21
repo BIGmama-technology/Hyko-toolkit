@@ -10,15 +10,7 @@ func = ToolkitModel(
     task="multimodal",
     cost=0,
     description="Hugging Face Text to Image Task",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/multimodal/text_to_image/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/multimodal/text_to_image",
 )
-
-
-@func.set_startup_params
-class StartupParams(CoreModel):
-    hugging_face_model: str = field(description="Model")
-    device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_input
@@ -30,6 +22,8 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
+    hugging_face_model: str = field(description="Model")
+    device_map: str = field(description="Device map (Auto, CPU or GPU)")
     num_inference_steps: int = field(
         default=16,
         description="The number of de-noising steps.",

@@ -10,15 +10,7 @@ func = ToolkitModel(
     task="audio",
     cost=0,
     description="HuggingFace text to speech, run on cuda may cause issues on cpu",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/audio/text_to_speech/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/audio/text_to_speech",
 )
-
-
-@func.set_startup_params
-class StartupParams(CoreModel):
-    hugging_face_model: str = field(description="Model")
-    device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_input
@@ -28,6 +20,8 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
+    hugging_face_model: str = field(description="Model")
+    device_map: str = field(description="Device map (Auto, CPU or GPU)")
     top_k: int = field(
         default=2,
         description="Number of top predictions to return (default: 2).",

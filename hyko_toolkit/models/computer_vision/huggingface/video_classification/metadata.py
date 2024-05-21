@@ -10,15 +10,7 @@ func = ToolkitModel(
     task="computer_vision",
     cost=0,
     description="HuggingFace video classification",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/video_classification/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/video_classification",
 )
-
-
-@func.set_startup_params
-class StartupParams(CoreModel):
-    hugging_face_model: str = field(description="Model")
-    device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_input
@@ -28,6 +20,8 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
+    hugging_face_model: str = field(description="Model")
+    device_map: str = field(description="Device map (Auto, CPU or GPU)")
     top_k: int = field(
         default=1,
         description="The number of top labels that will be returned by the pipeline.",
