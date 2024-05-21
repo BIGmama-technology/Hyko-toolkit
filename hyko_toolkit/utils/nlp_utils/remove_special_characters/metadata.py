@@ -1,11 +1,12 @@
 import re
 
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import Toolkit
 
-func = ToolkitUtils(
+func = Toolkit(
+    category=Category.UTILS,
     name="remove_special_characters",
     task="nlp_utils",
     cost=0,

@@ -1,10 +1,11 @@
 from hyko_sdk.components.components import ListComponent, TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import Toolkit
 
-func = ToolkitUtils(
+func = Toolkit(
+    category=Category.UTILS,
     name="join",
     task="text_utils",
     cost=0,

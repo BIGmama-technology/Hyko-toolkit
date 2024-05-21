@@ -1,13 +1,14 @@
 from enum import Enum
 
 from hyko_sdk.io import Image as HykoImage
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 from PIL import Image
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import Toolkit
 
-func = ToolkitUtils(
+func = Toolkit(
+    category=Category.UTILS,
     name="stack_images",
     task="image_utils",
     cost=0,
