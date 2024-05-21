@@ -5,9 +5,9 @@ from fastapi import HTTPException
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import Toolkit
+from hyko_toolkit.registry import ToolkitNode
 
-func = Toolkit(
+func = ToolkitNode(
     category=Category.UTILS,
     name="round",
     task="math_utils",

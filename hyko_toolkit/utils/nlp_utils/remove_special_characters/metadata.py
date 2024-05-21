@@ -3,9 +3,9 @@ import re
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import Toolkit
+from hyko_toolkit.registry import ToolkitNode
 
-func = Toolkit(
+func = ToolkitNode(
     category=Category.UTILS,
     name="remove_special_characters",
     task="nlp_utils",

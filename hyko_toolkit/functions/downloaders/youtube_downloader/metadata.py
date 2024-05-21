@@ -5,7 +5,7 @@ from hyko_sdk.io import Video
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import Toolkit
+from hyko_toolkit.registry import ToolkitNode
 
 
 class Resolution(str, Enum):
@@ -16,7 +16,7 @@ class Resolution(str, Enum):
     lowest = "lowest"
 
 
-func = Toolkit(
+func = ToolkitNode(
     category=Category.FUNCTION,
     name="youtube_downloader",
     task="downloaders",

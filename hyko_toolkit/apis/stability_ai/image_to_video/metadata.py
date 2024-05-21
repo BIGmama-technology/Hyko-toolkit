@@ -5,9 +5,9 @@ from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import Toolkit
+from hyko_toolkit.registry import ToolkitNode
 
-func = Toolkit(
+func = ToolkitNode(
     category=Category.API,
     name="image_to_video",
     task="stability_ai",

@@ -1,9 +1,9 @@
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import Toolkit
+from hyko_toolkit.registry import ToolkitNode
 
-func = Toolkit(
+func = ToolkitNode(
     category=Category.UTILS,
     name="sum_list",
     task="list_utils",

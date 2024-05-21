@@ -1,12 +1,12 @@
 from typing import Any, Callable, Coroutine, Union
 
-from hyko_sdk.definitions import ToolkitBase
 from hyko_sdk.definitions import ToolkitIO as _ToolkitIO
 from hyko_sdk.definitions import ToolkitModel as _ToolkitModel
+from hyko_sdk.definitions import ToolkitNode as _ToolkitNode
 from hyko_sdk.models import Category, MetaDataBase
 
 Definition = Union[
-    "ToolkitBase",
+    "ToolkitNode",
     "ToolkitModel",
     "ToolkitIO",
 ]
@@ -45,7 +45,7 @@ class Registry:
         return cls._callbacks_registry[id]
 
 
-class AllowCallback(ToolkitBase):
+class AllowCallback(_ToolkitNode):
     def callback(self, trigger: str, id: str):
         field = self.params.get(trigger)
 
@@ -68,7 +68,7 @@ class ToolkitIO(_ToolkitIO, AllowCallback):
         Registry.register(self.get_metadata().image, self)
 
 
-class Toolkit(ToolkitBase):
+class ToolkitNode(_ToolkitNode):
     def __init__(
         self, name: str, task: str, description: str, cost: int, category: Category
     ):

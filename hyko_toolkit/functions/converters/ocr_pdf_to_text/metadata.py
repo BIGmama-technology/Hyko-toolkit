@@ -4,7 +4,7 @@ from hyko_sdk.io import PDF
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import Toolkit
+from hyko_toolkit.registry import ToolkitNode
 
 
 class SupportedLanguages(str, Enum):
@@ -13,7 +13,7 @@ class SupportedLanguages(str, Enum):
     french = "fra"
 
 
-func = Toolkit(
+func = ToolkitNode(
     category=Category.FUNCTION,
     name="ocr_pdf_to_text",
     task="converters",

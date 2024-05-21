@@ -5,7 +5,7 @@ from hyko_sdk.io import Image
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import Toolkit
+from hyko_toolkit.registry import ToolkitNode
 
 
 class SupportedPlots(str, Enum):
@@ -19,7 +19,7 @@ class SupportedPlots(str, Enum):
     Scatter_Plot = "Scatter_Plot"
 
 
-func = Toolkit(
+func = ToolkitNode(
     category=Category.FUNCTION,
     name="bivariate_plot",
     task="plotting",
