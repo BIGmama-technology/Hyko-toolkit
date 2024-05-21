@@ -5,7 +5,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from metadata import Inputs, Outputs, func
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     """
     Processes a PDF file provided in binary format, extracts text content from it,

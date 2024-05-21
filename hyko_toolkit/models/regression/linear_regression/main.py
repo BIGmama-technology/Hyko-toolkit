@@ -6,7 +6,7 @@ from sklearn.linear_model import LinearRegression
 linear_regression = LinearRegression()
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs) -> Outputs:
     if len(inputs.historical_x) != len(inputs.historical_y):
         raise HTTPException(

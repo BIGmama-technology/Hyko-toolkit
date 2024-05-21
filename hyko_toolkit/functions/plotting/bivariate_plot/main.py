@@ -112,7 +112,7 @@ def generate_plot_with_two_params(
     return buffer
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     buffer = generate_plot_with_two_params(
         params.plot_type.value, x=inputs.x, y=inputs.y

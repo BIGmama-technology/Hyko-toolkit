@@ -4,7 +4,7 @@ from langchain_community.document_transformers import Html2TextTransformer
 from metadata import Inputs, Outputs, func
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     """Scrapes HTML content from the given URLs and converts it to plain text.
 

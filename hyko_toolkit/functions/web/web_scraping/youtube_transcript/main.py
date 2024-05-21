@@ -5,7 +5,7 @@ from metadata import Inputs, Outputs, Params, func
 from youtube_transcript_api import YouTubeTranscriptApi
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     Retrieve the transcript of a YouTube video.

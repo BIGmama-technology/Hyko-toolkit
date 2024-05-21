@@ -1,10 +1,10 @@
 import transformers
 from hyko_sdk.models import CoreModel
-from metadata import Inputs, Outputs, StartupParams, func
+from metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
+async def load(startup_params: Params):
     global classifier
 
     model = startup_params.hugging_face_model
@@ -17,7 +17,7 @@ async def load(startup_params: StartupParams):
     )
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     res = classifier(inputs.input_text, candidate_labels=inputs.candidate_labels)
 

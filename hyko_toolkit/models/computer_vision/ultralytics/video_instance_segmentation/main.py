@@ -8,12 +8,12 @@ import numpy as np
 from fastapi import HTTPException
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Video
-from metadata import Inputs, Outputs, Params, StartupParams, func
+from metadata import Inputs, Outputs, Params, func
 from ultralytics import YOLO
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
+async def load(startup_params: Params):
     global model, device_map
     device_map = startup_params.device_map
     model = YOLO(f"{startup_params.model.name}-seg.pt")
@@ -23,7 +23,7 @@ async def load(startup_params: StartupParams):
         )
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     # Create a TEMP file to store the input video data
     with tempfile.NamedTemporaryFile(delete=False) as input_v:

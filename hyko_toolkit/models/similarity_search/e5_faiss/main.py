@@ -11,7 +11,7 @@ async def load(startup_params: CoreModel):
     embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-small")
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     The function retrieves relevant documents based on a similarity score threshold and returns them as output.

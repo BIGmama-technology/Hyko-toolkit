@@ -40,7 +40,7 @@ def ocr_surya(image_bytes: bytes, language: str):
     return " ".join(mapped_texts)
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     generated_text = ocr_surya(
         await inputs.image.get_data(),

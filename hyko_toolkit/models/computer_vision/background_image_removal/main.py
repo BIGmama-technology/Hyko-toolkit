@@ -5,7 +5,7 @@ from metadata import Inputs, Outputs, func
 from rembg import remove
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     """
     This function removes the background from the original input image .

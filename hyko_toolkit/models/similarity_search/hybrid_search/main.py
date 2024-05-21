@@ -12,7 +12,7 @@ async def load(startup_params: CoreModel):
     embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-small")
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     Perform Hybrid Search on a list of documents based on a given query.

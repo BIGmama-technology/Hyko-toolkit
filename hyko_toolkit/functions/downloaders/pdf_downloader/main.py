@@ -5,7 +5,7 @@ from hyko_sdk.models import CoreModel
 from metadata import Inputs, Outputs, func
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     # Send a GET request to the url
     response = requests.get(inputs.url)

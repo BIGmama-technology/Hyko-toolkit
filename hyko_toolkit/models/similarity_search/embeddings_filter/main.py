@@ -13,7 +13,7 @@ async def load(startup_params: CoreModel):
     embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-small")
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     Document compressor that uses embeddings to drop documents unrelated to the query.

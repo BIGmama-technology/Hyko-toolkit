@@ -23,7 +23,7 @@ def extract_text_from_image_bytes(image_bytes: bytes, language: str):
     return extracted_text.strip()
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     generated_text = extract_text_from_image_bytes(
         image_bytes=await inputs.image.get_data(),

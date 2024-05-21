@@ -1,13 +1,13 @@
 import numpy as np
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, StartupParams, func
+from metadata import Inputs, Outputs, Params, func
 from transformers import pipeline
 
 recognizer = None
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
+async def load(startup_params: Params):
     global recognizer
 
     model = startup_params.hugging_face_model
@@ -20,7 +20,7 @@ async def load(startup_params: StartupParams):
     )
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     if recognizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")

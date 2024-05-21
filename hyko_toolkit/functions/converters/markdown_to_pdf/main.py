@@ -127,7 +127,7 @@ def convert_markdown_to_pdf(markdown_string: str):
     return buf.getvalue()
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     buff = convert_markdown_to_pdf(inputs.markdown_string)
     return Outputs(pdf=await PDF(obj_ext=Ext.PDF).init_from_val(val=buff))

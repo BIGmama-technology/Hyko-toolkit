@@ -38,7 +38,7 @@ def download_video(url, resolution):
     return video_content
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     data = download_video(url=inputs.video_url, resolution=params.resolution.value)
     return Outputs(output_video=await Video(obj_ext=Ext.MP4).init_from_val(data))

@@ -6,7 +6,7 @@ nltk.download("punkt")
 nltk.download("stopwords")
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     Remove stopwords from the text using the specified list of stopwords for the given language.

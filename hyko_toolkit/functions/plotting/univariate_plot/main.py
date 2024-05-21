@@ -49,7 +49,7 @@ def generate_plot_with_one_param(plot_type: str, y: list[float]):
     return buffer
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     buffer = generate_plot_with_one_param(params.plot_type.value, y=inputs.y)
     assert buffer, "something went wrong while generating plot."

@@ -101,7 +101,7 @@ def run_spider(start_urls: str, stop_urls: str, allowed_domains: str):
         raise result
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     # Remove the existing output file if it exists
     if os.path.exists("output.json"):

@@ -7,7 +7,7 @@ from hyko_sdk.models import CoreModel
 from metadata import Inputs, Outputs, func
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     _, ext = os.path.splitext(inputs.video.get_name())
 

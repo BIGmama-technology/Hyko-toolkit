@@ -4,7 +4,7 @@ from langchain_community.document_transformers import BeautifulSoupTransformer
 from metadata import Inputs, Outputs, Params, func
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """Loads HTML content asynchronously from given URLs using Chromium and transforms using BeautifulSoup.
 

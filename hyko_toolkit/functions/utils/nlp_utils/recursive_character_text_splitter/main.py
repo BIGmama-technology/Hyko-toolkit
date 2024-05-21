@@ -2,7 +2,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter  # type: igno
 from metadata import Inputs, Outputs, Params, func
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     This function processes the input text using a RecursiveCharacterTextSplitter

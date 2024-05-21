@@ -13,7 +13,7 @@ async def load(startup_params: CoreModel):
     embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-small")
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     A tool employing re-ranking capabilities for enhancing search and retrieval pipelines, leveraging state-of-the-art cross-encoders.

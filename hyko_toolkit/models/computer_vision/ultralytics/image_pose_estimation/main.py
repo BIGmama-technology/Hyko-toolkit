@@ -5,12 +5,12 @@ import cvzone
 from fastapi import HTTPException
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
-from metadata import Inputs, Outputs, Params, StartupParams, func
+from metadata import Inputs, Outputs, Params, func
 from ultralytics import YOLO
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
+async def load(startup_params: Params):
     global model, device_map
     device_map = startup_params.device_map
     if startup_params.model.name == "yolov8x_p6":
@@ -23,7 +23,7 @@ async def load(startup_params: StartupParams):
         )
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     image = await inputs.input_image.to_ndarray()
     # Convert the input image from RGB to BGR format
