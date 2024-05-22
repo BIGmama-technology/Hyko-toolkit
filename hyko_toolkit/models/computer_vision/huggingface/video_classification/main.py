@@ -1,7 +1,8 @@
 import os
 
-from metadata import Inputs, Outputs, Params, func
 from transformers import pipeline
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup

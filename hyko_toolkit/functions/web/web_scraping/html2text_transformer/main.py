@@ -1,7 +1,8 @@
 from hyko_sdk.models import CoreModel
 from langchain_community.document_loaders import AsyncHtmlLoader
 from langchain_community.document_transformers import Html2TextTransformer
-from metadata import Inputs, Outputs, func
+
+from .metadata import Inputs, Outputs, func
 
 
 @func.on_call

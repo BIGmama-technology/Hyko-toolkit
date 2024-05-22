@@ -1,13 +1,14 @@
 import io
 
 from hyko_sdk.models import CoreModel
-from metadata import Inputs, Outputs, Params, func
 from PIL import Image
 from surya.model.detection.segformer import load_model as load_det_model
 from surya.model.detection.segformer import load_processor as load_det_processor
 from surya.model.recognition.model import load_model as load_rec_model
 from surya.model.recognition.processor import load_processor as load_rec_processor
 from surya.ocr import run_ocr
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup

@@ -4,9 +4,10 @@ returned as a PIL image.
 """
 import numpy as np
 from hyko_sdk.io import Image
-from metadata import Inputs, Outputs, Params, func
 from PIL import Image as PILLImage
 from transformers import pipeline
+
+from .metadata import Inputs, Outputs, Params, func
 
 segmenter = None
 

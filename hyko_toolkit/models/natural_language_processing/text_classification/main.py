@@ -1,6 +1,7 @@
 import transformers
 from hyko_sdk.models import CoreModel
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup

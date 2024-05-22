@@ -1,6 +1,7 @@
 import nltk
-from metadata import Inputs, Outputs, Params, func
 from nltk.tokenize import word_tokenize
+
+from .metadata import Inputs, Outputs, Params, func
 
 nltk.download("punkt")
 nltk.download("stopwords")

@@ -8,8 +8,9 @@ import numpy as np
 from fastapi import HTTPException
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Video
-from metadata import Inputs, Outputs, Params, func
 from ultralytics import YOLO
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup

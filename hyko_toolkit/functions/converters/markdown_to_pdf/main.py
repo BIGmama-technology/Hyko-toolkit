@@ -7,10 +7,11 @@ from fpdf import FPDF
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
-from metadata import Inputs, Outputs, func
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
+
+from .metadata import Inputs, Outputs, func
 
 
 def format_code_block(code: str, language: str):

@@ -1,8 +1,9 @@
 import io
 
 import pytesseract
-from metadata import Inputs, Outputs, Params, func
 from PIL import Image
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 def extract_text_from_image_bytes_tesseract(image_bytes: bytes, language: str):

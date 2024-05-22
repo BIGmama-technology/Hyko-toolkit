@@ -1,6 +1,7 @@
 from langchain.retrievers import BM25Retriever
 from langchain_core.documents.base import Document
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_call

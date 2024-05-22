@@ -1,7 +1,8 @@
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
-from metadata import Inputs, Outputs, Params, func
 from transformers import pipeline
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup

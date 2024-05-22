@@ -6,7 +6,8 @@ import pandas as pd
 import seaborn as sns
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 def generate_violin_plot(x: list[float], y: list[float]):

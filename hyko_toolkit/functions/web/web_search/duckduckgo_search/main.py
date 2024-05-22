@@ -1,5 +1,6 @@
 from duckduckgo_search import DDGS
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_call

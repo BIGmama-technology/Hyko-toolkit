@@ -5,8 +5,9 @@ import cvzone
 import numpy as np
 from fastapi import HTTPException
 from hyko_sdk.io import Image
-from metadata import Inputs, Outputs, Params, func
 from ultralytics import YOLO
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup

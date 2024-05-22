@@ -1,8 +1,9 @@
 from urllib.parse import parse_qs, urlparse
 
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
 from youtube_transcript_api import YouTubeTranscriptApi
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_call

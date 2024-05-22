@@ -4,7 +4,8 @@ from langchain.retrievers.document_compressors import FlashrankRerank
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents.base import Document
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup

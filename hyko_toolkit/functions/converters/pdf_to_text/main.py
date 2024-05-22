@@ -2,7 +2,8 @@ from io import BytesIO
 
 from hyko_sdk.models import CoreModel
 from langchain_community.document_loaders import PyPDFLoader
-from metadata import Inputs, Outputs, func
+
+from .metadata import Inputs, Outputs, func
 
 
 @func.on_call

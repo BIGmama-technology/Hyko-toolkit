@@ -1,5 +1,6 @@
 import easyocr
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 def extract_text_from_image_bytes(image_bytes: bytes, language: str):

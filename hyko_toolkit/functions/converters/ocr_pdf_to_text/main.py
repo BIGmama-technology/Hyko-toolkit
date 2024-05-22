@@ -3,8 +3,9 @@ from io import BytesIO
 
 import fitz  # PyMuPDF
 import pytesseract
-from metadata import Inputs, Outputs, Params, func
 from PIL import Image
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_call

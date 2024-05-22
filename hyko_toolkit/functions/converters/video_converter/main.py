@@ -3,7 +3,8 @@ import tempfile
 
 import cv2
 from hyko_sdk.io import Video
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 def convert_video(buffer, codec):

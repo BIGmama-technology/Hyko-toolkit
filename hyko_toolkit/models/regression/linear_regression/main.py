@@ -1,7 +1,8 @@
 import numpy as np
 from fastapi.exceptions import HTTPException
-from metadata import Inputs, Outputs, func
 from sklearn.linear_model import LinearRegression
+
+from .metadata import Inputs, Outputs, func
 
 linear_regression = LinearRegression()
 

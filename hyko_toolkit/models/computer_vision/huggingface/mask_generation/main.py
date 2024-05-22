@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
-from metadata import Inputs, Outputs, Params, func
 from transformers import pipeline
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 def show_mask(mask: np.ndarray, ax: plt.Axes, random_color: bool):

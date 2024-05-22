@@ -1,5 +1,6 @@
 from langchain.text_splitter import RecursiveCharacterTextSplitter  # type: ignore
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_call

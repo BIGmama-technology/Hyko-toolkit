@@ -3,13 +3,14 @@ import os
 from multiprocessing import Process, Queue
 
 from bs4 import BeautifulSoup
-from metadata import Inputs, Outputs, Params, func
 from scrapy.crawler import CrawlerRunner
 from scrapy.exceptions import CloseSpider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 class CrawlerSpider(CrawlSpider):

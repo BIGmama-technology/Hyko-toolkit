@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 def generate_pie_chart(y: list[float]):

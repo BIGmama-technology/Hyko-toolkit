@@ -1,5 +1,6 @@
 import transformers
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup

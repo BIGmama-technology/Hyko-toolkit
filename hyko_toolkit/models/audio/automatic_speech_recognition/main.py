@@ -1,7 +1,8 @@
 import numpy as np
 from fastapi import HTTPException
-from metadata import Inputs, Outputs, Params, func
 from transformers import pipeline
+
+from .metadata import Inputs, Outputs, Params, func
 
 recognizer = None
 
