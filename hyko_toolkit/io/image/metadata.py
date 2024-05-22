@@ -22,7 +22,7 @@ class Output(CoreModel):
 
 output_node = ToolkitIO(
     name="Image",
-    task="inputs",
+    task="outputs",
     description="Upload image.",
 )
 
