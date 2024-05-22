@@ -30,7 +30,7 @@ class Param(CoreModel):
 
 
 @input_node.callback(triggers=["spreadsheet", "sheet_name"], id="update_sheets_node")
-async def update_sheets_node(metadata: IOMetaData, oauth_token: str) -> MetaData:
+async def update_sheets_node(metadata: IOMetaData, oauth_token: str, _) -> MetaData:
     spreadsheet_id = metadata.params["spreadsheet"].value
     sheet_name = metadata.params["sheet_name"].value
 
