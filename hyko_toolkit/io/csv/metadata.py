@@ -44,6 +44,7 @@ async def add_csv_outputs(
 
     df = pd.read_csv(io.BytesIO(csv))  # type: ignore
     columns = df.dtypes.to_dict()  # type: ignore
+    metadata.outputs = {}
     for column_name, column_type in columns.items():  # type: ignore
         metadata.add_output(
             FieldMetadata(
