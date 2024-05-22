@@ -1,8 +1,11 @@
+from typing import Any
+
 import httpx
 from hyko_sdk.components.components import PortType, Select, TextField
 from hyko_sdk.json_schema import Item
 from hyko_sdk.models import CoreModel, FieldMetadata, IOMetaData, MetaData
 from hyko_sdk.utils import field
+from pydantic import TypeAdapter
 
 from hyko_toolkit.exceptions import OauthTokenExpired
 from hyko_toolkit.registry import ToolkitIO
@@ -56,8 +59,8 @@ async def update_sheets_node(metadata: IOMetaData, oauth_token: str) -> MetaData
             response = await client.get(
                 url, headers={"Authorization": f"Bearer {oauth_token}"}
             )
-
-        data = response.json()
+        models_adapter = TypeAdapter(dict[str, Any])
+        data = models_adapter.validate_json(response.text)
         sheets = data["sheets"]
         choices = [sheet["properties"]["title"] for sheet in sheets]
         metadata_dict = metadata.params["sheet_name"].model_dump()
