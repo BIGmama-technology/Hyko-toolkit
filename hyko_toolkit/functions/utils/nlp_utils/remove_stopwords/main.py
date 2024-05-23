@@ -3,8 +3,11 @@ from nltk.tokenize import word_tokenize
 
 from .metadata import Inputs, Outputs, Params, func
 
-nltk.download("punkt")
-nltk.download("stopwords")
+
+@func.on_startup
+async def startup(params: Params):
+    nltk.download("punkt")
+    nltk.download("stopwords")
 
 
 @func.on_call
