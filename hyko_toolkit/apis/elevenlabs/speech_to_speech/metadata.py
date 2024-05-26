@@ -10,8 +10,8 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="elevenlabs_speech_to_speech",
-    task="elevenlabs",
+    name="Elevenlabs speech to speech",
+    task="Elevenlabs",
     description="Use elevenlabs api for speech to speech.",
     cost=100,
 )

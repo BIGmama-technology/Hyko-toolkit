@@ -5,9 +5,10 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitFunction
 
 func = ToolkitFunction(
-    name="duckduckgo_search",
-    task="web_search",
+    name="Duckduckgo search",
+    task="Web search",
     cost=5,
+    icon="duckduckgo",
     description="Search the web using DuckDuckGo.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_search/duckduckgo_search/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/web/web_search/duckduckgo_search",

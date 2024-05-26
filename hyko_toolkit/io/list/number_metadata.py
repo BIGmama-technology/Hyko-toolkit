@@ -5,9 +5,10 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitIO
 
 input_node = ToolkitIO(
-    name="list of numbers",
-    task="inputs",
+    name="List of numbers",
+    task="Inputs",
     description="input list of numbers.",
+    icon="list",
 )
 
 
@@ -20,9 +21,10 @@ class Output(CoreModel):
 
 
 output_node = ToolkitIO(
-    name="list of number",
-    task="outputs",
+    name="List of number",
+    task="Outputs",
     description="output list of numbers.",
+    icon="list",
 )
 
 

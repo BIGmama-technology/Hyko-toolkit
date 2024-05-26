@@ -9,10 +9,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="cohere_chat_api",
-    task="cohere",
+    name="Cohere chat api",
+    task="Cohere",
     cost=1,
     description="Use cohere api for text generation.",
+    icon="cohere",
 )
 
 

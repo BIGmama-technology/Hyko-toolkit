@@ -11,10 +11,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="image_to_image_with_prompt",
-    task="stability_ai",
+    name="Image to image with prompt",
+    task="Stability ai",
     description="Generate images from an existing image Using Stability.ai API .",
     cost=8,
+    icon="stabilityai",
 )
 
 

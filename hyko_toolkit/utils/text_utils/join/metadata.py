@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="join",
-    task="text_utils",
+    name="Join",
+    task="Text utils",
     cost=0,
     description="Join a list of strings with a specified delimiter",
 )

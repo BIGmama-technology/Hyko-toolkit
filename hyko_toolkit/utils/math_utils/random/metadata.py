@@ -7,8 +7,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="random",
-    task="math_utils",
+    name="Random",
+    task="Math utils",
     cost=0,
     description="Generate a random integer",
 )

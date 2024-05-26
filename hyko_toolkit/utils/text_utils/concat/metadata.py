@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="concat",
-    task="text_utils",
+    name="Concat",
+    task="Text utils",
     cost=0,
     description="Concatenate two strings together",
 )

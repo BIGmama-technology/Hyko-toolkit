@@ -6,12 +6,13 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitFunction
 
 func = ToolkitFunction(
-    name="pdf_downloader",
-    task="downloaders",
+    name="Pdf downloader",
+    task="Downloaders",
     cost=2,
     description="This function downloads content from a URL and returns it as a PDF object.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/downloaders/pdf_downloader/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/downloaders/pdf_downloader",
+    icon="pdf",
 )
 
 

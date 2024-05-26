@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="background_image_removal",
-    task="computer_vision",
+    name="Background image removal",
+    task="Computer vision",
     cost=0,
     description="This function removes the background from the original input image.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/background_image_removal/Dockerfile",

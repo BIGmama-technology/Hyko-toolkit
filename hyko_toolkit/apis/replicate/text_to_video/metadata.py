@@ -12,10 +12,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="replicate_video_generation",
-    task="replicate",
+    name="Replicate video generation",
+    task="Replicate",
     cost=3,
     description="Convert text prompts into video clips and animations.",
+    icon="replicate",
 )
 
 

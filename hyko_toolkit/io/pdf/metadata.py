@@ -5,11 +5,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitIO
 
-input_node = ToolkitIO(
-    name="PDF",
-    task="inputs",
-    description="Upload pdf.",
-)
+input_node = ToolkitIO(name="PDF", task="Inputs", description="Upload pdf.", icon="pdf")
 
 
 @input_node.set_output
@@ -21,9 +17,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitIO(
-    name="PDF",
-    task="outputs",
-    description="Upload pdf.",
+    name="PDF", task="Outputs", description="Upload pdf.", icon="pdf"
 )
 
 

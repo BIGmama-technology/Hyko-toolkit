@@ -9,10 +9,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="openai_text_completion",
-    task="openai",
+    name="Openai text completion",
+    task="Openai",
     cost=256,
     description="Use openai api for text completion.",
+    icon="openai",
 )
 
 

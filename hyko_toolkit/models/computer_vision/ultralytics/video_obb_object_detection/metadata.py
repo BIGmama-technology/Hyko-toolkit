@@ -8,8 +8,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="ultralytics_video_obb_object_detection",
-    task="computer_vision",
+    name="Ultralytics video obb object detection",
+    task="Computer vision",
     cost=0,
     description="UltraLytics Video Oriented Bounding Boxes Object Detection Using YOLO V8.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/Dockerfile",

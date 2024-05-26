@@ -9,10 +9,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="duckduckgo_search",
-    task="serpapi",
+    name="Duckduckgo search",
+    task="Serpapi",
     description="Use duckduckgo API for Search.",
     cost=2,
+    icon="duckduckgo",
 )
 
 

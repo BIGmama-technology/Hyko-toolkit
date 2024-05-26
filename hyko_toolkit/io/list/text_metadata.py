@@ -5,9 +5,7 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitIO
 
 input_node = ToolkitIO(
-    name="list of text",
-    task="inputs",
-    description="input list of text.",
+    name="List of text", task="Inputs", description="input list of text.", icon="list"
 )
 
 
@@ -22,9 +20,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitIO(
-    name="list of text",
-    task="outputs",
-    description="output list of text.",
+    name="List of text", task="Outputs", description="output list of text.", icon="list"
 )
 
 

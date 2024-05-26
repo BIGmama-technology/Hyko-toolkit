@@ -7,31 +7,23 @@ from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="image-segmentation",
-    task="computer_vision",
+    name="Image segmentation",
+    task="Computer vision",
     cost=0,
+    icon="hf",
     description="HuggingFace image segmentation",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/image_segmentation",
 )
 
 
-@func.set_startup_params
+@func.set_param
 class StartupParams(CoreModel):
     hugging_face_model: str = field(
         description="Model",
         component=Search(placeholder="Search image segmentation model"),
     )
     device_map: str = field(description="Device map (Auto, CPU or GPU)")
-
-
-@func.set_input
-class Inputs(CoreModel):
-    input_image: Image = field(description="Input image")
-
-
-@func.set_param
-class Params(CoreModel):
     threshold: float = field(
         default=0.9,
         description="Probability threshold to filter out predicted masks.",
@@ -47,6 +39,11 @@ class Params(CoreModel):
         description="Mask overlap threshold to eliminate small, disconnected segments.",
         component=Slider(leq=1, geq=0, step=0.01),
     )
+
+
+@func.set_input
+class Inputs(CoreModel):
+    input_image: Image = field(description="Input image")
 
 
 @func.set_output

@@ -20,12 +20,13 @@ class SupportedPlots(str, Enum):
 
 
 func = ToolkitFunction(
-    name="bivariate_plot",
-    task="plotting",
+    name="Bivariate plot",
+    task="Plotting",
     cost=2,
     description="Generate various types of plots with (X , Y) inputs.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/plotting/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/plotting/bivariate_plot",
+    icon="graph",
 )
 
 

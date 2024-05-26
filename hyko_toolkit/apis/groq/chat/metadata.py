@@ -9,10 +9,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="groq_chat_api",
-    task="groq",
+    name="Groq chat api",
+    task="Groq",
     description="Use Groq api for text generation.",
     cost=138,
+    icon="groq",
 )
 
 

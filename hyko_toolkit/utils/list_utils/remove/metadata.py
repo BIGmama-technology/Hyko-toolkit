@@ -6,8 +6,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="remove_element",
-    task="list_utils",
+    name="Remove element",
+    task="List utils",
     cost=0,
     description="Removes an element from a list.",
 )

@@ -9,10 +9,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="bing_search",
-    task="serpapi",
+    name="Bing search",
+    task="Serpapi",
     description="Use Bing API for Search.",
     cost=2,
+    icon="microsoft",
 )
 
 

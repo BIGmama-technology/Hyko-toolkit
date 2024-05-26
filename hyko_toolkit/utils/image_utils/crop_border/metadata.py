@@ -7,10 +7,11 @@ from pydantic import PositiveInt
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="crop_border",
-    task="image_utils",
+    name="Crop border",
+    task="Image utils",
     cost=0,
     description="Remove a specified amount of pixels from all four borders of an image",
+    icon="crop",
 )
 
 

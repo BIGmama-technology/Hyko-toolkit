@@ -9,10 +9,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="openai_text_embedding",
-    task="openai",
+    name="Openai text embedding",
+    task="Openai",
     description="Use openai api for text embedding.",
     cost=4,
+    icon="openai",
 )
 
 

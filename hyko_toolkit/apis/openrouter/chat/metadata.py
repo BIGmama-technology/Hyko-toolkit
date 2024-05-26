@@ -9,10 +9,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="openrouter_chat_api",
-    task="openrouter",
+    name="Openrouter chat api",
+    task="Openrouter",
     description="Use OpenRouter api for text generation.",
     cost=54,
+    icon="openrouter",
 )
 
 

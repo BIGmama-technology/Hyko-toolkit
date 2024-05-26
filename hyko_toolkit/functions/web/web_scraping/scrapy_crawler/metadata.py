@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitFunction
 
 func = ToolkitFunction(
-    name="scrapy_crawler",
-    task="web_scraping",
+    name="Scrapy crawler",
+    task="Web scraping",
     cost=5,
     description="use scrapy to crawl web pages",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_scraping/scrapy_crawler/Dockerfile",

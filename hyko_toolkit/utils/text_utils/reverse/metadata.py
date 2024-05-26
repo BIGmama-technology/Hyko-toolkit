@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="reverse",
-    task="text_utils",
+    name="Reverse",
+    task="Text utils",
     cost=0,
     description="Reverse a given string",
 )

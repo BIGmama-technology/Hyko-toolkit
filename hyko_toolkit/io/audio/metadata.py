@@ -6,9 +6,7 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitIO
 
 input_node = ToolkitIO(
-    name="Audio",
-    task="inputs",
-    description="Upload audio.",
+    name="Audio", task="Inputs", description="Upload audio.", icon="audio"
 )
 
 
@@ -33,9 +31,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitIO(
-    name="Audio",
-    task="outputs",
-    description="Upload audio.",
+    name="Audio", task="Outputs", description="Upload audio.", icon="audio"
 )
 
 

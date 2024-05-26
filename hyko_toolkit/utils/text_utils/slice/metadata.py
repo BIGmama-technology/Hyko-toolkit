@@ -6,8 +6,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="slice",
-    task="text_utils",
+    name="Slice",
+    task="Text utils",
     cost=0,
     description="Create a slice of a given string of text",
 )

@@ -9,10 +9,11 @@ from pydantic import PositiveFloat
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="resize_factor",
-    task="image_utils",
+    name="Resize factor",
+    task="Image utils",
     cost=0,
     description="Resize an image by a factor",
+    icon="resize",
 )
 
 

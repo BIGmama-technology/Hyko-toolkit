@@ -13,10 +13,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="replicate_upscale_images",
-    task="replicate",
+    name="Replicate upscale images",
+    task="Replicate",
     cost=3,
     description="These models increase image resolution and quality.",
+    icon="replicate",
 )
 
 

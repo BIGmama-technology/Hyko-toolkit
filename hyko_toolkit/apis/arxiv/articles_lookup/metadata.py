@@ -9,10 +9,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="arxiv_articles_lookup",
-    task="arxiv",
+    name="Arxiv articles lookup",
+    task="Arxiv",
     cost=1,
     description="Use Arxiv API for articles Search.",
+    icon="arxiv",
 )
 
 

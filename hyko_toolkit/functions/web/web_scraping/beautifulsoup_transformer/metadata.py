@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitFunction
 
 func = ToolkitFunction(
-    name="beautifulsoup_transformer",
-    task="web_scraping",
+    name="Beautifulsoup transformer",
+    task="Web scraping",
     cost=5,
     description="Scrape HTML content from URLs and convert it to plain text",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_scraping/beautifulsoup_transformer/Dockerfile",

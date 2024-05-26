@@ -13,10 +13,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="replicate_vision_models",
-    task="replicate",
+    name="Replicate vision models",
+    task="Replicate",
     cost=3,
     description="Vision models process and interpret visual information from images and videos.",
+    icon="replicate",
 )
 
 

@@ -7,26 +7,23 @@ from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="mask-generation",
-    task="computer_vision",
+    name="Mask generation",
+    task="Computer vision",
     cost=0,
+    icon="hf",
     description="HuggingFace mask generation.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/mask_generation/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/mask_generation",
 )
 
 
-@func.set_startup_params
+@func.set_param
 class StartupParams(CoreModel):
     hugging_face_model: str = field(
         description="Model",
         component=Search(placeholder="Search mask generation model"),
     )
     device_map: str = field(default="cpu", description="Device map (Auto, CPU or GPU)")
-
-
-@func.set_param
-class Params(CoreModel):
     mask_threshold: float = field(
         default=0.0,
         description="Threshold to use when turning the predicted masks into binary values.",

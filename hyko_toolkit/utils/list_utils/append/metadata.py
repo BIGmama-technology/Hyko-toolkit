@@ -6,8 +6,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="append_element",
-    task="list_utils",
+    name="Append element",
+    task="List utils",
     cost=0,
     description="Appends an element to a list.",
 )

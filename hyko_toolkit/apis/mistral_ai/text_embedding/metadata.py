@@ -7,10 +7,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="mistral_ai_text_embedding",
-    task="mistral_ai",
+    name="Mistral ai text embedding",
+    task="Mistral ai",
     description="Use mistral ai api for text embedding.",
     cost=1,
+    icon="mistral",
 )
 
 

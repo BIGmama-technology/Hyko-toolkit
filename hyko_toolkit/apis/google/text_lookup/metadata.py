@@ -7,10 +7,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="google_search",
-    task="google",
+    name="Google search",
+    task="Google",
     description="Use Google API for Search.",
     cost=100,
+    icon="google",
 )
 
 

@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="bm25",
-    task="similarity_search",
+    name="BM25",
+    task="Similarity search",
     cost=0,
     description="Perform BM25 retrieval on a list of documents based on a given query.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/similarity_search/bm25/Dockerfile",

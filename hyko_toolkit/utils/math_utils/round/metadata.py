@@ -8,8 +8,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="round",
-    task="math_utils",
+    name="Round",
+    task="Math utils",
     cost=0,
     description="Round an input number",
 )

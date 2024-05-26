@@ -9,11 +9,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.registry import ToolkitIO
 
-input_node = ToolkitIO(
-    name="CSV",
-    task="inputs",
-    description="Upload csv.",
-)
+input_node = ToolkitIO(name="CSV", task="Inputs", description="Upload csv.", icon="csv")
 
 
 @input_node.set_param

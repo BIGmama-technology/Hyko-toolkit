@@ -10,10 +10,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="text_to_image",
-    task="stability_ai",
+    name="Text to image",
+    task="Stability ai",
     description="Use Stability.ai API for Image generation.",
     cost=8,
+    icon="stabilityai",
 )
 
 

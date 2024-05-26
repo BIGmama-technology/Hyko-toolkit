@@ -8,8 +8,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="ultralytics_image_pose_estimation",
-    task="computer_vision",
+    name="Ultralytics image pose estimation",
+    task="Computer vision",
     cost=0,
     description="UltraLytics Image Pose Estimation Using YOLO V8.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/ultralytics/Dockerfile",

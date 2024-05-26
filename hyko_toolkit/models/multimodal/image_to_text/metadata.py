@@ -10,6 +10,7 @@ func = ToolkitModel(
     name="image-to-text",
     task="multimodal",
     cost=0,
+    icon="hf",
     description="Hugging Face Image-To-Text Task",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/models/multimodal/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/models/multimodal/image_to_text",

@@ -10,10 +10,11 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitAPI
 
 func = ToolkitAPI(
-    name="gpt4_vision",
-    task="openai",
+    name="GPT4 vision",
+    task="Openai",
     description="Use openai GPT4 api to understand images.",
     cost=600,
+    icon="openai",
 )
 
 

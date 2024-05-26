@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="split",
-    task="text_utils",
+    name="Split",
+    task="Text utils",
     cost=0,
     description="Split a string to a list of strings based on delimiter",
 )

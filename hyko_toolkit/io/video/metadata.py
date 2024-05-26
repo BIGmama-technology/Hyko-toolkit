@@ -6,9 +6,7 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitIO
 
 input_node = ToolkitIO(
-    name="Video",
-    task="inputs",
-    description="Upload video.",
+    name="Video", task="Inputs", description="Upload video.", icon="video"
 )
 
 
@@ -31,9 +29,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitIO(
-    name="Video",
-    task="outputs",
-    description="Upload video.",
+    name="Video", task="Outputs", description="Upload video.", icon="video"
 )
 
 

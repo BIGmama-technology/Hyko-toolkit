@@ -7,8 +7,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitFunction
 
 func = ToolkitFunction(
-    name="remove_stopwords",
-    task="nlp_utils",
+    name="Remove Stopwords",
+    task="Nlp utils",
     cost=3,
     description="A function to remove stopwords from text.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/utils/nlp_utils/remove_stopwords/Dockerfile",

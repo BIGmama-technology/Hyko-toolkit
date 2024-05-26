@@ -12,8 +12,9 @@ from hyko_toolkit.registry import ToolkitIO
 
 input_node = ToolkitIO(
     name="Sheets",
-    task="inputs",
+    task="Inputs",
     description="Upload google spreadsheet file.",
+    icon="sheets",
 )
 
 

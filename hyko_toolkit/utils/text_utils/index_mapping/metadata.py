@@ -6,8 +6,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="index_mapping",
-    task="text_utils",
+    name="Index mapping",
+    task="Text utils",
     cost=0,
     description="Map indexes to strings and return the corresponding strings",
 )

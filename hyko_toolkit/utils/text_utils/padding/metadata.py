@@ -8,8 +8,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="padding",
-    task="text_utils",
+    name="Padding",
+    task="Text utils",
     cost=0,
     description="Pads text until it has a certain length",
 )

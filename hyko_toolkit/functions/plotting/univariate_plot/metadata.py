@@ -14,12 +14,13 @@ class SupportedPlots(str, Enum):
 
 
 func = ToolkitFunction(
-    name="univariate_plot",
-    task="plotting",
+    name="Univariate plot",
+    task="Plotting",
     cost=2,
     description="Generate various types of plots with Y input.",
     absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/plotting/Dockerfile",
     docker_context="./toolkit/hyko_toolkit/functions/plotting/univariate_plot",
+    icon="graph",
 )
 
 

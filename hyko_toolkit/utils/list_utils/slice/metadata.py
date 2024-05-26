@@ -6,8 +6,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitUtils
 
 func = ToolkitUtils(
-    name="slice_list",
-    task="list_utils",
+    name="Slice list",
+    task="List utils",
     cost=0,
     description="Slices a list.",
 )
