@@ -50,8 +50,15 @@ class AllowCallback(_ToolkitNode):
             assert field, "trigger field not found in params"
             field.callback_id = id
 
+        def wrapper(
+            callback: Callable[..., Coroutine[Any, Any, MetaDataBase]],
+        ):
+            Registry.register_callback(id, callback)
 
-class ToolkitNode(_ToolkitNode):
+        return wrapper
+
+
+class ToolkitNode(AllowCallback):
     def __init__(
         self,
         name: str,
@@ -73,7 +80,7 @@ class ToolkitNode(_ToolkitNode):
         Registry.register(self.get_metadata().image, self)
 
 
-class ToolkitModel(_ToolkitModel):
+class ToolkitModel(_ToolkitModel, AllowCallback):
     def __init__(
         self,
         name: str,

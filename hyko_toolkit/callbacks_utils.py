@@ -3,16 +3,16 @@ from typing import Any
 import httpx
 from fastapi import HTTPException, status
 from hyko_sdk.components.components import Search
-from hyko_sdk.models import FieldMetadata, ModelMetaData
+from hyko_sdk.models import FieldMetadata, MetaDataBase
 from pydantic import TypeAdapter
 
 ModelsAdapter = TypeAdapter(list[dict[str, Any]])
 
 
 async def huggingface_models_search(
-    metadata: ModelMetaData,
+    metadata: MetaDataBase,
     *args: Any,
-) -> ModelMetaData:
+) -> MetaDataBase:
     """common huggingface search callback.
 
     `*args` is used here to allow for access_token and refresh token to be passed by the callback route"""

@@ -17,11 +17,10 @@ func = ToolkitModel(
 
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = 
-        field(
-            description="Model",
-            component=Search(placeholder="Search mask generation model"),
-        ),
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search mask generation model"),
+    )
     device_map: str = field(default="cpu", description="Device map (Auto, CPU or GPU)")
     mask_threshold: float = field(
         default=0.0,

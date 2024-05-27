@@ -3,18 +3,19 @@ from typing import Any
 import httpx
 from hyko_sdk.components.components import PortType, Select, TextField
 from hyko_sdk.json_schema import Item
-from hyko_sdk.models import CoreModel, FieldMetadata, IOMetaData, MetaData
+from hyko_sdk.models import Category, CoreModel, FieldMetadata, MetaDataBase
 from hyko_sdk.utils import field
 from pydantic import TypeAdapter
 
 from hyko_toolkit.exceptions import OauthTokenExpired
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-input_node = ToolkitIO(
+input_node = ToolkitNode(
     name="Sheets",
     task="Inputs",
     description="Upload google spreadsheet file.",
     icon="sheets",
+    category=Category.IO,
 )
 
 
@@ -31,7 +32,9 @@ class Param(CoreModel):
 
 
 @input_node.callback(triggers=["spreadsheet", "sheet_name"], id="update_sheets_node")
-async def update_sheets_node(metadata: IOMetaData, oauth_token: str, _) -> MetaData:
+async def update_sheets_node(
+    metadata: MetaDataBase, oauth_token: str, _
+) -> MetaDataBase:
     spreadsheet_id = metadata.params["spreadsheet"].value
     sheet_name = metadata.params["sheet_name"].value
 

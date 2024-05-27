@@ -10,12 +10,17 @@ from hyko_sdk.components.components import (
     TextField,
 )
 from hyko_sdk.json_schema import Item
-from hyko_sdk.models import CoreModel, FieldMetadata, MetaData
+from hyko_sdk.models import Category, CoreModel, FieldMetadata, MetaDataBase
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-input_node = ToolkitIO(name="Input", task="Input", description="This is an input node")
+input_node = ToolkitNode(
+    name="Input",
+    task="Input",
+    description="This is an input node",
+    category=Category.IO,
+)
 
 
 @input_node.set_param
@@ -38,7 +43,7 @@ class Params(CoreModel):
 
 
 @input_node.callback(triggers=["input_type"], id="change_input_type")
-async def change_input_type(metadata: MetaData, *args: Any):
+async def change_input_type(metadata: MetaDataBase, *args: Any):
     input_type = metadata.params["input_type"].value
     metadata.params = {}
     match input_type:

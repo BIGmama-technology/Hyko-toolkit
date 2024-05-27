@@ -4,12 +4,24 @@ import pandas as pd
 from hyko_sdk.components.components import Ext, PortType, StorageSelect
 from hyko_sdk.io import CSV
 from hyko_sdk.json_schema import Item
-from hyko_sdk.models import CoreModel, FieldMetadata, MetaData, StorageConfig
+from hyko_sdk.models import (
+    Category,
+    CoreModel,
+    FieldMetadata,
+    MetaDataBase,
+    StorageConfig,
+)
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-input_node = ToolkitIO(name="CSV", task="Inputs", description="Upload csv.", icon="csv")
+input_node = ToolkitNode(
+    name="CSV",
+    task="Inputs",
+    description="Upload csv.",
+    icon="csv",
+    category=Category.IO,
+)
 
 
 @input_node.set_param
@@ -22,8 +34,8 @@ class Param(CoreModel):
 
 @input_node.callback(triggers=["csv"], id="add_csv_outputs")
 async def add_csv_outputs(
-    metadata: MetaData, access_token: str, refresh_token: str
-) -> MetaData:
+    metadata: MetaDataBase, access_token: str, refresh_token: str
+) -> MetaDataBase:
     StorageConfig.configure(
         access_token=access_token,
         refresh_token=refresh_token,

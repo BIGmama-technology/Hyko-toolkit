@@ -13,13 +13,16 @@ from hyko_sdk.components.components import (
     VideoPreview,
 )
 from hyko_sdk.json_schema import Item
-from hyko_sdk.models import CoreModel, FieldMetadata, MetaData
+from hyko_sdk.models import Category, CoreModel, FieldMetadata, MetaDataBase
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-output_node = ToolkitIO(
-    name="Output", task="Outputs", description="This is an output node"
+output_node = ToolkitNode(
+    name="Output",
+    task="Outputs",
+    description="This is an output node",
+    category=Category.IO,
 )
 
 
@@ -43,7 +46,7 @@ class Params(CoreModel):
 
 
 @output_node.callback(triggers=["output_type"], id="change_output_type")
-async def change_output_type(metadata: MetaData, *args: Any):
+async def change_output_type(metadata: MetaDataBase, *args: Any):
     output_type = metadata.params["output_type"].value
     metadata.params = {}
     match output_type:
