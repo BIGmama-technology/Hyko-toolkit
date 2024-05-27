@@ -2,18 +2,17 @@ from enum import Enum
 
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Video
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitFunction(
+func = ToolkitNode(
+    category=Category.FUNCTION,
     name="video_converter",
     task="converters",
     cost=3,
     description="Convert a video from one format to another.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/converters/video_converter/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/converters/video_converter",
 )
 
 

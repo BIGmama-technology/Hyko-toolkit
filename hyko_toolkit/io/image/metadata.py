@@ -1,14 +1,16 @@
 from hyko_sdk.components.components import Ext, ImagePreview, StorageSelect
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-input_node = ToolkitIO(
+input_node = ToolkitNode(
     name="Image",
     task="inputs",
     description="Upload image.",
+    category=Category.IO,
+    cost=0,
 )
 
 
@@ -20,10 +22,12 @@ class Output(CoreModel):
     )
 
 
-output_node = ToolkitIO(
+output_node = ToolkitNode(
     name="Image",
     task="inputs",
     description="Upload image.",
+    category=Category.IO,
+    cost=0,
 )
 
 

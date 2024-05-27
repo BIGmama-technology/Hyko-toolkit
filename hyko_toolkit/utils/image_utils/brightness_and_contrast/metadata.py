@@ -1,12 +1,13 @@
 from hyko_sdk.components.components import Slider
 from hyko_sdk.io import Image as HykoImage
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 from PIL import ImageEnhance
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
+func = ToolkitNode(
+    category=Category.UTILS,
     name="brightness_and_contrast",
     task="image_utils",
     cost=0,

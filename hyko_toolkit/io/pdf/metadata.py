@@ -1,14 +1,16 @@
 from hyko_sdk.components.components import Ext, PDFPreview, StorageSelect
 from hyko_sdk.io import PDF
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-input_node = ToolkitIO(
+input_node = ToolkitNode(
     name="PDF",
     task="inputs",
     description="Upload pdf.",
+    category=Category.IO,
+    cost=0,
 )
 
 
@@ -20,10 +22,12 @@ class Output(CoreModel):
     )
 
 
-output_node = ToolkitIO(
+output_node = ToolkitNode(
     name="PDF",
     task="outputs",
     description="Upload pdf.",
+    category=Category.IO,
+    cost=0,
 )
 
 

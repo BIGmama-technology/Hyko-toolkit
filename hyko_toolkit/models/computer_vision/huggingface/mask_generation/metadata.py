@@ -10,21 +10,15 @@ func = ToolkitModel(
     task="computer_vision",
     cost=0,
     description="HuggingFace mask generation.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/mask_generation/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/mask_generation",
 )
-
-
-@func.set_startup_params
-class StartupParams(CoreModel):
-    hugging_face_model: str = field(
-        default="facebook/sam-vit-base", description="Model"
-    )
-    device_map: str = field(default="cpu", description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_param
 class Params(CoreModel):
+    hugging_face_model: str = field(
+        default="facebook/sam-vit-base", description="Model"
+    )
+    device_map: str = field(default="cpu", description="Device map (Auto, CPU or GPU)")
     mask_threshold: float = field(
         default=0.0,
         description="Threshold to use when turning the predicted masks into binary values.",

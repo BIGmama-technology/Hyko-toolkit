@@ -1,13 +1,15 @@
 from hyko_sdk.components.components import ListComponent, TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-input_node = ToolkitIO(
+input_node = ToolkitNode(
     name="list of text",
     task="inputs",
     description="input list of text.",
+    category=Category.IO,
+    cost=0,
 )
 
 
@@ -21,10 +23,12 @@ class Output(CoreModel):
     )
 
 
-output_node = ToolkitIO(
+output_node = ToolkitNode(
     name="list of text",
     task="outputs",
     description="output list of text.",
+    category=Category.IO,
+    cost=0,
 )
 
 

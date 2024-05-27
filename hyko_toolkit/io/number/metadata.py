@@ -1,13 +1,15 @@
 from hyko_sdk.components.components import NumberField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-input_node = ToolkitIO(
+input_node = ToolkitNode(
     name="number",
     task="inputs",
     description="Input number.",
+    category=Category.IO,
+    cost=0,
 )
 
 
@@ -19,10 +21,12 @@ class Output(CoreModel):
     )
 
 
-output_node = ToolkitIO(
+output_node = ToolkitNode(
     name="number",
     task="outputs",
     description="Output number.",
+    category=Category.IO,
+    cost=0,
 )
 
 

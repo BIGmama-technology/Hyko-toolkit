@@ -1,11 +1,12 @@
 from fastapi.exceptions import HTTPException
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
+func = ToolkitNode(
+    category=Category.UTILS,
     name="slice",
     task="text_utils",
     cost=0,

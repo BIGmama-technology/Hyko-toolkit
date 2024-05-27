@@ -2,10 +2,10 @@ from enum import Enum
 
 from hyko_sdk.components.components import ListComponent, NumberField
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
 
 class SupportedPlots(str, Enum):
@@ -13,13 +13,12 @@ class SupportedPlots(str, Enum):
     Histogram = "Histogram"
 
 
-func = ToolkitFunction(
+func = ToolkitNode(
+    category=Category.FUNCTION,
     name="univariate_plot",
     task="plotting",
     cost=2,
     description="Generate various types of plots with Y input.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/plotting/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/plotting/univariate_plot",
 )
 
 

@@ -1,28 +1,32 @@
 from hyko_sdk.components.components import TextField, TextPreview
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-input_node = ToolkitIO(
+input_node = ToolkitNode(
     name="Text",
     task="inputs",
     description="Write your text.",
+    category=Category.IO,
+    cost=0,
 )
 
 
 @input_node.set_output
 class Output(CoreModel):
     output_text: str = field(
-        description="input text",
+        description="inpt text",
         component=TextField(placeholder="input text here.", multiline=True),
     )
 
 
-output_node = ToolkitIO(
+output_node = ToolkitNode(
     name="Text",
     task="outputs",
     description="Preview output text.",
+    category=Category.IO,
+    cost=0,
 )
 
 

@@ -2,10 +2,10 @@ from enum import Enum
 
 from hyko_sdk.components.components import TextField
 from hyko_sdk.io import Video
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
 
 class Resolution(str, Enum):
@@ -16,13 +16,12 @@ class Resolution(str, Enum):
     lowest = "lowest"
 
 
-func = ToolkitFunction(
+func = ToolkitNode(
+    category=Category.FUNCTION,
     name="youtube_downloader",
     task="downloaders",
     cost=2,
     description="Download a video from YouTube.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/downloaders/youtube_downloader/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/downloaders/youtube_downloader",
 )
 
 

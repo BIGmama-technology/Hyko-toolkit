@@ -1,10 +1,11 @@
 from fastapi import HTTPException
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
+func = ToolkitNode(
+    category=Category.UTILS,
     name="range",
     task="math_utils",
     cost=0,

@@ -9,15 +9,7 @@ func = ToolkitModel(
     task="natural_language_processing",
     cost=0,
     description="Hugging Face fill mask task",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/natural_language_processing/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/natural_language_processing/fill_mask",
 )
-
-
-@func.set_startup_params
-class StartupParams(CoreModel):
-    hugging_face_model: str = field(description="Model")
-    device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_input
@@ -30,6 +22,8 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
+    hugging_face_model: str = field(description="Model")
+    device_map: str = field(description="Device map (Auto, CPU or GPU)")
     top_k: int = field(
         default=5,
         description="Number of top predictions to return (default: 5).",

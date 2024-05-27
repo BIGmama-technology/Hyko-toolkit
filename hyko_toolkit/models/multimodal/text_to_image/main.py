@@ -1,12 +1,13 @@
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from hyko_sdk.io import Image
-from metadata import Inputs, Outputs, Params, StartupParams, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 generator = None
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
+async def load(startup_params: Params):
     global generator
 
     model = startup_params.hugging_face_model
@@ -20,7 +21,7 @@ async def load(startup_params: StartupParams):
         generator.to(device_map)
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     res = generator(
         prompt=inputs.prompt,

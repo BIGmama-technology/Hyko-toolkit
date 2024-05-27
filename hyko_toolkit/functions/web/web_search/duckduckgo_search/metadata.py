@@ -1,16 +1,15 @@
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitFunction(
+func = ToolkitNode(
+    category=Category.FUNCTION,
     name="duckduckgo_search",
     task="web_search",
     cost=5,
     description="Search the web using DuckDuckGo.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_search/duckduckgo_search/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/web/web_search/duckduckgo_search",
 )
 
 

@@ -3,11 +3,12 @@ from io import BytesIO
 
 import fitz  # PyMuPDF
 import pytesseract
-from metadata import Inputs, Outputs, Params, func
 from PIL import Image
 
+from .metadata import Inputs, Outputs, Params, func
 
-@func.on_execute
+
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     Perform OCR (Optical Character Recognition) on a PDF document.
