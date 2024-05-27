@@ -8,11 +8,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Image to video",
+    task="Stability ai",
     category=Category.API,
-    name="image_to_video",
-    task="stability_ai",
     description="Use Stability.ai API for Video generation from an existing image.",
     cost=3,
+    icon="stabilityai",
 )
 
 

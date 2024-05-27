@@ -6,11 +6,12 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Pdf downloader",
+    task="Downloaders",
     category=Category.FUNCTION,
-    name="pdf_downloader",
-    task="downloaders",
     cost=2,
     description="This function downloads content from a URL and returns it as a PDF object.",
+    icon="pdf",
 )
 
 

@@ -7,11 +7,12 @@ from pydantic import PositiveInt
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Crop edges",
+    task="Image utils",
     category=Category.UTILS,
-    name="crop_edges",
-    task="image_utils",
     cost=0,
     description="Crop an image from the specified edges",
+    icon="crop",
 )
 
 

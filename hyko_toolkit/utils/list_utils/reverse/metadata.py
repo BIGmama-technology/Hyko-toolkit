@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Reverse list",
+    task="List utils",
     category=Category.UTILS,
-    name="reverse_list",
-    task="list_utils",
     cost=0,
     description="Reverses a list.",
 )

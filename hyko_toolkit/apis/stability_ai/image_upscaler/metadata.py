@@ -8,11 +8,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Image upscaler",
+    task="Stability ai",
     category=Category.API,
-    name="image_upscaler",
-    task="stability_ai",
     description="Use Stability.ai API for Image upscaling.",
     cost=3,
+    icon="stabilityai",
 )
 
 

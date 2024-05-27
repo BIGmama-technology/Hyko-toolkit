@@ -5,9 +5,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Range",
+    task="Math utils",
     category=Category.UTILS,
-    name="range",
-    task="math_utils",
     cost=0,
     description="Generate a range of integers",
 )

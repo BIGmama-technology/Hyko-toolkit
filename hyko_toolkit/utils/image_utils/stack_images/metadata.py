@@ -8,11 +8,12 @@ from PIL import Image
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Stack images",
+    task="Image utils",
     category=Category.UTILS,
-    name="stack_images",
-    task="image_utils",
     cost=0,
     description="Stack images horizontally or vertically",
+    icon="stack",
 )
 
 

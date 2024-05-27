@@ -5,11 +5,12 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Rotate",
+    task="Image utils",
     category=Category.UTILS,
-    name="rotate",
-    task="image_utils",
     cost=0,
     description="Rotate an image by a given angle",
+    icon="rotate",
 )
 
 

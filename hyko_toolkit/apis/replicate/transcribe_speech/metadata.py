@@ -13,11 +13,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Replicate transcribe speech",
+    task="Replicate",
     category=Category.API,
-    name="replicate_transcribe-speech",
-    task="replicate",
     cost=3,
     description="Transcribe audio to text in multiple languages.",
+    icon="replicate",
 )
 
 

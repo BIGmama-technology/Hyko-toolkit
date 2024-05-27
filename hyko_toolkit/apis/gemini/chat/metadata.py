@@ -9,11 +9,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Gemini text generation api",
+    task="Gemini",
     category=Category.API,
-    name="gemini_text_generation_api",
-    task="gemini",
     cost=1,
     description="Use gemini api for text generation.",
+    icon="gemini",
 )
 
 

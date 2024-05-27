@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Sort list",
+    task="List utils",
     category=Category.UTILS,
-    name="sort_list",
-    task="list_utils",
     cost=0,
     description="Sorts a list.",
 )

@@ -5,11 +5,12 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Video to audio",
+    task="Converters",
     category=Category.FUNCTION,
-    name="video_to_audio",
-    task="converters",
     cost=3,
     description="Convert a video type to audio type (takes only the audio data)",
+    icon="video",
 )
 
 

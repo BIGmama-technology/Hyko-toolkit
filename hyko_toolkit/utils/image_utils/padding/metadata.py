@@ -8,11 +8,12 @@ from PIL import Image as PILImage
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Padding",
+    task="Image utils",
     category=Category.UTILS,
-    name="padding",
-    task="image_utils",
     cost=0,
     description="Adds padding to an image by a given amount from the left, right, top and bottom",
+    icon="padding",
 )
 
 

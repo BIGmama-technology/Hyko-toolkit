@@ -9,11 +9,12 @@ from pydantic import PositiveInt
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Resize resolution",
+    task="Image utils",
     category=Category.UTILS,
-    name="resize_resolution",
-    task="image_utils",
     cost=0,
     description="Resize an image to an exact resolution",
+    icon="resize",
 )
 
 

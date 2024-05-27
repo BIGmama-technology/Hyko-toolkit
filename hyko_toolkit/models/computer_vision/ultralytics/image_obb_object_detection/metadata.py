@@ -8,8 +8,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="ultralytics_image_obb_object_detection",
-    task="computer_vision",
+    name="Ultralytics image obb object detection",
+    task="Computer vision",
     cost=0,
     description="UltraLytics Image Oriented Bounding Boxes Object Detection Using YOLO V8.",
 )

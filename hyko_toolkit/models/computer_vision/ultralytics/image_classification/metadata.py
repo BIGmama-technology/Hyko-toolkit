@@ -8,8 +8,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="ultralytics_image_classification",
-    task="computer_vision",
+    name="Ultralytics image classification",
+    task="Computer vision",
     cost=0,
     description="UltraLytics Image Classification Using YOLOv8 Classifier.",
 )

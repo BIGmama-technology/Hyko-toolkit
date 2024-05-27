@@ -8,11 +8,12 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Video converter",
+    task="Converters",
     category=Category.FUNCTION,
-    name="video_converter",
-    task="converters",
     cost=3,
     description="Convert a video from one format to another.",
+    icon="video",
 )
 
 

@@ -5,9 +5,10 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Pdf to text",
+    task="Converters",
+    icon="pdf",
     category=Category.FUNCTION,
-    name="pdf_to_text",
-    task="converters",
     cost=3,
     description="Extracts text from pdf.",
 )

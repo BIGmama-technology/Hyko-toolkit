@@ -14,11 +14,12 @@ class SupportedLanguages(str, Enum):
 
 
 func = ToolkitNode(
+    name="Youtube transcript",
+    task="Web scraping",
     category=Category.FUNCTION,
-    name="youtube_transcript",
-    task="web_scraping",
     cost=5,
     description="Transcript extraction from youtube video.",
+    icon="youtube",
 )
 
 

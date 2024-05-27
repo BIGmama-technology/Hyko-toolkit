@@ -9,11 +9,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Huggingface chat api",
+    task="Huggingface",
     category=Category.API,
-    name="huggingface_chat_api",
-    task="huggingface",
     description="Use huggingface api for text generation.",
     cost=5,
+    icon="hf",
 )
 
 

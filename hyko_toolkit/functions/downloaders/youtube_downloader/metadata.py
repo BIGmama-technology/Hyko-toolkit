@@ -17,11 +17,12 @@ class Resolution(str, Enum):
 
 
 func = ToolkitNode(
+    name="Youtube downloader",
+    task="Downloaders",
     category=Category.FUNCTION,
-    name="youtube_downloader",
-    task="downloaders",
     cost=2,
     description="Download a video from YouTube.",
+    icon="youtube",
 )
 
 

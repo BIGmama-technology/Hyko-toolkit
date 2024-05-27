@@ -1,13 +1,15 @@
-from hyko_sdk.components.components import TextField
+from hyko_sdk.components.components import Search, TextField
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
+from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="text_classification",
-    task="natural_language_processing",
+    name="Text classification",
+    task="Natural language processing",
     cost=0,
+    icon="hf",
     description="Hugging Face text classification",
 )
 
@@ -22,7 +24,10 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = field(description="Model")
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search text classification model"),
+    )
     device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
@@ -30,3 +35,8 @@ class Params(CoreModel):
 class Outputs(CoreModel):
     label: list[str] = field(description="Class labels")
     score: list[float] = field(description="Associated score to the class label")
+
+
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

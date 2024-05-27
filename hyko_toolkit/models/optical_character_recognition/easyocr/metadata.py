@@ -15,8 +15,8 @@ class SupportedLanguages(str, Enum):
 
 
 func = ToolkitModel(
-    name="easyocr",
-    task="optical_character_recognition",
+    name="Easyocr",
+    task="Optical character recognition",
     cost=0,
     description="Extracts text from an image using EasyOCR.",
 )

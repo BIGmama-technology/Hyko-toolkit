@@ -10,11 +10,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Gemini vision api",
+    task="Gemini",
     category=Category.API,
-    name="gemini_vision_api",
-    task="gemini",
     cost=1,
     description="Use google gemini vision api to understand images.",
+    icon="gemini",
 )
 
 

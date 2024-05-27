@@ -5,11 +5,12 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Get dimensions",
+    task="Image utils",
     category=Category.UTILS,
-    name="get_dimensions",
-    task="image_utils",
     cost=0,
     description="Get the Height, Width, and number of Channels from an image",
+    icon="dimensions",
 )
 
 

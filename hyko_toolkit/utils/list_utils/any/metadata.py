@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Any value",
+    task="List utils",
     category=Category.UTILS,
-    name="any_value",
-    task="list_utils",
     cost=0,
     description="Returns True if any element of the list is equal a certain value.",
 )

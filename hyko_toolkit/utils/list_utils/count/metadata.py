@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Count element",
+    task="List utils",
     category=Category.UTILS,
-    name="count_element",
-    task="list_utils",
     cost=0,
     description="Counts the number of occurrences of an element in a list.",
 )

@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Extend list",
+    task="List utils",
     category=Category.UTILS,
-    name="extend_list",
-    task="list_utils",
     cost=0,
     description="Extends a list with another list.",
 )

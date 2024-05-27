@@ -11,11 +11,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Image to image with a mask",
+    task="Stability ai",
     category=Category.API,
-    name="image_to_image_with_a_mask",
-    task="stability_ai",
     description="Selectively modify portions of an image using a mask Using Stability.ai API .",
     cost=8,
+    icon="stabilityai",
 )
 
 

@@ -1,14 +1,16 @@
-from hyko_sdk.components.components import Slider
+from hyko_sdk.components.components import Search, Slider
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
+from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="object_detection",
-    task="computer_vision",
+    name="Object detection",
+    task="Computer vision",
     cost=0,
+    icon="hf",
     description="Hugging face object detection",
 )
 
@@ -20,7 +22,10 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = field(description="Model Id.")
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search object detection model"),
+    )
     device_map: str = field(description="Device map (Auto, CPU or GPU).")
     threshold: float = field(
         default=0.7,
@@ -32,3 +37,8 @@ class Params(CoreModel):
 @func.set_output
 class Outputs(CoreModel):
     final: Image = field(description="Labeled image.")
+
+
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

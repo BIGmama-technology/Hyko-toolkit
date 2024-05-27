@@ -10,11 +10,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Openai text to speech",
+    task="Openai",
     category=Category.API,
-    name="openai_text_to_speech",
-    task="openai",
     description="Use openai api to turn text into lifelike spoken audio.",
     cost=3000,
+    icon="openai",
 )
 
 

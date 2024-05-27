@@ -1,14 +1,16 @@
-from hyko_sdk.components.components import Slider
+from hyko_sdk.components.components import Search, Slider
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
+from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="mask_generation",
-    task="computer_vision",
+    name="Mask generation",
+    task="Computer vision",
     cost=0,
+    icon="hf",
     description="HuggingFace mask generation.",
 )
 
@@ -16,7 +18,8 @@ func = ToolkitModel(
 @func.set_param
 class Params(CoreModel):
     hugging_face_model: str = field(
-        default="facebook/sam-vit-base", description="Model"
+        description="Model",
+        component=Search(placeholder="Search mask generation model"),
     )
     device_map: str = field(default="cpu", description="Device map (Auto, CPU or GPU)")
     mask_threshold: float = field(
@@ -45,3 +48,8 @@ class Inputs(CoreModel):
 class Outputs(CoreModel):
     bbox_img: Image = field(description="Boundig Boxes")
     mask_img: Image = field(description="Maskes")
+
+
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

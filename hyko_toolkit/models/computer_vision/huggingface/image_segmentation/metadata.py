@@ -1,26 +1,26 @@
-from hyko_sdk.components.components import Slider
+from hyko_sdk.components.components import Search, Slider
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
+from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="image_segmentation",
-    task="computer_vision",
+    name="Image segmentation",
+    task="Computer vision",
     cost=0,
+    icon="hf",
     description="HuggingFace image segmentation",
 )
 
 
-@func.set_input
-class Inputs(CoreModel):
-    input_image: Image = field(description="Input image")
-
-
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = field(description="Model")
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search image segmentation model"),
+    )
     device_map: str = field(description="Device map (Auto, CPU or GPU)")
     threshold: float = field(
         default=0.9,
@@ -39,6 +39,16 @@ class Params(CoreModel):
     )
 
 
+@func.set_input
+class Inputs(CoreModel):
+    input_image: Image = field(description="Input image")
+
+
 @func.set_output
 class Outputs(CoreModel):
     mask: Image = field(description="Segmented image")
+
+
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

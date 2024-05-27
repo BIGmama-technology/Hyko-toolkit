@@ -1,13 +1,15 @@
-from hyko_sdk.components.components import Slider, TextField
+from hyko_sdk.components.components import Search, Slider, TextField
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
+from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="summarization",
-    task="natural_language_processing",
+    name="Summarization",
+    task="Natural language processing",
     cost=0,
+    icon="hf",
     description="Hugging Face summarization",
 )
 
@@ -22,7 +24,10 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = field(description="Model")
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search summarization model"),
+    )
     device_map: str = field(description="Device map (Auto, CPU or GPU)")
     max_length: int = field(default=128, description="Maximum output length")
     min_length: int = field(default=16, description="Minumum output length")
@@ -44,3 +49,8 @@ class Params(CoreModel):
 @func.set_output
 class Outputs(CoreModel):
     summary_text: str = field(description="Summary output")
+
+
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

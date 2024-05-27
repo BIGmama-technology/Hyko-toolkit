@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="e5_faiss",
-    task="similarity_search",
+    name="E5 faiss",
+    task="Similarity search",
     cost=0,
     description="Tool for computing similarity scores based on a given threshold.",
 )

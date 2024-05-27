@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Pop element",
+    task="List utils",
     category=Category.UTILS,
-    name="pop_element",
-    task="list_utils",
     cost=0,
     description="Removes an element from a list.",
 )
@@ -31,7 +31,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    output: Any = field(
+    output: list[Any] = field(
         description="Final list.",
     )
 

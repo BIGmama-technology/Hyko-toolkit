@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Insert element",
+    task="List utils",
     category=Category.UTILS,
-    name="insert_element",
-    task="list_utils",
     cost=0,
     description="Inserts an element to a list.",
 )

@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Index element",
+    task="List utils",
     category=Category.UTILS,
-    name="index_element",
-    task="list_utils",
     cost=0,
     description="Returns the index of an element in a list.",
 )

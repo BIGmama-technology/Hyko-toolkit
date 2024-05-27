@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Len list",
+    task="List utils",
     category=Category.UTILS,
-    name="len_list",
-    task="list_utils",
     cost=0,
     description="Gets the length of a list.",
 )

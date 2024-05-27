@@ -14,11 +14,12 @@ class SupportedLanguages(str, Enum):
 
 
 func = ToolkitNode(
+    name="Wikipedia search",
+    task="Web search",
     category=Category.FUNCTION,
-    name="wikipedia_search",
-    task="web_search",
     cost=5,
     description="Search wikipedia summaries.",
+    icon="wikipedia",
 )
 
 

@@ -8,9 +8,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Replace",
+    task="Text utils",
     category=Category.UTILS,
-    name="replace",
-    task="text_utils",
     cost=0,
     description="Replace occurrences of a substring in a string",
 )

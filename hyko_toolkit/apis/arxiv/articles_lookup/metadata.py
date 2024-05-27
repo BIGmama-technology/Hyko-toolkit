@@ -10,10 +10,11 @@ from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     category=Category.API,
-    name="arxiv_articles_lookup",
-    task="arxiv",
+    name="Arxiv articles lookup",
+    task="Arxiv",
     cost=1,
     description="Use Arxiv API for articles Search.",
+    icon="arxiv",
 )
 
 

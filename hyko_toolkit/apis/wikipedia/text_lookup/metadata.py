@@ -9,11 +9,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Wikipedia text lookup",
+    task="Wikipedia",
     category=Category.API,
-    name="wikipedia_text_lookup",
-    task="wikimedia",
     cost=1,
     description="Use WikiPedia API for Search.",
+    icon="wikipedia",
 )
 
 

@@ -9,11 +9,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Mistral ai text completion",
+    task="Mistral ai",
     category=Category.API,
-    name="mistral_ai_text_completion",
-    task="mistral_ai",
     description="Use mistral ai api for text completion.",
     cost=150,
+    icon="mistral",
 )
 
 

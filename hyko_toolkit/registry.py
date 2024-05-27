@@ -1,8 +1,8 @@
-from typing import Any, Callable, Coroutine, Union
+from typing import Any, Callable, Coroutine, Optional, Union
 
 from hyko_sdk.definitions import ToolkitModel as _ToolkitModel
 from hyko_sdk.definitions import ToolkitNode as _ToolkitNode
-from hyko_sdk.models import Category, MetaDataBase
+from hyko_sdk.models import Category, Icon, MetaDataBase
 
 Definition = Union[
     "ToolkitNode",
@@ -39,17 +39,16 @@ class Registry:
     @classmethod
     def get_callback(cls, id: str):
         if id not in cls._callbacks_registry:
-            raise ValueError(f"callback '{id}' not found")
+            raise ValueError(f"callback {id} not found")
         return cls._callbacks_registry[id]
 
 
 class AllowCallback(_ToolkitNode):
-    def callback(self, trigger: str, id: str):
-        field = self.params.get(trigger)
-
-        assert field, "trigger field not found in params"
-
-        field.callback_id = id
+    def callback(self, triggers: list[str], id: str):
+        for trigger in triggers:
+            field = self.params.get(trigger)
+            assert field, "trigger field not found in params"
+            field.callback_id = id
 
         def wrapper(
             callback: Callable[..., Coroutine[Any, Any, MetaDataBase]],
@@ -59,18 +58,29 @@ class AllowCallback(_ToolkitNode):
         return wrapper
 
 
-class ToolkitNode(_ToolkitNode):
+class ToolkitNode(AllowCallback):
     def __init__(
-        self, name: str, task: str, description: str, cost: int, category: Category
+        self,
+        name: str,
+        task: str,
+        description: str,
+        category: Category,
+        icon: Optional[Icon] = "io",
+        cost: int = 0,
     ):
         super().__init__(
-            name=name, task=task, description=description, cost=cost, category=category
+            name=name,
+            task=task,
+            description=description,
+            cost=cost,
+            icon=icon,
+            category=category,
         )
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)
 
 
-class ToolkitModel(_ToolkitModel):
+class ToolkitModel(_ToolkitModel, AllowCallback):
     def __init__(
         self,
         name: str,
@@ -78,9 +88,15 @@ class ToolkitModel(_ToolkitModel):
         description: str,
         cost: int,
         category: Category = Category.MODEL,
+        icon: Optional[Icon] = "models",
     ):
         super().__init__(
-            name=name, task=task, description=description, category=category, cost=cost
+            name=name,
+            task=task,
+            description=description,
+            category=category,
+            cost=cost,
+            icon=icon,
         )
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)

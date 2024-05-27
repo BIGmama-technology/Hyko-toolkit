@@ -5,9 +5,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Length",
+    task="Text utils",
     category=Category.UTILS,
-    name="length",
-    task="text_utils",
     cost=0,
     description="Calculate the length of a string",
 )

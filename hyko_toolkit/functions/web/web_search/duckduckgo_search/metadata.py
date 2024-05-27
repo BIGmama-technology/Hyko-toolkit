@@ -5,10 +5,11 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Duckduckgo search",
+    task="Web search",
     category=Category.FUNCTION,
-    name="duckduckgo_search",
-    task="web_search",
     cost=5,
+    icon="duckduckgo",
     description="Search the web using DuckDuckGo.",
 )
 

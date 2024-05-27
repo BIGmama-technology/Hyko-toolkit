@@ -14,11 +14,12 @@ class SupportedPlots(str, Enum):
 
 
 func = ToolkitNode(
+    name="Univariate plot",
+    task="Plotting",
     category=Category.FUNCTION,
-    name="univariate_plot",
-    task="plotting",
     cost=2,
     description="Generate various types of plots with Y input.",
+    icon="graph",
 )
 
 

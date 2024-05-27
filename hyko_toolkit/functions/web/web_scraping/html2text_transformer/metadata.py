@@ -5,9 +5,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Html2text transformer",
+    task="Web scraping",
     category=Category.FUNCTION,
-    name="html2text_transformer",
-    task="web_scraping",
     cost=5,
     description="Scrape HTML content from URLs and convert it to plain text",
 )

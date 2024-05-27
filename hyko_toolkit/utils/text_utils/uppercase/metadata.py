@@ -5,9 +5,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Uppercase",
+    task="Text utils",
     category=Category.UTILS,
-    name="uppercase",
-    task="text_utils",
     cost=0,
     description="Convert a given string to uppercase",
 )

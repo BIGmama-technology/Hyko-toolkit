@@ -8,10 +8,11 @@ from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     category=Category.API,
-    name="google_text_embedding",
-    task="gemini",
+    name="Google text embedding",
+    task="Gemini",
     cost=1,
     description="Use google api for text embedding.",
+    icon="gemini",
 )
 
 

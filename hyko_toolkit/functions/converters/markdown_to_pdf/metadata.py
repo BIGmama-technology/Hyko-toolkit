@@ -6,11 +6,12 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Markdown to pdf",
+    task="Converters",
     category=Category.FUNCTION,
-    name="markdown_to_pdf",
-    task="converters",
     cost=3,
     description="Convert Markdown content to PDF format.",
+    icon="pdf",
 )
 
 

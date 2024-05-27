@@ -9,9 +9,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Arithmetic",
+    task="Math utils",
     category=Category.UTILS,
-    name="arithmetic",
-    task="math_utils",
     cost=0,
     description="Perform mathematical operations on numbers",
 )

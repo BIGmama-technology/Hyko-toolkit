@@ -4,9 +4,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Sum list",
+    task="List utils",
     category=Category.UTILS,
-    name="sum_list",
-    task="list_utils",
     cost=0,
     description="Gets the sum of a list of numbers.",
 )

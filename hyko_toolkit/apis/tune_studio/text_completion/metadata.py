@@ -9,11 +9,12 @@ from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Tune studio text completion",
+    task="Tune studio",
     category=Category.API,
-    name="tune_studio_text_completion",
-    task="tune_studio",
     description="Use Tune Studio api for text completion.",
     cost=10,
+    icon="tune",
 )
 
 

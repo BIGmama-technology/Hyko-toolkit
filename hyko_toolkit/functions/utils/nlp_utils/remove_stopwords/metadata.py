@@ -6,9 +6,9 @@ from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
 func = ToolkitModel(
+    name="Remove Stopwords",
+    task="Nlp utils",
     category=Category.FUNCTION,
-    name="remove_stopwords",
-    task="nlp_utils",
     cost=3,
     description="A function to remove stopwords from text.",
 )

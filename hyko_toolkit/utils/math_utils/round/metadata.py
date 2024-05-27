@@ -8,9 +8,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Round",
+    task="Math utils",
     category=Category.UTILS,
-    name="round",
-    task="math_utils",
     cost=0,
     description="Round an input number",
 )

@@ -9,11 +9,12 @@ from PIL import Image
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Flip",
+    task="Image utils",
     category=Category.UTILS,
-    name="flip",
-    task="image_utils",
     cost=0,
     description="Flip an image based on the specified axis",
+    icon="flip",
 )
 
 

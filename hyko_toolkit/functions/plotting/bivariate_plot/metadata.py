@@ -20,11 +20,12 @@ class SupportedPlots(str, Enum):
 
 
 func = ToolkitNode(
+    name="Bivariate plot",
+    task="Plotting",
     category=Category.FUNCTION,
-    name="bivariate_plot",
-    task="plotting",
     cost=2,
     description="Generate various types of plots with (X , Y) inputs.",
+    icon="graph",
 )
 
 

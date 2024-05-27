@@ -14,11 +14,12 @@ class SupportedLanguages(str, Enum):
 
 
 func = ToolkitNode(
+    name="OCR pdf to text",
+    task="Converters",
     category=Category.FUNCTION,
-    name="ocr_pdf_to_text",
-    task="converters",
     cost=3,
     description="Perform OCR (Optical Character Recognition) on a PDF document",
+    icon="pdf",
 )
 
 

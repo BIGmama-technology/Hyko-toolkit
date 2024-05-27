@@ -9,11 +9,12 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Image converter",
+    task="Image utils",
     category=Category.UTILS,
-    name="image_converter",
-    task="image_utils",
     cost=0,
     description="Convert an input image to a specified target image type.",
+    icon="image",
 )
 
 

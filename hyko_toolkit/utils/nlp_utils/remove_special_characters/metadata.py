@@ -6,9 +6,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Remove special characters",
+    task="Nlp utils",
     category=Category.UTILS,
-    name="remove_special_characters",
-    task="nlp_utils",
     cost=0,
     description="A function to remove special characters and punctuation from text.",
 )

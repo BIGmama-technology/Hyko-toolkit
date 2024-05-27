@@ -1,26 +1,26 @@
-from hyko_sdk.components.components import Slider
+from hyko_sdk.components.components import Search, Slider
 from hyko_sdk.io import Audio
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
+from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="text_to_speech",
-    task="audio",
+    name="Text to speech",
+    task="Audio",
     cost=0,
+    icon="hf",
     description="HuggingFace text to speech, run on cuda may cause issues on cpu",
 )
 
 
-@func.set_input
-class Inputs(CoreModel):
-    text: str = field(description="Input text")
-
-
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = field(description="Model")
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search Text to speech model"),
+    )
     device_map: str = field(description="Device map (Auto, CPU or GPU)")
     top_k: int = field(
         default=2,
@@ -39,6 +39,16 @@ class Params(CoreModel):
     )
 
 
+@func.set_input
+class Inputs(CoreModel):
+    text: str = field(description="Input text")
+
+
 @func.set_output
 class Outputs(CoreModel):
     speech: Audio = field(description="Synthesized speech")
+
+
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

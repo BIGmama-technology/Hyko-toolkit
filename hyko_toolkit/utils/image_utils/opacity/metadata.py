@@ -8,11 +8,12 @@ from pydantic import PositiveFloat
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Opacity",
+    task="Image utils",
     category=Category.UTILS,
-    name="opacity",
-    task="image_utils",
     cost=0,
     description="Adjusts the opacity of an image",
+    icon="opacity",
 )
 
 

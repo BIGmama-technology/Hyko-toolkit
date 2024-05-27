@@ -10,10 +10,11 @@ from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     category=Category.API,
-    name="cohere_text_embedding",
-    task="cohere",
+    name="Cohere text embedding",
+    task="Cohere",
     cost=1,
     description="Use cohere api for text embedding.",
+    icon="cohere",
 )
 
 

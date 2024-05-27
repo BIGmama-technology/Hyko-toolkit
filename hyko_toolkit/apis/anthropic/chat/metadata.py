@@ -10,10 +10,11 @@ from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     category=Category.API,
-    name="anthropic_chat_api",
-    task="anthropic",
+    name="Anthropic chat api",
+    task="Anthropic",
     description="Use anthropic api for text generation.",
     cost=600,
+    icon="anthropic",
 )
 
 

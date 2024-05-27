@@ -5,9 +5,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Count",
+    task="Text utils",
     category=Category.UTILS,
-    name="count",
-    task="text_utils",
     cost=0,
     description="Count the number of occurrences of a substring in a string",
 )

@@ -7,11 +7,12 @@ from PIL import ImageEnhance
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Brightness and contrast",
+    task="Image utils",
     category=Category.UTILS,
-    name="brightness_and_contrast",
-    task="image_utils",
     cost=0,
     description="Adjust brightness and contrast of an image",
+    icon="image",
 )
 
 

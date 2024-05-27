@@ -1,26 +1,26 @@
-from hyko_sdk.components.components import Slider
+from hyko_sdk.components.components import Search, Slider
 from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
+from hyko_toolkit.callbacks_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="video_classification",
-    task="computer_vision",
+    name="Video classification",
+    task="Computer vision",
     cost=0,
+    icon="hf",
     description="HuggingFace video classification",
 )
 
 
-@func.set_input
-class Inputs(CoreModel):
-    input_video: Video = field(description="Input image")
-
-
 @func.set_param
 class Params(CoreModel):
-    hugging_face_model: str = field(description="Model")
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search video classification model"),
+    )
     device_map: str = field(description="Device map (Auto, CPU or GPU)")
     top_k: int = field(
         default=1,
@@ -32,7 +32,17 @@ class Params(CoreModel):
     )
 
 
+@func.set_input
+class Inputs(CoreModel):
+    input_video: Video = field(description="Input image")
+
+
 @func.set_output
 class Outputs(CoreModel):
     labels: list[str] = field(description="Class of the video.")
     scores: list[float] = field(description="Scores for each class.")
+
+
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

@@ -5,8 +5,8 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="hybrid_search",
-    task="similarity_search",
+    name="Hybrid search",
+    task="Similarity search",
     cost=0,
     description="Executes simultaneous BM25 keyword matching and document similarity searches on input documents.",
 )

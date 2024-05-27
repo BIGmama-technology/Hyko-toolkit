@@ -5,9 +5,9 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
+    name="Scrapy crawler",
+    task="Web scraping",
     category=Category.FUNCTION,
-    name="scrapy_crawler",
-    task="web_scraping",
     cost=5,
     description="use scrapy to crawl web pages",
 )
