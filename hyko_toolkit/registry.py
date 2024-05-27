@@ -1,6 +1,5 @@
 from typing import Any, Callable, Coroutine, Union
 
-from hyko_sdk.definitions import ToolkitIO as _ToolkitIO
 from hyko_sdk.definitions import ToolkitModel as _ToolkitModel
 from hyko_sdk.definitions import ToolkitNode as _ToolkitNode
 from hyko_sdk.models import Category, MetaDataBase
@@ -8,7 +7,6 @@ from hyko_sdk.models import Category, MetaDataBase
 Definition = Union[
     "ToolkitNode",
     "ToolkitModel",
-    "ToolkitIO",
 ]
 
 
@@ -53,19 +51,12 @@ class AllowCallback(_ToolkitNode):
 
         field.callback_id = id
 
-        def warper(
+        def wrapper(
             callback: Callable[..., Coroutine[Any, Any, MetaDataBase]],
         ):
             Registry.register_callback(id, callback)
 
-        return warper
-
-
-class ToolkitIO(_ToolkitIO, AllowCallback):
-    def __init__(self, name: str, task: str, description: str, cost: int = 0):
-        super().__init__(name=name, task=task, description=description, cost=cost)
-        # Automatically register the instance upon creation
-        Registry.register(self.get_metadata().image, self)
+        return wrapper
 
 
 class ToolkitNode(_ToolkitNode):
@@ -89,11 +80,7 @@ class ToolkitModel(_ToolkitModel):
         category: Category = Category.MODEL,
     ):
         super().__init__(
-            name=name,
-            task=task,
-            description=description,
-            category=category,
-            cost=cost,
+            name=name, task=task, description=description, category=category, cost=cost
         )
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)

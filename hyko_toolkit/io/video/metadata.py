@@ -1,14 +1,16 @@
 from hyko_sdk.components.components import Ext, StorageSelect, VideoPreview
 from hyko_sdk.io import Video
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitIO
+from hyko_toolkit.registry import ToolkitNode
 
-input_node = ToolkitIO(
+input_node = ToolkitNode(
     name="Video",
     task="inputs",
     description="Upload video.",
+    category=Category.IO,
+    cost=0,
 )
 
 
@@ -30,10 +32,12 @@ class Output(CoreModel):
     )
 
 
-output_node = ToolkitIO(
+output_node = ToolkitNode(
     name="Video",
     task="outputs",
     description="Upload video.",
+    category=Category.IO,
+    cost=0,
 )
 
 
