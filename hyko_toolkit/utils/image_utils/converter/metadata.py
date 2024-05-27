@@ -3,14 +3,15 @@ from enum import Enum
 
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
+func = ToolkitNode(
     name="Image converter",
     task="Image utils",
+    category=Category.UTILS,
     cost=0,
     description="Convert an input image to a specified target image type.",
     icon="image",

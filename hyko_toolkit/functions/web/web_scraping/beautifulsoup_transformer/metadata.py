@@ -1,16 +1,15 @@
 from hyko_sdk.components.components import ListComponent, TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitFunction(
+func = ToolkitNode(
     name="Beautifulsoup transformer",
     task="Web scraping",
+    category=Category.FUNCTION,
     cost=5,
     description="Scrape HTML content from URLs and convert it to plain text",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_scraping/beautifulsoup_transformer/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/web/web_scraping/beautifulsoup_transformer",
 )
 
 

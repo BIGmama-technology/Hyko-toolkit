@@ -12,13 +12,11 @@ func = ToolkitModel(
     cost=0,
     icon="hf",
     description="HuggingFace image classification",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/image_classification",
 )
 
 
 @func.set_param
-class StartupParams(CoreModel):
+class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
         component=Search(placeholder="Search image classification model"),

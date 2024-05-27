@@ -12,13 +12,17 @@ func = ToolkitModel(
     cost=0,
     icon="hf",
     description="Hugging Face image classification",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/zero_shot_image_classification",
 )
 
 
+@func.set_input
+class Inputs(CoreModel):
+    input_image: Image = field(description="Input image")
+    labels: list[str] = field(description="Labels for classification")
+
+
 @func.set_param
-class StartupParams(CoreModel):
+class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
         component=Search(placeholder="Search zero shot image classification model"),
@@ -28,12 +32,6 @@ class StartupParams(CoreModel):
         default="This is a photo of {}",
         description="Template for image classification hypothesis.",
     )
-
-
-@func.set_input
-class Inputs(CoreModel):
-    input_image: Image = field(description="Input image")
-    labels: list[str] = field(description="Labels for classification")
 
 
 @func.set_output

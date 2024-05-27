@@ -1,14 +1,15 @@
 import httpx
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
+func = ToolkitNode(
     name="Google search",
     task="Google",
+    category=Category.API,
     description="Use Google API for Search.",
     cost=100,
     icon="google",

@@ -1,10 +1,10 @@
 from enum import Enum
 
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
 
 class SupportedLanguages(str, Enum):
@@ -13,13 +13,13 @@ class SupportedLanguages(str, Enum):
     french = "fr"
 
 
-func = ToolkitFunction(
+func = ToolkitNode(
     name="Wikipedia search",
     task="Web search",
+    category=Category.FUNCTION,
     cost=5,
     description="Search wikipedia summaries.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_search/wikipedia_search/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/web/web_search/wikipedia_search",
+    icon="wikipedia",
 )
 
 

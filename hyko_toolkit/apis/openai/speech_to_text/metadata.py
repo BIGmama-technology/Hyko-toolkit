@@ -1,15 +1,16 @@
 import httpx
 from hyko_sdk.components.components import TextField
 from hyko_sdk.io import Audio
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
+func = ToolkitNode(
     name="Openai speech to text",
     task="Openai",
+    category=Category.API,
     description="Use openai api to turn audio into text.",
     cost=6000,
     icon="openai",

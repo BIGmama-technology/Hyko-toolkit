@@ -1,18 +1,16 @@
 from enum import Enum
 
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.definitions import ToolkitModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
-
-func = ToolkitFunction(
+func = ToolkitModel(
     name="Remove Stopwords",
     task="Nlp utils",
+    category=Category.FUNCTION,
     cost=3,
     description="A function to remove stopwords from text.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/utils/nlp_utils/remove_stopwords/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/utils/nlp_utils/remove_stopwords",
 )
 
 

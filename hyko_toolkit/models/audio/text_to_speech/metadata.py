@@ -12,13 +12,11 @@ func = ToolkitModel(
     cost=0,
     icon="hf",
     description="HuggingFace text to speech, run on cuda may cause issues on cpu",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/audio/text_to_speech/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/audio/text_to_speech",
 )
 
 
 @func.set_param
-class StartupParams(CoreModel):
+class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
         component=Search(placeholder="Search Text to speech model"),

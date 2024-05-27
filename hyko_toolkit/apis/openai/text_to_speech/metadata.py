@@ -3,15 +3,16 @@ from enum import Enum
 import httpx
 from hyko_sdk.components.components import Ext, TextField
 from hyko_sdk.io import Audio
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
+func = ToolkitNode(
     name="Openai text to speech",
     task="Openai",
+    category=Category.API,
     description="Use openai api to turn text into lifelike spoken audio.",
     cost=3000,
     icon="openai",

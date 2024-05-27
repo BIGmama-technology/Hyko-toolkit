@@ -8,8 +8,6 @@ func = ToolkitModel(
     task="Regression",
     cost=0,
     description="Predicts a future value based on historical data",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/regression/linear_regression/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/regression/linear_regression",
 )
 
 

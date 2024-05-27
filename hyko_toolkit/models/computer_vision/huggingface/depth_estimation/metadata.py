@@ -17,8 +17,6 @@ func = ToolkitModel(
     cost=0,
     description="HuggingFace depth estimation",
     icon="hf",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/depth_estimation",
 )
 
 

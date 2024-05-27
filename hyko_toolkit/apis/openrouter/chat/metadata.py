@@ -2,15 +2,16 @@ from enum import Enum
 
 import httpx
 from hyko_sdk.components.components import Slider, TextField
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
+func = ToolkitNode(
     name="Openrouter chat api",
     task="Openrouter",
+    category=Category.API,
     description="Use OpenRouter api for text generation.",
     cost=54,
     icon="openrouter",

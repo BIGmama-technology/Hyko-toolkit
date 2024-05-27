@@ -1,10 +1,10 @@
 from enum import Enum
 
 from hyko_sdk.io import PDF
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
 
 class SupportedLanguages(str, Enum):
@@ -13,13 +13,12 @@ class SupportedLanguages(str, Enum):
     french = "fra"
 
 
-func = ToolkitFunction(
+func = ToolkitNode(
     name="OCR pdf to text",
     task="Converters",
+    category=Category.FUNCTION,
     cost=3,
     description="Perform OCR (Optical Character Recognition) on a PDF document",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/converters/ocr_pdf_to_text/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/converters/ocr_pdf_to_text",
     icon="pdf",
 )
 

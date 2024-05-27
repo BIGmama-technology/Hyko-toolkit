@@ -9,8 +9,6 @@ func = ToolkitModel(
     task="Similarity search",
     cost=0,
     description="Tool for computing similarity scores based on a given threshold.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/similarity_search/e5_faiss/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/similarity_search/e5_faiss",
 )
 
 

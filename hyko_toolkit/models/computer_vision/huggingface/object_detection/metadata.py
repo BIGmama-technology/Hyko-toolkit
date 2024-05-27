@@ -12,13 +12,16 @@ func = ToolkitModel(
     cost=0,
     icon="hf",
     description="Hugging face object detection",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/computer_vision/huggingface/object_detection/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/computer_vision/huggingface/object_detection",
 )
 
 
+@func.set_input
+class Inputs(CoreModel):
+    input_image: Image = field(description="Input image.")
+
+
 @func.set_param
-class StartupParams(CoreModel):
+class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
         component=Search(placeholder="Search object detection model"),
@@ -29,11 +32,6 @@ class StartupParams(CoreModel):
         description="The probability necessary to make a prediction.",
         component=Slider(leq=1, geq=0, step=0.01),
     )
-
-
-@func.set_input
-class Inputs(CoreModel):
-    input_image: Image = field(description="Input image.")
 
 
 @func.set_output

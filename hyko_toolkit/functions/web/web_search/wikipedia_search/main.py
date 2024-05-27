@@ -1,8 +1,9 @@
 import wikipedia
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     Search for articles on Wikipedia based on the given query.

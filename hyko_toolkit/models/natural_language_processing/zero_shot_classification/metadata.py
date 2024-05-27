@@ -11,13 +11,11 @@ func = ToolkitModel(
     cost=0,
     icon="hf",
     description="Hugging Face Zero Shot Classification Task",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/natural_language_processing/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/natural_language_processing/zero_shot_classification",
 )
 
 
-@func.set_startup_params
-class StartupParams(CoreModel):
+@func.set_param
+class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
         component=Search(placeholder="Search zero shot classification model"),

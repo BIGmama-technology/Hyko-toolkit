@@ -1,17 +1,16 @@
 from hyko_sdk.io import PDF
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitFunction(
+func = ToolkitNode(
     name="Pdf to text",
     task="Converters",
+    icon="pdf",
+    category=Category.FUNCTION,
     cost=3,
     description="Extracts text from pdf.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/converters/pdf_to_text/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/converters/pdf_to_text",
-    icon="pdf",
 )
 
 

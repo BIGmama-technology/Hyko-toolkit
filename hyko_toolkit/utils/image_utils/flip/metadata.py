@@ -2,15 +2,16 @@ from enum import Enum
 
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image as HykoImage
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 from PIL import Image
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
+func = ToolkitNode(
     name="Flip",
     task="Image utils",
+    category=Category.UTILS,
     cost=0,
     description="Flip an image based on the specified axis",
     icon="flip",

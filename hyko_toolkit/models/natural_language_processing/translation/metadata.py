@@ -13,8 +13,6 @@ func = ToolkitModel(
     cost=0,
     icon="hf",
     description="Hugging Face translation task",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/natural_language_processing/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/natural_language_processing/translation",
 )
 
 
@@ -28,15 +26,6 @@ class SupportedLanguages(str, Enum):
     russian = "ru"
 
 
-@func.set_startup_params
-class StartupParams(CoreModel):
-    hugging_face_model: str = field(
-        description="Model",
-        component=Search(placeholder="Search translation model"),
-    )
-    device_map: str = field(description="Device map (Auto, CPU or GPU)")
-
-
 @func.set_input
 class Inputs(CoreModel):
     original_text: str = field(
@@ -47,6 +36,11 @@ class Inputs(CoreModel):
 
 @func.set_param
 class Params(CoreModel):
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search translation model"),
+    )
+    device_map: str = field(description="Device map (Auto, CPU or GPU)")
     max_new_tokens: int = field(
         default=30, description="Cap newly generated content length"
     )
