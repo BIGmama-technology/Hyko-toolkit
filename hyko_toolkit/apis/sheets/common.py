@@ -24,6 +24,21 @@ async def get_spreadsheets(access_token: str):
         ]
 
 
+async def list_sheets_name(access_token: str, spreadsheet_id: str):
+    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
+        # handle error
+        sheets = response.json().get("sheets", [])
+    return [
+        {"label": sheet["properties"]["title"], "value": sheet["properties"]["sheetId"]}
+        for sheet in sheets
+    ]
+
+
 async def delete_rows(
     spreadsheet_id: str,
     sheet_id: int,
