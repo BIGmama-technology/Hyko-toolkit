@@ -1,17 +1,18 @@
 from hyko_sdk.components.components import Search, Slider
 from hyko_sdk.io import Audio
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
 from hyko_toolkit.callbacks_utils import huggingface_models_search
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Automatic speech recognition",
     task="Audio",
     cost=0,
     icon="hf",
     description="HuggingFace automatic speech recognition",
+    category=Category.MODEL,
 )
 
 

@@ -1,14 +1,15 @@
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Background image removal",
     task="Computer vision",
     cost=0,
     description="This function removes the background from the original input image.",
+    category=Category.MODEL,
 )
 
 

@@ -1,11 +1,11 @@
 from enum import Enum
 
 from hyko_sdk.components.components import TextField
-from hyko_sdk.definitions import ToolkitModel
+from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Remove Stopwords",
     task="Nlp utils",
     category=Category.FUNCTION,

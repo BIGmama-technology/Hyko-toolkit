@@ -1,16 +1,17 @@
 from hyko_sdk.components.components import Search, Slider, TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
 from hyko_toolkit.callbacks_utils import huggingface_models_search
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Question answering",
     task="Natural language processing",
     cost=0,
     icon="hf",
     description="Hugging Face Question Answering task",
+    category=Category.MODEL,
 )
 
 
