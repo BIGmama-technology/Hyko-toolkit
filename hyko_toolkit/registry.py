@@ -1,7 +1,7 @@
 from typing import Any, Callable, Coroutine, Optional
 
 from hyko_sdk.definitions import ToolkitNode as _ToolkitNode
-from hyko_sdk.models import Category, Icon, MetaDataBase
+from hyko_sdk.models import Category, Icon, MetaDataBase, SupportedProviders
 
 
 class Registry:
@@ -46,7 +46,7 @@ class ToolkitNode(_ToolkitNode):
         category: Category,
         icon: Optional[Icon] = "io",
         cost: int = 0,
-        auth: Optional[str] = None,
+        auth: Optional[SupportedProviders] = None,
     ):
         super().__init__(
             name=name,

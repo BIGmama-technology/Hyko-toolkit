@@ -16,6 +16,7 @@ input_node = ToolkitNode(
     description="Upload google spreadsheet file.",
     icon="sheets",
     category=Category.IO,
+    auth="sheets",
 )
 
 
