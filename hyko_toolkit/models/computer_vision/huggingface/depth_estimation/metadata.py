@@ -27,7 +27,6 @@ class Params(CoreModel):
         component=Search(placeholder="Search depth estimation model"),
     )
     device_map: str = field(description="Device map (Auto, CPU or GPU)")
-    test: bool = field(description="Test")
 
 
 @func.set_input
