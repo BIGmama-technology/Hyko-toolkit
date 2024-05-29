@@ -1,9 +1,15 @@
 from typing import Any
 
 import httpx
-from hyko_sdk.components.components import PortType, Select, TextField
+from hyko_sdk.components.components import PortType, Select
 from hyko_sdk.json_schema import Item
-from hyko_sdk.models import Category, CoreModel, FieldMetadata, MetaDataBase
+from hyko_sdk.models import (
+    Category,
+    CoreModel,
+    FieldMetadata,
+    MetaDataBase,
+    SupportedProviders,
+)
 from hyko_sdk.utils import field
 from pydantic import TypeAdapter
 
@@ -16,7 +22,7 @@ input_node = ToolkitNode(
     description="Upload google spreadsheet file.",
     icon="sheets",
     category=Category.IO,
-    auth="sheets",
+    auth=SupportedProviders.SHEETS,
 )
 
 
@@ -24,7 +30,7 @@ input_node = ToolkitNode(
 class Param(CoreModel):
     spreadsheet: str = field(
         description="Spreadsheet to read",
-        component=TextField(placeholder=""),
+        component=Select(choices=[]),
     )
     sheet_name: str = field(
         description="Sheet name",

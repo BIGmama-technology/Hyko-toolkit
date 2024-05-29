@@ -8,6 +8,7 @@ from hyko_sdk.components.components import (
     PDFPreview,
     PortType,
     Select,
+    SelectChoice,
     TextField,
     TextPreview,
     VideoPreview,
@@ -32,14 +33,14 @@ class Params(CoreModel):
         description="Type of the output node, when this changes it updates the input port to correspond to it.",
         component=Select(
             choices=[
-                "text",
-                "number",
-                "image",
-                "video",
-                "audio",
-                "pdf",
-                "list of texts",
-                "list of numbers",
+                SelectChoice(label="Text", value="text"),
+                SelectChoice(label="Number", value="number"),
+                SelectChoice(label="Image", value="image"),
+                SelectChoice(label="Video", value="video"),
+                SelectChoice(label="Audio", value="audio"),
+                SelectChoice(label="Pdf", value="pdf"),
+                SelectChoice(label="List of Texts", value="list_of_texts"),
+                SelectChoice(label="List of numbers", value="list_of_numbers"),
             ]
         ),
     )
@@ -118,7 +119,7 @@ async def change_output_type(metadata: MetaDataBase, *args: Any):
                 )
             )
             return metadata
-        case "list of texts":
+        case "list_of_texts":
             items = Item(type=PortType.STRING)
             metadata.icon = "list"
             metadata.add_input(
@@ -133,7 +134,7 @@ async def change_output_type(metadata: MetaDataBase, *args: Any):
                 )
             )
             return metadata
-        case "list of numbers":
+        case "list_of_numbers":
             items = Item(type=PortType.NUMBER)
             metadata.icon = "list"
             metadata.add_input(
