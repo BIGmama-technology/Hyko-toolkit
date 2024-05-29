@@ -1,4 +1,19 @@
+from enum import Enum
+
 import httpx
+from pydantic import BaseModel
+
+from hyko_toolkit.exceptions import APICallError
+
+
+class Dimension(Enum):
+    ROWS = "ROWS"
+    COLUMNS = "COLUMNS"
+
+
+class Response(BaseModel):
+    success: bool
+    body: str
 
 
 async def get_spreadsheets(access_token: str):
@@ -57,7 +72,7 @@ async def delete_rows(
                 "deleteDimension": {
                     "range": {
                         "sheetId": sheet_id,
-                        "dimension": "ROWS",
+                        "dimension": Dimension.ROWS,
                         "startIndex": start_index,
                         "endIndex": end_index,
                     }
@@ -68,5 +83,36 @@ async def delete_rows(
 
     async with httpx.AsyncClient() as client:
         response = await client.post(url, headers=headers, json=body)
-        # raise an exception for errors
-        return response.json()
+        return Response(success=response.is_success, body=response.text)
+
+
+async def insert_google_sheet_values(
+    access_token: str,
+    spreadsheet_id: str,
+    sheet_name: str,
+    values: list[list[str]],
+    dimension: Dimension,
+):
+    request_body = {
+        "majorDimension": dimension.value,
+        "range": f"{sheet_name}!A:A",
+        "values": [{"values": val} for val in values],
+    }
+    print("request body", request_body)
+
+    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}/values/{sheet_name}!A:A:append"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+    query_params = {
+        "valueInputOption": "USER_ENTERED",
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            url, headers=headers, json=request_body, params=query_params
+        )
+    if response.is_success:
+        return Response(success=response.is_success, body=response.text)
+    else:
+        raise APICallError(status=response.status_code, detail=response.text)
