@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hyko_toolkit"
-version = "2.2.0"
+version = "2.3.0"
 authors = []
 description = "Collection of Models/Functions/APIs in hyko"
 
