@@ -4,18 +4,27 @@ from fastapi import status
 
 
 @dataclass
-class APICallError(BaseException):
-    status: int
+class CoreExceptionError(Exception):
+    status: int = status.HTTP_500_INTERNAL_SERVER_ERROR
+    detail: str = "An api call error happened"
+
+    def __reduce__(self):
+        return (CoreExceptionError, (self.status, self.detail))
+
+
+@dataclass
+class APICallError(CoreExceptionError):
+    status = status.HTTP_400_BAD_REQUEST
     detail: str = "An api call error happened"
 
 
 @dataclass
-class UtilsCallError(BaseException):
-    status: int
+class UtilsCallError(CoreExceptionError):
+    status = status.HTTP_400_BAD_REQUEST
     detail: str = "An utility function call error happened"
 
 
 @dataclass
-class OauthTokenExpired(BaseException):
-    code = status.HTTP_401_UNAUTHORIZED
-    message = "Not authenticated."
+class OauthTokenExpiredError(CoreExceptionError):
+    status = status.HTTP_401_UNAUTHORIZED
+    detail = "Not authenticated."

@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any
 
 import httpx
@@ -13,7 +14,7 @@ from hyko_sdk.models import (
 from hyko_sdk.utils import field
 from pydantic import TypeAdapter
 
-from hyko_toolkit.exceptions import OauthTokenExpired
+from hyko_toolkit.exceptions import OauthTokenExpiredError
 from hyko_toolkit.registry import ToolkitNode
 
 input_node = ToolkitNode(
@@ -36,6 +37,20 @@ class Param(CoreModel):
         description="Sheet name",
         component=Select(choices=[]),
     )
+
+
+@input_node.callback(
+    triggers=["spreadsheet"], id="populate_spreadsheets", is_refresh=True
+)
+async def populate_spreadsheets(metadata: MetaDataBase, *args: Any) -> MetaDataBase:
+    await asyncio.sleep(2)
+    return metadata
+
+
+@input_node.callback(triggers=["sheet_name"], id="populate_sheets", is_refresh=True)
+async def populate_sheets(metadata: MetaDataBase, *args: Any) -> MetaDataBase:
+    await asyncio.sleep(2)
+    return metadata
 
 
 @input_node.callback(triggers=["spreadsheet", "sheet_name"], id="update_sheets_node")
@@ -80,5 +95,5 @@ async def update_sheets_node(
         metadata.add_param(FieldMetadata(**metadata_dict))
 
     elif response.status_code == 401:
-        raise OauthTokenExpired
+        raise OauthTokenExpiredError()
     return metadata
