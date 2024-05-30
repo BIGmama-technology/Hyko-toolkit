@@ -1,12 +1,13 @@
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
-    name="lowercase",
-    task="text_utils",
+func = ToolkitNode(
+    name="Lowercase",
+    task="Text utils",
+    category=Category.UTILS,
     cost=0,
     description="Convert a given string to lowercase",
 )

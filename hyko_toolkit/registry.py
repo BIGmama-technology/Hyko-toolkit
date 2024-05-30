@@ -1,25 +1,20 @@
-from typing import Any, Callable, Coroutine, Union
+from typing import Any, Callable, Coroutine, Optional, Union
 
-from hyko_sdk.definitions import ToolkitAPI as _ToolkitAPI
-from hyko_sdk.definitions import ToolkitBase
-from hyko_sdk.definitions import ToolkitFunction as _ToolkitFunction
-from hyko_sdk.definitions import ToolkitIO as _ToolkitIO
 from hyko_sdk.definitions import ToolkitModel as _ToolkitModel
-from hyko_sdk.definitions import ToolkitUtils as _ToolkitUtils
-from hyko_sdk.models import MetaData
+from hyko_sdk.definitions import ToolkitNode as _ToolkitNode
+from hyko_sdk.models import Category, Icon, MetaDataBase
 
 Definition = Union[
-    "ToolkitAPI",
-    "ToolkitFunction",
+    "ToolkitNode",
     "ToolkitModel",
-    "ToolkitUtils",
-    "ToolkitIO",
 ]
 
 
 class Registry:
     _registry: dict[str, Definition] = {}
-    _callbacks_registry: dict[str, Callable[..., Coroutine[Any, Any, MetaData]]] = {}
+    _callbacks_registry: dict[
+        str, Callable[..., Coroutine[Any, Any, MetaDataBase]]
+    ] = {}
 
     @classmethod
     def register(cls, name: str, definition: Definition):
@@ -37,99 +32,71 @@ class Registry:
 
     @classmethod
     def register_callback(
-        cls, id: str, callback: Callable[..., Coroutine[Any, Any, MetaData]]
+        cls, id: str, callback: Callable[..., Coroutine[Any, Any, MetaDataBase]]
     ):
         cls._callbacks_registry[id] = callback
 
     @classmethod
     def get_callback(cls, id: str):
         if id not in cls._callbacks_registry:
-            raise ValueError(f"callback '{id}' not found")
+            raise ValueError(f"callback {id} not found")
         return cls._callbacks_registry[id]
 
 
-class AllowCallback(ToolkitBase):
-    def callback(self, trigger: str, id: str):
-        field = self.params.get(trigger)
+class AllowCallback(_ToolkitNode):
+    def callback(self, triggers: list[str], id: str):
+        for trigger in triggers:
+            field = self.params.get(trigger)
+            assert field, "trigger field not found in params"
+            field.callback_id = id
 
-        assert field, "trigger field not found in params"
-
-        field.callback_id = id
-
-        def warper(
-            callback: Callable[..., Coroutine[Any, Any, MetaData]],
+        def wrapper(
+            callback: Callable[..., Coroutine[Any, Any, MetaDataBase]],
         ):
             Registry.register_callback(id, callback)
 
-        return warper
+        return wrapper
 
 
-class ToolkitIO(_ToolkitIO, AllowCallback):
+class ToolkitNode(AllowCallback):
     def __init__(
         self,
         name: str,
         task: str,
         description: str,
+        category: Category,
+        icon: Optional[Icon] = "io",
         cost: int = 0,
-    ):
-        super().__init__(name=name, task=task, description=description, cost=cost)
-        # Automatically register the instance upon creation
-        Registry.register(self.get_metadata().image, self)
-
-
-class ToolkitAPI(_ToolkitAPI):
-    def __init__(self, name: str, task: str, description: str, cost: int):
-        super().__init__(name=name, task=task, description=description, cost=cost)
-        # Automatically register the instance upon creation
-        Registry.register(self.get_metadata().image, self)
-
-
-class ToolkitUtils(_ToolkitUtils):
-    def __init__(self, name: str, task: str, description: str, cost: int):
-        super().__init__(name=name, task=task, description=description, cost=cost)
-        # Automatically register the instance upon creation
-        Registry.register(self.get_metadata().image, self)
-
-
-class ToolkitFunction(_ToolkitFunction):
-    def __init__(
-        self,
-        name: str,
-        task: str,
-        description: str,
-        absolute_dockerfile_path: str,
-        docker_context: str,
-        cost: int,
     ):
         super().__init__(
             name=name,
             task=task,
-            cost=cost,
             description=description,
-            docker_context=docker_context,
-            absolute_dockerfile_path=absolute_dockerfile_path,
+            cost=cost,
+            icon=icon,
+            category=category,
         )
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)
 
 
-class ToolkitModel(_ToolkitModel):
+class ToolkitModel(_ToolkitModel, AllowCallback):
     def __init__(
         self,
         name: str,
         task: str,
         description: str,
-        absolute_dockerfile_path: str,
-        docker_context: str,
         cost: int,
+        category: Category = Category.MODEL,
+        icon: Optional[Icon] = "models",
     ):
         super().__init__(
             name=name,
             task=task,
             description=description,
-            docker_context=docker_context,
-            absolute_dockerfile_path=absolute_dockerfile_path,
+            category=category,
             cost=cost,
+            icon=icon,
         )
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)

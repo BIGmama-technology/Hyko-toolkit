@@ -2,17 +2,19 @@ from enum import Enum
 
 import httpx
 from hyko_sdk.components.components import Slider, TextField
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="mistral_ai_text_completion",
-    task="mistral_ai",
+func = ToolkitNode(
+    name="Mistral ai text completion",
+    task="Mistral ai",
+    category=Category.API,
     description="Use mistral ai api for text completion.",
     cost=150,
+    icon="mistral",
 )
 
 

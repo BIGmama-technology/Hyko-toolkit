@@ -1,13 +1,14 @@
 from typing import Any
 
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
-    name="pop_element",
-    task="list_utils",
+func = ToolkitNode(
+    name="Pop element",
+    task="List utils",
+    category=Category.UTILS,
     cost=0,
     description="Removes an element from a list.",
 )
@@ -30,7 +31,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    output: Any = field(
+    output: list[Any] = field(
         description="Final list.",
     )
 

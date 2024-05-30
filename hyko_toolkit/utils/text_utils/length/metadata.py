@@ -1,12 +1,13 @@
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
-    name="length",
-    task="text_utils",
+func = ToolkitNode(
+    name="Length",
+    task="Text utils",
+    category=Category.UTILS,
     cost=0,
     description="Calculate the length of a string",
 )

@@ -1,12 +1,13 @@
 from fastapi import HTTPException
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
-    name="range",
-    task="math_utils",
+func = ToolkitNode(
+    name="Range",
+    task="Math utils",
+    category=Category.UTILS,
     cost=0,
     description="Generate a range of integers",
 )

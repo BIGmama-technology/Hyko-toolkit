@@ -5,12 +5,10 @@ from hyko_sdk.utils import field
 from hyko_toolkit.registry import ToolkitModel
 
 func = ToolkitModel(
-    name="embeddings_filter",
-    task="similarity_search",
+    name="Embeddings filter",
+    task="Similarity search",
     cost=0,
     description="Document compressor that uses embeddings to drop documents unrelated to the query.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/similarity_search/embeddings_filter/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/similarity_search/embeddings_filter",
 )
 
 

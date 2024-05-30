@@ -1,16 +1,15 @@
 from hyko_sdk.components.components import ListComponent, TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitFunction(
-    name="scrapy_crawler",
-    task="web_scraping",
+func = ToolkitNode(
+    name="Scrapy crawler",
+    task="Web scraping",
+    category=Category.FUNCTION,
     cost=5,
     description="use scrapy to crawl web pages",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_scraping/scrapy_crawler/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/web/web_scraping/scrapy_crawler",
 )
 
 

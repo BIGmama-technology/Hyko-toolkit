@@ -1,11 +1,12 @@
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitUtils
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitUtils(
-    name="min_list",
-    task="list_utils",
+func = ToolkitNode(
+    name="Min list",
+    task="List utils",
+    category=Category.UTILS,
     cost=0,
     description="Gets the minimum value of a list of numbers.",
 )

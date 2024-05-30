@@ -15,12 +15,10 @@ class SupportedLanguages(str, Enum):
 
 
 func = ToolkitModel(
-    name="tesseract_ocr",
-    task="optical_character_recognition",
+    name="Tesseract ocr",
+    task="Optical character recognition",
     cost=0,
     description="Extracts text from an image using Tesseract OCR.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/models/optical_character_recognition/tesseract_ocr/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/models/optical_character_recognition/tesseract_ocr",
 )
 
 

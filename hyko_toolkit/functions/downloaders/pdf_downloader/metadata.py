@@ -1,17 +1,17 @@
 from hyko_sdk.components.components import TextField
 from hyko_sdk.io import PDF
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitFunction(
-    name="pdf_downloader",
-    task="downloaders",
+func = ToolkitNode(
+    name="Pdf downloader",
+    task="Downloaders",
+    category=Category.FUNCTION,
     cost=2,
     description="This function downloads content from a URL and returns it as a PDF object.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/downloaders/pdf_downloader/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/downloaders/pdf_downloader",
+    icon="pdf",
 )
 
 

@@ -1,10 +1,10 @@
 from enum import Enum
 
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitFunction
+from hyko_toolkit.registry import ToolkitNode
 
 
 class SupportedLanguages(str, Enum):
@@ -13,13 +13,13 @@ class SupportedLanguages(str, Enum):
     french = "fr"
 
 
-func = ToolkitFunction(
-    name="youtube_transcript",
-    task="web_scraping",
+func = ToolkitNode(
+    name="Youtube transcript",
+    task="Web scraping",
+    category=Category.FUNCTION,
     cost=5,
     description="Transcript extraction from youtube video.",
-    absolute_dockerfile_path="./toolkit/hyko_toolkit/functions/web/web_scraping/youtube_transcript/Dockerfile",
-    docker_context="./toolkit/hyko_toolkit/functions/web/web_scraping/youtube_transcript",
+    icon="youtube",
 )
 
 

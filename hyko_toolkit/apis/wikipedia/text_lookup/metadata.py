@@ -2,17 +2,19 @@ from enum import Enum
 
 import httpx
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="wikipedia_text_lookup",
-    task="wikimedia",
+func = ToolkitNode(
+    name="Wikipedia text lookup",
+    task="Wikipedia",
+    category=Category.API,
     cost=1,
     description="Use WikiPedia API for Search.",
+    icon="wikipedia",
 )
 
 

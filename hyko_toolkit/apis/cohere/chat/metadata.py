@@ -2,17 +2,19 @@ from enum import Enum
 
 import httpx
 from hyko_sdk.components.components import Slider, TextField
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="cohere_chat_api",
-    task="cohere",
+func = ToolkitNode(
+    category=Category.API,
+    name="Cohere chat api",
+    task="Cohere",
     cost=1,
     description="Use cohere api for text generation.",
+    icon="cohere",
 )
 
 

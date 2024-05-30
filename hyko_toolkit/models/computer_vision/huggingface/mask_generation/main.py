@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
-from metadata import Inputs, Outputs, Params, StartupParams, func
 from transformers import pipeline
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 def show_mask(mask: np.ndarray, ax: plt.Axes, random_color: bool):
@@ -71,7 +72,7 @@ def show_boxes_on_image(raw_image: np.ndarray, boxes: list):
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
+async def load(startup_params: Params):
     global generator
 
     model = startup_params.hugging_face_model
@@ -83,7 +84,7 @@ async def load(startup_params: StartupParams):
     )
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     image = await inputs.input_image.to_pil()
     image = image.convert("RGB")

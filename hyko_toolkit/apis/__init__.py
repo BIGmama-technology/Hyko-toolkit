@@ -33,4 +33,4 @@ from .stability_ai.image_to_video.metadata import func as func  # noqa: F811
 from .stability_ai.image_upscaler.metadata import func as func  # noqa: F811
 from .stability_ai.text_to_image.metadata import func as func  # noqa: F811
 from .tune_studio.text_completion.metadata import func as func  # noqa: F811
-from .wikimedia.text_lookup.metadata import func as func  # noqa: F811
+from .wikipedia.text_lookup.metadata import func as func  # noqa: F811

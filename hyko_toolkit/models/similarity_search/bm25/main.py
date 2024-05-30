@@ -1,9 +1,10 @@
 from langchain.retrievers import BM25Retriever
 from langchain_core.documents.base import Document
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     Perform BM25 retrieval on a list of documents based on a given query.

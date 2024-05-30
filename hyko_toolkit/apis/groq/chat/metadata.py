@@ -2,17 +2,19 @@ from enum import Enum
 
 import httpx
 from hyko_sdk.components.components import Slider, TextField
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="groq_chat_api",
-    task="groq",
+func = ToolkitNode(
+    name="Groq chat api",
+    task="Groq",
+    category=Category.API,
     description="Use Groq api for text generation.",
     cost=138,
+    icon="groq",
 )
 
 

@@ -2,17 +2,19 @@ import re
 
 import httpx
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="arxiv_articles_lookup",
-    task="arxiv",
+func = ToolkitNode(
+    category=Category.API,
+    name="Arxiv articles lookup",
+    task="Arxiv",
     cost=1,
     description="Use Arxiv API for articles Search.",
+    icon="arxiv",
 )
 
 

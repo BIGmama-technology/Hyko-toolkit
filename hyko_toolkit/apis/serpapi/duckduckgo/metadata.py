@@ -2,17 +2,19 @@ from enum import Enum
 
 import httpx
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import CoreModel, Method
+from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitAPI
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="duckduckgo_search",
-    task="serpapi",
+func = ToolkitNode(
+    category=Category.API,
+    name="Duckduckgo search",
+    task="Serpapi",
     description="Use duckduckgo API for Search.",
     cost=2,
+    icon="duckduckgo",
 )
 
 
