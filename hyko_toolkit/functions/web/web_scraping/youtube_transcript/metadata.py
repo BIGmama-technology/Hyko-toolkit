@@ -1,8 +1,10 @@
 from enum import Enum
 
-from hyko_sdk.definitions import ToolkitFunction
-from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.components.components import TextField
+from hyko_sdk.models import Category, CoreModel
+from hyko_sdk.utils import field
+
+from hyko_toolkit.registry import ToolkitNode
 
 
 class SupportedLanguages(str, Enum):
@@ -11,29 +13,29 @@ class SupportedLanguages(str, Enum):
     french = "fr"
 
 
-func = ToolkitFunction(
-    name="youtube_transcript",
-    task="web_scraping",
+func = ToolkitNode(
+    name="Youtube transcript",
+    task="Web scraping",
+    category=Category.FUNCTION,
+    cost=5,
     description="Transcript extraction from youtube video.",
+    icon="youtube",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    video_url: str = Field(
-        ...,
+    video_url: str = field(
         description="Youtube Video Id.",
+        component=TextField(placeholder="Enter your video url here"),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    language: SupportedLanguages = Field(
-        ...,
-        description="Language Id.",
-    )
+    language: SupportedLanguages = field(description="Language Id.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="Result")
+    result: str = field(description="Result")

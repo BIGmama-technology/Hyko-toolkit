@@ -1,12 +1,15 @@
 from enum import Enum
 
-from hyko_sdk.definitions import ToolkitFunction
-from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.components.components import TextField
+from hyko_sdk.definitions import ToolkitModel
+from hyko_sdk.models import Category, CoreModel
+from hyko_sdk.utils import field
 
-func = ToolkitFunction(
-    name="remove_stopwords",
-    task="nlp_utils",
+func = ToolkitModel(
+    name="Remove Stopwords",
+    task="Nlp utils",
+    category=Category.FUNCTION,
+    cost=3,
     description="A function to remove stopwords from text.",
 )
 
@@ -19,20 +22,17 @@ class SupportedLanguages(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    text: str = Field(
-        ...,
+    text: str = field(
         description="The input text from which stopwords are to be removed.",
+        component=TextField(placeholder="Entre your text here", multiline=True),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    language: SupportedLanguages = Field(
-        ...,
-        description="The language of the stopwords.",
-    )
+    language: SupportedLanguages = field(description="The language of the stopwords.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="The text with stopwords removed.")
+    result: str = field(description="The text with stopwords removed.")

@@ -1,12 +1,16 @@
 import nltk
-from metadata import Inputs, Outputs, Params, func
 from nltk.tokenize import word_tokenize
 
-nltk.download("punkt")
-nltk.download("stopwords")
+from .metadata import Inputs, Outputs, Params, func
 
 
-@func.on_execute
+@func.on_startup
+async def startup(params: Params):
+    nltk.download("punkt")
+    nltk.download("stopwords")
+
+
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     Remove stopwords from the text using the specified list of stopwords for the given language.

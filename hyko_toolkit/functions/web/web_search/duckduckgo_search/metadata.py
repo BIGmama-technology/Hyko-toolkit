@@ -1,30 +1,32 @@
-from hyko_sdk.definitions import ToolkitFunction
-from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.components.components import TextField
+from hyko_sdk.models import Category, CoreModel
+from hyko_sdk.utils import field
 
-func = ToolkitFunction(
-    name="duckduckgo_search",
-    task="web_search",
+from hyko_toolkit.registry import ToolkitNode
+
+func = ToolkitNode(
+    name="Duckduckgo search",
+    task="Web search",
+    category=Category.FUNCTION,
+    cost=5,
+    icon="duckduckgo",
     description="Search the web using DuckDuckGo.",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    query: str = Field(
-        ...,
+    query: str = field(
         description="The search query.",
+        component=TextField(placeholder="Enter your query here"),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    max_results: int = Field(
-        ...,
-        description="Maximum number of search.",
-    )
+    max_results: int = field(description="Maximum number of search.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="The concatenated titles and summaries.")
+    result: str = field(description="The concatenated titles and summaries.")

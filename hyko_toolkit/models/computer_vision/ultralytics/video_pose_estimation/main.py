@@ -5,14 +5,15 @@ import tempfile
 import cv2
 import cvzone
 from fastapi import HTTPException
+from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Video
-from hyko_sdk.models import Ext
-from metadata import Inputs, Outputs, Params, StartupParams, func
 from ultralytics import YOLO
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup
-async def load(startup_params: StartupParams):
+async def load(startup_params: Params):
     global model, device_map
     device_map = startup_params.device_map
     if startup_params.model.name == "yolov8x_p6":
@@ -25,7 +26,7 @@ async def load(startup_params: StartupParams):
         )
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     # Create a TEMP file to store the input video data
     with tempfile.NamedTemporaryFile(delete=False) as input_v:

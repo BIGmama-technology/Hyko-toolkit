@@ -1,20 +1,24 @@
-from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import Audio, Video
-from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.models import Category, CoreModel
+from hyko_sdk.utils import field
 
-func = ToolkitFunction(
-    name="video_to_audio",
-    task="converters",
+from hyko_toolkit.registry import ToolkitNode
+
+func = ToolkitNode(
+    name="Video to audio",
+    task="Converters",
+    category=Category.FUNCTION,
+    cost=3,
     description="Convert a video type to audio type (takes only the audio data)",
+    icon="video",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    video: Video = Field(..., description="User input video to be converted to audio")
+    video: Video = field(description="User input video to be converted to audio")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    audio: Audio = Field(..., description="converted audio")
+    audio: Audio = field(description="converted audio")

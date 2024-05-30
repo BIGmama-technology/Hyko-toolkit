@@ -1,26 +1,44 @@
-from hyko_sdk.definitions import ToolkitModel
+from typing import Any
+
+from hyko_sdk.components.components import Search
 from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.utils import field
+from pydantic import TypeAdapter
+
+from hyko_toolkit.callbacks_utils import huggingface_models_search
+from hyko_toolkit.registry import ToolkitModel
+
+ModelsAdapter = TypeAdapter(list[dict[str, Any]])
 
 func = ToolkitModel(
-    name="depth_estimation",
-    task="computer_vision",
+    name="Depth estimation",
+    task="Computer vision",
+    cost=0,
     description="HuggingFace depth estimation",
+    icon="hf",
 )
 
 
-@func.set_startup_params
-class StartupParams(CoreModel):
-    hugging_face_model: str = Field(..., description="Model")
-    device_map: str = Field(..., description="Device map (Auto, CPU or GPU)")
+@func.set_param
+class Params(CoreModel):
+    hugging_face_model: str = field(
+        description="Model",
+        component=Search(placeholder="Search depth estimation model"),
+    )
+    device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
 @func.set_input
 class Inputs(CoreModel):
-    input_image: Image = Field(..., description="Input image")
+    input_image: Image = field(description="Input image")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    depth_map: Image = Field(..., description="Output depth map")
+    depth_map: Image = field(description="Output depth map")
+
+
+func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+    huggingface_models_search
+)

@@ -1,16 +1,20 @@
 from enum import Enum
 
 import httpx
-from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.components.components import Slider, TextField
+from hyko_sdk.models import Category, CoreModel, Method
+from hyko_sdk.utils import field
 
-from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="openai_text_completion",
-    task="openai",
+func = ToolkitNode(
+    name="Openai text completion",
+    task="Openai",
+    category=Category.API,
+    cost=256,
     description="Use openai api for text completion.",
+    icon="openai",
 )
 
 
@@ -21,32 +25,40 @@ class Model(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    system_prompt: str = Field(
-        default="You are a helpful assistant", description="generated text."
+    system_prompt: str = field(
+        default="You are a helpful assistant",
+        description="generated text.",
+        component=TextField(placeholder="Enter your system prompt here"),
     )
-    prompt: str = Field(..., description="Input prompt.")
+    prompt: str = field(
+        description="Input prompt.",
+        component=TextField(placeholder="Enter your prompt here", multiline=True),
+    )
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    model: Model = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    model: Model = field(
         default=Model.chatgpt,
         description="Openai model to use.",
     )
-    max_tokens: int = Field(
+    max_tokens: int = field(
         default=1024,
         description="The maximum number of tokens that can be generated in the chat completion.",
     )
-    temperature: float = Field(
+    temperature: float = field(
         default=1.0,
         description="What sampling temperature to use, between 0 and 2, defaults to 1.",
+        component=Slider(leq=2, geq=0, step=0.01),
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: str = Field(..., description="generated text.")
+    result: str = field(description="generated text.")
 
 
 class Message(CoreModel):

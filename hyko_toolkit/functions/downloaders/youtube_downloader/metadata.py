@@ -1,9 +1,11 @@
 from enum import Enum
 
-from hyko_sdk.definitions import ToolkitFunction
+from hyko_sdk.components.components import TextField
 from hyko_sdk.io import Video
-from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.models import Category, CoreModel
+from hyko_sdk.utils import field
+
+from hyko_toolkit.registry import ToolkitNode
 
 
 class Resolution(str, Enum):
@@ -14,29 +16,29 @@ class Resolution(str, Enum):
     lowest = "lowest"
 
 
-func = ToolkitFunction(
-    name="youtube_downloader",
-    task="downloaders",
+func = ToolkitNode(
+    name="Youtube downloader",
+    task="Downloaders",
+    category=Category.FUNCTION,
+    cost=2,
     description="Download a video from YouTube.",
+    icon="youtube",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    video_url: str = Field(
-        ...,
+    video_url: str = field(
         description="The URL of the YouTube video to download.",
+        component=TextField(placeholder="Entre your URL here"),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    resolution: Resolution = Field(
-        ...,
-        description="The desired resolution of the video.",
-    )
+    resolution: Resolution = field(description="The desired resolution of the video.")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    output_video: Video = Field(..., description="Output Video.")
+    output_video: Video = field(description="Output Video.")

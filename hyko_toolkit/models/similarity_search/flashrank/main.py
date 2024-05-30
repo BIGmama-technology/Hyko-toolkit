@@ -4,7 +4,8 @@ from langchain.retrievers.document_compressors import FlashrankRerank
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents.base import Document
-from metadata import Inputs, Outputs, Params, func
+
+from .metadata import Inputs, Outputs, Params, func
 
 
 @func.on_startup
@@ -13,7 +14,7 @@ async def load(startup_params: CoreModel):
     embeddings = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-small")
 
 
-@func.on_execute
+@func.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     A tool employing re-ranking capabilities for enhancing search and retrieval pipelines, leveraging state-of-the-art cross-encoders.

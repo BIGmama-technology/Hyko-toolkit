@@ -1,20 +1,24 @@
-from hyko_sdk.definitions import ToolkitFunction
 from hyko_sdk.io import PDF
-from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.models import Category, CoreModel
+from hyko_sdk.utils import field
 
-func = ToolkitFunction(
-    name="pdf_to_text",
-    task="converters",
+from hyko_toolkit.registry import ToolkitNode
+
+func = ToolkitNode(
+    name="Pdf to text",
+    task="Converters",
+    icon="pdf",
+    category=Category.FUNCTION,
+    cost=3,
     description="Extracts text from pdf.",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    pdf_file: PDF = Field(..., description="User input pdf to be converted to text")
+    pdf_file: PDF = field(description="User input pdf to be converted to text")
 
 
 @func.set_output
 class Outputs(CoreModel):
-    text: str = Field(..., description="Extracted text from pdf")
+    text: str = field(description="Extracted text from pdf")

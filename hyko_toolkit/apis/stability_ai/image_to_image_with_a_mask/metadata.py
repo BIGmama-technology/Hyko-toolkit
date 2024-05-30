@@ -2,17 +2,21 @@ import base64
 from enum import Enum
 
 import httpx
+from hyko_sdk.components.components import Ext, Slider, TextField
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel, Ext, Method
-from pydantic import Field
+from hyko_sdk.models import Category, CoreModel, Method
+from hyko_sdk.utils import field
 
-from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="image_to_image_with_a_mask",
-    task="stability_ai",
+func = ToolkitNode(
+    name="Image to image with a mask",
+    task="Stability ai",
+    category=Category.API,
     description="Selectively modify portions of an image using a mask Using Stability.ai API .",
+    cost=8,
+    icon="stabilityai",
 )
 
 
@@ -38,33 +42,37 @@ class ArtStyle(Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    prompt: str = Field(..., description="What you wish to see in the output image.")
-    init_image: Image = Field(
-        ...,
+    prompt: str = field(
+        description="What you wish to see in the output image.",
+        component=TextField(placeholder="Entre your prompt here"),
+    )
+    init_image: Image = field(
         description="Image used to initialize the diffusion process, in lieu of random noise.",
     )
-    mask_image: Image = Field(
-        ...,
+    mask_image: Image = field(
         description="Image used to mask the diffusion process.",
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    style_preset: ArtStyle = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    style_preset: ArtStyle = field(
         default=ArtStyle.CINEMATIC,
         description="Style preset to use for the image generation (default : cinematic).",
     )
-    steps: int = Field(
+    steps: int = field(
         default=30,
         description="Number of steps to run the diffusion process for (max : 50)",
+        component=Slider(leq=200, geq=10, step=10),
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    result: Image = Field(..., description="Generated Image.")
+    result: Image = field(description="Generated Image.")
 
 
 class Artifact(CoreModel):

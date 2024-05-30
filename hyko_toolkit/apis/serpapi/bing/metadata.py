@@ -1,16 +1,20 @@
 from enum import Enum
 
 import httpx
-from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.components.components import TextField
+from hyko_sdk.models import Category, CoreModel, Method
+from hyko_sdk.utils import field
 
-from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="bing_search",
-    task="serpapi",
+func = ToolkitNode(
+    name="Bing search",
+    task="Serpapi",
+    category=Category.API,
     description="Use Bing API for Search.",
+    cost=2,
+    icon="microsoft",
 )
 
 
@@ -32,17 +36,19 @@ class Country(str, Enum):
 
 @func.set_input
 class Inputs(CoreModel):
-    query: str = Field(
-        ...,
+    query: str = field(
         description="The search query.",
+        component=TextField(placeholder="Search query"),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    country: Country = Field(default=Country.dz, description="Country code")
-    first: int = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    country: Country = field(default=Country.dz, description="Country code")
+    first: int = field(
         default=1,
         description="Controls the offset of the organic results.",
     )
@@ -50,7 +56,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: list[str] = Field(..., description="List of urls.")
+    result: list[str] = field(description="List of urls.")
 
 
 class SearchResultItem(CoreModel):

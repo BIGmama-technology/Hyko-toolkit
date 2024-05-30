@@ -1,30 +1,39 @@
 import httpx
-from hyko_sdk.models import CoreModel, Method
-from pydantic import Field
+from hyko_sdk.components.components import TextField
+from hyko_sdk.models import Category, CoreModel, Method
+from hyko_sdk.utils import field
 
-from hyko_toolkit.apis.api_registry import ToolkitAPI
 from hyko_toolkit.exceptions import APICallError
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitAPI(
-    name="google_search",
-    task="google",
+func = ToolkitNode(
+    name="Google search",
+    task="Google",
+    category=Category.API,
     description="Use Google API for Search.",
+    cost=100,
+    icon="google",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    query: str = Field(
-        ...,
+    query: str = field(
         description="The search query.",
+        component=TextField(placeholder="Enter your query here"),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    api_key: str = Field(description="API key")
-    cse_id: str = Field(description="Search Engine ID")
-    max_results: int = Field(
+    api_key: str = field(
+        description="API key", component=TextField(placeholder="API KEY", secret=True)
+    )
+    cse_id: str = field(
+        description="Search Engine ID",
+        component=TextField(placeholder="CSE ID", secret=True),
+    )
+    max_results: int = field(
         default=5,
         description="Maximum number of results.",
     )
@@ -32,7 +41,7 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    result: list[str] = Field(..., description="The concatenated results.")
+    result: list[str] = field(description="The concatenated results.")
 
 
 class SearchResultItem(CoreModel):

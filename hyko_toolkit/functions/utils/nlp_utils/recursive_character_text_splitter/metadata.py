@@ -1,34 +1,34 @@
-from hyko_sdk.definitions import ToolkitFunction
-from hyko_sdk.models import CoreModel
-from pydantic import Field
+from hyko_sdk.components.components import TextField
+from hyko_sdk.models import Category, CoreModel
+from hyko_sdk.utils import field
 
-func = ToolkitFunction(
+from hyko_toolkit.registry import ToolkitNode
+
+func = ToolkitNode(
+    category=Category.FUNCTION,
     name="recursive_character_text_splitter",
     task="nlp_utils",
+    cost=3,
     description="Divides text recursively based on specified characters, ensuring semantic coherence.",
 )
 
 
 @func.set_input
 class Inputs(CoreModel):
-    text: str = Field(
-        ...,
+    text: str = field(
         description="Text Input",
+        component=TextField(placeholder="Entre your text here", multiline=True),
     )
 
 
 @func.set_param
 class Params(CoreModel):
-    chunk_size: int = Field(
-        ...,
-        description="Chunk size",
-    )
-    chunk_overlap: int = Field(
-        ...,
+    chunk_size: int = field(description="Chunk size")
+    chunk_overlap: int = field(
         description="Chunk overlap",
     )
 
 
 @func.set_output
 class Outputs(CoreModel):
-    chunks: list[str] = Field(..., description="Processed text with chunks")
+    chunks: list[str] = field(description="Processed text with chunks")
