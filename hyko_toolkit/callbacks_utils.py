@@ -4,9 +4,14 @@ import httpx
 from fastapi import HTTPException, status
 from hyko_sdk.components.components import Search
 from hyko_sdk.models import FieldMetadata, MetaDataBase
-from pydantic import TypeAdapter
+from pydantic import BaseModel, TypeAdapter
 
 ModelsAdapter = TypeAdapter(list[dict[str, Any]])
+
+
+class Response(BaseModel):
+    success: bool
+    body: str
 
 
 async def huggingface_models_search(

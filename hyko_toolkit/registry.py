@@ -17,7 +17,7 @@ class Registry:
     @classmethod
     def get_handler(cls, name: str) -> "ToolkitNode":
         if name not in cls._registry:
-            raise ValueError(f"handler '{name}' not found")
+            raise ValueError(f"handler {name} not found")
         return cls._registry[name]
 
     @classmethod

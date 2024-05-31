@@ -1,9 +1,10 @@
 from enum import Enum
 
 import httpx
+from hyko_sdk.components.components import SelectChoice
 from pydantic import BaseModel
 
-from hyko_toolkit.exceptions import APICallError
+from hyko_toolkit.exceptions import APICallError, OauthTokenExpiredError
 
 
 class Dimension(Enum):
@@ -18,6 +19,7 @@ class Response(BaseModel):
 
 async def get_spreadsheets(access_token: str):
     url = "https://www.googleapis.com/drive/v3/files"
+
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
@@ -31,12 +33,15 @@ async def get_spreadsheets(access_token: str):
 
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers, params=params)
-        # raise exception forerrors
-        data = response.json()
-        spreadsheets = data["files"]
-        return [
-            {"label": sheet["name"], "value": sheet["id"]} for sheet in spreadsheets
-        ]
+        if response.status_code == 200:
+            spreadsheets = response.json().get("files", [])
+            return [
+                SelectChoice(label=spreadsheet["name"], value=spreadsheet["id"])
+                for spreadsheet in spreadsheets
+            ]
+        if response.status_code == 401:
+            raise OauthTokenExpiredError()
+        raise APICallError(status=response.status_code, detail=response.text)
 
 
 async def list_sheets_name(access_token: str, spreadsheet_id: str):
@@ -46,12 +51,36 @@ async def list_sheets_name(access_token: str, spreadsheet_id: str):
     }
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
-        # handle error
-        sheets = response.json().get("sheets", [])
-    return [
-        {"label": sheet["properties"]["title"], "value": sheet["properties"]["sheetId"]}
-        for sheet in sheets
-    ]
+        if response.status_code == 200:
+            sheets = response.json().get("sheets", [])
+            return [
+                SelectChoice(
+                    label=sheet["properties"]["title"],
+                    value=sheet["properties"]["sheetId"],
+                )
+                for sheet in sheets
+            ]
+        elif response.status_code == 401:
+            raise OauthTokenExpiredError()
+        raise APICallError(status=response.status_code, detail=response.text)
+
+
+async def get_sheet_columns(
+    access_token: str, spreadsheet_id: str, sheet_name: str
+) -> list[str]:
+    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}/values/{sheet_name}!1:1"
+    headers = {"Authorization": f"Bearer {access_token}"}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            if "values" in data and len(data["values"]) > 0:
+                return data["values"][0]
+            else:
+                return []
+        elif response.status_code == 401:
+            raise OauthTokenExpiredError()
+        raise APICallError(status=response.status_code, detail=response.text)
 
 
 async def delete_rows(
@@ -98,7 +127,6 @@ async def insert_google_sheet_values(
         "range": f"{sheet_name}!A:A",
         "values": [{"values": val} for val in values],
     }
-    print("request body", request_body)
 
     url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}/values/{sheet_name}!A:A:append"
     headers = {
@@ -116,3 +144,35 @@ async def insert_google_sheet_values(
         return Response(success=response.is_success, body=response.text)
     else:
         raise APICallError(status=response.status_code, detail=response.text)
+
+
+async def clear_sheet(
+    spreadsheet_id: str,
+    sheet_id: int,
+    access_token: str,
+    row_index: int,
+    num_of_rows: int,
+):
+    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}:batchUpdate"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+    body = {
+        "requests": [
+            {
+                "deleteDimension": {
+                    "range": {
+                        "sheetId": sheet_id,
+                        "dimension": "ROWS",
+                        "startIndex": row_index,
+                        "endIndex": row_index + num_of_rows + 1,
+                    },
+                },
+            },
+        ],
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, headers=headers, json=body)
+        return Response(success=response.is_success, body=response.text)
