@@ -40,7 +40,6 @@ func = ToolkitNode(
 @func.set_input
 class Inputs(CoreModel):
     model_config = ConfigDict(extra="allow")
-    values: Any = field(description="The values to insert.")
 
 
 class Choices(BaseModel):
@@ -96,7 +95,6 @@ async def populate_sheets_insert(
 @func.callback(triggers=["spreadsheet"], id="fetch_sheets")
 async def fetch_sheets(metadata: MetaDataBase, oauth_token: str, _):
     spreadsheet_id = metadata.params["spreadsheet"].value
-    print("spreadshet", spreadsheet_id)
     if spreadsheet_id:
         sheets = await list_sheets_name(
             str(metadata.params["access_token"].value), spreadsheet_id
@@ -108,6 +106,7 @@ async def fetch_sheets(metadata: MetaDataBase, oauth_token: str, _):
         metadata_dict = metadata.params["sheet"].model_dump()
         metadata_dict["component"] = Select(choices=choices)
         metadata.params["sheet"].value = {}
+        metadata.inputs = {}
         metadata.add_param(FieldMetadata(**metadata_dict))
         return metadata
     return metadata
@@ -123,7 +122,6 @@ async def add_sheet_insert_rows_values(
         columns = await get_sheet_columns(
             str(metadata.params["access_token"].value), spreadsheet_id, sheet_name
         )
-        print("columns are", columns)
         metadata.inputs = {}
         if len(columns) > 0:
             a = {"$ref": "test"}
