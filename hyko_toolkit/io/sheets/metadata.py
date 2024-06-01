@@ -98,9 +98,7 @@ async def update_sheets_node(
 ) -> MetaDataBase:
     spreadsheet_id = metadata.params["spreadsheet"].value
     if spreadsheet_id:
-        sheets = await list_sheets_name(
-            oauth_token, str(metadata.params["spreadsheet"].value)
-        )
+        sheets = await list_sheets_name(oauth_token, spreadsheet_id)
         choices = [
             SelectChoice(label=sheet.label, value=sheet.label) for sheet in sheets
         ]
