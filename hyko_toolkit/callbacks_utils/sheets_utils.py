@@ -1,7 +1,9 @@
 from enum import Enum
+from typing import Any
 
 import httpx
-from hyko_sdk.components.components import SelectChoice
+from hyko_sdk.components.components import Select, SelectChoice
+from hyko_sdk.models import FieldMetadata, MetaDataBase
 from pydantic import BaseModel
 
 from hyko_toolkit.exceptions import APICallError, OauthTokenExpiredError
@@ -15,6 +17,33 @@ class Dimension(Enum):
 class Response(BaseModel):
     success: bool
     body: str
+
+
+async def populate_spreadsheets(
+    metadata: MetaDataBase, oauth_token: str, *args: Any
+) -> MetaDataBase:
+    choices = await get_spreadsheets(oauth_token)
+    metadata_dict = metadata.params["spreadsheet"].model_dump()
+    metadata_dict["component"] = Select(choices=choices)
+    metadata.add_param(FieldMetadata(**metadata_dict))
+
+    return metadata
+
+
+async def populate_sheets(
+    metadata: MetaDataBase, oauth_token: str, *args: Any
+) -> MetaDataBase:
+    choices = await list_sheets_name(
+        oauth_token, str(metadata.params["spreadsheet"].value)
+    )
+    metadata_dict = metadata.params["sheet"].model_dump()
+    metadata_dict["component"] = Select(
+        choices=[
+            SelectChoice(value=choice.label, label=choice.label) for choice in choices
+        ]
+    )
+    metadata.add_param(FieldMetadata(**metadata_dict))
+    return metadata
 
 
 async def get_spreadsheets(access_token: str):
@@ -143,6 +172,7 @@ async def insert_google_sheet_values(
     if response.is_success:
         return Response(success=response.is_success, body=response.text)
     else:
+        print("response is", response.text)
         raise APICallError(status=response.status_code, detail=response.text)
 
 

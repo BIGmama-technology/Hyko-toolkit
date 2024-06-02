@@ -1,5 +1,3 @@
-from typing import Any
-
 from hyko_sdk.components.components import PortType, Select, SelectChoice
 from hyko_sdk.json_schema import Item
 from hyko_sdk.models import (
@@ -11,10 +9,11 @@ from hyko_sdk.models import (
 )
 from hyko_sdk.utils import field
 
-from hyko_toolkit.apis.sheets.common import (
+from hyko_toolkit.callbacks_utils.sheets_utils import (
     get_sheet_columns,
-    get_spreadsheets,
     list_sheets_name,
+    populate_sheets,
+    populate_spreadsheets,
 )
 from hyko_toolkit.registry import ToolkitNode
 
@@ -40,35 +39,14 @@ class Param(CoreModel):
     )
 
 
-@input_node.callback(
+input_node.callback(
     triggers=["spreadsheet"], id="populate_spreadsheets", is_refresh=True
+)(populate_spreadsheets)
+
+
+input_node.callback(triggers=["sheet"], id="populate_sheets", is_refresh=True)(
+    populate_sheets
 )
-async def populate_spreadsheets(
-    metadata: MetaDataBase, oauth_token: str, *args: Any
-) -> MetaDataBase:
-    choices = await get_spreadsheets(oauth_token)
-    metadata_dict = metadata.params["spreadsheet"].model_dump()
-    metadata_dict["component"] = Select(choices=choices)
-    metadata.add_param(FieldMetadata(**metadata_dict))
-
-    return metadata
-
-
-@input_node.callback(triggers=["sheet"], id="populate_sheets", is_refresh=True)
-async def populate_sheets(
-    metadata: MetaDataBase, oauth_token: str, *args: Any
-) -> MetaDataBase:
-    choices = await list_sheets_name(
-        oauth_token, str(metadata.params["spreadsheet"].value)
-    )
-    metadata_dict = metadata.params["sheet"].model_dump()
-    metadata_dict["component"] = Select(
-        choices=[
-            SelectChoice(value=choice.label, label=choice.label) for choice in choices
-        ]
-    )
-    metadata.add_param(FieldMetadata(**metadata_dict))
-    return metadata
 
 
 @input_node.callback(triggers=["sheet"], id="update_sheets_names")
