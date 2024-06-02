@@ -73,5 +73,6 @@ class ToolkitNode(_ToolkitNode):
             callback: Callable[..., Coroutine[Any, Any, MetaDataBase]],
         ):
             Registry.register_callback(id, callback)
+            return callback
 
         return wrapper

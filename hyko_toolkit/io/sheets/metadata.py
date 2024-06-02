@@ -67,6 +67,7 @@ async def update_sheets_names(
                     description=f"Column {column}",
                 )
             )
+
     return metadata
 
 
@@ -83,18 +84,9 @@ async def update_sheets_node(
 
         metadata_dict = metadata.params["sheet"].model_dump()
         metadata_dict["component"] = Select(choices=choices)
-        metadata.params["sheet"].value = {}
+        metadata_dict["value"] = choices[0].value
         metadata.add_param(FieldMetadata(**metadata_dict))
-        columns = await get_sheet_columns(oauth_token, spreadsheet_id, "")
-        metadata.outputs = {}
-        for column in columns:
-            metadata.add_output(
-                FieldMetadata(
-                    type=PortType.ARRAY,
-                    name=column,
-                    items=Item(type=PortType.STRING),
-                    description=f"Column {column}",
-                )
-            )
+
+        metadata = await update_sheets_names(metadata, oauth_token, _)
 
     return metadata

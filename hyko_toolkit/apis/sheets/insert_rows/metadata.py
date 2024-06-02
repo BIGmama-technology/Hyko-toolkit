@@ -69,23 +69,6 @@ func.callback(triggers=["sheet"], id="populate_sheets_insert", is_refresh=True)(
 )
 
 
-@func.callback(triggers=["spreadsheet"], id="fetch_sheets")
-async def fetch_sheets(metadata: MetaDataBase, oauth_token: str, _):
-    spreadsheet_id = metadata.params["spreadsheet"].value
-    if spreadsheet_id:
-        sheets = await list_sheets_name(oauth_token, spreadsheet_id)
-        choices = [
-            SelectChoice(label=sheet.label, value=sheet.label) for sheet in sheets
-        ]
-        metadata_dict = metadata.params["sheet"].model_dump()
-        metadata_dict["component"] = Select(choices=choices)
-        metadata.params["sheet"].value = {}
-        metadata.inputs = {}
-        metadata.add_param(FieldMetadata(**metadata_dict))
-        return metadata
-    return metadata
-
-
 @func.callback(triggers=["sheet"], id="add_sheet_insert_rows_inputs")
 async def add_sheet_insert_rows_values(
     metadata: MetaDataBase, oauth_token: str, _
@@ -123,6 +106,24 @@ async def add_sheet_insert_rows_values(
                     ),
                 )
             )
+    return metadata
+
+
+@func.callback(triggers=["spreadsheet"], id="fetch_sheets_insert")
+async def fetch_sheets_insert(metadata: MetaDataBase, oauth_token: str, _):
+    spreadsheet_id = metadata.params["spreadsheet"].value
+    if spreadsheet_id:
+        sheets = await list_sheets_name(oauth_token, spreadsheet_id)
+        choices = [
+            SelectChoice(label=sheet.label, value=sheet.label) for sheet in sheets
+        ]
+        metadata_dict = metadata.params["sheet"].model_dump()
+        metadata_dict["component"] = Select(choices=choices)
+        metadata_dict["value"] = choices[0].value
+        metadata.add_param(FieldMetadata(**metadata_dict))
+
+        metadata = await add_sheet_insert_rows_values(metadata, oauth_token, _)
+
     return metadata
 
 

@@ -2,7 +2,7 @@ from hyko_sdk.components.components import ListComponent, Search, TextField
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.callbacks_utils import huggingface_models_search
+from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
