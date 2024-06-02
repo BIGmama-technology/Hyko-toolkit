@@ -163,7 +163,7 @@ async def change_input_type(metadata: MetaDataBase, *args: Any):
                     name="output_list",
                     description="Input list of numbers",
                     component=ListComponent(
-                        item_component=TextField(placeholder="number item")
+                        item_component=NumberField(placeholder="number item")
                     ),
                 )
             )

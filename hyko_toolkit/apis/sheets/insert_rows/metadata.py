@@ -33,6 +33,7 @@ func = ToolkitNode(
     category=Category.API,
     cost=600,
     auth=SupportedProviders.SHEETS,
+    icon="sheets",
 )
 
 
@@ -56,7 +57,7 @@ class Params(CoreModel):
         description="Sheet",
         component=Select(choices=[]),
     )
-    access_token: str = field(description="oauth access token")
+    access_token: str = field(description="oauth access token", hidden=True)
 
 
 func.callback(triggers=["spreadsheet"], id="populate_spreadsheets", is_refresh=True)(
