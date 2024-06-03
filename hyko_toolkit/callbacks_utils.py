@@ -16,7 +16,7 @@ class Response(BaseModel):
 
 async def huggingface_models_search(
     metadata: MetaDataBase,
-    *args: Any,
+    *_: Any,
 ) -> MetaDataBase:
     """common huggingface search callback.
 

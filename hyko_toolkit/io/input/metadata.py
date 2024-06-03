@@ -44,7 +44,7 @@ class Params(CoreModel):
 
 
 @input_node.callback(triggers=["input_type"], id="change_input_type")
-async def change_input_type(metadata: MetaDataBase, *args: Any):
+async def change_input_type(metadata: MetaDataBase, *_: Any):
     input_type = metadata.params["input_type"].value
     metadata.params = {}
     match input_type:

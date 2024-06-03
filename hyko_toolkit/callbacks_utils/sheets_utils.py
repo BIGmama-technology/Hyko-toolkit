@@ -20,7 +20,7 @@ class Response(BaseModel):
 
 
 async def populate_spreadsheets(
-    metadata: MetaDataBase, oauth_token: str, *args: Any
+    metadata: MetaDataBase, oauth_token: str, *_: Any
 ) -> MetaDataBase:
     choices = await get_spreadsheets(oauth_token)
     metadata_dict = metadata.params["spreadsheet"].model_dump()
@@ -31,7 +31,7 @@ async def populate_spreadsheets(
 
 
 async def populate_sheets(
-    metadata: MetaDataBase, oauth_token: str, *args: Any
+    metadata: MetaDataBase, oauth_token: str, *_: Any
 ) -> MetaDataBase:
     choices = await list_sheets_name(
         oauth_token, str(metadata.params["spreadsheet"].value)

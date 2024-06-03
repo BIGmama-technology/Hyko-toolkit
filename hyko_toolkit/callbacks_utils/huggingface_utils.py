@@ -16,11 +16,11 @@ class Response(BaseModel):
 
 async def huggingface_models_search(
     metadata: MetaDataBase,
-    *args: Any,
+    *_: Any,
 ) -> MetaDataBase:
     """common huggingface search callback.
 
-    `*args` is used here to allow for access_token and refresh token to be passed by the callback route"""
+    `*_` is used here to allow for access_token and refresh token to be passed by the callback route"""
     search = metadata.params["hugging_face_model"].value
     async with httpx.AsyncClient() as client:
         url = "https://huggingface.co/api/models"

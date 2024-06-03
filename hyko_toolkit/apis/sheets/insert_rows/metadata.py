@@ -1,4 +1,7 @@
+from typing import Any
+
 from hyko_sdk.components.components import (
+    ButtonComponent,
     ListComponent,
     PortType,
     Select,
@@ -58,6 +61,11 @@ class Params(CoreModel):
         component=Select(choices=[]),
     )
     access_token: str = field(description="oauth access token", hidden=True)
+    add_column: str = field(
+        description="Add new column",
+        component=ButtonComponent(text="Add new column"),
+        hidden=True,
+    )
 
 
 func.callback(triggers=["spreadsheet"], id="populate_spreadsheets", is_refresh=True)(
@@ -92,21 +100,48 @@ async def add_sheet_insert_rows_values(
                         ),
                     )
                 )
+
+            if "add_column" in metadata.params:
+                metadata.params.pop("add_column")
         else:
             metadata.inputs = {}
             metadata.add_input(
                 FieldMetadata(
                     type=PortType.ARRAY,
-                    name="values",
+                    name="column_1",
                     items=Item(type=PortType.STRING),
                     description="",
                     component=ListComponent(
-                        item_component=ListComponent(
-                            item_component=TextField(placeholder="Enter a value")
-                        )
+                        item_component=TextField(placeholder="Enter a value")
                     ),
                 )
             )
+            metadata.add_param(
+                FieldMetadata(
+                    type=PortType.ANY,
+                    name="add_column",
+                    description="Add new column",
+                    component=ButtonComponent(text="Add new column"),
+                    callback_id="add_new_input_column",
+                )
+            )
+    return metadata
+
+
+@func.callback(triggers=["add_column"], id="add_new_input_column")
+async def add_new_input_column(metadata: MetaDataBase, *_: Any):
+    metadata.add_input(
+        FieldMetadata(
+            type=PortType.ARRAY,
+            name=f"column_{len(metadata.inputs.keys()) + 1}",
+            items=Item(type=PortType.STRING),
+            description="",
+            component=ListComponent(
+                item_component=TextField(placeholder="Enter a value")
+            ),
+        )
+    )
+
     return metadata
 
 
