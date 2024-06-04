@@ -4,6 +4,7 @@ import httpx
 from hyko_sdk.components.components import TextField
 from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
+from pydantic import Field
 
 from hyko_toolkit.exceptions import APICallError
 from hyko_toolkit.registry import ToolkitNode
@@ -76,7 +77,7 @@ class Outputs(CoreModel):
 
 class DisplayName(CoreModel):
     text: str
-    languageCode: str
+    language_code: str = Field(alias="languageCode")
 
 
 class Date(CoreModel):
@@ -98,23 +99,23 @@ class Period(CoreModel):
 
 
 class CurrentOpeningHours(CoreModel):
-    openNow: bool
+    open_now: bool = Field(alias="openNow")
     periods: list[Period]
-    weekdayDescriptions: list[str]
+    weekday_descriptions: list[str] = Field(alias="weekdayDescriptions")
 
 
 class Place(CoreModel):
-    displayName: DisplayName
+    display_name: DisplayName = Field(alias="displayName")
     types: List[str]
-    nationalPhoneNumber: str
-    internationalPhoneNumber: str
-    formattedAddress: str
-    userRatingCount: int
-    currentOpeningHours: CurrentOpeningHours
-    primaryType: str
+    national_phone_number: str = Field(alias="nationalPhoneNumber")
+    international_phone_number: str = Field(alias="internationalPhoneNumber")
+    formatted_address: str = Field(alias="formattedAddress")
+    user_rating_count: int = Field(alias="userRatingCount")
+    current_opening_hours: CurrentOpeningHours = Field(alias="currentOpeningHours")
+    primary_type: str = Field(alias="primaryType")
     reviews: list[dict[Any, Any]]
-    priceLevel: str = "Not Mentioned"
-    websiteUri: str = "Whithout website"
+    price_level: str = Field(alias="priceLevel", default="Not Mentioned")
+    website_uri: str = Field(alias="websiteUri", default="Not Mentioned")
     delivery: bool = False
 
 
@@ -142,7 +143,7 @@ async def call(inputs: Inputs, params: Params):
     if res.is_success:
         places_response = Result(**res.json())
         desplay_name = [
-            places_response.places[i].displayName.text
+            places_response.places[i].display_name.text
             for i in range(len(places_response.places))
         ]
         reviews = [
@@ -158,36 +159,36 @@ async def call(inputs: Inputs, params: Params):
         ]
 
         formatted_address = [
-            places_response.places[i].formattedAddress
+            places_response.places[i].formatted_address
             for i in range(len(places_response.places))
         ]
 
         nationalphonenumber = [
-            places_response.places[i].nationalPhoneNumber
+            places_response.places[i].national_phone_number
             for i in range(len(places_response.places))
         ]
         internationalphonenumber = [
-            places_response.places[i].internationalPhoneNumber
+            places_response.places[i].international_phone_number
             for i in range(len(places_response.places))
         ]
         userratingcount = [
-            str(places_response.places[i].userRatingCount)
+            str(places_response.places[i].user_rating_count)
             for i in range(len(places_response.places))
         ]
         currentopeninghours = [
-            str(places_response.places[i].currentOpeningHours)
+            str(places_response.places[i].current_opening_hours)
             for i in range(len(places_response.places))
         ]
         primarytype = [
-            places_response.places[i].primaryType
+            places_response.places[i].primary_type
             for i in range(len(places_response.places))
         ]
         pricelevel = [
-            places_response.places[i].priceLevel
+            places_response.places[i].price_level
             for i in range(len(places_response.places))
         ]
         websiteuri = [
-            places_response.places[i].websiteUri
+            places_response.places[i].website_uri
             for i in range(len(places_response.places))
         ]
         delivery = [
