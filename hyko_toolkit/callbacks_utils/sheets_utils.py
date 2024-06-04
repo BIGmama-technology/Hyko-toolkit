@@ -33,16 +33,19 @@ async def populate_spreadsheets(
 async def populate_sheets(
     metadata: MetaDataBase, oauth_token: str, *_: Any
 ) -> MetaDataBase:
-    choices = await list_sheets_name(
-        oauth_token, str(metadata.params["spreadsheet"].value)
-    )
-    metadata_dict = metadata.params["sheet"].model_dump()
-    metadata_dict["component"] = Select(
-        choices=[
-            SelectChoice(value=choice.label, label=choice.label) for choice in choices
-        ]
-    )
-    metadata.add_param(FieldMetadata(**metadata_dict))
+    spreadsheet_id = metadata.params["spreadsheet"].value
+    if spreadsheet_id:
+        choices = await list_sheets_name(
+            oauth_token, str(metadata.params["spreadsheet"].value)
+        )
+        metadata_dict = metadata.params["sheet"].model_dump()
+        metadata_dict["component"] = Select(
+            choices=[
+                SelectChoice(value=choice.label, label=choice.label)
+                for choice in choices
+            ]
+        )
+        metadata.add_param(FieldMetadata(**metadata_dict))
     return metadata
 
 

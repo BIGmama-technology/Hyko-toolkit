@@ -139,6 +139,7 @@ async def add_new_input_column(metadata: MetaDataBase, *_: Any):
             component=ListComponent(
                 item_component=TextField(placeholder="Enter a value")
             ),
+            value=[""],
         )
     )
 
