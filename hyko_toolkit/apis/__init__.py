@@ -9,6 +9,7 @@ from .elevenlabs.text_to_speech.metadata import func as func  # noqa: F811
 from .gemini.chat.metadata import func as func  # noqa: F811
 from .gemini.text_embedding.metadata import func as func  # noqa: F811
 from .gemini.vision.metadata import func as func  # noqa: F811
+from .google.google_place.metadata import func as func  # noqa: F811
 from .google.text_lookup.metadata import func as func  # noqa: F811
 from .groq.chat.metadata import func as func  # noqa: F811
 from .huggingface.chat.metadata import func as func  # noqa: F811
