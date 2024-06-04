@@ -50,6 +50,6 @@ class Outputs(CoreModel):
     text: str = field(description="Recognized speech text")
 
 
-func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+func.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

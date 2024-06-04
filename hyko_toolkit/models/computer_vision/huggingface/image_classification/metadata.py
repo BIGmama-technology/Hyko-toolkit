@@ -41,6 +41,6 @@ class Outputs(CoreModel):
     scores: list[float] = field(description="Scores.")
 
 
-func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+func.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

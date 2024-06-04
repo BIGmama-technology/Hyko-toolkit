@@ -4,7 +4,7 @@ from hyko_sdk.components.components import (
     ButtonComponent,
     ListComponent,
     PortType,
-    Select,
+    RefreshableSelect,
     SelectChoice,
     TextField,
 )
@@ -54,11 +54,12 @@ class Choices(BaseModel):
 class Params(CoreModel):
     spreadsheet: str = field(
         description="Spreadsheet file to append to.",
-        component=Select(choices=[]),
+        component=RefreshableSelect(choices=[], callback_id="populate_spreadsheets"),
     )
     sheet: str = field(
         description="Sheet",
-        component=Select(choices=[]),
+        component=RefreshableSelect(choices=[], callback_id="populate_sheets_insert"),
+        hidden=True,
     )
     access_token: str = field(description="oauth access token", hidden=True)
     add_column: str = field(
@@ -68,17 +69,13 @@ class Params(CoreModel):
     )
 
 
-func.callback(triggers=["spreadsheet"], id="populate_spreadsheets", is_refresh=True)(
-    populate_spreadsheets
-)
+func.callback(trigger="spreadsheet", id="populate_spreadsheets")(populate_spreadsheets)
 
 
-func.callback(triggers=["sheet"], id="populate_sheets_insert", is_refresh=True)(
-    populate_sheets
-)
+func.callback(trigger="sheet", id="populate_sheets_insert")(populate_sheets)
 
 
-@func.callback(triggers=["sheet"], id="add_sheet_insert_rows_inputs")
+@func.callback(trigger="sheet", id="add_sheet_insert_rows_inputs")
 async def add_sheet_insert_rows_values(
     metadata: MetaDataBase, oauth_token: str, _
 ) -> MetaDataBase:
@@ -114,6 +111,7 @@ async def add_sheet_insert_rows_values(
                     component=ListComponent(
                         item_component=TextField(placeholder="Enter a value")
                     ),
+                    value=[""],
                 )
             )
             metadata.add_param(
@@ -128,7 +126,7 @@ async def add_sheet_insert_rows_values(
     return metadata
 
 
-@func.callback(triggers=["add_column"], id="add_new_input_column")
+@func.callback(trigger="add_column", id="add_new_input_column")
 async def add_new_input_column(metadata: MetaDataBase, *_: Any):
     metadata.add_input(
         FieldMetadata(
@@ -146,7 +144,7 @@ async def add_new_input_column(metadata: MetaDataBase, *_: Any):
     return metadata
 
 
-@func.callback(triggers=["spreadsheet"], id="fetch_sheets_insert")
+@func.callback(trigger="spreadsheet", id="fetch_sheets_insert")
 async def fetch_sheets_insert(metadata: MetaDataBase, oauth_token: str, _):
     spreadsheet_id = metadata.params["spreadsheet"].value
     if spreadsheet_id:
@@ -155,8 +153,11 @@ async def fetch_sheets_insert(metadata: MetaDataBase, oauth_token: str, _):
             SelectChoice(label=sheet.label, value=sheet.label) for sheet in sheets
         ]
         metadata_dict = metadata.params["sheet"].model_dump()
-        metadata_dict["component"] = Select(choices=choices)
+        metadata_dict["component"] = RefreshableSelect(
+            choices=choices, callback_id=metadata_dict["component"]["callback_id"]
+        )
         metadata_dict["value"] = choices[0].value
+        metadata_dict.pop("hidden")
         metadata.add_param(FieldMetadata(**metadata_dict))
 
         metadata = await add_sheet_insert_rows_values(metadata, oauth_token, _)

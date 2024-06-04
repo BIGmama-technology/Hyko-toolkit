@@ -1,4 +1,8 @@
-from hyko_sdk.components.components import PortType, Select, SelectChoice
+from hyko_sdk.components.components import (
+    PortType,
+    RefreshableSelect,
+    SelectChoice,
+)
 from hyko_sdk.json_schema import Item
 from hyko_sdk.models import (
     Category,
@@ -30,26 +34,25 @@ input_node = ToolkitNode(
 @input_node.set_param
 class Param(CoreModel):
     spreadsheet: str = field(
-        description="Spreadsheet to read",
-        component=Select(choices=[]),
+        description="Spreadsheet file to append to.",
+        component=RefreshableSelect(choices=[], callback_id="populate_spreadsheets"),
     )
     sheet: str = field(
-        description="Sheet name",
-        component=Select(choices=[]),
+        description="Sheet",
+        component=RefreshableSelect(choices=[], callback_id="populate_sheets"),
+        hidden=True,
     )
 
 
-input_node.callback(
-    triggers=["spreadsheet"], id="populate_spreadsheets", is_refresh=True
-)(populate_spreadsheets)
-
-
-input_node.callback(triggers=["sheet"], id="populate_sheets", is_refresh=True)(
-    populate_sheets
+input_node.callback(trigger="spreadsheet", id="populate_spreadsheets")(
+    populate_spreadsheets
 )
 
 
-@input_node.callback(triggers=["sheet"], id="update_sheets_names")
+input_node.callback(trigger="sheet", id="populate_sheets")(populate_sheets)
+
+
+@input_node.callback(trigger="sheet", id="update_sheets_names")
 async def update_sheets_names(
     metadata: MetaDataBase, oauth_token: str, _
 ) -> MetaDataBase:
@@ -71,7 +74,7 @@ async def update_sheets_names(
     return metadata
 
 
-@input_node.callback(triggers=["spreadsheet"], id="update_sheets_outputs")
+@input_node.callback(trigger="spreadsheet", id="update_sheets_outputs")
 async def update_sheets_node(
     metadata: MetaDataBase, oauth_token: str, _
 ) -> MetaDataBase:
@@ -83,7 +86,9 @@ async def update_sheets_node(
         ]
 
         metadata_dict = metadata.params["sheet"].model_dump()
-        metadata_dict["component"] = Select(choices=choices)
+        metadata_dict["component"] = RefreshableSelect(
+            choices=choices, callback_id=metadata_dict["component"]["callback_id"]
+        )
         metadata_dict["value"] = choices[0].value
         metadata.add_param(FieldMetadata(**metadata_dict))
 

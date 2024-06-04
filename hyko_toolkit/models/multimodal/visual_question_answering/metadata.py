@@ -42,6 +42,6 @@ class Outputs(CoreModel):
     score: list[float] = field(description="Confidence score")
 
 
-func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+func.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

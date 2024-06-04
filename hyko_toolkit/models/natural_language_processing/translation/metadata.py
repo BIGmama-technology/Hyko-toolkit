@@ -73,6 +73,6 @@ class Outputs(CoreModel):
     translation_text: str = field(description="The translated text.")
 
 
-func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+func.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

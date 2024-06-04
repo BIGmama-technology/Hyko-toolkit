@@ -53,6 +53,6 @@ class Outputs(CoreModel):
     generated_text: str = field(description="Generated text")
 
 
-func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+func.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

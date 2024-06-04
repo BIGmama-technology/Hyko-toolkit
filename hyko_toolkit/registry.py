@@ -60,14 +60,16 @@ class ToolkitNode(_ToolkitNode):
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)
 
-    def callback(self, triggers: list[str], id: str, is_refresh: bool = False):
-        for trigger in triggers:
+    def callback(self, trigger: str | list[str], id: str):
+        if isinstance(trigger, list):
+            for item in trigger:
+                field = self.params.get(item)
+                assert field, "trigger field not found in params"
+                field.callback_id = id
+        else:
             field = self.params.get(trigger)
             assert field, "trigger field not found in params"
-            if is_refresh:
-                field.refresh_id = id
-            else:
-                field.callback_id = id
+            field.callback_id = id
 
         def wrapper(
             callback: Callable[..., Coroutine[Any, Any, MetaDataBase]],

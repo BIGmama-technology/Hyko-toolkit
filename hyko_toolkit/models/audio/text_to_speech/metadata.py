@@ -50,6 +50,6 @@ class Outputs(CoreModel):
     speech: Audio = field(description="Synthesized speech")
 
 
-func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+func.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

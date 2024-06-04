@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Any
 
 import httpx
-from hyko_sdk.components.components import Select, SelectChoice
+from hyko_sdk.components.components import RefreshableSelect, SelectChoice
 from hyko_sdk.models import FieldMetadata, MetaDataBase
 from pydantic import BaseModel
 
@@ -27,7 +27,9 @@ async def populate_spreadsheets(
 ) -> MetaDataBase:
     choices = await get_spreadsheets(oauth_token)
     metadata_dict = metadata.params["spreadsheet"].model_dump()
-    metadata_dict["component"] = Select(choices=choices)
+    metadata_dict["component"] = RefreshableSelect(
+        choices=choices, callback_id=metadata_dict["component"]["callback_id"]
+    )
     metadata.add_param(FieldMetadata(**metadata_dict))
 
     return metadata
@@ -42,11 +44,12 @@ async def populate_sheets(
             oauth_token, str(metadata.params["spreadsheet"].value)
         )
         metadata_dict = metadata.params["sheet"].model_dump()
-        metadata_dict["component"] = Select(
+        metadata_dict["component"] = RefreshableSelect(
             choices=[
                 SelectChoice(value=choice.label, label=choice.label)
                 for choice in choices
-            ]
+            ],
+            callback_id=metadata_dict["component"]["callback_id"],
         )
         metadata.add_param(FieldMetadata(**metadata_dict))
     return metadata

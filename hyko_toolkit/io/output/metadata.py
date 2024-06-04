@@ -46,7 +46,7 @@ class Params(CoreModel):
     )
 
 
-@output_node.callback(triggers=["output_type"], id="change_output_type")
+@output_node.callback(trigger="output_type", id="change_output_type")
 async def change_output_type(metadata: MetaDataBase, *_: Any):
     output_type = metadata.params["output_type"].value
     metadata.params = {}
