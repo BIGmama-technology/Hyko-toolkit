@@ -19,6 +19,9 @@ class Response(BaseModel):
     body: str
 
 
+base_url = "https://sheets.googleapis.com/v4/spreadsheets"
+
+
 async def populate_spreadsheets(
     metadata: MetaDataBase, oauth_token: str, *_: Any
 ) -> MetaDataBase:
@@ -77,7 +80,7 @@ async def get_spreadsheets(access_token: str):
 
 
 async def list_sheets_name(access_token: str, spreadsheet_id: str):
-    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}"
+    url = f"{base_url}/{spreadsheet_id}"
     headers = {
         "Authorization": f"Bearer {access_token}",
     }
@@ -88,7 +91,7 @@ async def list_sheets_name(access_token: str, spreadsheet_id: str):
             return [
                 SelectChoice(
                     label=sheet["properties"]["title"],
-                    value=sheet["properties"]["sheetId"],
+                    value=str(sheet["properties"]["sheetId"]),
                 )
                 for sheet in sheets
             ]
@@ -100,7 +103,7 @@ async def list_sheets_name(access_token: str, spreadsheet_id: str):
 async def get_sheet_columns(
     access_token: str, spreadsheet_id: str, sheet_name: str
 ) -> list[str]:
-    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}/values/{sheet_name}!1:1"
+    url = f"{base_url}/{spreadsheet_id}/values/{sheet_name}!1:1"
     headers = {"Authorization": f"Bearer {access_token}"}
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
@@ -117,12 +120,12 @@ async def get_sheet_columns(
 
 async def delete_rows(
     spreadsheet_id: str,
-    sheet_id: int,
+    sheet_id: str,
     start_index: int,
     end_index: int,
     access_token: str,
 ):
-    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}:batchUpdate"
+    url = f"{base_url}/{spreadsheet_id}:batchUpdate"
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
@@ -133,7 +136,7 @@ async def delete_rows(
                 "deleteDimension": {
                     "range": {
                         "sheetId": sheet_id,
-                        "dimension": Dimension.ROWS,
+                        "dimension": Dimension.ROWS.value,
                         "startIndex": start_index,
                         "endIndex": end_index,
                     }
@@ -144,7 +147,12 @@ async def delete_rows(
 
     async with httpx.AsyncClient() as client:
         response = await client.post(url, headers=headers, json=body)
-        return Response(success=response.is_success, body=response.text)
+        if response.status_code == 200:
+            return Response(success=response.is_success, body=response.text)
+
+        elif response.status_code == 401:
+            raise OauthTokenExpiredError()
+        raise APICallError(status=response.status_code, detail=response.text)
 
 
 async def insert_google_sheet_values(
@@ -160,7 +168,7 @@ async def insert_google_sheet_values(
         "values": [{"values": val} for val in values],
     }
 
-    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}/values/{sheet_name}!A:A:append"
+    url = f"{base_url}/{spreadsheet_id}/values/{sheet_name}!A:A:append"
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
@@ -178,33 +186,17 @@ async def insert_google_sheet_values(
         raise APICallError(status=response.status_code, detail=response.text)
 
 
-async def clear_sheet(
-    spreadsheet_id: str,
-    sheet_id: int,
-    access_token: str,
-    row_index: int,
-    num_of_rows: int,
-):
-    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}:batchUpdate"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json",
-    }
-    body = {
-        "requests": [
-            {
-                "deleteDimension": {
-                    "range": {
-                        "sheetId": sheet_id,
-                        "dimension": "ROWS",
-                        "startIndex": row_index,
-                        "endIndex": row_index + num_of_rows + 1,
-                    },
-                },
-            },
-        ],
-    }
+async def get_values(
+    spreadsheet_id: str, access_token: str, sheet_name: str
+) -> list[list[str]]:
+    if not sheet_name:
+        return []
+    url = f"{base_url}/{spreadsheet_id}/values/{sheet_name}"
+    headers = {"Authorization": f"Bearer {access_token}"}
 
     async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers, json=body)
-        return Response(success=response.is_success, body=response.text)
+        response = await client.get(url, headers=headers)
+        data = response.json()
+        if "values" not in data:
+            return []
+        return data["values"]
