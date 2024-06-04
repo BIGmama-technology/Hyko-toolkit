@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import httpx
 from hyko_sdk.components.components import TextField
@@ -40,16 +40,14 @@ class Params(CoreModel):
 
 @func.set_output
 class Outputs(CoreModel):
-    Displayname: list[str] = field(description="List of display names of the places")
+    display_name: list[str] = field(
+        description="List of display names of the places", alias="Displayname"
+    )
     Formatted_address: list[str] = field(
-        description="List of formatted addresses of the places"
+        description="List of formatted addresses of the places",
     )
-    website_uris: list[str] = field(
-        description="List of website uris of the places", default="Not Mentioned"
-    )
-    reviews: list[str] = field(
-        description="List of reviews of the places", default="Not Mentioned"
-    )
+    website_uris: list[str] = field(description="List of website uris of the places")
+    reviews: list[str] = field(description="List of reviews of the places")
 
 
 class DisplayName(CoreModel):
@@ -61,7 +59,7 @@ class Place(CoreModel):
     display_name: DisplayName = Field(alias="displayName")
     formatted_address: str = Field(alias="formattedAddress")
     website_uri: str = Field(alias="websiteUri", default="Not Mentioned")
-    reviews: list[Any]
+    reviews: Optional[list[Any]] = []
 
 
 class Result(CoreModel):
@@ -87,26 +85,16 @@ async def call(inputs: Inputs, params: Params):
         )
     if res.is_success:
         places_response = Result(**res.json())
-        desplay_name = [
-            places_response.places[i].display_name.text
-            for i in range(len(places_response.places))
-        ]
+        display_name = [place.display_name.text for place in places_response.places]
         formatted_address = [
-            places_response.places[i].formatted_address
-            for i in range(len(places_response.places))
+            place.formatted_address for place in places_response.places
         ]
-        website_uris = [
-            places_response.places[i].website_uri
-            for i in range(len(places_response.places))
-        ]
-        reviews = [
-            str(places_response.places[i].reviews)
-            for i in range(len(places_response.places))
-        ]
+        website_uris = [place.website_uri for place in places_response.places]
+        reviews = [str(place.reviews) for place in places_response.places]
     else:
         raise APICallError(status=res.status_code, detail=res.text)
     return Outputs(
-        Displayname=desplay_name,
+        display_name=display_name,
         Formatted_address=formatted_address,
         website_uris=website_uris,
         reviews=reviews,
