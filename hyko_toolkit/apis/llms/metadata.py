@@ -1,10 +1,9 @@
 from enum import Enum
 from typing import Any
 
+from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import Category, CoreModel, MetaDataBase
 from hyko_sdk.utils import field
-
-from hyko_toolkit.registry import ToolkitNode
 
 from .anthropic.metadata import func as anthropic_llm
 from .cohere.metadata import func as cohere_llm
@@ -17,10 +16,11 @@ from .openai.metadata import func as openai_llm
 from .tune_studio.metadata import func as tune_studio_llm
 
 llm_node = ToolkitNode(
-    name="llm",
-    task="text_generation",
-    description="call any llm using any provider",
+    name="Text Generation",
+    task="natural language generation",
+    description="Use text generation api from any provider : openai, cohere, gemini ...",
     category=Category.API,
+    cost=0,
 )
 
 

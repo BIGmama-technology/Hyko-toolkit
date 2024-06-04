@@ -2,6 +2,7 @@ import io
 
 import pandas as pd
 from hyko_sdk.components.components import Ext, PortType, StorageSelect
+from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.io import CSV
 from hyko_sdk.json_schema import Item
 from hyko_sdk.models import (
@@ -12,8 +13,6 @@ from hyko_sdk.models import (
     StorageConfig,
 )
 from hyko_sdk.utils import field
-
-from hyko_toolkit.registry import ToolkitNode
 
 input_node = ToolkitNode(
     name="CSV",

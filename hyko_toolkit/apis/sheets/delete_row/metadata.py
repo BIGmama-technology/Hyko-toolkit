@@ -2,6 +2,7 @@ from hyko_sdk.components.components import (
     RefreshableSelect,
     SelectChoice,
 )
+from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import (
     Category,
     CoreModel,
@@ -17,7 +18,6 @@ from hyko_toolkit.callbacks_utils.sheets_utils import (
     list_sheets_name,
     populate_spreadsheets,
 )
-from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     name="Delete Rows from sheets",

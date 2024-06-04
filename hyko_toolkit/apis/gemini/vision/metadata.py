@@ -2,12 +2,12 @@ import base64
 
 import httpx
 from hyko_sdk.components.components import Slider, TextField
+from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.io import Image
 from hyko_sdk.models import Category, CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
-from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     name="Gemini vision api",

@@ -10,11 +10,10 @@ from hyko_sdk.components.components import (
     StorageSelect,
     TextField,
 )
+from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.json_schema import Item
 from hyko_sdk.models import Category, CoreModel, FieldMetadata, MetaDataBase
 from hyko_sdk.utils import field
-
-from hyko_toolkit.registry import ToolkitNode
 
 input_node = ToolkitNode(
     name="Input",

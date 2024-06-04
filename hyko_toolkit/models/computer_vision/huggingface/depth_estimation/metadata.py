@@ -1,13 +1,13 @@
 from typing import Any
 
 from hyko_sdk.components.components import Search
+from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.io import Image
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 from pydantic import TypeAdapter
 
 from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
-from hyko_toolkit.registry import ToolkitNode
 
 ModelsAdapter = TypeAdapter(list[dict[str, Any]])
 

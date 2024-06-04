@@ -1,10 +1,9 @@
 from fastapi import HTTPException
+from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.io import Image as HykoImage
 from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 from pydantic import PositiveInt
-
-from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     name="Crop border",

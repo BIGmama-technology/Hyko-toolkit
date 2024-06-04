@@ -8,6 +8,7 @@ from hyko_sdk.components.components import (
     SelectChoice,
     TextField,
 )
+from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.json_schema import Item
 from hyko_sdk.models import (
     Category,
@@ -27,7 +28,6 @@ from hyko_toolkit.callbacks_utils.sheets_utils import (
     populate_sheets,
     populate_spreadsheets,
 )
-from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     name="Insert rows to sheets",
