@@ -48,6 +48,7 @@ class Outputs(CoreModel):
     )
     website_uris: list[str] = field(description="List of website uris of the places")
     reviews: list[str] = field(description="List of reviews of the places")
+    place_info: list[str] = field(description="Place info")
 
 
 class DisplayName(CoreModel):
@@ -56,8 +57,8 @@ class DisplayName(CoreModel):
 
 
 class Place(CoreModel):
-    display_name: DisplayName = Field(alias="displayName")
-    formatted_address: str = Field(alias="formattedAddress")
+    display_name: DisplayName = Field(alias="displayName", default="Not Mentioned")
+    formatted_address: str = Field(alias="formattedAddress", default="Not Mentioned")
     website_uri: str = Field(alias="websiteUri", default="Not Mentioned")
     reviews: Optional[list[Any]] = []
 
@@ -91,6 +92,13 @@ async def call(inputs: Inputs, params: Params):
         ]
         website_uris = [place.website_uri for place in places_response.places]
         reviews = [str(place.reviews) for place in places_response.places]
+        info = [
+            f"Display Name: {dn}\nFormatted Address: {fa}\nWebsite Uri: {wu}\nReviews: {rv}"
+            for dn, fa, wu, rv in zip(
+                display_name, formatted_address, website_uris, reviews
+            )
+        ]
+
     else:
         raise APICallError(status=res.status_code, detail=res.text)
     return Outputs(
@@ -98,4 +106,5 @@ async def call(inputs: Inputs, params: Params):
         Formatted_address=formatted_address,
         website_uris=website_uris,
         reviews=reviews,
+        place_info=info,
     )
