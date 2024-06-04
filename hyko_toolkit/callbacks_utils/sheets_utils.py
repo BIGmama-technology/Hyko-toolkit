@@ -175,7 +175,6 @@ async def insert_google_sheet_values(
     if response.is_success:
         return Response(success=response.is_success, body=response.text)
     else:
-        print("response is", response.text)
         raise APICallError(status=response.status_code, detail=response.text)
 
 
