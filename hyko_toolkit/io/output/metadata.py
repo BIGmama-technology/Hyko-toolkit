@@ -1,47 +1,43 @@
+from enum import Enum
 from typing import Any
 
-from hyko_sdk.components.components import (
-    AudioPreview,
-    ImagePreview,
-    ListComponent,
-    NumberField,
-    PDFPreview,
-    PortType,
-    Select,
-    SelectChoice,
-    TextField,
-    TextPreview,
-    VideoPreview,
-)
 from hyko_sdk.definitions import ToolkitNode
-from hyko_sdk.json_schema import Item
-from hyko_sdk.models import Category, CoreModel, FieldMetadata, MetaDataBase
+from hyko_sdk.models import Category, CoreModel, MetaDataBase
 from hyko_sdk.utils import field
+
+from ..audio.metadata import output_node as audio_node
+from ..image.metadata import output_node as image_node
+from ..list.number_metadata import output_node as list_number_node
+from ..list.text_metadata import output_node as list_text_node
+from ..number.metadata import output_node as number_node
+from ..pdf.metadata import output_node as pdf_node
+from ..text.metadata import output_node as text_node
+from ..video.metadata import output_node as video_node
 
 output_node = ToolkitNode(
     name="Output",
     task="Outputs",
     description="This is an output node",
     category=Category.IO,
+    icon="io",
 )
+
+
+class OutputTypes(str, Enum):
+    text = "text"
+    number = "number"
+    image = "image"
+    video = "video"
+    audio = "audio"
+    pdf = "pdf"
+    list_of_text = "list_of_text"
+    list_of_numbers = "list_of_numbers"
 
 
 @output_node.set_param
 class Params(CoreModel):
-    output_type: str = field(
+    output_type: OutputTypes = field(
         description="Type of the output node, when this changes it updates the input port to correspond to it.",
-        component=Select(
-            choices=[
-                SelectChoice(label="Text", value="text"),
-                SelectChoice(label="Number", value="number"),
-                SelectChoice(label="Image", value="image"),
-                SelectChoice(label="Video", value="video"),
-                SelectChoice(label="Audio", value="audio"),
-                SelectChoice(label="Pdf", value="pdf"),
-                SelectChoice(label="List of Texts", value="list_of_texts"),
-                SelectChoice(label="List of numbers", value="list_of_numbers"),
-            ]
-        ),
     )
 
 
@@ -50,105 +46,21 @@ async def change_output_type(metadata: MetaDataBase, *_: Any):
     output_type = metadata.params["output_type"].value
     metadata.params = {}
     match output_type:
-        case "text":
-            metadata.icon = "text"
-            metadata.add_input(
-                FieldMetadata(
-                    type=PortType.STRING,
-                    name="output_text",
-                    description="Output text",
-                    component=TextPreview(),
-                )
-            )
-            return metadata
-        case "number":
-            metadata.icon = "number"
-            metadata.add_input(
-                FieldMetadata(
-                    type=PortType.NUMBER,
-                    name="output_number",
-                    description="Output number",
-                    component=NumberField(
-                        placeholder="your output number", freezed=True
-                    ),
-                )
-            )
-            return metadata
-        case "image":
-            metadata.icon = "image"
-            metadata.add_input(
-                FieldMetadata(
-                    type=PortType.IMAGE,
-                    name="output_image",
-                    description="Uploaded image",
-                    component=ImagePreview(),
-                )
-            )
-            return metadata
-        case "video":
-            metadata.icon = "video"
-            metadata.add_input(
-                FieldMetadata(
-                    type=PortType.VIDEO,
-                    name="output_video",
-                    description="Uploaded video",
-                    component=VideoPreview(),
-                )
-            )
-            return metadata
-        case "audio":
-            metadata.icon = "audio"
-            metadata.add_input(
-                FieldMetadata(
-                    type=PortType.AUDIO,
-                    name="output_audio",
-                    description="Uploaded audio",
-                    component=AudioPreview(),
-                )
-            )
-            return metadata
-        case "pdf":
-            metadata.icon = "pdf"
-            metadata.add_input(
-                FieldMetadata(
-                    type=PortType.PDF,
-                    name="output_pdf",
-                    description="Uploaded pdf",
-                    component=PDFPreview(),
-                )
-            )
-            return metadata
-        case "list_of_texts":
-            items = Item(type=PortType.STRING)
-            metadata.icon = "list"
-            metadata.add_input(
-                FieldMetadata(
-                    type=PortType.ARRAY,
-                    items=items,
-                    name="output_list",
-                    description="Output list of texts",
-                    component=ListComponent(
-                        freezed=True, item_component=TextField(placeholder="text item")
-                    ),
-                )
-            )
-            return metadata
-        case "list_of_numbers":
-            items = Item(type=PortType.NUMBER)
-            metadata.icon = "list"
-            metadata.add_input(
-                FieldMetadata(
-                    type=PortType.ARRAY,
-                    items=items,
-                    name="output_list",
-                    description="Output list of numbers",
-                    component=ListComponent(
-                        freezed=True,
-                        item_component=TextField(placeholder="number item"),
-                    ),
-                )
-            )
-            return metadata
-
+        case OutputTypes.text.value:
+            return text_node.get_metadata()
+        case OutputTypes.number.value:
+            return number_node.get_metadata()
+        case OutputTypes.image.value:
+            return image_node.get_metadata()
+        case OutputTypes.video.value:
+            return video_node.get_metadata()
+        case OutputTypes.audio.value:
+            return audio_node.get_metadata()
+        case OutputTypes.pdf.value:
+            return pdf_node.get_metadata()
+        case OutputTypes.list_of_text.value:
+            return list_text_node.get_metadata()
+        case OutputTypes.list_of_numbers.value:
+            return list_number_node.get_metadata()
         case _:
             return metadata
