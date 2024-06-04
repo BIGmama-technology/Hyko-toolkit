@@ -2,16 +2,17 @@ from enum import Enum
 
 from hyko_sdk.components.components import Slider
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Ultralytics image classification",
     task="Computer vision",
     cost=0,
     description="UltraLytics Image Classification Using YOLOv8 Classifier.",
+    category=Category.MODEL,
 )
 
 

@@ -1,13 +1,14 @@
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Linear regression",
     task="Regression",
     cost=0,
     description="Predicts a future value based on historical data",
+    category=Category.MODEL,
 )
 
 

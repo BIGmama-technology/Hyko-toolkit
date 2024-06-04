@@ -1,17 +1,18 @@
 from hyko_sdk.components.components import Search, Slider
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.callbacks_utils import huggingface_models_search
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="image-to-text",
     task="multimodal",
     cost=0,
     icon="hf",
     description="Hugging Face Image-To-Text Task",
+    category=Category.MODEL,
 )
 
 
@@ -52,6 +53,6 @@ class Outputs(CoreModel):
     generated_text: str = field(description="Generated text")
 
 
-func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+func.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

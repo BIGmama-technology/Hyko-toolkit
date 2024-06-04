@@ -6,6 +6,7 @@ from hyko_sdk.components.components import (
     NumberField,
     PortType,
     Select,
+    SelectChoice,
     StorageSelect,
     TextField,
 )
@@ -29,21 +30,21 @@ class Params(CoreModel):
         description="Type of the input node, when this changes it updates the output port to correspond to it.",
         component=Select(
             choices=[
-                "text",
-                "number",
-                "image",
-                "video",
-                "audio",
-                "pdf",
-                "list of texts",
-                "list of numbers",
+                SelectChoice(label="Text", value="text"),
+                SelectChoice(label="Number", value="number"),
+                SelectChoice(label="Image", value="image"),
+                SelectChoice(label="Video", value="video"),
+                SelectChoice(label="Audio", value="audio"),
+                SelectChoice(label="Pdf", value="pdf"),
+                SelectChoice(label="List of Texts", value="list_of_texts"),
+                SelectChoice(label="List of numbers", value="list_of_numbers"),
             ]
         ),
     )
 
 
-@input_node.callback(triggers=["input_type"], id="change_input_type")
-async def change_input_type(metadata: MetaDataBase, *args: Any):
+@input_node.callback(trigger="input_type", id="change_input_type")
+async def change_input_type(metadata: MetaDataBase, *_: Any):
     input_type = metadata.params["input_type"].value
     metadata.params = {}
     match input_type:
@@ -137,7 +138,7 @@ async def change_input_type(metadata: MetaDataBase, *args: Any):
                 )
             )
             return metadata
-        case "list of texts":
+        case "list_of_texts":
             items = Item(type=PortType.STRING)
             metadata.icon = "list"
             metadata.add_output(
@@ -152,7 +153,7 @@ async def change_input_type(metadata: MetaDataBase, *args: Any):
                 )
             )
             return metadata
-        case "list of numbers":
+        case "list_of_numbers":
             items = Item(type=PortType.NUMBER)
             metadata.icon = "list"
             metadata.add_output(
@@ -162,7 +163,7 @@ async def change_input_type(metadata: MetaDataBase, *args: Any):
                     name="output_list",
                     description="Input list of numbers",
                     component=ListComponent(
-                        item_component=TextField(placeholder="number item")
+                        item_component=NumberField(placeholder="number item")
                     ),
                 )
             )

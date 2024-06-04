@@ -2,16 +2,17 @@ from enum import Enum
 
 from hyko_sdk.components.components import Slider
 from hyko_sdk.io import Video
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Ultralytics video obb object detection",
     task="Computer vision",
     cost=0,
     description="UltraLytics Video Oriented Bounding Boxes Object Detection Using YOLO V8.",
+    category=Category.MODEL,
 )
 
 
