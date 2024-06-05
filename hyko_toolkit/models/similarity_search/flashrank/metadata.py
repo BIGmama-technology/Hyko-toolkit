@@ -1,14 +1,15 @@
 from hyko_sdk.components.components import Slider, TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Flashrank",
     task="Similarity search",
     cost=0,
     description="A tool employing Flashrank re-ranking capabilities for enhancing search and retrieval pipelines, leveraging state-of-the-art cross-encoders.",
+    category=Category.MODEL,
 )
 
 

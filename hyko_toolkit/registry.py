@@ -1,29 +1,23 @@
-from typing import Any, Callable, Coroutine, Optional, Union
+from typing import Any, Callable, Coroutine, Optional
 
-from hyko_sdk.definitions import ToolkitModel as _ToolkitModel
 from hyko_sdk.definitions import ToolkitNode as _ToolkitNode
-from hyko_sdk.models import Category, Icon, MetaDataBase
-
-Definition = Union[
-    "ToolkitNode",
-    "ToolkitModel",
-]
+from hyko_sdk.models import Category, Icon, MetaDataBase, SupportedProviders
 
 
 class Registry:
-    _registry: dict[str, Definition] = {}
+    _registry: dict[str, "ToolkitNode"] = {}
     _callbacks_registry: dict[
         str, Callable[..., Coroutine[Any, Any, MetaDataBase]]
     ] = {}
 
     @classmethod
-    def register(cls, name: str, definition: Definition):
+    def register(cls, name: str, definition: "ToolkitNode"):
         cls._registry[name] = definition
 
     @classmethod
-    def get_handler(cls, name: str) -> Definition:
+    def get_handler(cls, name: str) -> "ToolkitNode":
         if name not in cls._registry:
-            raise ValueError(f"handler '{name}' not found")
+            raise ValueError(f"handler {name} not found")
         return cls._registry[name]
 
     @classmethod
@@ -43,22 +37,7 @@ class Registry:
         return cls._callbacks_registry[id]
 
 
-class AllowCallback(_ToolkitNode):
-    def callback(self, triggers: list[str], id: str):
-        for trigger in triggers:
-            field = self.params.get(trigger)
-            assert field, "trigger field not found in params"
-            field.callback_id = id
-
-        def wrapper(
-            callback: Callable[..., Coroutine[Any, Any, MetaDataBase]],
-        ):
-            Registry.register_callback(id, callback)
-
-        return wrapper
-
-
-class ToolkitNode(AllowCallback):
+class ToolkitNode(_ToolkitNode):
     def __init__(
         self,
         name: str,
@@ -67,6 +46,7 @@ class ToolkitNode(AllowCallback):
         category: Category,
         icon: Optional[Icon] = "io",
         cost: int = 0,
+        auth: Optional[SupportedProviders] = None,
     ):
         super().__init__(
             name=name,
@@ -75,28 +55,26 @@ class ToolkitNode(AllowCallback):
             cost=cost,
             icon=icon,
             category=category,
+            auth=auth,
         )
         # Automatically register the instance upon creation
         Registry.register(self.get_metadata().image, self)
 
+    def callback(self, trigger: str | list[str], id: str):
+        if isinstance(trigger, list):
+            for item in trigger:
+                field = self.params.get(item)
+                assert field, "trigger field not found in params"
+                field.callback_id = id
+        else:
+            field = self.params.get(trigger)
+            assert field, "trigger field not found in params"
+            field.callback_id = id
 
-class ToolkitModel(_ToolkitModel, AllowCallback):
-    def __init__(
-        self,
-        name: str,
-        task: str,
-        description: str,
-        cost: int,
-        category: Category = Category.MODEL,
-        icon: Optional[Icon] = "models",
-    ):
-        super().__init__(
-            name=name,
-            task=task,
-            description=description,
-            category=category,
-            cost=cost,
-            icon=icon,
-        )
-        # Automatically register the instance upon creation
-        Registry.register(self.get_metadata().image, self)
+        def wrapper(
+            callback: Callable[..., Coroutine[Any, Any, MetaDataBase]],
+        ):
+            Registry.register_callback(id, callback)
+            return callback
+
+        return wrapper

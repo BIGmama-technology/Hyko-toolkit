@@ -1,14 +1,15 @@
 from hyko_sdk.components.components import ListComponent, Slider, TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="BM25",
     task="Similarity search",
     cost=0,
     description="Perform BM25 retrieval on a list of documents based on a given query.",
+    category=Category.MODEL,
 )
 
 
