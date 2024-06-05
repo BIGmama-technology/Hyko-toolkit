@@ -58,7 +58,6 @@ from .elevenlabs.speech_to_speech.metadata import func as func  # noqa: F811
 from .elevenlabs.text_to_speech.metadata import func as func  # noqa: F811
 from .gemini.text_embedding.metadata import func as func  # noqa: F811
 from .gemini.vision.metadata import func as func  # noqa: F811
-from .google.text_lookup.metadata import func as func  # noqa: F811
 from .llms.metadata import llm_node as llm_node
 from .mistral_ai.text_embedding.metadata import func as func  # noqa: F811
 from .mutlimodal_huggingface.image_to_text.metadata import func as func  # noqa: F811
