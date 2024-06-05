@@ -5,6 +5,7 @@ from .elevenlabs.speech_to_speech.metadata import func as func  # noqa: F811
 from .elevenlabs.text_to_speech.metadata import func as func  # noqa: F811
 from .gemini.text_embedding.metadata import func as func  # noqa: F811
 from .gemini.vision.metadata import func as func  # noqa: F811
+from .google.google_place.metadata import func as func  # noqa: F811
 from .google.text_lookup.metadata import func as func  # noqa: F811
 from .llms.metadata import llm_node as llm_node
 from .mistral_ai.text_embedding.metadata import func as func  # noqa: F811
@@ -19,8 +20,10 @@ from .replicate.upscale_images.metadata import func as func  # noqa: F811
 from .replicate.vision_models.metadata import func as func  # noqa: F811
 from .serpapi.bing.metadata import func as func  # noqa: F811
 from .serpapi.duckduckgo.metadata import func as func  # noqa: F811
+from .sheets.clear_sheet.metadata import func as func  # noqa: F811
 from .sheets.delete_row.metadata import func as func  # noqa: F811
 from .sheets.insert_rows.metadata import func as func  # noqa: F811
+from .sheets.update_sheet.metadata import func as func  # noqa: F811
 from .stability_ai.image_to_image_with_a_mask.metadata import func as func  # noqa: F811
 from .stability_ai.image_to_image_with_prompt.metadata import func as func  # noqa: F811
 from .stability_ai.image_to_video.metadata import func as func  # noqa: F811

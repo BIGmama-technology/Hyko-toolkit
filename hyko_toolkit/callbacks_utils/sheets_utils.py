@@ -4,7 +4,7 @@ from typing import Any
 import httpx
 from hyko_sdk.components.components import RefreshableSelect, SelectChoice
 from hyko_sdk.models import FieldMetadata, MetaDataBase
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt
 
 from hyko_toolkit.exceptions import APICallError, OauthTokenExpiredError
 
@@ -199,7 +199,38 @@ async def get_values(
 
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
+    if response.is_success:
         data = response.json()
         if "values" not in data:
             return []
         return data["values"]
+
+    else:
+        raise APICallError(status=response.status_code, detail=response.text)
+
+
+async def update_google_sheet_row(
+    spreadsheet_id: str,
+    access_token: str,
+    sheet_name: str,
+    row_index: PositiveInt,
+    values: list[str],
+):
+    url = f"{base_url}/{spreadsheet_id}/values/{sheet_name}!A{row_index}:ZZZ{row_index}"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+    data = {
+        "majorDimension": "ROWS",
+        "range": f"{sheet_name}!A{row_index}:ZZZ{row_index}",
+        "values": [values],
+    }
+    params = {"valueInputOption": "USER_ENTERED"}
+
+    async with httpx.AsyncClient() as client:
+        response = await client.put(url, headers=headers, json=data, params=params)
+    if response.is_success:
+        return Response(success=response.is_success, body=response.text)
+    else:
+        raise APICallError(status=response.status_code, detail=response.text)
