@@ -13,6 +13,7 @@ from .google.google_place.metadata import func as func  # noqa: F811
 from .google.text_lookup.metadata import func as func  # noqa: F811
 from .groq.chat.metadata import func as func  # noqa: F811
 from .huggingface.chat.metadata import func as func  # noqa: F811
+from .joradpdz.joradpdz.metadata import func as func  # noqa: F811
 from .mistral_ai.text_completion.metadata import func as func  # noqa: F811
 from .mistral_ai.text_embedding.metadata import func as func  # noqa: F811
 from .openai.speech_to_text.metadata import func as func  # noqa: F811
