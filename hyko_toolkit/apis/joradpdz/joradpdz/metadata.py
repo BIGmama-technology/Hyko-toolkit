@@ -10,7 +10,7 @@ from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     name="joradp dz pdf downloader",
-    task="pdf utils",
+    task="joradpdz",
     category=Category.UTILS,
     cost=0,
     description="A function to download pdf from joradpdz.com.",

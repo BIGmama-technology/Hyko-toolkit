@@ -27,6 +27,7 @@ from .list_utils.reverse.metadata import func as func  # noqa: F811
 from .list_utils.slice.metadata import func as func  # noqa: F811
 from .list_utils.sort.metadata import func as func  # noqa: F811
 from .list_utils.sum.metadata import func as func  # noqa: F811
+from .llm_utils.ai_text_summarizer.metadata import func as func  # noqa: F811
 from .math_utils.arithmetic.metadata import func as func  # noqa: F811
 from .math_utils.random.metadata import func as func  # noqa: F811
 from .math_utils.range.metadata import func as func  # noqa: F811
