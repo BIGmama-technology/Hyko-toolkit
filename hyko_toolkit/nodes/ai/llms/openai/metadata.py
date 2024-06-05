@@ -19,6 +19,7 @@ func = ToolkitNode(
 class Model(str, Enum):
     gpt_4 = "gpt-4"
     chatgpt = "gpt-3.5-turbo"
+    gpt_4o = "gpt-4o"
 
 
 @func.set_input

@@ -1,18 +1,19 @@
 from hyko_sdk.components.components import TextField
 from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.io import PDF
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import CoreModel, Tag
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Pdf downloader",
-    cost=2,
     description="This function downloads content from a URL and returns it as a PDF object.",
     icon="pdf",
+    tag=Tag.readers,
+    cost=2,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     url: str = field(
         description="Your Target PDF URL.",
@@ -20,6 +21,6 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     pdf: PDF = field(description="The Downloaded PDF.")

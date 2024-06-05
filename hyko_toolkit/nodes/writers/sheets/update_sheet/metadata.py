@@ -2,7 +2,6 @@ from typing import Any
 
 from hyko_sdk.components.components import (
     ButtonComponent,
-    ListComponent,
     PortType,
     RefreshableSelect,
     SelectChoice,
@@ -20,17 +19,17 @@ from hyko_sdk.utils import field
 from pydantic import ConfigDict
 
 from hyko_toolkit.callbacks_utils.sheets_utils import (
-    Dimension,
+    Response,
     get_sheet_columns,
-    insert_google_sheet_values,
     list_sheets_name,
     populate_sheets,
     populate_spreadsheets,
+    update_google_sheet_row,
 )
 
 func = ToolkitNode(
-    name="Insert rows to sheets",
-    description="Add one or more new rows in a specific spreadsheet.",
+    name="Update Row",
+    description="Overwrite values in an existing row.",
     cost=600,
     auth=SupportedProviders.SHEETS,
     icon="sheets",
@@ -45,7 +44,7 @@ class Inputs(CoreModel):
 @func.set_param
 class Params(CoreModel):
     spreadsheet: str = field(
-        description="Spreadsheet file to append to.",
+        description="Spreadsheet file to update.",
         component=RefreshableSelect(choices=[], callback_id="populate_spreadsheets"),
     )
     sheet: str = field(
@@ -54,6 +53,8 @@ class Params(CoreModel):
         hidden=True,
     )
     access_token: str = field(description="oauth access token", hidden=True)
+    values: str = field(description="Values passed to update the row", hidden=True)
+    row_number: int = field(description="The row number to update", hidden=True)
     add_column: str = field(
         description="Add new column",
         component=ButtonComponent(text="Add new column"),
@@ -67,8 +68,8 @@ func.callback(trigger="spreadsheet", id="populate_spreadsheets")(populate_spread
 func.callback(trigger="sheet", id="populate_sheets_insert")(populate_sheets)
 
 
-@func.callback(trigger="sheet", id="add_sheet_insert_rows_inputs")
-async def add_sheet_insert_rows_values(
+@func.callback(trigger="sheet", id="add_sheet_update_rows_inputs")
+async def add_sheet_update_row_values(
     metadata: MetaDataBase, oauth_token: str, _
 ) -> MetaDataBase:
     spreadsheet_id = metadata.params["spreadsheet"].value
@@ -84,12 +85,9 @@ async def add_sheet_insert_rows_values(
                         name=column,
                         description=column,
                         items=Item(type=PortType.STRING),
-                        component=ListComponent(
-                            item_component=TextField(placeholder="Enter a value")
-                        ),
-                    )
+                        component=TextField(placeholder="Enter a value"),
+                    ),
                 )
-
             if "add_column" in metadata.params:
                 metadata.params.pop("add_column")
         else:
@@ -100,10 +98,8 @@ async def add_sheet_insert_rows_values(
                     name="column_1",
                     items=Item(type=PortType.STRING),
                     description="",
-                    component=ListComponent(
-                        item_component=TextField(placeholder="Enter a value")
-                    ),
-                    value=[""],
+                    component=TextField(placeholder="Enter a value"),
+                    value="",
                 )
             )
             metadata.add_param(
@@ -126,18 +122,16 @@ async def add_new_input_column(metadata: MetaDataBase, *_: Any):
             name=f"column_{len(metadata.inputs.keys()) + 1}",
             items=Item(type=PortType.STRING),
             description="",
-            component=ListComponent(
-                item_component=TextField(placeholder="Enter a value")
-            ),
-            value=[""],
+            component=TextField(placeholder="Enter a value"),
+            value="",
         )
     )
 
     return metadata
 
 
-@func.callback(trigger="spreadsheet", id="fetch_sheets_insert")
-async def fetch_sheets_insert(metadata: MetaDataBase, oauth_token: str, _):
+@func.callback(trigger="spreadsheet", id="fetch_sheets_update")
+async def fetch_sheets_update(metadata: MetaDataBase, oauth_token: str, _):
     spreadsheet_id = metadata.params["spreadsheet"].value
     if spreadsheet_id:
         sheets = await list_sheets_name(oauth_token, spreadsheet_id)
@@ -151,8 +145,10 @@ async def fetch_sheets_insert(metadata: MetaDataBase, oauth_token: str, _):
         metadata_dict["value"] = choices[0].value
         metadata_dict.pop("hidden")
         metadata.add_param(FieldMetadata(**metadata_dict))
-
-        metadata = await add_sheet_insert_rows_values(metadata, oauth_token, _)
+        metadata_dict = metadata.params["row_number"].model_dump()
+        metadata_dict.pop("hidden")
+        metadata.add_param(FieldMetadata(**metadata_dict))
+        metadata = await add_sheet_update_row_values(metadata, oauth_token, _)
 
     return metadata
 
@@ -161,11 +157,12 @@ async def fetch_sheets_insert(metadata: MetaDataBase, oauth_token: str, _):
 async def call(inputs: Inputs, params: Params):
     inputs_json = inputs.model_dump()
     values = [inputs_json[key] for key in inputs_json]
-    res = await insert_google_sheet_values(
+
+    res = await update_google_sheet_row(
         access_token=params.access_token,
         spreadsheet_id=params.spreadsheet,
         sheet_name=params.sheet,
         values=values,
-        dimension=Dimension.COLUMNS,
+        row_index=params.row_number,
     )
-    return res
+    return Response(success=True, body=str(res.body))

@@ -10,6 +10,7 @@ from hyko_sdk.models import (
     FieldMetadata,
     MetaDataBase,
     SupportedProviders,
+    Tag,
 )
 from hyko_sdk.utils import field
 
@@ -20,15 +21,16 @@ from hyko_toolkit.callbacks_utils.sheets_utils import (
     populate_spreadsheets,
 )
 
-input_node = ToolkitNode(
-    name="Sheets",
+node = ToolkitNode(
+    name="Sheets reader",
     description="Upload google spreadsheet file.",
     icon="sheets",
     auth=SupportedProviders.SHEETS,
+    tag=Tag.readers,
 )
 
 
-@input_node.set_param
+@node.set_param
 class Param(CoreModel):
     spreadsheet: str = field(
         description="Spreadsheet file to append to.",
@@ -41,15 +43,13 @@ class Param(CoreModel):
     )
 
 
-input_node.callback(trigger="spreadsheet", id="populate_spreadsheets")(
-    populate_spreadsheets
-)
+node.callback(trigger="spreadsheet", id="populate_spreadsheets")(populate_spreadsheets)
 
 
-input_node.callback(trigger="sheet", id="populate_sheets")(populate_sheets)
+node.callback(trigger="sheet", id="populate_sheets")(populate_sheets)
 
 
-@input_node.callback(trigger="sheet", id="update_sheets_names")
+@node.callback(trigger="sheet", id="update_sheets_names")
 async def update_sheets_names(
     metadata: MetaDataBase, oauth_token: str, _
 ) -> MetaDataBase:
@@ -71,7 +71,7 @@ async def update_sheets_names(
     return metadata
 
 
-@input_node.callback(trigger="spreadsheet", id="update_sheets_outputs")
+@node.callback(trigger="spreadsheet", id="update_sheets_outputs")
 async def update_sheets_node(
     metadata: MetaDataBase, oauth_token: str, _
 ) -> MetaDataBase:

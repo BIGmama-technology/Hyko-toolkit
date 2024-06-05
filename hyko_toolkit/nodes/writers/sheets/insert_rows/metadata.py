@@ -17,7 +17,7 @@ from hyko_sdk.models import (
     SupportedProviders,
 )
 from hyko_sdk.utils import field
-from pydantic import BaseModel, ConfigDict
+from pydantic import ConfigDict
 
 from hyko_toolkit.callbacks_utils.sheets_utils import (
     Dimension,
@@ -40,11 +40,6 @@ func = ToolkitNode(
 @func.set_input
 class Inputs(CoreModel):
     model_config = ConfigDict(extra="allow")
-
-
-class Choices(BaseModel):
-    label: str
-    value: str
 
 
 @func.set_param

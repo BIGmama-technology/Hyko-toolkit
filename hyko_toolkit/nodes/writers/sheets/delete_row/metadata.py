@@ -44,8 +44,12 @@ class Params(CoreModel):
         hidden=True,
     )
     access_token: str = field(description="oauth access token", hidden=True)
-    start_row: PositiveInt = field(description="The row number to start removing from.")
-    end_row: PositiveInt = field(description="The row number to end removing by.")
+    start_row: PositiveInt = field(
+        description="The row number to start removing from", hidden=True
+    )
+    end_row: PositiveInt = field(
+        description="The row number to end removing by", hidden=True
+    )
 
 
 func.callback(trigger="spreadsheet", id="populate_spreadsheets")(populate_spreadsheets)
@@ -64,6 +68,12 @@ async def fetch_sheets_delete(metadata: MetaDataBase, oauth_token: str, _):
             choices=choices, callback_id=metadata_dict["component"]["callback_id"]
         )
         metadata_dict["value"] = choices[0].value
+        metadata_dict.pop("hidden")
+        metadata.add_param(FieldMetadata(**metadata_dict))
+        metadata_dict = metadata.params["start_row"].model_dump()
+        metadata_dict.pop("hidden")
+        metadata.add_param(FieldMetadata(**metadata_dict))
+        metadata_dict = metadata.params["end_row"].model_dump()
         metadata_dict.pop("hidden")
         metadata.add_param(FieldMetadata(**metadata_dict))
     return metadata
