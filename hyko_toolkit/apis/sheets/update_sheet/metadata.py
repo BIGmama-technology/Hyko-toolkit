@@ -9,7 +9,6 @@ from hyko_sdk.components.components import (
 )
 from hyko_sdk.json_schema import Item
 from hyko_sdk.models import (
-    Category,
     CoreModel,
     FieldMetadata,
     MetaDataBase,
@@ -30,9 +29,7 @@ from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     name="Update Row",
-    task="Update Row",
     description="Overwrite values in an existing row.",
-    category=Category.API,
     cost=600,
     auth=SupportedProviders.SHEETS,
     icon="sheets",

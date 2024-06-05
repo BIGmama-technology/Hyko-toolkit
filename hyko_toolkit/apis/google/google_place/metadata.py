@@ -2,7 +2,7 @@ from typing import Any, Optional
 
 import httpx
 from hyko_sdk.components.components import TextField
-from hyko_sdk.models import Category, CoreModel, Method
+from hyko_sdk.models import CoreModel, Method
 from hyko_sdk.utils import field
 from pydantic import Field
 
@@ -11,8 +11,6 @@ from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     name="Google Places",
-    task="Google",
-    category=Category.API,
     description="Use  Google Places API for Search.",
     cost=100,
     icon="google",

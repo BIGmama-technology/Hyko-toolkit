@@ -4,7 +4,6 @@ from hyko_sdk.components.components import (
     SelectChoice,
 )
 from hyko_sdk.models import (
-    Category,
     CoreModel,
     FieldMetadata,
     MetaDataBase,
@@ -23,9 +22,7 @@ from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     name="Clear Sheet",
-    task="Clear Sheet",
     description="Clears all rows on an existing sheet.",
-    category=Category.API,
     cost=600,
     auth=SupportedProviders.SHEETS,
     icon="sheets",

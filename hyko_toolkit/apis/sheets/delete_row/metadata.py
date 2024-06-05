@@ -4,7 +4,6 @@ from hyko_sdk.components.components import (
 )
 from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import (
-    Category,
     CoreModel,
     FieldMetadata,
     MetaDataBase,
@@ -21,9 +20,7 @@ from hyko_toolkit.callbacks_utils.sheets_utils import (
 
 func = ToolkitNode(
     name="Delete Rows from sheets",
-    task="Delete Rows from sheets",
     description="Delete a row on an existing sheet you have access to.",
-    category=Category.API,
     cost=600,
     auth=SupportedProviders.SHEETS,
     icon="sheets",

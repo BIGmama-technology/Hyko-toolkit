@@ -11,7 +11,6 @@ from hyko_sdk.components.components import (
 from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.json_schema import Item
 from hyko_sdk.models import (
-    Category,
     CoreModel,
     FieldMetadata,
     MetaDataBase,
@@ -31,9 +30,7 @@ from hyko_toolkit.callbacks_utils.sheets_utils import (
 
 func = ToolkitNode(
     name="Insert rows to sheets",
-    task="Insert rows to sheets",
     description="Add one or more new rows in a specific spreadsheet.",
-    category=Category.API,
     cost=600,
     auth=SupportedProviders.SHEETS,
     icon="sheets",

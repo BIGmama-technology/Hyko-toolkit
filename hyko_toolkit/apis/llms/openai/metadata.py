@@ -3,15 +3,13 @@ from enum import Enum
 import httpx
 from hyko_sdk.components.components import Slider, TextField
 from hyko_sdk.definitions import ToolkitNode
-from hyko_sdk.models import Category, CoreModel, Method
+from hyko_sdk.models import CoreModel, Method
 from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitNode(
     name="Openai text completion",
-    task="Openai",
-    category=Category.API,
     cost=256,
     description="Use openai api for text completion.",
     icon="openai",
