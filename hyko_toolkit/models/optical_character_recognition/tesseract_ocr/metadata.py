@@ -1,10 +1,10 @@
 from enum import Enum
 
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
 
 class SupportedLanguages(str, Enum):
@@ -14,11 +14,12 @@ class SupportedLanguages(str, Enum):
     spanish = "spa"
 
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Tesseract ocr",
     task="Optical character recognition",
     cost=0,
     description="Extracts text from an image using Tesseract OCR.",
+    category=Category.MODEL,
 )
 
 

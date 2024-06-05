@@ -1,14 +1,15 @@
 from hyko_sdk.components.components import ListComponent, Slider, TextField
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Hybrid search",
     task="Similarity search",
     cost=0,
     description="Executes simultaneous BM25 keyword matching and document similarity searches on input documents.",
+    category=Category.MODEL,
 )
 
 

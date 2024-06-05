@@ -1,17 +1,18 @@
 from hyko_sdk.components.components import Search, Slider
 from hyko_sdk.io import Image
-from hyko_sdk.models import CoreModel
+from hyko_sdk.models import Category, CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.callbacks_utils import huggingface_models_search
-from hyko_toolkit.registry import ToolkitModel
+from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
+from hyko_toolkit.registry import ToolkitNode
 
-func = ToolkitModel(
+func = ToolkitNode(
     name="Image classification",
     task="Computer vision",
     cost=0,
     icon="hf",
     description="HuggingFace image classification",
+    category=Category.MODEL,
 )
 
 
@@ -40,6 +41,6 @@ class Outputs(CoreModel):
     scores: list[float] = field(description="Scores.")
 
 
-func.callback(triggers=["hugging_face_model"], id="hugging_face_search")(
+func.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

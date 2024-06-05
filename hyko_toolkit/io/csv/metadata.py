@@ -32,7 +32,7 @@ class Param(CoreModel):
     )
 
 
-@input_node.callback(triggers=["csv"], id="add_csv_outputs")
+@input_node.callback(trigger="csv", id="add_csv_outputs")
 async def add_csv_outputs(
     metadata: MetaDataBase, access_token: str, refresh_token: str
 ) -> MetaDataBase:
