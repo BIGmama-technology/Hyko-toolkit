@@ -7,7 +7,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Openai speech to text",
     description="Use openai api to turn audio into text.",
     cost=6000,
@@ -15,19 +15,19 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     audio: Audio = field(description="Audio to convert to text.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     text: str = field(description="The extracted text.")
 
@@ -36,7 +36,7 @@ class Response(CoreModel):
     text: str
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

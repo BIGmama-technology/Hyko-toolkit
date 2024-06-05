@@ -8,7 +8,6 @@ from .audio_huggingface.text_to_speech.metadata import func as func  # noqa: F81
 from .background_image_removal.metadata import (
     func as func,  # noqa: F811
 )
-from .cohere.text_embedding.metadata import func as func  # noqa: F811
 from .computer_vision_huggingface.depth_estimation.metadata import (
     func as func,  # noqa: F811
 )
@@ -56,10 +55,8 @@ from .computer_vision_ultralytics.video_object_detection.metadata import (
 )
 from .elevenlabs.speech_to_speech.metadata import func as func  # noqa: F811
 from .elevenlabs.text_to_speech.metadata import func as func  # noqa: F811
-from .gemini.text_embedding.metadata import func as func  # noqa: F811
 from .gemini.vision.metadata import func as func  # noqa: F811
 from .llms.metadata import llm_node as llm_node
-from .mistral_ai.text_embedding.metadata import func as func  # noqa: F811
 from .mutlimodal_huggingface.image_to_text.metadata import func as func  # noqa: F811
 from .mutlimodal_huggingface.text_to_image.metadata import func as func  # noqa: F811
 from .mutlimodal_huggingface.visual_question_answering.metadata import (
@@ -87,10 +84,7 @@ from .ocr.surya_ocr.metadata import func as func  # noqa: F811
 from .ocr.tesseract_ocr.metadata import (
     func as func,  # noqa: F811
 )
-from .openai.speech_to_text.metadata import func as func  # noqa: F811
-from .openai.text_embedding.metadata import func as func  # noqa: F811
-from .openai.text_to_speech.metadata import func as func  # noqa: F811
-from .openai.vision.metadata import func as func  # noqa: F811
+from .openai.metadata import node as node  # noqa: F811
 from .replicate.image_restoration.metadata import func as func  # noqa: F811
 from .replicate.text_to_video.metadata import func as func  # noqa: F811
 from .replicate.transcribe_speech.metadata import func as func  # noqa: F811

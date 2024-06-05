@@ -9,7 +9,7 @@ from hyko_sdk.utils import field
 from hyko_toolkit.exceptions import APICallError
 
 func = ToolkitNode(
-    name="Duckduckgo search",
+    name="Duckduckgo search serpAPI",
     description="Use duckduckgo API for Search.",
     cost=2,
     icon="duckduckgo",
