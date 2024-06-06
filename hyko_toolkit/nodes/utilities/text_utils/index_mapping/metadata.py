@@ -4,14 +4,14 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Index mapping",
     cost=0,
     description="Map indexes to strings and return the corresponding strings",
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     input_strings: list[str] = field(
         description="list of input strings",
@@ -27,17 +27,17 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     pass
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     output_strings: list[str] = field(description="list of mapped output strings")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     input_strings = inputs.input_strings
     indexes = inputs.indexes

@@ -10,7 +10,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Image to image with prompt",
     description="Generate images from an existing image Using Stability.ai API .",
     cost=8,
@@ -18,7 +18,7 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     prompt: str = field(
         description="What you wish to see in the output image.",
@@ -34,7 +34,7 @@ class Model(str, Enum):
     STABLE_DIFFUSION_2 = "stable-diffusion-2"
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
@@ -54,7 +54,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: Image = field(description="Generated Image.")
 
@@ -67,7 +67,7 @@ class Response(CoreModel):
     artifacts: list[Artifact]
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     urls = {
         "stable-diffusion-3": "https://api.stability.ai/v2beta/stable-image/generate/sd3",

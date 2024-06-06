@@ -5,10 +5,11 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Remove Stopwords",
     cost=3,
     description="A function to remove stopwords from text.",
+    require_worker=True,
 )
 
 
@@ -18,7 +19,7 @@ class SupportedLanguages(str, Enum):
     french = "french"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     text: str = field(
         description="The input text from which stopwords are to be removed.",
@@ -26,11 +27,11 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     language: SupportedLanguages = field(description="The language of the stopwords.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="The text with stopwords removed.")

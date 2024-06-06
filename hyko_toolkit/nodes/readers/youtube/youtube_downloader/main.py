@@ -4,12 +4,7 @@ from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Video
 from pytube import YouTube
 
-from .metadata import (
-    Inputs,
-    Outputs,
-    Params,
-    func,
-)
+from .metadata import Inputs, Outputs, Params, node
 
 
 def download_video(url, resolution):
@@ -39,7 +34,7 @@ def download_video(url, resolution):
     return video_content
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     data = download_video(url=inputs.video_url, resolution=params.resolution.value)
     return Outputs(output_video=await Video(obj_ext=Ext.MP4).init_from_val(data))

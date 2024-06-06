@@ -4,15 +4,16 @@ from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Markdown to pdf",
     cost=3,
     description="Convert Markdown content to PDF format.",
     icon="pdf",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     markdown_string: str = field(
         description="Markdown String",
@@ -20,6 +21,6 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     pdf: PDF = field(description="PDF File .")

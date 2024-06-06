@@ -8,7 +8,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Wikipedia text lookup",
     cost=1,
     description="Use WikiPedia API for Search.",
@@ -22,7 +22,7 @@ class SupportedLanguages(str, Enum):
     french = "fr"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     query: str = field(
         description="The search query.",
@@ -30,7 +30,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     max_results: int = field(
         default=5,
@@ -42,7 +42,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="The concatenated titles and summaries.")
 
@@ -60,7 +60,7 @@ class WikipediaResult(CoreModel):
     query: Query
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

@@ -1,9 +1,9 @@
 from langchain.text_splitter import RecursiveCharacterTextSplitter  # type: ignore
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     This function processes the input text using a RecursiveCharacterTextSplitter

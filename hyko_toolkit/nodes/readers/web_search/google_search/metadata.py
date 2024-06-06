@@ -6,7 +6,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Google search",
     description="Use Google API for Search.",
     cost=100,
@@ -14,7 +14,7 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     query: str = field(
         description="The search query.",
@@ -22,7 +22,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
@@ -37,7 +37,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: list[str] = field(description="The concatenated results.")
 
@@ -52,7 +52,7 @@ class GoogleSearchResponse(CoreModel):
     items: list[SearchResultItem]
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

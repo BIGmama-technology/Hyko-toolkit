@@ -13,19 +13,20 @@ class SupportedLanguages(str, Enum):
     spanish = "es"
 
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Surya ocr",
-    cost=0,
     description="Extracts text from an image using Surya-OCR.",
+    icon="pdf",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image: Image = field(description="Your input image.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     language: SupportedLanguages = field(
         default=SupportedLanguages.english.value,
@@ -33,6 +34,6 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     generated_text: str = field(description="The Extracted text.")

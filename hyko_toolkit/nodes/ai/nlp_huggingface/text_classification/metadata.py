@@ -5,15 +5,16 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Text classification",
     cost=0,
     icon="hf",
     description="Hugging Face text classification",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     input_text: list[str] = field(
         description="Text to classify.",
@@ -21,7 +22,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
@@ -30,12 +31,12 @@ class Params(CoreModel):
     device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     label: list[str] = field(description="Class labels")
     score: list[float] = field(description="Associated score to the class label")
 
 
-func.callback(trigger="hugging_face_model", id="hugging_face_search")(
+node.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

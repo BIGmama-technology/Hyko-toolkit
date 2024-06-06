@@ -7,7 +7,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Image to video",
     description="Use Stability.ai API for Video generation from an existing image.",
     cost=3,
@@ -15,12 +15,12 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     input_image: Image = field(description="The image to be used as the input.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
@@ -28,7 +28,7 @@ class Params(CoreModel):
     seed: int = field(default=0, description="Random seed.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: Video = field(description="Generated video.")
 
@@ -37,7 +37,7 @@ class Response(CoreModel):
     video: bytes
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

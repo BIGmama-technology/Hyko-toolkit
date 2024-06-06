@@ -3,14 +3,14 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Count",
     cost=0,
     description="Count the number of occurrences of a substring in a string",
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     text: str = field(
         description="Your text to count",
@@ -18,16 +18,16 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     substring: str = field(description="The substring to count")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     count: int = field(description="Number of occurrences of the substring")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     return Outputs(count=inputs.text.count(params.substring))

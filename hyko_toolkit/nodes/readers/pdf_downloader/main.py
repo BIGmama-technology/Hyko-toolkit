@@ -3,10 +3,10 @@ from hyko_sdk.components.components import Ext
 from hyko_sdk.io import PDF
 from hyko_sdk.models import CoreModel
 
-from .metadata import Inputs, Outputs, func
+from .metadata import Inputs, Outputs, node
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     # Send a GET request to the url
     response = requests.get(inputs.url)

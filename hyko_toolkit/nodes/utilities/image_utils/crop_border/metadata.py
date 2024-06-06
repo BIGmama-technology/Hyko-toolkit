@@ -5,7 +5,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 from pydantic import PositiveInt
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Crop border",
     cost=0,
     description="Remove a specified amount of pixels from all four borders of an image",
@@ -13,12 +13,12 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image: HykoImage = field(description="Input image")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     cropped_width: PositiveInt = field(
         default=0, description="Number of pixels to drop from all four borders"
@@ -28,12 +28,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     cropped_image: HykoImage = field(description="Output image")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     pil_image = await inputs.image.to_pil()
     width, height = pil_image.size

@@ -12,24 +12,25 @@ class SupportedLanguages(str, Enum):
     french = "fra"
 
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="OCR pdf to text",
     cost=3,
     description="Perform OCR (Optical Character Recognition) on a PDF document",
     icon="pdf",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     pdf_file: PDF = field(description="User input pdf to be converted to text")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     language: SupportedLanguages = field(description="Select PDF language.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     text: str = field(description="Extracted text from pdf .")

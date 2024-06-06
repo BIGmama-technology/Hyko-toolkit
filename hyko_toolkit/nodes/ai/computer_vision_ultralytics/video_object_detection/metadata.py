@@ -6,10 +6,11 @@ from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Ultralytics video object detection",
     cost=0,
     description="UltraLytics Video Object Detection Using YOLO V8 and V9.",
+    require_worker=True,
 )
 
 
@@ -23,12 +24,12 @@ class SupportedModels(str, Enum):
     yolov9e = "yolov9 largest"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     input_video: Video = field(description="Input Video.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     model: SupportedModels = field(
         default=SupportedModels.yolov8n, description="Yolo Models."
@@ -46,6 +47,6 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     video: Video = field(description="Labeled Video.")

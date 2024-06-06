@@ -4,14 +4,14 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Slice",
     cost=0,
     description="Create a slice of a given string of text",
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     text: str = field(
         description="Text to be sliced",
@@ -19,18 +19,18 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     start: int = field(default=None, description="Starting position for slicing")
     length: int = field(default=None, description="Length of the slice")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     output_text: str = field(description="Text slice result")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     text = inputs.text
     start = params.start

@@ -8,7 +8,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Huggingface chat api",
     description="Use huggingface api for text generation.",
     cost=5,
@@ -26,7 +26,7 @@ class Model(str, Enum):
     gemma_2b = "google/gemma-2b"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     prompt: str = field(
         description="Input prompt.",
@@ -34,7 +34,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     model: Model = field(
         default=Model.Mistral7B_Instruct_v02,
@@ -54,7 +54,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="generated text.")
 
@@ -63,7 +63,7 @@ class ResponseModel(CoreModel):
     generated_text: str
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

@@ -9,7 +9,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Gemini vision api",
     cost=1,
     description="Use google gemini vision api to understand images.",
@@ -17,7 +17,7 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     system_prompt: str = field(
         default="You are a helpful assistant",
@@ -31,7 +31,7 @@ class Inputs(CoreModel):
     input_image: Image = field(description="The image to generate from.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
@@ -47,7 +47,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="generated text.")
 
@@ -68,7 +68,7 @@ class GeminiVResponse(CoreModel):
     candidates: list[Candidate]
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

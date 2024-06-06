@@ -2,17 +2,17 @@ from hyko_sdk.models import Tag
 
 from hyko_toolkit.node_group import NodeGroup
 
-from .brightness_and_contrast.metadata import func as brightness_and_contrast_node
-from .crop_border.metadata import func as crop_border_node
-from .crop_edges.metadata import func as crop_edges_node
-from .flip.metadata import func as flip_node
-from .get_dimensions.metadata import func as get_dimensions_node
-from .opacity.metadata import func as opacity_node
-from .padding.metadata import func as padding_node
-from .resize_factor.metadata import func as resize_factor_node
-from .resize_resolution.metadata import func as resize_resolution_node
-from .rotate.metadata import func as rotate_node
-from .stack_images.metadata import func as stack_images_node
+from .brightness_and_contrast.metadata import node as brightness_and_contrast_node
+from .crop_border.metadata import node as crop_border_node
+from .crop_edges.metadata import node as crop_edges_node
+from .flip.metadata import node as flip_node
+from .get_dimensions.metadata import node as get_dimensions_node
+from .opacity.metadata import node as opacity_node
+from .padding.metadata import node as padding_node
+from .resize_factor.metadata import node as resize_factor_node
+from .resize_resolution.metadata import node as resize_resolution_node
+from .rotate.metadata import node as rotate_node
+from .stack_images.metadata import node as stack_images_node
 
 node = NodeGroup(
     name="Image utilities",

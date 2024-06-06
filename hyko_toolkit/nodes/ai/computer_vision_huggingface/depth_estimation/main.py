@@ -2,10 +2,10 @@ from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from transformers import pipeline
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
-@func.on_startup
+@node.on_startup
 async def load(startup_params: Params):
     global estimator
 
@@ -19,7 +19,7 @@ async def load(startup_params: Params):
     )
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     res = estimator(await inputs.input_image.to_pil())
     depth_map = await Image.from_pil(res["depth"])

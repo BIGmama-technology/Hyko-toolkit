@@ -2,21 +2,21 @@ from hyko_sdk.models import Tag
 
 from hyko_toolkit.node_group import NodeGroup
 
-from .any.metadata import func as any_node
-from .append.metadata import func as append_node
-from .count.metadata import func as count_node
-from .extend.metadata import func as extend_node
-from .index.metadata import func as index_node
-from .insert.metadata import func as insert_node
-from .len.metadata import func as len_node
-from .max.metadata import func as max_node
-from .min.metadata import func as min_node
-from .pop.metadata import func as pop_node
-from .remove.metadata import func as remove_node
-from .reverse.metadata import func as reverse_node
-from .slice.metadata import func as slice_node
-from .sort.metadata import func as sort_node
-from .sum.metadata import func as sum_node
+from .any.metadata import node as any_node
+from .append.metadata import node as append_node
+from .count.metadata import node as count_node
+from .extend.metadata import node as extend_node
+from .index.metadata import node as index_node
+from .insert.metadata import node as insert_node
+from .len.metadata import node as len_node
+from .max.metadata import node as max_node
+from .min.metadata import node as min_node
+from .pop.metadata import node as pop_node
+from .remove.metadata import node as remove_node
+from .reverse.metadata import node as reverse_node
+from .slice.metadata import node as slice_node
+from .sort.metadata import node as sort_node
+from .sum.metadata import node as sum_node
 
 node = NodeGroup(
     name="List utilities",

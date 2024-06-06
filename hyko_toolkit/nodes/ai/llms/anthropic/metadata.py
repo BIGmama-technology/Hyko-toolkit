@@ -8,7 +8,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Anthropic chat api",
     description="Use anthropic api for text generation.",
     cost=600,
@@ -22,7 +22,7 @@ class Model(str, Enum):
     claude3_haiku = "claude-3-haiku-20240307"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     system_prompt: str = field(
         default="You are a helpful assistant.", description="system prompt."
@@ -33,7 +33,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     model: Model = field(
         default=Model.claude3_opus,
@@ -53,7 +53,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="generated text.")
 
@@ -66,7 +66,7 @@ class AnthropicResponse(CoreModel):
     content: list[Content]
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

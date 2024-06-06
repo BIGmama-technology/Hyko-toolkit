@@ -7,10 +7,10 @@ from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
 from ultralytics import YOLO
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
-@func.on_startup
+@node.on_startup
 async def load(startup_params: Params):
     global model, device_map
     device_map = startup_params.device_map
@@ -21,7 +21,7 @@ async def load(startup_params: Params):
         )
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     image = await inputs.input_image.to_ndarray()
     img = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)

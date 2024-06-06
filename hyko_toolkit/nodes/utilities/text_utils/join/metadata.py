@@ -3,14 +3,14 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Join",
     cost=0,
     description="Join a list of strings with a specified delimiter",
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     strings: list[str] = field(
         description="List of strings to join",
@@ -20,18 +20,18 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     delimiter: str = field(
         default=" ", description="Delimiter used to join the strings"
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     joined_string: str = field(description="String joined with the specified delimiter")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     return Outputs(joined_string=params.delimiter.join(inputs.strings))

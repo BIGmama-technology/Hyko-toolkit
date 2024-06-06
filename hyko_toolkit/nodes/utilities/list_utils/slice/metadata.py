@@ -4,19 +4,19 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Slice list",
     cost=0,
     description="Slices a list.",
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     original_list: list[Any] = field(description="The original list.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     start: int = field(
         default=0,
@@ -32,14 +32,14 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     output: Any = field(
         description="Final list.",
     )
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     lst = inputs.original_list
     return Outputs(output=lst[params.start : params.stop : params.step])

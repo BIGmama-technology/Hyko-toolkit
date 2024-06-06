@@ -7,7 +7,7 @@ from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Image converter",
     cost=0,
     description="Convert an input image to a specified target image type.",
@@ -22,28 +22,28 @@ class SupportedTypes(Enum):
     webp = Ext.WEBP
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     original_image: Image = field(
         description="The original image.",
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     target_type: SupportedTypes = field(
         description="The Target Type.",
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     output: Image = field(
         description="Converted image.",
     )
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     img = await inputs.original_image.to_pil()
     img.save(f"converted-image.{params.target_type.name}")

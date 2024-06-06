@@ -12,15 +12,16 @@ class SupportedLanguages(str, Enum):
     french = "fr"
 
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Wikipedia search",
-    cost=5,
+    cost=2,
     description="Search wikipedia summaries.",
     icon="wikipedia",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     query: str = field(
         description="The search query.",
@@ -28,12 +29,12 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     num_results: int = field(description="Number of search results to return.")
     language: SupportedLanguages = field(description="The search Language.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="The concatenated titles and summaries.")

@@ -11,7 +11,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Replicate video generation",
     cost=3,
     description="Convert text prompts into video clips and animations.",
@@ -24,7 +24,7 @@ class Model(str, Enum):
     zeroscope_v2_xl = "anotherjesse/zeroscope-v2-xl"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     prompt: str = field(
         description="Input prompt.",
@@ -32,7 +32,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
@@ -54,7 +54,7 @@ class Params(CoreModel):
     seed: int = field(default=0, description="Random seed.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: Video = field(description="Generated video.")
 
@@ -80,7 +80,7 @@ class GVedio(CoreModel):
     vedio: bytes
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     versions = {
         "damo_text_to_video": "1e205ea73084bd17a0a3b43396e49ba0d6bc2e754e9283b2df49fad2dcf95755",

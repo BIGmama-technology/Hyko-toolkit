@@ -6,7 +6,7 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Round",
     cost=0,
     description="Round an input number",
@@ -19,19 +19,19 @@ class RoundOperation(str, Enum):
     ROUND = "Round"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     a: float = field(description="Input number")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     operation: RoundOperation = field(
         default=RoundOperation.ROUND, description="Rounding operation"
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: float = field(description="Rounded number result")
 
@@ -40,7 +40,7 @@ def round_half_up(x: float) -> float:
     return math.floor(x + 0.5)
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     a = inputs.a
     operation = params.operation

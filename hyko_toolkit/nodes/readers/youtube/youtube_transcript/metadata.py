@@ -12,15 +12,16 @@ class SupportedLanguages(str, Enum):
     french = "fr"
 
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Youtube transcript",
     cost=5,
     description="Transcript extraction from youtube video.",
     icon="youtube",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     video_url: str = field(
         description="Youtube Video Id.",
@@ -28,11 +29,11 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     language: SupportedLanguages = field(description="Language Id.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="Result")

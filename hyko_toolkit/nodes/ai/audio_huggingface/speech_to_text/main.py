@@ -2,12 +2,12 @@ import numpy as np
 from fastapi import HTTPException
 from transformers import pipeline
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 recognizer = None
 
 
-@func.on_startup
+@node.on_startup
 async def load(startup_params: Params):
     global recognizer
 
@@ -21,7 +21,7 @@ async def load(startup_params: Params):
     )
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     if recognizer is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")

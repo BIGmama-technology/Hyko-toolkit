@@ -3,14 +3,14 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Uppercase",
     cost=0,
     description="Convert a given string to uppercase",
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     text: str = field(
         description="Input text",
@@ -18,16 +18,16 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     pass
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     uppercase_string: str = field(description="Uppercase version of the input string")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     return Outputs(uppercase_string=inputs.text.upper())

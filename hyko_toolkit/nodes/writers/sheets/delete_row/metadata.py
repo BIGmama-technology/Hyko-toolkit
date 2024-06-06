@@ -18,7 +18,7 @@ from hyko_toolkit.callbacks_utils.sheets_utils import (
     populate_spreadsheets,
 )
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Delete Rows from sheets",
     description="Delete a row on an existing sheet you have access to.",
     cost=600,
@@ -27,12 +27,12 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     pass
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     spreadsheet: str = field(
         description="Spreadsheet file to delete from.",
@@ -52,10 +52,10 @@ class Params(CoreModel):
     )
 
 
-func.callback(trigger="spreadsheet", id="populate_spreadsheets")(populate_spreadsheets)
+node.callback(trigger="spreadsheet", id="populate_spreadsheets")(populate_spreadsheets)
 
 
-@func.callback(trigger="spreadsheet", id="fetch_sheets_delete")
+@node.callback(trigger="spreadsheet", id="fetch_sheets_delete")
 async def fetch_sheets_delete(metadata: MetaDataBase, oauth_token: str, _):
     spreadsheet_id = metadata.params["spreadsheet"].value
     if spreadsheet_id:
@@ -79,7 +79,7 @@ async def fetch_sheets_delete(metadata: MetaDataBase, oauth_token: str, _):
     return metadata
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     res = await delete_rows(
         spreadsheet_id=params.spreadsheet,

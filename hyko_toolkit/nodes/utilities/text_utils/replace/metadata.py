@@ -6,7 +6,7 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Replace",
     cost=0,
     description="Replace occurrences of a substring in a string",
@@ -18,12 +18,12 @@ class ReplaceMode(str, Enum):
     replace_first = "replaceFirst"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     text: str = field(description="Input text")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     old_substring: str = field(
         description="Substring to replace",
@@ -39,12 +39,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     replaced: str = field(description="Text with replaced occurrences")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     if params.replace_mode == ReplaceMode.replace_all:
         replaced_text = inputs.text.replace(params.old_substring, params.new_substring)

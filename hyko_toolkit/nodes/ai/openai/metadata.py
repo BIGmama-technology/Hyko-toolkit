@@ -2,7 +2,7 @@ from hyko_sdk.models import Tag
 
 from hyko_toolkit.node_group import NodeGroup
 
-from ..llms.metadata import openai_llm as openai_llm_node
+from ..llms.openai.metadata import node as openai_llm_node
 from .speech_to_text.metadata import node as openai_speech_to_text_node
 from .text_to_speech.metadata import node as openai_text_to_speech_node
 from .vision.metadata import node as openai_vision_node

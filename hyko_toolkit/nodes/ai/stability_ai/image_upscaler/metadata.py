@@ -7,7 +7,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Image upscaler",
     description="Use Stability.ai API for Image upscaling.",
     cost=3,
@@ -15,7 +15,7 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     prompt: str = field(
         description="What you wish to see in the output image.",
@@ -24,7 +24,7 @@ class Inputs(CoreModel):
     input_image: Image = field(description="The image you wish to upscale.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API KEY", component=TextField(placeholder="API KEY", secret=True)
@@ -40,7 +40,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: Image = field(description="Generated Image.")
 
@@ -49,7 +49,7 @@ class Response(CoreModel):
     image: bytes
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

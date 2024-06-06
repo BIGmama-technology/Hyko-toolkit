@@ -15,15 +15,16 @@ class Resolution(str, Enum):
     lowest = "lowest"
 
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Youtube downloader",
     cost=2,
     description="Download a video from YouTube.",
     icon="youtube",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     video_url: str = field(
         description="The URL of the YouTube video to download.",
@@ -31,11 +32,11 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     resolution: Resolution = field(description="The desired resolution of the video.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     output_video: Video = field(description="Output Video.")

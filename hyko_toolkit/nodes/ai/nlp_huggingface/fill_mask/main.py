@@ -1,10 +1,10 @@
 import transformers
 from fastapi import HTTPException
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
-@func.on_startup
+@node.on_startup
 async def load(startup_params: Params):
     global filler
 
@@ -17,7 +17,7 @@ async def load(startup_params: Params):
     )
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     if filler is None:
         raise HTTPException(status_code=500, detail="Model is not loaded yet")

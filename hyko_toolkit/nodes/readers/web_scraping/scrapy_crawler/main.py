@@ -10,7 +10,7 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
 class CrawlerSpider(CrawlSpider):
@@ -102,7 +102,7 @@ def run_spider(start_urls: str, stop_urls: str, allowed_domains: str):
         raise result
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     # Remove the existing output file if it exists
     if os.path.exists("output.json"):

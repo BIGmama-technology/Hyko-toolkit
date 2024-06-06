@@ -1,12 +1,12 @@
 from hyko_sdk.io import Audio
 from transformers import pipeline
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 synthesizer = None
 
 
-@func.on_startup
+@node.on_startup
 async def load(startup_params: Params):
     global synthesizer
 
@@ -16,7 +16,7 @@ async def load(startup_params: Params):
     synthesizer = pipeline("text-to-speech", model=model, device_map=device_map)
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     result_audio = synthesizer(
         inputs=inputs.text,

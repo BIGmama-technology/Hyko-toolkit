@@ -5,30 +5,30 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Random",
     cost=0,
     description="Generate a random integer",
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     pass
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     min_val: int = field(description="Minimum value for random number generation")
     max_val: int = field(description="Maximum value for random number generation")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: int = field(description="Generated random number")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: CoreModel, params: Params) -> Outputs:
     min_val = params.min_val
     max_val = params.max_val

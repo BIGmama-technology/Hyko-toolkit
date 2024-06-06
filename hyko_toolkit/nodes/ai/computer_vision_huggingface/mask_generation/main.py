@@ -7,7 +7,7 @@ from hyko_sdk.components.components import Ext
 from hyko_sdk.io import Image
 from transformers import pipeline
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
 def show_mask(mask: np.ndarray, ax: plt.Axes, random_color: bool):
@@ -71,7 +71,7 @@ def show_boxes_on_image(raw_image: np.ndarray, boxes: list):
     return buffer
 
 
-@func.on_startup
+@node.on_startup
 async def load(startup_params: Params):
     global generator
 
@@ -84,7 +84,7 @@ async def load(startup_params: Params):
     )
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     image = await inputs.input_image.to_pil()
     image = image.convert("RGB")

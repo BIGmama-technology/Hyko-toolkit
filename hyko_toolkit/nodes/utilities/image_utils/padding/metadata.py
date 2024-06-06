@@ -6,7 +6,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 from PIL import Image as PILImage
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Padding",
     cost=0,
     description="Adds padding to an image by a given amount from the left, right, top and bottom",
@@ -31,12 +31,12 @@ class FillColor(str, Enum):
         return fill_color
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image: HykoImage = field(description="Input image to be padded")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     right: int = field(default=10, description="Padding amount from the right")
     left: int = field(default=10, description="Padding amount from the left")
@@ -47,12 +47,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     shifted_image: HykoImage = field(description="Padded image")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     img = await inputs.image.to_pil()
     right_value = params.right

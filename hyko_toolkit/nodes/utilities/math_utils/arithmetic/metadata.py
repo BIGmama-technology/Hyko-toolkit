@@ -7,7 +7,7 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Arithmetic",
     cost=0,
     description="Perform mathematical operations on numbers",
@@ -27,25 +27,25 @@ class MathOperation(str, Enum):
     PERCENT = "percent"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     a: float = field(description="Operand a")
     b: float = field(description="Operand b")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     operation: MathOperation = field(
         default=MathOperation.ADD, description="Mathematical operation"
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: float = field(description="Mathematical operation result")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     a = inputs.a
     op = params.operation

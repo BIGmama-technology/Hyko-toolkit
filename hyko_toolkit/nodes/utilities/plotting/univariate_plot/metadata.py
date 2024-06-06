@@ -12,15 +12,16 @@ class SupportedPlots(str, Enum):
     Histogram = "Histogram"
 
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Univariate plot",
     cost=2,
     description="Generate various types of plots with Y input.",
     icon="graph",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     y: list[float] = field(
         default=None,
@@ -29,11 +30,11 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     plot_type: SupportedPlots = field(description="Select Plot Type.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     image: Image = field(description="Output image.")

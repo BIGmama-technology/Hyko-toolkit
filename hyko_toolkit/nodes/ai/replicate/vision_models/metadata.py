@@ -12,7 +12,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Replicate vision models",
     cost=3,
     description="Vision models process and interpret visual information from images and videos.",
@@ -25,7 +25,7 @@ class Model(str, Enum):
     moondream2 = "lucataco/moondream2"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     prompt: str = field(
         description="The prompt to be used for the model.",
@@ -34,7 +34,7 @@ class Inputs(CoreModel):
     image: Image = field(description="Input image.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
@@ -45,7 +45,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="generated text.")
 
@@ -63,7 +63,7 @@ class FOutput(CoreModel):
     output: list[str]
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     versions = {
         "llava_13b": "b5f6212d032508382d61ff00469ddda3e32fd8a0e75dc39d8a4191bb742157fb",

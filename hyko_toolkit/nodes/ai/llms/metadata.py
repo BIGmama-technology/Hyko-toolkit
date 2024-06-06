@@ -2,15 +2,15 @@ from hyko_sdk.models import Tag
 
 from hyko_toolkit.node_group import NodeGroup
 
-from .anthropic.metadata import func as anthropic_llm
-from .cohere.metadata import func as cohere_llm
-from .gemini.metadata import func as gemini_llm
-from .groq.metadata import func as groq_llm
-from .huggingface.metadata import func as huggingface_llm
-from .mistralai.metadata import func as mistral_ai_llm
-from .open_router.metadata import func as open_router_llm
-from .openai.metadata import func as openai_llm
-from .tune_studio.metadata import func as tune_studio_llm
+from .anthropic.metadata import node as anthropic_llm_node
+from .cohere.metadata import node as cohere_llm_node
+from .gemini.metadata import node as gemini_llm_node
+from .groq.metadata import node as groq_llm_node
+from .huggingface.metadata import node as huggingface_llm_node
+from .mistralai.metadata import node as mistral_ai_llm_node
+from .open_router.metadata import node as open_router_llm_node
+from .openai.metadata import node as openai_llm_node
+from .tune_studio.metadata import node as tune_studio_llm_node
 
 llm_node = NodeGroup(
     name="LLMs",
@@ -18,14 +18,14 @@ llm_node = NodeGroup(
     tag=Tag.ai,
     icon="text",
     nodes=[
-        anthropic_llm,
-        openai_llm,
-        gemini_llm,
-        cohere_llm,
-        groq_llm,
-        huggingface_llm,
-        tune_studio_llm,
-        open_router_llm,
-        mistral_ai_llm,
+        anthropic_llm_node,
+        openai_llm_node,
+        gemini_llm_node,
+        cohere_llm_node,
+        groq_llm_node,
+        huggingface_llm_node,
+        tune_studio_llm_node,
+        open_router_llm_node,
+        mistral_ai_llm_node,
     ],
 )

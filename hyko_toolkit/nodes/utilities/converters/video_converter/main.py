@@ -4,7 +4,7 @@ import tempfile
 import cv2
 from hyko_sdk.io import Video
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
 def convert_video(buffer, codec):
@@ -49,7 +49,7 @@ def convert_video(buffer, codec):
     return video_buffer
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     if params.target_type.name == "webm":
         video_buffer = convert_video(await inputs.input_video.get_data(), codec="VP90")

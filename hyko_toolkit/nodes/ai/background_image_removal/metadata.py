@@ -3,18 +3,19 @@ from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Background image removal",
     cost=0,
     description="This function removes the background from the original input image.",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     input_image: Image = field(description="Original image")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     image: Image = field(description="Image without background")

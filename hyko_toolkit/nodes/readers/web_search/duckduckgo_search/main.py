@@ -1,9 +1,9 @@
 from duckduckgo_search import DDGS
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     """
     Search the web using DuckDuckGo and return all results as a single string.

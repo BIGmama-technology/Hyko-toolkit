@@ -11,7 +11,7 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
 
-from .metadata import Inputs, Outputs, func
+from .metadata import Inputs, Outputs, node
 
 
 def format_code_block(code: str, language: str):
@@ -128,7 +128,7 @@ def convert_markdown_to_pdf(markdown_string: str):
     return buf.getvalue()
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     buff = convert_markdown_to_pdf(inputs.markdown_string)
     return Outputs(pdf=await PDF(obj_ext=Ext.PDF).init_from_val(val=buff))

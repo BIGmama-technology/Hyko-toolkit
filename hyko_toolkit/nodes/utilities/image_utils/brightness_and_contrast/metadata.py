@@ -5,7 +5,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 from PIL import ImageEnhance
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Brightness and contrast",
     cost=0,
     description="Adjust brightness and contrast of an image",
@@ -13,14 +13,14 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image: HykoImage = field(
         description="Input image to adjust brightness and contrast"
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     brightness: float = field(
         default=1.0,
@@ -34,14 +34,14 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     adjusted_image: HykoImage = field(
         description="Image with adjusted brightness and contrast",
     )
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     img_pil = await inputs.image.to_pil()
     # Adjusting brightness

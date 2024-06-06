@@ -3,15 +3,16 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Duckduckgo search",
-    cost=5,
+    cost=2,
     icon="duckduckgo",
     description="Search the web using DuckDuckGo.",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     query: str = field(
         description="The search query.",
@@ -19,11 +20,11 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     max_results: int = field(description="Maximum number of search.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="The concatenated titles and summaries.")

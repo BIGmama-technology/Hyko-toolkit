@@ -3,14 +3,15 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Beautifulsoup transformer",
     cost=5,
     description="Scrape HTML content from URLs and convert it to plain text",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     urls: list[str] = field(
         description="A list of URLs to scrape. Protocol must be either 'http' or 'https'.",
@@ -18,14 +19,14 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     tags_to_extract: str = field(
         description="Specify HTML tags for extraction, separated by commas."
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: list[str] = field(
         description="List of transformed documents as plain text."

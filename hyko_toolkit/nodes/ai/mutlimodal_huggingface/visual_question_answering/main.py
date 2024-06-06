@@ -1,9 +1,9 @@
 from transformers import pipeline
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
-@func.on_startup
+@node.on_startup
 async def load(startup_params: Params):
     global vqa_pipeline
 
@@ -16,7 +16,7 @@ async def load(startup_params: Params):
     )
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     res = vqa_pipeline(
         image=await inputs.image.to_pil(),

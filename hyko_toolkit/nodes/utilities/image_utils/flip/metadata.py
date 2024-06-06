@@ -7,7 +7,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 from PIL import Image
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Flip",
     cost=0,
     description="Flip an image based on the specified axis",
@@ -28,12 +28,12 @@ class SupportedTypes(Enum):
     webp = Ext.WEBP
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image: HykoImage = field(description="Input image")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     flip_axis: FlipAxis = field(
         default=FlipAxis.horizontal,
@@ -41,12 +41,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     flipped_image: HykoImage = field(description="Output image")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     image = await inputs.image.to_pil()
     flip_axis = params.flip_axis

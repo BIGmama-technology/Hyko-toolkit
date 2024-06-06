@@ -1,6 +1,6 @@
 import easyocr
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
 def extract_text_from_image_bytes(image_bytes: bytes, language: str):
@@ -24,7 +24,7 @@ def extract_text_from_image_bytes(image_bytes: bytes, language: str):
     return extracted_text.strip()
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     generated_text = extract_text_from_image_bytes(
         image_bytes=await inputs.image.get_data(),

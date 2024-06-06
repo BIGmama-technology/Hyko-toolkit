@@ -2,8 +2,8 @@ from hyko_sdk.models import Tag
 
 from hyko_toolkit.node_group import NodeGroup
 
-from .bivariate_plot.metadata import func as bivariate_plot_node
-from .univariate_plot.metadata import func as univariate_plot_node
+from .bivariate_plot.metadata import node as bivariate_plot_node
+from .univariate_plot.metadata import node as univariate_plot_node
 
 node = NodeGroup(
     name="Plot utilities",

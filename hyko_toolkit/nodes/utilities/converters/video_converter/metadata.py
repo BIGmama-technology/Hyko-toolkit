@@ -6,11 +6,12 @@ from hyko_sdk.io import Video
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Video converter",
     cost=3,
     description="Convert a video from one format to another.",
     icon="video",
+    require_worker=True,
 )
 
 
@@ -24,16 +25,16 @@ class SupportedTypes(Enum):
     gif = Ext.GIF
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     input_video: Video = field(description="Input Video.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     target_type: SupportedTypes = field(description="The Target Type.")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     output_video: Video = field(description="Converted Video.")

@@ -5,7 +5,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Question answering",
     cost=0,
     icon="hf",
@@ -13,7 +13,7 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     question: str = field(
         description="Input question",
@@ -25,7 +25,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
@@ -43,7 +43,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     answer: str = field(description="Answer to the question")
     start: int = field(description="Start index")
@@ -51,6 +51,6 @@ class Outputs(CoreModel):
     score: float = field(description="Score of the answer")
 
 
-func.callback(trigger="hugging_face_model", id="hugging_face_search")(
+node.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

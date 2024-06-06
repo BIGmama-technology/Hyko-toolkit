@@ -11,15 +11,16 @@ from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_se
 
 ModelsAdapter = TypeAdapter(list[dict[str, Any]])
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Depth estimation",
     cost=0,
     description="HuggingFace depth estimation",
     icon="hf",
+    require_worker=True,
 )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
@@ -28,16 +29,16 @@ class Params(CoreModel):
     device_map: str = field(description="Device map (Auto, CPU or GPU)")
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     input_image: Image = field(description="Input image")
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     depth_map: Image = field(description="Output depth map")
 
 
-func.callback(trigger="hugging_face_model", id="hugging_face_search")(
+node.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

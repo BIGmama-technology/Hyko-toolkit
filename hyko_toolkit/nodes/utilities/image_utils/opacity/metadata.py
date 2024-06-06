@@ -6,7 +6,7 @@ from hyko_sdk.utils import field
 from PIL import Image
 from pydantic import PositiveFloat
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Opacity",
     cost=0,
     description="Adjusts the opacity of an image",
@@ -14,12 +14,12 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image: HykoImage = field(description="Input image to adjust opacity")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     opacity: PositiveFloat = field(
         default=50,
@@ -28,12 +28,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     adjusted_image: HykoImage = field(description="Image with adjusted opacity")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     image = await inputs.image.to_pil()
     # Create an alpha layer with the same dimensions as the image, filled with the desired opacity

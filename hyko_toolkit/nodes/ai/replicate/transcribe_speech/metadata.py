@@ -12,7 +12,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Replicate transcribe speech",
     cost=3,
     description="Transcribe audio to text in multiple languages.",
@@ -25,12 +25,12 @@ class Model(str, Enum):
     whisper = "openai/whisper"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     audio: Audio = field(description="Input Audio.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
@@ -41,7 +41,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="Generated text.")
 
@@ -71,7 +71,7 @@ class FTranscriptionResponse(CoreModel):
     output: FOutput
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     versions = {
         "incredibly_fast_whisper": "3ab86df6c8f54c11309d4d1f930ac292bad43ace52d10c80d87eb258b3c9f79c",

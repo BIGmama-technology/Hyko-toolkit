@@ -6,14 +6,14 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Padding",
     cost=0,
     description="Pads text until it has a certain length",
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     text: str = field(
         description="Text to be padded",
@@ -27,7 +27,7 @@ class PaddingAlignment(str, Enum):
     CENTER = "center"
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     width: int = field(description="Width of the padded text")
     padding: str = field(description="Padding character")
@@ -36,12 +36,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     output_text: str = field(description="Padded text result")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     text = inputs.text
     width = params.width

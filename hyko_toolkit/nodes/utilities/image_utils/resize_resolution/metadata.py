@@ -7,7 +7,7 @@ from hyko_sdk.utils import field
 from PIL import Image
 from pydantic import PositiveInt
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Resize resolution",
     cost=0,
     description="Resize an image to an exact resolution",
@@ -23,12 +23,12 @@ class InterpolationMethod(str, Enum):
     Cubic = "cubic"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image: HykoImage = field(description="Input image to resize")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     width: PositiveInt = field(
         default=100, description="New width for the resized image"
@@ -42,12 +42,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     resized_image: HykoImage = field(description="Resized image")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     pil_image = await inputs.image.to_pil()
     resize_methods = {

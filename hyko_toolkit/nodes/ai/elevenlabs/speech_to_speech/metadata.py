@@ -9,7 +9,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Elevenlabs speech to speech",
     description="Use elevenlabs api for speech to speech.",
     cost=100,
@@ -27,12 +27,12 @@ class VoiceIds(str, Enum):
     James = "ZQe5CZNOzWyzPSCn5a3c"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     audio_input: Audio = field(description="The original audio to convert.")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
@@ -43,7 +43,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     output_audio: Audio = field(description="Generated Audio.")
 
@@ -52,7 +52,7 @@ class Voice(CoreModel):
     voice: bytes
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

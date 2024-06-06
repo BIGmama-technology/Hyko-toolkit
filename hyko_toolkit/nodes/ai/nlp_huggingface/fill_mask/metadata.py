@@ -5,7 +5,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Fill mask",
     cost=0,
     icon="hf",
@@ -13,7 +13,7 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     masked_text: str = field(
         description="Input text with <mask> to fill",
@@ -21,7 +21,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
@@ -35,12 +35,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     sequence: list[str] = field(description="Filled output text")
     score: list[float] = field(description="Score of the filled sequence")
 
 
-func.callback(trigger="hugging_face_model", id="hugging_face_search")(
+node.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

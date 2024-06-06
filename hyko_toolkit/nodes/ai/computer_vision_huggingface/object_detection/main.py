@@ -4,10 +4,10 @@ from hyko_sdk.io import Image
 from PIL import Image as PILLImage
 from transformers import pipeline
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
-@func.on_startup
+@node.on_startup
 async def load(startup_params: Params):
     global detector
 
@@ -21,7 +21,7 @@ async def load(startup_params: Params):
     )
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     img = await inputs.input_image.to_pil()
     res = detector(img, threshold=params.threshold)

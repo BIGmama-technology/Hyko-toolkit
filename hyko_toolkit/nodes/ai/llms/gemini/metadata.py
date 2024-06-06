@@ -8,7 +8,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Gemini text generation api",
     cost=1,
     description="Use gemini api for text generation.",
@@ -22,7 +22,7 @@ class Model(str, Enum):
     gemini_1_pro001 = "gemini-1.0-pro-001"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     prompt: str = field(
         description="Input prompt.",
@@ -30,7 +30,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     model: Model = field(
         default=Model.gemini_pro,
@@ -50,7 +50,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="generated text.")
 
@@ -71,7 +71,7 @@ class GeminiResponse(CoreModel):
     candidates: list[Candidate]
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

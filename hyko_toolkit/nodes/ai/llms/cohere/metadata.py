@@ -8,7 +8,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Cohere chat api",
     cost=1,
     description="Use cohere api for text generation.",
@@ -25,7 +25,7 @@ class Model(str, Enum):
     command_r_plus = "command-r-plus"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     system_prompt: str = field(
         default="You are a helpful assistant",
@@ -38,7 +38,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     api_key: str = field(
         description="API key", component=TextField(placeholder="API KEY", secret=True)
@@ -58,7 +58,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="generated text.")
 
@@ -73,7 +73,7 @@ class CohereResponse(CoreModel):
     chat_history: list[ChatHistoryItem]
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(

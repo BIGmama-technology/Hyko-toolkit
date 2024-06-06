@@ -8,10 +8,10 @@ from surya.model.recognition.model import load_model as load_rec_model
 from surya.model.recognition.processor import load_processor as load_rec_processor
 from surya.ocr import run_ocr
 
-from .metadata import Inputs, Outputs, Params, func
+from .metadata import Inputs, Outputs, Params, node
 
 
-@func.on_startup
+@node.on_startup
 async def load(startup_params: CoreModel):
     global det_processor, det_model, rec_model, rec_processor
 
@@ -41,7 +41,7 @@ def ocr_surya(image_bytes: bytes, language: str):
     return " ".join(mapped_texts)
 
 
-@func.on_call
+@node.on_call
 async def main(inputs: Inputs, params: Params) -> Outputs:
     generated_text = ocr_surya(
         await inputs.image.get_data(),

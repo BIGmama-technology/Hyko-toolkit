@@ -6,21 +6,22 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="visual-question-answering",
     cost=0,
     icon="hf",
     description="Hugging Face Image-To-Text Task",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image: Image = field(description="Input image")
     question: str = field(description="Input question")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     hugging_face_model: str = field(
         description="Model",
@@ -34,12 +35,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     answer: list[str] = field(description="Generated answer")
     score: list[float] = field(description="Confidence score")
 
 
-func.callback(trigger="hugging_face_model", id="hugging_face_search")(
+node.callback(trigger="hugging_face_model", id="hugging_face_search")(
     huggingface_models_search
 )

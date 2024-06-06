@@ -3,14 +3,14 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Length",
     cost=0,
     description="Calculate the length of a string",
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     text: str = field(
         description="Input text to calculate the length of",
@@ -18,16 +18,16 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     pass
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     length: int = field(description="Length of the input string")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     return Outputs(length=len(inputs.text))

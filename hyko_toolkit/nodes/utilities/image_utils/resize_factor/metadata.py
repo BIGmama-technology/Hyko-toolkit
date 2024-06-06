@@ -7,7 +7,7 @@ from hyko_sdk.utils import field
 from PIL import Image
 from pydantic import PositiveFloat
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Resize factor",
     cost=0,
     description="Resize an image by a factor",
@@ -23,12 +23,12 @@ class InterpolationMethod(str, Enum):
     Cubic = "cubic"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image: HykoImage = field(description="Input image to resize")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     scale_factor: PositiveFloat = field(
         default=0, description="Scaling factor for resizing"
@@ -39,12 +39,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     resized_image: HykoImage = field(description="Resized image")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     pil_image = await inputs.image.to_pil()
     original_width, original_height = pil_image.size

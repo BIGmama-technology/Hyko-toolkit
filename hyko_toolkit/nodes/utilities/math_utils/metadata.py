@@ -2,10 +2,10 @@ from hyko_sdk.models import Tag
 
 from hyko_toolkit.node_group import NodeGroup
 
-from .arithmetic.metadata import func as arithmetic_node
-from .random.metadata import func as random_node
-from .range.metadata import func as range_node
-from .round.metadata import func as round_node
+from .arithmetic.metadata import node as arithmetic_node
+from .random.metadata import node as random_node
+from .range.metadata import node as range_node
+from .round.metadata import node as round_node
 
 node = NodeGroup(
     name="Math utilities",

@@ -28,7 +28,7 @@ from hyko_toolkit.callbacks_utils.sheets_utils import (
     populate_spreadsheets,
 )
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Insert rows to sheets",
     description="Add one or more new rows in a specific spreadsheet.",
     cost=600,
@@ -37,12 +37,12 @@ func = ToolkitNode(
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     model_config = ConfigDict(extra="allow")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     spreadsheet: str = field(
         description="Spreadsheet file to append to.",
@@ -61,13 +61,13 @@ class Params(CoreModel):
     )
 
 
-func.callback(trigger="spreadsheet", id="populate_spreadsheets")(populate_spreadsheets)
+node.callback(trigger="spreadsheet", id="populate_spreadsheets")(populate_spreadsheets)
 
 
-func.callback(trigger="sheet", id="populate_sheets_insert")(populate_sheets)
+node.callback(trigger="sheet", id="populate_sheets_insert")(populate_sheets)
 
 
-@func.callback(trigger="sheet", id="add_sheet_insert_rows_inputs")
+@node.callback(trigger="sheet", id="add_sheet_insert_rows_inputs")
 async def add_sheet_insert_rows_values(
     metadata: MetaDataBase, oauth_token: str, _
 ) -> MetaDataBase:
@@ -118,7 +118,7 @@ async def add_sheet_insert_rows_values(
     return metadata
 
 
-@func.callback(trigger="add_column", id="add_new_input_column")
+@node.callback(trigger="add_column", id="add_new_input_column")
 async def add_new_input_column(metadata: MetaDataBase, *_: Any):
     metadata.add_input(
         FieldMetadata(
@@ -136,7 +136,7 @@ async def add_new_input_column(metadata: MetaDataBase, *_: Any):
     return metadata
 
 
-@func.callback(trigger="spreadsheet", id="fetch_sheets_insert")
+@node.callback(trigger="spreadsheet", id="fetch_sheets_insert")
 async def fetch_sheets_insert(metadata: MetaDataBase, oauth_token: str, _):
     spreadsheet_id = metadata.params["spreadsheet"].value
     if spreadsheet_id:
@@ -157,7 +157,7 @@ async def fetch_sheets_insert(metadata: MetaDataBase, oauth_token: str, _):
     return metadata
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     inputs_json = inputs.model_dump()
     values = [inputs_json[key] for key in inputs_json]

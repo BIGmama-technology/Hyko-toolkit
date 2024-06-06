@@ -6,7 +6,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 from PIL import Image
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Stack images",
     cost=0,
     description="Stack images horizontally or vertically",
@@ -19,13 +19,13 @@ class Orientation(str, Enum):
     VERTICAL = "vertical"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     image1: HykoImage = field(description="First image to stack")
     image2: HykoImage = field(description="Second image to stack")
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     orientation: Orientation = field(
         default=Orientation.HORIZONTAL,
@@ -33,12 +33,12 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     stacked_image: HykoImage = field(description="Stacked image")
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params) -> Outputs:
     image1_pil = await inputs.image1.to_pil()
     image2_pil = await inputs.image2.to_pil()

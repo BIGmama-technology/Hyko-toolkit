@@ -3,14 +3,15 @@ from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Scrapy crawler",
     cost=5,
     description="use scrapy to crawl web pages",
+    require_worker=True,
 )
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     start_url: list[str] = field(
         description="A starting url to crawl. Protocol must be either 'http' or 'https'.",
@@ -26,7 +27,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     allowed_domain: list[str] = field(
         description="A domain to crawl.",
@@ -34,7 +35,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     urls: list[str] = field(description="A list of crawled urls.")
     text: list[str] = field(description="A list of crawled text.")

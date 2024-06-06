@@ -10,6 +10,7 @@ node = ToolkitNode(
     icon="pdf",
     tag=Tag.readers,
     cost=2,
+    require_worker=True,
 )
 
 

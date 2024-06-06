@@ -8,7 +8,7 @@ from hyko_sdk.utils import field
 
 from hyko_toolkit.exceptions import APICallError
 
-func = ToolkitNode(
+node = ToolkitNode(
     name="Mistral ai text completion",
     description="Use mistral ai api for text completion.",
     cost=150,
@@ -24,7 +24,7 @@ class Model(str, Enum):
     MISTRAL_LARGE_LATEST = "mistral-large-latest"
 
 
-@func.set_input
+@node.set_input
 class Inputs(CoreModel):
     system_prompt: str = field(
         default="You are a helpful assistant.",
@@ -37,7 +37,7 @@ class Inputs(CoreModel):
     )
 
 
-@func.set_param
+@node.set_param
 class Params(CoreModel):
     model: Model = field(
         default=Model.MISTRAL_SMALL_LATEST,
@@ -57,7 +57,7 @@ class Params(CoreModel):
     )
 
 
-@func.set_output
+@node.set_output
 class Outputs(CoreModel):
     result: str = field(description="generated text.")
 
@@ -75,7 +75,7 @@ class MistralResponse(CoreModel):
     choices: list[Choice]
 
 
-@func.on_call
+@node.on_call
 async def call(inputs: Inputs, params: Params):
     async with httpx.AsyncClient() as client:
         res = await client.request(
