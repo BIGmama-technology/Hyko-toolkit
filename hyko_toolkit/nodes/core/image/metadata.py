@@ -8,7 +8,7 @@ input_node = ToolkitNode(
     name="Image",
     icon="image",
     description="Upload image.",
-    cost=0,
+    is_input=True,
 )
 
 
@@ -24,7 +24,7 @@ output_node = ToolkitNode(
     name="Image",
     icon="image",
     description="Upload image.",
-    cost=0,
+    is_output=True,
 )
 
 

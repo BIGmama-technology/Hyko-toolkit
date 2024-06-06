@@ -7,7 +7,7 @@ input_node = ToolkitNode(
     name="number",
     description="Input number.",
     icon="number",
-    cost=0,
+    is_input=True,
 )
 
 
@@ -23,7 +23,7 @@ output_node = ToolkitNode(
     name="number",
     icon="number",
     description="Output number.",
-    cost=0,
+    is_output=True,
 )
 
 

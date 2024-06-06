@@ -17,6 +17,7 @@ input_node = ToolkitNode(
     name="CSV",
     description="Upload csv.",
     icon="csv",
+    is_input=True,
 )
 
 

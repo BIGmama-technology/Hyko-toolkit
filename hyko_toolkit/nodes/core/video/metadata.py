@@ -8,7 +8,7 @@ input_node = ToolkitNode(
     name="Video",
     description="Upload video.",
     icon="video",
-    cost=0,
+    is_input=True,
 )
 
 
@@ -34,7 +34,7 @@ output_node = ToolkitNode(
     name="Video",
     description="Upload video.",
     icon="video",
-    cost=0,
+    is_output=True,
 )
 
 

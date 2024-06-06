@@ -7,7 +7,7 @@ input_node = ToolkitNode(
     name="Text",
     description="Write your text.",
     icon="text",
-    cost=0,
+    is_input=True,
 )
 
 
@@ -23,7 +23,7 @@ output_node = ToolkitNode(
     name="Text",
     description="Preview output text.",
     icon="text",
-    cost=0,
+    is_output=True,
 )
 
 

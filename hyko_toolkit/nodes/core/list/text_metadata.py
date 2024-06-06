@@ -25,7 +25,7 @@ output_node = ToolkitNode(
     name="list of text",
     description="output list of text.",
     icon="list",
-    cost=0,
+    is_output=True,
 )
 
 
