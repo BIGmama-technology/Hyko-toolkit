@@ -5,7 +5,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 input_node = ToolkitNode(
-    name="Video",
+    name="Video input",
     description="Upload video.",
     icon="video",
     is_input=True,
@@ -31,7 +31,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitNode(
-    name="Video",
+    name="Video output",
     description="Upload video.",
     icon="video",
     is_output=True,

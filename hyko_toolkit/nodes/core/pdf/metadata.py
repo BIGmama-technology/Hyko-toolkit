@@ -5,7 +5,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 input_node = ToolkitNode(
-    name="PDF",
+    name="PDF input",
     description="Upload pdf.",
     icon="pdf",
     is_input=True,
@@ -21,7 +21,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitNode(
-    name="PDF",
+    name="PDF output",
     description="Upload pdf.",
     icon="pdf",
     is_output=True,

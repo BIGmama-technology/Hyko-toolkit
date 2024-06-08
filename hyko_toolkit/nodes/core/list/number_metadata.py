@@ -4,7 +4,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 input_node = ToolkitNode(
-    name="list of numbers",
+    name="List of numbers input",
     description="input list of numbers.",
     icon="list",
     is_input=True,
@@ -20,7 +20,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitNode(
-    name="list of number",
+    name="List of number output",
     icon="list",
     description="output list of numbers.",
     is_output=True,

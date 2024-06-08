@@ -4,7 +4,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 input_node = ToolkitNode(
-    name="Text",
+    name="Text input",
     description="Write your text.",
     icon="text",
     is_input=True,
@@ -20,7 +20,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitNode(
-    name="Text",
+    name="Text output",
     description="Preview output text.",
     icon="text",
     is_output=True,

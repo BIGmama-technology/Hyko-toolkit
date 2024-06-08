@@ -5,7 +5,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 input_node = ToolkitNode(
-    name="Audio",
+    name="Audio input",
     description="Upload audio.",
     icon="audio",
     is_input=True,
@@ -33,7 +33,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitNode(
-    name="Audio",
+    name="Audio output",
     description="Upload audio.",
     icon="audio",
     is_output=True,

@@ -5,7 +5,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 input_node = ToolkitNode(
-    name="Image",
+    name="Image input",
     icon="image",
     description="Upload image.",
     is_input=True,
@@ -21,7 +21,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitNode(
-    name="Image",
+    name="Image output",
     icon="image",
     description="Upload image.",
     is_output=True,

@@ -4,7 +4,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 input_node = ToolkitNode(
-    name="list of text",
+    name="List of text input",
     description="input list of text.",
     icon="list",
     cost=0,
@@ -22,7 +22,7 @@ class Output(CoreModel):
 
 
 output_node = ToolkitNode(
-    name="list of text",
+    name="List of text output",
     description="output list of text.",
     icon="list",
     is_output=True,
