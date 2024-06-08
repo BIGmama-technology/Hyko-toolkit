@@ -16,7 +16,7 @@ class NodeGroup(ToolkitNode):
         tag: Tag,
         nodes: list[ToolkitNode],
     ):
-        super().__init__(name, description, icon=icon, tag=tag)
+        super().__init__(name, description, icon=icon, tag=tag, is_group_node=True)
         self.nodes = nodes
 
         choices = Enum("Choices", [(node.name, node.name) for node in self.nodes])
@@ -26,6 +26,9 @@ class NodeGroup(ToolkitNode):
         )
         self.set_param(params)
         self.callback(trigger="choice", id=name)(self.choose_node)
+
+        for node in nodes:
+            node.tag = tag
 
     async def choose_node(self, metadata: MetaDataBase, *_: Any):
         trigger = metadata.params.get("choice")
