@@ -106,13 +106,13 @@ async def add_sheet_update_row_values(
                     name="add_column",
                     description="Add new column",
                     component=ButtonComponent(text="Add new column"),
-                    callback_id="add_new_input_column",
+                    callback_id="add_new_input_column_update",
                 )
             )
     return metadata
 
 
-@node.callback(trigger="add_column", id="add_new_input_column")
+@node.callback(trigger="add_column", id="add_new_input_column_update")
 async def add_new_input_column(metadata: MetaDataBase, *_: Any):
     metadata.add_input(
         FieldMetadata(
