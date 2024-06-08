@@ -11,6 +11,6 @@ node = NodeGroup(
     name="Sheets writer",
     description="perform various spreadsheet operations.",
     icon="sheets",
-    tag=Tag.utilities,
+    tag=Tag.writers,
     nodes=[clear_sheet_node, delete_row_node, insert_rows_node, update_sheet_node],
 )

@@ -51,7 +51,7 @@ class Params(CoreModel):
 node.callback(trigger="spreadsheet", id="populate_spreadsheets")(populate_spreadsheets)
 
 
-@node.callback(trigger=["spreadsheet"], id="fetch_sheets_delete")
+@node.callback(trigger=["spreadsheet"], id="fetch_sheets_clear")
 async def fetch_sheets_delete(metadata: MetaDataBase, oauth_token: str, _):
     spreadsheet_id = metadata.params["spreadsheet"].value
     if spreadsheet_id:
@@ -62,12 +62,13 @@ async def fetch_sheets_delete(metadata: MetaDataBase, oauth_token: str, _):
         metadata_dict = metadata.params["sheet"].model_dump()
         metadata_dict["component"] = Select(choices=choices)
         metadata_dict["value"] = choices[0].value
+        metadata_dict["hidden"] = False
         metadata.add_param(FieldMetadata(**metadata_dict))
     return metadata
 
 
 @node.on_call
-async def call(inputs: Inputs, params: Params):
+async def call(_: Inputs, params: Params):
     sheets = await list_sheets_name(params.access_token, params.spreadsheet)
     sheet_label = None
 

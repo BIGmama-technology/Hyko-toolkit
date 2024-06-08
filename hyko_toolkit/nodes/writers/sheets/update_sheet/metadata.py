@@ -8,7 +8,6 @@ from hyko_sdk.components.components import (
     TextField,
 )
 from hyko_sdk.definitions import ToolkitNode
-from hyko_sdk.json_schema import Item
 from hyko_sdk.models import (
     CoreModel,
     FieldMetadata,
@@ -81,11 +80,11 @@ async def add_sheet_update_row_values(
             for column in columns:
                 metadata.add_input(
                     FieldMetadata(
-                        type=PortType.ARRAY,
+                        type=PortType.STRING,
                         name=column,
                         description=column,
-                        items=Item(type=PortType.STRING),
                         component=TextField(placeholder="Enter a value"),
+                        value="",
                     ),
                 )
             if "add_column" in metadata.params:
@@ -94,9 +93,8 @@ async def add_sheet_update_row_values(
             metadata.inputs = {}
             metadata.add_input(
                 FieldMetadata(
-                    type=PortType.ARRAY,
+                    type=PortType.STRING,
                     name="column_1",
-                    items=Item(type=PortType.STRING),
                     description="",
                     component=TextField(placeholder="Enter a value"),
                     value="",
@@ -118,9 +116,8 @@ async def add_sheet_update_row_values(
 async def add_new_input_column(metadata: MetaDataBase, *_: Any):
     metadata.add_input(
         FieldMetadata(
-            type=PortType.ARRAY,
+            type=PortType.STRING,
             name=f"column_{len(metadata.inputs.keys()) + 1}",
-            items=Item(type=PortType.STRING),
             description="",
             component=TextField(placeholder="Enter a value"),
             value="",
