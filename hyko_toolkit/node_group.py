@@ -32,11 +32,9 @@ class NodeGroup(ToolkitNode):
         assert trigger, "trigger not found in params"
 
         case_map = {node.name: node for node in self.nodes}
-        print(case_map)
         value = trigger.value
         assert value, "choice value is not set"
         chosen_node = case_map.get(value)
-        print("here", chosen_node)
         if chosen_node:
             return chosen_node.get_metadata()
 
