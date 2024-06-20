@@ -1,4 +1,3 @@
-import logging
 from typing import Any
 
 import httpx
@@ -13,7 +12,7 @@ from hyko_sdk.models import FieldMetadata, MetaDataBase
 from pydantic import BaseModel
 
 from hyko_toolkit.callbacks_utils.notion_utils.helpers import get_property_structure
-from hyko_toolkit.callbacks_utils.notion_utils.shared import get_database_columns
+from hyko_toolkit.callbacks_utils.notion_utils.notion_utils import get_database_columns
 from hyko_toolkit.exceptions import APICallError, OauthTokenExpiredError
 
 
@@ -58,6 +57,7 @@ async def populate_insert_inputs(
                         for option in column_properties["status"]["options"]
                     ]
                 )
+
             else:
                 component = TextField(placeholder="Enter a value")
 
@@ -108,7 +108,5 @@ async def insert_rows_into_notion_database(
             return SuccessInsertionResponse(success=True)
         if response.status_code == 401:
             raise OauthTokenExpiredError()
-
-        logging.warning(response.text)
 
         raise APICallError(status=response.status_code, detail=response.text)

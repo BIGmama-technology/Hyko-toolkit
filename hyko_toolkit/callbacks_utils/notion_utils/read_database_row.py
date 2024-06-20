@@ -1,4 +1,3 @@
-import logging
 from typing import Any
 
 import httpx
@@ -23,12 +22,10 @@ async def read_rows_from_notion_database(
     async with httpx.AsyncClient() as client:
         response = await client.post(url, headers=headers, json=data)
         if response.status_code == 200:
-            logging.warning(f"The Status Code is: {response.status_code}")
             rows = response.json().get("results", [])
             if len(rows) > 0:
                 rows_data: dict[str, Any] = {}
                 for key, value in rows[0]["properties"].items():
-                    logging.warning(f"the key is: {key} | the value is {value}")
                     rows_data[key] = [await get_property_value(value)]
 
                 return rows_data

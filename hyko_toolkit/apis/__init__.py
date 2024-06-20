@@ -16,8 +16,9 @@ from .huggingface.chat.metadata import func as func  # noqa: F811
 from .mistral_ai.text_completion.metadata import func as func  # noqa: F811
 from .mistral_ai.text_embedding.metadata import func as func  # noqa: F811
 from .notion.append_to_page.metadata import func as func  # noqa: F811
-from .notion.insert_database_rows.metadata import func as func  # noqa: F811
-from .notion.read_database_rows.metadata import func as func  # noqa: F811
+from .notion.find_database_row.metadata import func as func  # noqa: F811
+from .notion.insert_database_row.metadata import func as func  # noqa: F811
+from .notion.read_database_row.metadata import func as func  # noqa: F811
 from .openai.speech_to_text.metadata import func as func  # noqa: F811
 from .openai.text_completion.metadata import func as func  # noqa: F811  # noqa: F811
 from .openai.text_embedding.metadata import func as func  # noqa: F811

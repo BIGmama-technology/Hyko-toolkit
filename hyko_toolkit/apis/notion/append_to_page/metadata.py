@@ -4,10 +4,9 @@ from hyko_sdk.utils import field
 from pydantic import BaseModel, ConfigDict
 
 from hyko_toolkit.callbacks_utils.notion_utils.append_to_page import (
+    append_block_to_page,
+    populate_append_input,
     populate_notion_pages,
-)
-from hyko_toolkit.callbacks_utils.notion_utils.insert_database_row import (
-    populate_insert_inputs,
 )
 from hyko_toolkit.registry import ToolkitNode
 
@@ -43,9 +42,14 @@ class Params(CoreModel):
 
 func.callback(trigger="page", id="populate_pages")(populate_notion_pages)
 
-func.callback(trigger="page", id="populate_input")(populate_insert_inputs)
+func.callback(trigger="page", id="populate_input")(populate_append_input)
 
 
 @func.on_call
 async def call(inputs: Inputs, params: Params):
-    pass
+    res = await append_block_to_page(
+        access_token=params.access_token,
+        markdown_content=str(inputs.model_dump()["Content"]),
+        page_id=params.page,
+    )
+    return res

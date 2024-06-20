@@ -3,19 +3,19 @@ from hyko_sdk.models import Category, CoreModel, SupportedProviders
 from hyko_sdk.utils import field
 from pydantic import BaseModel
 
-from hyko_toolkit.callbacks_utils.notion_utils.read_database_row import (
-    read_rows_from_notion_database,
-)
-from hyko_toolkit.callbacks_utils.notion_utils.shared import (
+from hyko_toolkit.callbacks_utils.notion_utils.notion_utils import (
     populate_notion_databases,
     populate_outputs,
+)
+from hyko_toolkit.callbacks_utils.notion_utils.read_database_row import (
+    read_rows_from_notion_database,
 )
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
     name="Notion: read database row",
-    task="Read rows from notion database",
-    description="Read one or more rows  from a notion database.",
+    task="Read a row from notion database",
+    description="Read one row from a notion database.",
     category=Category.API,
     cost=400,
     auth=SupportedProviders.NOTION,

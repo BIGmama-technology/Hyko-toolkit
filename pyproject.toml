@@ -6,6 +6,7 @@ description = "Collection of Models/Functions/APIs in hyko"
 
 [tool.poetry.dependencies]
 python = "^3.11.6"
+md2notion = "^2.4.1"
 
 [tool.poetry.group.sdk.dependencies.hyko_sdk]
 path = "../sdk"

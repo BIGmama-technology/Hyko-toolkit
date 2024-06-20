@@ -49,12 +49,15 @@ async def get_notion_pages(access_token: str):
     async with httpx.AsyncClient() as client:
         response = await client.post(url, headers=headers, json=data)
         if response.status_code == 200:
-            databases = response.json().get("results", [])
+            pages = response.json().get("results", [])
+
             return [
                 SelectChoice(
-                    label=database["title"][0]["text"]["content"], value=database["id"]
+                    label=page["properties"]["title"]["title"][0]["text"]["content"],
+                    value=page["id"],
                 )
-                for database in databases
+                for page in pages
+                if page.get("properties").get("title")
             ]
         if response.status_code == 401:
             raise OauthTokenExpiredError()

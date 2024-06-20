@@ -1,13 +1,18 @@
 from typing import Any
 
 import httpx
-from hyko_sdk.components.components import PortType, Select, SelectChoice, TextField
+from hyko_sdk.components.components import PortType, Select, TextField
 from hyko_sdk.models import FieldMetadata, MetaDataBase
+from pydantic import BaseModel
 
-from hyko_toolkit.callbacks_utils.notion_utils.shared import (
+from hyko_toolkit.callbacks_utils.notion_utils.notion_utils import (
     get_notion_pages,
 )
 from hyko_toolkit.exceptions import APICallError, OauthTokenExpiredError
+
+
+class SuccessAppendResponse(BaseModel):
+    success: bool
 
 
 async def append_block_to_page(access_token: str, markdown_content: str, page_id: str):
@@ -22,24 +27,21 @@ async def append_block_to_page(access_token: str, markdown_content: str, page_id
     data = {
         "children": [
             {
-                "type": "heading_1",
-                "heading_1": {
-                    "rich_text": [{"type": "text", "text": {"content": "Hello world"}}]
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {"type": "text", "text": {"content": "Hello, world!"}}
+                    ]
                 },
             }
         ]
     }
 
     async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers, json=data)
+        response = await client.patch(url, headers=headers, json=data)
         if response.status_code == 200:
-            databases = response.json().get("results", [])
-            return [
-                SelectChoice(
-                    label=database["title"][0]["text"]["content"], value=database["id"]
-                )
-                for database in databases
-            ]
+            return SuccessAppendResponse(success=True)
         if response.status_code == 401:
             raise OauthTokenExpiredError()
 

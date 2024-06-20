@@ -7,13 +7,15 @@ from hyko_toolkit.callbacks_utils.notion_utils.insert_database_row import (
     insert_rows_into_notion_database,
     populate_insert_inputs,
 )
-from hyko_toolkit.callbacks_utils.notion_utils.shared import populate_notion_databases
+from hyko_toolkit.callbacks_utils.notion_utils.notion_utils import (
+    populate_notion_databases,
+)
 from hyko_toolkit.registry import ToolkitNode
 
 func = ToolkitNode(
-    name="Notion: insert database rows",
-    task="Insert rows into notion database",
-    description="Insert one or more rows into a notion database.",
+    name="Notion: insert database row",
+    task="Insert a row into notion database",
+    description="Insert one row into a notion database.",
     category=Category.API,
     cost=400,
     auth=SupportedProviders.NOTION,
