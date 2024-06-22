@@ -4,6 +4,7 @@ from hyko_toolkit.node_group import NodeGroup
 
 from .audio.metadata import input_node as audio_node
 from .audio.metadata import output_node as audio_node_output
+from .document.metadata import input_node as table_node
 from .image.metadata import input_node as image_node
 from .image.metadata import output_node as image_node_output
 from .list.number_metadata import input_node as list_number_node
@@ -50,5 +51,6 @@ input_node = NodeGroup(
         pdf_node,
         text_node,
         video_node,
+        table_node,
     ],
 )

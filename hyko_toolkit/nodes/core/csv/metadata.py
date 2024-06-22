@@ -3,7 +3,7 @@ import io
 import pandas as pd
 from hyko_sdk.components.components import Ext, PortType, StorageSelect
 from hyko_sdk.definitions import ToolkitNode
-from hyko_sdk.io import CSV
+from hyko_sdk.io import Document
 from hyko_sdk.json_schema import Item
 from hyko_sdk.models import (
     CoreModel,
@@ -23,7 +23,7 @@ input_node = ToolkitNode(
 
 @input_node.set_param
 class Param(CoreModel):
-    csv: CSV = field(
+    csv: Document = field(
         description="Uploaded csv",
         component=StorageSelect(supported_ext=[Ext.CSV]),
     )
@@ -45,7 +45,9 @@ async def add_csv_outputs(
         "object": PortType.STRING,
     }
 
-    csv = await CSV(obj_ext=Ext.CSV, file_name=metadata.params["csv"].value).get_data()
+    csv = await Document(
+        obj_ext=Ext.CSV, file_name=metadata.params["csv"].value
+    ).get_data()
 
     df = pd.read_csv(io.BytesIO(csv))  # type: ignore
     columns = df.dtypes.to_dict()  # type: ignore
