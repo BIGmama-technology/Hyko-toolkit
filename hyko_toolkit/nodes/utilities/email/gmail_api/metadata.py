@@ -26,14 +26,14 @@ class Inputs(CoreModel):
     subject: str = field(
         description="Email subject",
     )
-    html_content: str = field(
-        description="HTML content of the email",
-    )
     cc_emails: list[EmailStr] = field(
         description="CC email addresses",
     )
     bcc_emails: list[EmailStr] = field(
         description="BCC email addresses",
+    )
+    html_content: str = field(
+        description="HTML content of the email",
     )
 
 

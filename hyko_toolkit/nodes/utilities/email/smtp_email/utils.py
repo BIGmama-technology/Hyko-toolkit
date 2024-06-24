@@ -6,6 +6,7 @@ from typing import Any, Optional
 import aiosmtplib
 from pydantic import BaseModel, EmailStr
 
+from config import settings
 from hyko_toolkit.exceptions import EmailNotValidError, EmailSendError
 
 
@@ -45,9 +46,11 @@ async def send_smtp_email(
     msg.attach(MIMEText(body, body_type))
 
     try:
-        smtp = aiosmtplib.SMTP(hostname="mail.big-mama.io", port=465, use_tls=True)
+        smtp = aiosmtplib.SMTP(
+            hostname=settings.SMTP_HOST, port=settings.SMTP_PORT, use_tls=True
+        )
         await smtp.connect()  # type: ignore
-        await smtp.login("contact@big-mama.io", "Fqz3!X6rVZyk")
+        await smtp.login(settings.SMTP_EMAIL, settings.SMTP_PASSWORD.get_secret_value())
 
         await smtp.send_message(msg)
 
