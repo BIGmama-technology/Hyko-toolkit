@@ -8,7 +8,7 @@ from .smtp_email.metadata import node as smtp_email_node
 node = NodeGroup(
     name="Email Sending",
     description="Perform various email sending operations.",
-    icon="gmail",
+    icon="email",
     tag=Tag.utilities,
     nodes=[smtp_email_node, gmail_api_node],
 )

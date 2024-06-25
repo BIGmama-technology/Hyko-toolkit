@@ -1,6 +1,7 @@
 from hyko_sdk.components.components import (
     Select,
     SelectChoice,
+    TextField,
 )
 from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel
@@ -36,6 +37,7 @@ class Inputs(CoreModel):
     )
     message: str = field(
         description="Email message",
+        component=TextField(placeholder="Your message...", multiline=True),
     )
 
 
@@ -43,6 +45,7 @@ class Inputs(CoreModel):
 class Params(CoreModel):
     body_type: str = field(
         description="Body type",
+        default="plain",
         component=Select(
             choices=[
                 SelectChoice(label="HTML", value="html"),

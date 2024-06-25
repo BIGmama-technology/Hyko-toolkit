@@ -1,16 +1,18 @@
 import logging
 
 import httpx
+from hyko_sdk.components.components import TextField
 from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import CoreModel, SupportedProviders
 from hyko_sdk.utils import field
 from pydantic import EmailStr
 
 from hyko_toolkit.exceptions import EmailSendError
+from hyko_toolkit.models import Output
 from hyko_toolkit.nodes.utilities.email.gmail_api.utils import send_mail
 
 node = ToolkitNode(
-    name="Gmail: Send Email",
+    name="Send Email with Gmail",
     description="Send an email using Gmail API.",
     cost=300,
     auth=SupportedProviders.GMAIL,
@@ -34,6 +36,7 @@ class Inputs(CoreModel):
     )
     html_content: str = field(
         description="HTML content of the email",
+        component=TextField(placeholder="Your message...", multiline=True),
     )
 
 
@@ -53,10 +56,10 @@ async def on_call(inputs: Inputs, params: Params):
     access_token = params.access_token
 
     try:
-        response = await send_mail(
+        await send_mail(
             access_token, to_email, subject, html_content, cc_emails, bcc_emails
         )
-        return {"message": "Email sent successfully!", "response": response}
+        return Output(message="Email sent successfully!")
     except httpx.HTTPStatusError as exc:
         logging.warning(exc)
         raise EmailSendError from exc
