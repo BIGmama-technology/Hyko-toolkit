@@ -28,10 +28,10 @@ async def get_notion_databases(access_token: str):
             databases = response.json().get("results", [])
             return [
                 SelectChoice(
-                    label=database["title"][0]["text"]["content"],
-                    value=database["id"]
+                    label=database["title"][0]["text"]["content"]
                     if len(database["title"]) > 0
                     else "Untitled database",
+                    value=database["id"],
                 )
                 for database in databases
             ]
