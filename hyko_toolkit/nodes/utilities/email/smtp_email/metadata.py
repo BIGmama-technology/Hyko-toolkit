@@ -10,10 +10,10 @@ from pydantic import EmailStr
 from .utils import send_smtp_email
 
 node = ToolkitNode(
-    name="Send SMTP Email",
+    name="Send Email",
     description="Send an email using SMTP protocol.",
     cost=300,
-    icon="gmail",
+    icon="email",
 )
 
 
