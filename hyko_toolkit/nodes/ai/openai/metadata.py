@@ -5,6 +5,7 @@ from hyko_toolkit.node_group import NodeGroup
 from ..llms.openai.metadata import node as openai_llm_node
 from .speech_to_text.metadata import node as openai_speech_to_text_node
 from .text_to_speech.metadata import node as openai_text_to_speech_node
+from .video_transcript.metadata import node as openai_video_transcript
 from .vision.metadata import node as openai_vision_node
 
 node = NodeGroup(
@@ -17,5 +18,6 @@ node = NodeGroup(
         openai_text_to_speech_node,
         openai_vision_node,
         openai_llm_node,
+        openai_video_transcript,
     ],
 )
