@@ -13,6 +13,7 @@ from .max.metadata import node as max_node
 from .min.metadata import node as min_node
 from .pop.metadata import node as pop_node
 from .remove.metadata import node as remove_node
+from .retrieve.metadata import node as retrieve_node
 from .reverse.metadata import node as reverse_node
 from .slice.metadata import node as slice_node
 from .sort.metadata import node as sort_node
@@ -27,6 +28,7 @@ node = NodeGroup(
         any_node,
         append_node,
         count_node,
+        retrieve_node,
         extend_node,
         index_node,
         insert_node,
