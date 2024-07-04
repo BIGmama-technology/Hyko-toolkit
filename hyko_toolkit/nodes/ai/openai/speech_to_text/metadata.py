@@ -1,3 +1,5 @@
+import logging
+
 import httpx
 from hyko_sdk.components.components import TextField
 from hyko_sdk.definitions import ToolkitNode
@@ -48,9 +50,10 @@ async def call(inputs: Inputs, params: Params):
             files={
                 "file": (inputs.audio.file_name, await inputs.audio.get_data(), None),
             },
-            data={"model": "whisper-1"},
+            data={"model": "whisper-2"},
             timeout=60 * 5,
         )
+        logging.warning(res.text)
     if res.is_success:
         response = Response(**res.json())
     else:

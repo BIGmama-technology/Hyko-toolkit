@@ -83,13 +83,12 @@ async def call(inputs: Inputs, params: Params) -> Outputs:
         get_duration(temp_input_file2.name),
         get_duration(temp_input_file3.name),
     ]
-    fade_durations = [duration * 0.1 for duration in durations]
 
     # Construct the filter_complex part
     filter_complex = f"""
-    [0:v]trim=start=0:end={durations[0]},fade=t=out:st={durations[0] - fade_durations[0]}:d={fade_durations[0]}[v0];
-    [1:v]trim=start=0:end={durations[1]},fade=t=in:st=0:d={fade_durations[1]},fade=t=out:st={durations[1] - fade_durations[1]}:d={fade_durations[1]}[v1];
-    [2:v]trim=start=0:end={durations[2]},fade=t=in:st=0:d={fade_durations[2]}[v2];
+    [0:v]trim=start=0:end={durations[0]},fade=t=out:st={durations[0] - 0.3}:d={0.3}[v0];
+    [1:v]trim=start=0:end={durations[1]},fade=t=in:st=0:d={0.3},fade=t=out:st={durations[1] - 0.3}:d={0.3}[v1];
+    [2:v]trim=start=0:end={durations[2]},fade=t=in:st=0:d={0.3}[v2];
     [v0][0:a][v1][1:a][v2][2:a]concat=n=3:v=1:a=1[outv][outa]
     """
 

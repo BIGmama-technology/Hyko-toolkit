@@ -1,3 +1,4 @@
+import asyncio
 import os
 import subprocess
 import tempfile
@@ -46,8 +47,10 @@ async def call(inputs: Inputs, params: Params) -> Outputs:
     temp_input_file.write(await inputs.video.get_data())
     temp_input_file.flush()
 
+    data = await inputs.video.get_data()
+
     with open(temp_input_file.name, "wb") as file:
-        file.write(await inputs.video.get_data())
+        file.write(data)
 
     # Construct the FFmpeg command
     command = [
@@ -67,7 +70,10 @@ async def call(inputs: Inputs, params: Params) -> Outputs:
     ]
 
     try:
-        subprocess.run(command, check=True, capture_output=True)
+        process = await asyncio.create_subprocess_exec(
+            *command,
+        )
+        await process.wait()
 
         output_binary = None
         with open(temp_output_file.name, "rb") as f:
