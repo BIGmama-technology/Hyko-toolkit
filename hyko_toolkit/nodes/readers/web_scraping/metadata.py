@@ -3,6 +3,7 @@ from hyko_sdk.models import Tag
 from hyko_toolkit.node_group import NodeGroup
 
 from .beautifulsoup_transformer.metadata import node as beautifulsoup_transformer_node
+from .beautifulsoup_transformer2.metadata import node as beautifulsoup_transformer_node2
 from .html2text_transformer.metadata import node as html2text_transformer_node
 from .scrapy_crawler.metadata import node as scrapy_crawler_node
 
@@ -15,5 +16,6 @@ node = NodeGroup(
         beautifulsoup_transformer_node,
         html2text_transformer_node,
         scrapy_crawler_node,
+        beautifulsoup_transformer_node2,
     ],
 )
