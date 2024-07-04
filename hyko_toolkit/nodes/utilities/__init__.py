@@ -8,3 +8,4 @@ from .math_utils.metadata import node as node  # noqa:F811
 from .nlp_utils.metadata import node as node  # noqa: F811
 from .plotting.metadata import node as node  # noqa: F811
 from .text_utils.metadata import node as node  # noqa: F811
+from .video_utils.metadata import node as node  # noqa: F811
