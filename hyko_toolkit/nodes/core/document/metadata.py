@@ -48,7 +48,7 @@ async def execute(input: CoreModel, params: Param):
 
         match obj_ext:
             case Ext.XLSX:
-                document = pd.read_excel(temp.name).to_markdown()  # type: ignore
+                document = pd.read_excel(temp.name).to_csv()  # type: ignore
             case Ext.PDF:
                 pdf_reader = PyPDF2.PdfReader(temp)
                 document = ""
