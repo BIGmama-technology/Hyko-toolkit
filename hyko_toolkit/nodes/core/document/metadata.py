@@ -15,8 +15,8 @@ from hyko_toolkit.nodes.core.document.utils import get_docx_text
 
 input_node = ToolkitNode(
     name="Document input",
-    description="Upload doc, docx, pdf, xls ....",
-    icon="pdf",
+    description="Upload word, excel, pdf and csv documents (docx, xlsx, pdf, csv)",
+    icon="text",
     is_input=True,
 )
 
