@@ -6,6 +6,7 @@ from .any.metadata import node as any_node
 from .append.metadata import node as append_node
 from .count.metadata import node as count_node
 from .extend.metadata import node as extend_node
+from .extract_element.metadata import node as extract_element_node
 from .index.metadata import node as index_node
 from .insert.metadata import node as insert_node
 from .len.metadata import node as len_node
@@ -39,5 +40,6 @@ node = NodeGroup(
         slice_node,
         sort_node,
         sum_node,
+        extract_element_node,
     ],
 )
