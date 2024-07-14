@@ -2,6 +2,7 @@ from hyko_sdk.models import Tag
 
 from hyko_toolkit.node_group import NodeGroup
 
+from .beautifulsoup_transformer.main import node as main_node  # noqa: F401
 from .beautifulsoup_transformer.metadata import node as beautifulsoup_transformer_node
 from .html2text_transformer.metadata import node as html2text_transformer_node
 from .scrapy_crawler.metadata import node as scrapy_crawler_node

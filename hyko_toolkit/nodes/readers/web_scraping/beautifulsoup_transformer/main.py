@@ -1,32 +1,46 @@
+import re
+
 import nest_asyncio
+from bs4 import BeautifulSoup
 from langchain_community.document_loaders import AsyncChromiumLoader
-from langchain_community.document_transformers import BeautifulSoupTransformer
 
 from .metadata import Inputs, Outputs, Params, node
 
 
 @node.on_call
-async def main(inputs: Inputs, params: Params) -> Outputs:
-    """Loads HTML content asynchronously from given URLs using Chromium and transforms using BeautifulSoup.
+async def call(inputs: Inputs, params: Params) -> Outputs:
+    """Loads HTML content asynchronously from given URL using Chromium and transforms using BeautifulSoup.
 
     Args:
-        urls (list): A list of URLs to load and transform.
-        tags_to_extract (list, optional): A list of HTML tags to extract content from.
-            Defaults to ["span"].
+        url : URL to load and transform.
+        tags_to_extract : List of HTML tags to extract content from.
+        attributes_to_extract (list): List of attributes to match in elements.
+        strip_tags (bool): Flag indicating whether to strip tags from extracted content.
 
     Returns:
-        list: A list of transformed documents with content from specified tags.
+        string: Extracted content.
     """
     nest_asyncio.apply()
-    loader = AsyncChromiumLoader(urls=inputs.urls)
+    loader = AsyncChromiumLoader(urls=[inputs.url])
     docs = loader.load()
-    bs_transformer = BeautifulSoupTransformer()
-    tags = "".join(params.tags_to_extract.split()).split(",")
-    docs_transformed = bs_transformer.transform_documents(docs, tags)
-    # Assuming docs_transformed is a list of transformed documents
-    page_contents = []
-    # Iterate over each transformed document and concatenate it with the URL header
-    for i, text in enumerate(docs_transformed):
-        url_header = f"\n=== URL {i+1} {inputs.urls[i]} === \n"
-        page_contents.append(f"{url_header}\n{text.page_content}")
-    return Outputs(result=page_contents)
+    soup = BeautifulSoup(str(docs[0]), "html.parser")
+    tags = params.tags_to_extract
+    attributs = params.attributes_to_extract
+    strip = params.strip_tags
+    content = ""
+    if tags or attributs:
+        attrs_dict = {param["name"]: re.compile(param["value"]) for param in attributs}
+        elements = soup.find_all(tags, attrs=attrs_dict)
+        for e in elements:
+            if strip:
+                content += e.text.strip()
+            else:
+                content += str(e)
+    else:
+        if strip:
+            content = " ".join(soup.stripped_strings)
+
+        else:
+            content = str(soup)
+
+    return Outputs(result=content)
