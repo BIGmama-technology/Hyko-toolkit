@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.4.0](https://github.com/BIGmama-technology/Hyko-toolkit/compare/v2.3.0...v2.4.0) (2024-06-25)
+
+
+### Features
+
+* add gmail send mail node ([66cc836](https://github.com/BIGmama-technology/Hyko-toolkit/commit/66cc83681d8f14d81c680808a4bf0150b863a0f0))
+* add google place api ([6bc1bc1](https://github.com/BIGmama-technology/Hyko-toolkit/commit/6bc1bc16ca20be3e63604df376a5a5da348a247a))
+* add gpt-4o ([a935234](https://github.com/BIGmama-technology/Hyko-toolkit/commit/a935234f12a5bc8d075b52620a4207472526d00b))
+* add is_input and is_output to input and output nodes ([9e9e115](https://github.com/BIGmama-technology/Hyko-toolkit/commit/9e9e115c00b379390a037ed9b4aeb76e52a38b77))
+* add smtp_email sender node ([24c86b6](https://github.com/BIGmama-technology/Hyko-toolkit/commit/24c86b6a2e6b9a4debb04cccb5c4eb903a5e48b4))
+* add some grouped nodes ([389fbe7](https://github.com/BIGmama-technology/Hyko-toolkit/commit/389fbe719f485bb93f617b4ba6a5b7385eeb994a))
+* added button component + fixed component for values field ([212c300](https://github.com/BIGmama-technology/Hyko-toolkit/commit/212c300e314356562e9b4a9b97b7a80ecc07b34f))
+* added clear rows callback ([6775131](https://github.com/BIGmama-technology/Hyko-toolkit/commit/677513189b10f6aa229f1f8d65a1ca7f826d55f3))
+* added delete rows callback ([463d042](https://github.com/BIGmama-technology/Hyko-toolkit/commit/463d0428f745860a43666e1b6e8b79bee0d4cfab))
+* added elevenlabs group node ([8ff4956](https://github.com/BIGmama-technology/Hyko-toolkit/commit/8ff4956c667ecbf47ecd066396885737fd469feb))
+* added hidden attribute to access_token ([bb1374a](https://github.com/BIGmama-technology/Hyko-toolkit/commit/bb1374a84bde6f19bf10ad440269191af19b4874))
+* added insert rows to sheets api ([7330847](https://github.com/BIGmama-technology/Hyko-toolkit/commit/7330847363cd8ed055c56ed8c56ec9267b6fb8e8))
+* added is_group_node + assign a tag to nodes inside the group node ([29612d0](https://github.com/BIGmama-technology/Hyko-toolkit/commit/29612d08a14bb69dc9a16e502cfd59bc937f144d))
+* added update row callback ([3011a6a](https://github.com/BIGmama-technology/Hyko-toolkit/commit/3011a6ad23d8f518f02f397b04fb607c51ce6811))
+* allow extra fields in sheets inputs model ([fd536ab](https://github.com/BIGmama-technology/Hyko-toolkit/commit/fd536abdfe06972be748c157ecdefab5b0dc9354))
+
+
+### Bug Fixes
+
+* added check in populate sheets callback ([d89ac03](https://github.com/BIGmama-technology/Hyko-toolkit/commit/d89ac030ced471139343e6e673e1d4efa0deb7d3))
+* added emptry string in hugging face search if value is None ([cdc6fb4](https://github.com/BIGmama-technology/Hyko-toolkit/commit/cdc6fb4883923a676a98a03170b1196a87eba097))
+* fixed callback id on update_sheet ([6e4d62b](https://github.com/BIGmama-technology/Hyko-toolkit/commit/6e4d62b93d62e2a3514d9693c8c5cd23123d411e))
+* fixed io node names since they were not unique ([ad06dec](https://github.com/BIGmama-technology/Hyko-toolkit/commit/ad06dec7f51823639f6584c76ded5cdb08f0fff8))
+* fixed sheets tag + fixed update row callback logic ([a62b85c](https://github.com/BIGmama-technology/Hyko-toolkit/commit/a62b85cb3e9f8427cc5df09d5c5180e64c8975de))
+* google places output ([c51ed3a](https://github.com/BIGmama-technology/Hyko-toolkit/commit/c51ed3a7d79ac546b6bcebd72453d92e6d750858))
+* made start_row and end_row hidden in  delete rows ([a84aeb1](https://github.com/BIGmama-technology/Hyko-toolkit/commit/a84aeb1495282f8d4e89d62a8243822aca82303b))
+
 ## [2.3.0](https://github.com/BIGmama-technology/Hyko-toolkit/compare/v2.2.0...v2.3.0) (2024-05-30)
 
 
