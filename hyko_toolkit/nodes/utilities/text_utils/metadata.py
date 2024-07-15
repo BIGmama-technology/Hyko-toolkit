@@ -9,6 +9,7 @@ from .join.metadata import node as join_node
 from .length.metadata import node as length_node
 from .lowercase.metadata import node as lowercase_node
 from .padding.metadata import node as padding_node
+from .remove_special_characters.metadata import node as remove_special_characters_node
 from .replace.metadata import node as replace_node
 from .reverse.metadata import node as reverse_node
 from .slice.metadata import node as slice_node
@@ -33,5 +34,6 @@ node = NodeGroup(
         slice_node,
         split_node,
         uppercase_node,
+        remove_special_characters_node,
     ],
 )

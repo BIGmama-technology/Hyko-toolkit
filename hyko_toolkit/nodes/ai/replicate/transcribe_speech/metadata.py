@@ -13,7 +13,7 @@ from hyko_sdk.utils import field
 from hyko_toolkit.exceptions import APICallError
 
 node = ToolkitNode(
-    name="Replicate transcribe speech",
+    name="Replicate text to speech",
     cost=3,
     description="Transcribe audio to text in multiple languages.",
     icon="replicate",
