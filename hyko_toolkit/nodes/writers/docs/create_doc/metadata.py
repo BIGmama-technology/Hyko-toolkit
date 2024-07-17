@@ -15,7 +15,7 @@ from hyko_toolkit.callbacks_utils.sheets_utils import Response
 
 node = ToolkitNode(
     name="Create Docs file",
-    description="create a Google Docs file and write content to it.",
+    description="Create a Google Docs file and write content to it.",
     icon="docs",
     cost=200,
     auth=SupportedProviders.DOCS,
