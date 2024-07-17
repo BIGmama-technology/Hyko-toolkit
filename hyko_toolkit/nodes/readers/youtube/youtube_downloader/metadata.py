@@ -20,7 +20,6 @@ node = ToolkitNode(
     cost=2,
     description="Download a video from YouTube.",
     icon="youtube",
-    require_worker=True,
 )
 
 

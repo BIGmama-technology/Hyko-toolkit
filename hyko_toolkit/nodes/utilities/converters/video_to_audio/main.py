@@ -12,14 +12,15 @@ from .metadata import Inputs, Outputs, node
 async def main(inputs: Inputs, params: CoreModel) -> Outputs:
     _, ext = os.path.splitext(inputs.video.get_name())
 
-    with open(f"/app/video.{ext}", "wb") as f:
+    with open(f"./video.{ext}", "wb") as f:
         f.write(await inputs.video.get_data())
     # user video.{ext} instead of filename directly to avoid errors with names that has space in it
-    subprocess.run(f"ffmpeg -i /app/video.{ext} -ac 1 /app/audio.mp3 -y".split(" "))
+    subprocess.run(f"ffmpeg -i ./video.{ext} -ac 1 ./audio.mp3 -y".split(" "))
 
     with open("audio.mp3", "rb") as f:
         data = f.read()
     os.remove("audio.mp3")
+    os.remove(f"video.{ext}")
 
     audio = await Audio(
         obj_ext=Ext.MP3,

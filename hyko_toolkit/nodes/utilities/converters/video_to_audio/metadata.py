@@ -8,7 +8,6 @@ node = ToolkitNode(
     cost=3,
     description="Convert a video type to audio type (takes only the audio data)",
     icon="video",
-    require_worker=True,
 )
 
 
