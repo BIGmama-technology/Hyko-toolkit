@@ -2,6 +2,7 @@
 TODO handle the output of segmentation, now only one mask is supported and is
 returned as a PIL image.
 """
+
 import numpy as np
 from hyko_sdk.io import Image
 from PIL import Image as PILLImage
