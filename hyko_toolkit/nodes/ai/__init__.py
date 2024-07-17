@@ -1,8 +1,4 @@
 # Register Models
-
-"""register all apis"""
-
-from .background_image_removal.metadata import node as node  # noqa: F811
 from .elevenlabs.metadata import node as node  # noqa: F811
 from .elevenlabs.speech_to_speech.metadata import node as node  # noqa: F811
 from .elevenlabs.text_to_speech.metadata import node as node  # noqa: F811
