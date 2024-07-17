@@ -6,9 +6,7 @@ import PyPDF2
 from hyko_sdk.components.components import Ext, StorageSelect
 from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.io import Document
-from hyko_sdk.models import (
-    CoreModel,
-)
+from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
 from hyko_toolkit.nodes.core.document.utils import get_docx_text
