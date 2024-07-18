@@ -1,5 +1,3 @@
-import logging
-
 import httpx
 from hyko_sdk.components.components import TextField
 from hyko_sdk.definitions import ToolkitNode
@@ -61,5 +59,4 @@ async def on_call(inputs: Inputs, params: Params):
         )
         return Output(message="Email sent successfully!")
     except httpx.HTTPStatusError as exc:
-        logging.warning(exc)
         raise EmailSendError from exc
