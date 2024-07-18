@@ -17,7 +17,6 @@ node = ToolkitNode(
     cost=5,
     description="Transcript extraction from youtube video.",
     icon="youtube",
-    require_worker=True,
 )
 
 
