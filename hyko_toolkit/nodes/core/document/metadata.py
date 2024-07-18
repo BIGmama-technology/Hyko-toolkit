@@ -33,7 +33,7 @@ class Outputs(CoreModel):
 
 
 @input_node.on_call
-async def execute(input: CoreModel, params: Param):
+async def execute(_, params: Param):
     table_data = await params.document.get_data()
 
     with tempfile.NamedTemporaryFile(

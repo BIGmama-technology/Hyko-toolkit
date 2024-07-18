@@ -7,7 +7,7 @@ from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 from pydantic import TypeAdapter
 
-from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
+from hyko_toolkit.utils.huggingface_utils import huggingface_models_search
 
 ModelsAdapter = TypeAdapter(list[dict[str, Any]])
 

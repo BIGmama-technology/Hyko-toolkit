@@ -19,7 +19,7 @@ from hyko_sdk.models import (
 from hyko_sdk.utils import field
 from pydantic import ConfigDict
 
-from hyko_toolkit.callbacks_utils.sheets_utils import (
+from hyko_toolkit.utils.sheets_utils import (
     Dimension,
     get_sheet_columns,
     insert_google_sheet_values,

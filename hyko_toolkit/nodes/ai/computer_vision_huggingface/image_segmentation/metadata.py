@@ -4,7 +4,7 @@ from hyko_sdk.io import Image
 from hyko_sdk.models import CoreModel
 from hyko_sdk.utils import field
 
-from hyko_toolkit.callbacks_utils.huggingface_utils import huggingface_models_search
+from hyko_toolkit.utils.huggingface_utils import huggingface_models_search
 
 node = ToolkitNode(
     name="Image segmentation",
