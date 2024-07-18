@@ -4,8 +4,8 @@ import httpx
 from hyko_sdk.components.components import RefreshableSelect, SelectChoice
 from hyko_sdk.models import FieldMetadata, MetaDataBase
 
-from hyko_toolkit.callbacks_utils.sheets_utils import Body, CreateResponse, Response
 from hyko_toolkit.exceptions import APICallError, OauthTokenExpiredError
+from hyko_toolkit.utils.models import Body, CreateResponse, Response
 
 base_url = "https://docs.googleapis.com/v1"
 

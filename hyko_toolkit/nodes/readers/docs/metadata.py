@@ -6,7 +6,7 @@ from hyko_sdk.models import (
 )
 from hyko_sdk.utils import field
 
-from hyko_toolkit.callbacks_utils.docs_utils import (
+from hyko_toolkit.utils.docs_utils import (
     populate_documents,
     read_from_document,
 )

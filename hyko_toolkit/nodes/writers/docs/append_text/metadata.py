@@ -6,11 +6,11 @@ from hyko_sdk.models import (
 )
 from hyko_sdk.utils import field
 
-from hyko_toolkit.callbacks_utils.docs_utils import (
+from hyko_toolkit.utils.docs_utils import (
     populate_documents,
     write_to_document,
 )
-from hyko_toolkit.callbacks_utils.sheets_utils import Response
+from hyko_toolkit.utils.sheets_utils import Response
 
 node = ToolkitNode(
     name="Append text to Google Docs file",

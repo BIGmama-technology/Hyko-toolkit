@@ -17,7 +17,7 @@ from hyko_sdk.models import (
 from hyko_sdk.utils import field
 from pydantic import ConfigDict
 
-from hyko_toolkit.callbacks_utils.sheets_utils import (
+from hyko_toolkit.utils.sheets_utils import (
     Response,
     get_sheet_columns,
     list_sheets_name,

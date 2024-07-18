@@ -4,28 +4,15 @@ from typing import Any
 import httpx
 from hyko_sdk.components.components import RefreshableSelect, SelectChoice
 from hyko_sdk.models import FieldMetadata, MetaDataBase
-from pydantic import BaseModel, Field, PositiveInt
+from pydantic import PositiveInt
 
 from hyko_toolkit.exceptions import APICallError, OauthTokenExpiredError
+from hyko_toolkit.utils.models import Response
 
 
 class Dimension(Enum):
     ROWS = "ROWS"
     COLUMNS = "COLUMNS"
-
-
-class Body(BaseModel):
-    document_id: str = Field(alias="documentId")
-
-
-class CreateResponse(BaseModel):
-    success: bool
-    body: Body
-
-
-class Response(BaseModel):
-    success: bool
-    body: str
 
 
 base_url = "https://sheets.googleapis.com/v4/spreadsheets"
