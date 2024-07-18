@@ -1,5 +1,3 @@
-import json
-
 from hyko_sdk.components.components import (
     TextField,
 )
@@ -46,9 +44,9 @@ async def call(inputs: Inputs, params: Params):
     document = await create_document(inputs.title, params.access_token)
 
     response = await write_to_document(
-        document["documentId"],  # type: ignore
+        document.body.document_id,
         inputs.body,
         params.access_token,
     )
 
-    return Response(success=True, body=json.dumps(response))
+    return Response(success=True, body=response.model_dump_json())

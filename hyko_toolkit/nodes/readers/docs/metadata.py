@@ -39,7 +39,7 @@ node.callback(trigger="document", id="populate_documents")(populate_documents)
 
 
 @node.on_call
-async def call(params: Params) -> Outputs:
+async def call(_, params: Params) -> Outputs:
     document_text = await read_from_document(params.document, params.access_token)
 
     return Outputs(text=document_text)

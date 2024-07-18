@@ -1,5 +1,3 @@
-import json
-
 from hyko_sdk.components.components import RefreshableSelect, TextField
 from hyko_sdk.definitions import ToolkitNode
 from hyko_sdk.models import (
@@ -37,7 +35,7 @@ class Params(CoreModel):
         description="OAuth access token for Google Docs API", hidden=True
     )
     document: str = field(
-        description="",
+        description="Document to append text to.",
         component=RefreshableSelect(choices=[], callback_id="populate_documents"),
     )
 
@@ -50,4 +48,4 @@ async def call(inputs: Inputs, params: Params):
     response = await write_to_document(
         params.document, inputs.text, params.access_token
     )
-    return Response(success=True, body=json.dumps(response))
+    return Response(success=True, body=response.model_dump_json())
