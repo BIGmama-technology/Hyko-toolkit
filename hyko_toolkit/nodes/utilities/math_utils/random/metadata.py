@@ -29,7 +29,7 @@ class Outputs(CoreModel):
 
 
 @node.on_call
-async def call(inputs: CoreModel, params: Params) -> Outputs:
+async def call(_, params: Params) -> Outputs:
     min_val = params.min_val
     max_val = params.max_val
     if min_val > max_val:

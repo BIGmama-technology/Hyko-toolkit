@@ -29,5 +29,5 @@ class Outputs(CoreModel):
 
 
 @node.on_call
-async def call(inputs: Inputs, params: CoreModel) -> Outputs:
+async def call(inputs: Inputs, _) -> Outputs:
     return Outputs(reversed=inputs.text[::-1])
