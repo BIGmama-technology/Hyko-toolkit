@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.5.0](https://github.com/BIGmama-technology/Hyko-toolkit/compare/v2.4.0...v2.5.0) (2024-07-18)
+
+
+### Features
+
+* added append text to docs file node ([2a2648e](https://github.com/BIGmama-technology/Hyko-toolkit/commit/2a2648e8ebffe2f2258bfab02edd24ef4165ada1))
+* added create docs file node ([0a72195](https://github.com/BIGmama-technology/Hyko-toolkit/commit/0a72195df9ac12f797989f5ff6105b36896a1f24))
+* added docs reader node ([07a0632](https://github.com/BIGmama-technology/Hyko-toolkit/commit/07a06321b4363962d7247e76ae364c1f7f7e3435))
+* added docs writer node group ([bc63dfd](https://github.com/BIGmama-technology/Hyko-toolkit/commit/bc63dfdff751b0d5488d9884bc56458e3b9e97ce))
+
+
+### Bug Fixes
+
+* fixed some errors + merged with development branch ([bd525a6](https://github.com/BIGmama-technology/Hyko-toolkit/commit/bd525a68ed0d24961b33e6a00ceec1711372388a))
+* name of replicate node ([0f31def](https://github.com/BIGmama-technology/Hyko-toolkit/commit/0f31def8579d9491b779350864f0d8f7311cbb0d))
+* turn excel to csv instead of md ([403855c](https://github.com/BIGmama-technology/Hyko-toolkit/commit/403855c4daa6b75e1a30a0842f95c4721c965885))
+
 ## [2.4.0](https://github.com/BIGmama-technology/Hyko-toolkit/compare/v2.3.0...v2.4.0) (2024-06-25)
 
 
